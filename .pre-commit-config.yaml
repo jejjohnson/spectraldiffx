@@ -8,6 +8,14 @@ repos:
       - id: check-toml
       - id: check-added-large-files
 
+  - repo: local
+    hooks:
+      - id: forbid-ipynb
+        name: Forbid .ipynb files (use jupytext .py instead)
+        entry: "bash -c 'echo ERROR: .ipynb files are not allowed. Use jupytext .py files instead. && exit 1'"
+        language: system
+        files: '\.ipynb$'
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.4
     hooks:
@@ -23,13 +31,15 @@ repos:
       - id: mypy
         additional_dependencies: []
         args: [--ignore-missing-imports]
+        exclude: ^notebooks/
 
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.10.0
     hooks:
       - id: shellcheck
 
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.8.1
+  - repo: https://github.com/mwouts/jupytext
+    rev: v1.16.6
     hooks:
-      - id: nbstripout
+      - id: jupytext
+        args: [--sync]
