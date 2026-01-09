@@ -159,3 +159,6 @@ notebooks/*.gif
 \jbook/_build/
 
 \oceanbench-data-registry/
+
+# exclude checkpoints from source control by default
+*checkpoint.py

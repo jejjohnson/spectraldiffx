@@ -5,27 +5,24 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.18.1
+#       jupytext_version: 1.16.0
 #   kernelspec:
-#     display_name: Python [conda env:jax_eo_py311]
+#     display_name: Python 3
 #     language: python
-#     name: conda-env-jax_eo_py311-py
+#     name: python3
 # ---
 
 # %% [markdown]
-# ---
-# title: PseudoSpectral Difference - 1D
-# ---
+# # Pseudospectral Differentiation - 1D
+#
+# This notebook demonstrates how to use the `spectraldiffx` library for
+# computing derivatives using the pseudospectral (Fourier) method in 1D.
 
 # %%
-# from jaxsw._src.domain.base import Domain
 import math
 
 import jax
 import jax.numpy as jnp
-
-# from jaxsw._src.fields.base import Field
-from jaxtyping import Array
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -34,321 +31,234 @@ jax.config.update("jax_enable_x64", True)
 sns.reset_defaults()
 sns.set_context(context="talk", font_scale=0.7)
 
-# %load_ext autoreload
-# %autoreload 2
-
 # %% [markdown]
+# ## Define Test Function
+#
+# We use a simple periodic function:
 # $$
 # u(x) = \sin(2x) + \frac{1}{2}\cos(5x)
 # $$
+#
+# With analytical derivatives:
+# $$
+# \frac{du}{dx} = 2\cos(2x) - \frac{5}{2}\sin(5x)
+# $$
+# $$
+# \frac{d^2u}{dx^2} = -4\sin(2x) - \frac{25}{2}\cos(5x)
+# $$
 
 # %%
-f = lambda x: jnp.sin(2*x) + 0.5*jnp.cos(5*x)
-df = jax.grad(f)
-d2f = jax.grad(df)
+# Define the function and its analytical derivatives
+f = lambda x: jnp.sin(2 * x) + 0.5 * jnp.cos(5 * x)
+df = lambda x: 2.0 * jnp.cos(2.0 * x) - 2.5 * jnp.sin(5.0 * x)
+d2f = lambda x: -4.0 * jnp.sin(2.0 * x) - 12.5 * jnp.cos(5.0 * x)
+
+# %% [markdown]
+# ## Setup Grid Using New API
+#
+# We use `FourierGrid1D` to define the computational domain.
 
 # %%
+from spectraldiffx._src.grid import FourierGrid1D
+from spectraldiffx._src.operators import SpectralDerivative1D
 
+# Grid parameters
 Nx = 32
-Lx = 2*math.pi
-dx = Lx / Nx
+Lx = 2 * math.pi
 
-# initialize domains
-x_coords = jnp.arange(start=0, stop=Lx, step=dx)
-x_plot_coords = jnp.arange(start=0, stop=Lx, step=0.25 * dx)
+# Create grid using the new API
+grid = FourierGrid1D.from_N_L(N=Nx, L=Lx, dealias="2/3")
 
-# initialize fields
+# Get grid points
+x_coords = grid.x
+x_plot_coords = jnp.linspace(0, Lx, 256, endpoint=False)
+
+# Initialize fields
 u = f(x_coords)
 u_plot = f(x_plot_coords)
 
 # %%
-fig, ax = plt.subplots(figsize=(8,3))
+print(f"Grid points (N): {grid.N}")
+print(f"Domain length (L): {grid.L}")
+print(f"Grid spacing (dx): {grid.dx}")
+print(f"Dealiasing method: {grid.dealias}")
 
-ax.plot(x_plot_coords, u_plot[:], linestyle="-", color="black", label="$u(x)$")
-ax.scatter(x_coords, u[:], color="r", marker="*", label="$u_i$", zorder=3)
+# %%
+fig, ax = plt.subplots(figsize=(8, 3))
+
+ax.plot(x_plot_coords, u_plot, linestyle="-", color="black", label="$u(x)$")
+ax.scatter(x_coords, u, color="r", marker="*", label="$u_i$", zorder=3)
 ax.set(xlabel=r"$x$", ylabel=r"$u(x)$")
 plt.legend()
+plt.tight_layout()
 plt.show()
 
 # %% [markdown]
-# ### 1st Derivative
-
-# %%
-df = lambda x: (2.0 * jnp.cos(2.0 * x) - 2.5 * jnp.sin(5.0 * x)).squeeze()
-
-# %%
-dudx_plot = jax.vmap(df)(x_plot_coords)
-dudx_analytical = jax.vmap(df)(x_coords)
-
-# %%
-fig, ax = plt.subplots(figsize=(8,3))
-
-ax.plot(x_plot_coords, u_plot[:], linestyle="-", color="red", label="$u(x)$")
-ax.plot(x_plot_coords, dudx_plot, linestyle="-", color="black", label=r"$\partial_x u(x)$")
-ax.set(xlabel=r"$x$", ylabel=r"$u(x)$")
-plt.legend()
-plt.show()
-
-# %% [markdown]
-# ## Pseudospectral Method
-
-# %% [markdown]
-# We need to create the vectors
+# ## First Derivative
 #
-# $$
-# k =
-# \frac{2\pi}{L_x}
-# \left[
-# 0, 1, 2, 3, \ldots, \frac{N_x}{2}, \frac{N_x}{2} + 1,
-# -\frac{N_x}{2}, -\frac{N_x}{2} + 2, \ldots, -3,  -2, -1
-# \right]
-# $$
-
-# %%
-
-
-k1 = jnp.arange(0, Nx/2)
-k2 = jnp.arange(-Nx/2, 0)
-k = jnp.concatenate([k1, k2], axis=0) / Lx
-
-k.shape
-
-# %% [markdown]
-# We do the forward FFT transformation.
-# We divide by the scaler value.
-
-# %%
-# Forward FFT transform
-fh = jnp.fft.fft(u[:])#/Nx
-
-# %% [markdown]
-# We now do the multiplicative difference operator
-
-# %%
-# difference operator
-dfh_dx = 1j * (2*jnp.pi*k) * fh
-
-# %% [markdown]
-# We do the inverse FFT transformation
-
-# %%
-# inverse FFT transform
-du_dx = jnp.fft.ifft(dfh_dx)
-
-# %% [markdown]
-# We remove the complex values and we rescale
+# ### Manual Computation (For Understanding)
 #
+# The pseudospectral derivative works by:
+# 1. Transform to Fourier space: $\hat{u}_k = \text{FFT}(u)$
+# 2. Multiply by $ik$: $\widehat{du/dx}_k = ik \cdot \hat{u}_k$
+# 3. Transform back: $du/dx = \text{IFFT}(\widehat{du/dx})$
 
 # %%
-# remove excess
-dudx_sp = jnp.real( du_dx)
+# Manual computation for educational purposes
+k = grid.k  # Wavenumbers from grid
 
-# %%
-fig, ax = plt.subplots(figsize=(8,3))
+# Forward FFT
+u_hat = jnp.fft.fft(u)
 
-ax.plot(x_plot_coords, dudx_plot, linestyle="-", color="black", label=r"$\partial_x u(x)$")
-ax.scatter(
-    x_coords, dudx_sp[:], color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
-plt.legend()
-plt.show()
+# Multiply by ik for first derivative
+du_hat = 1j * k * u_hat
+
+# Inverse FFT
+du_dx_manual = jnp.fft.ifft(du_hat).real
 
 # %% [markdown]
-# ### Functional API
+# ### Using SpectralDerivative1D Operator
+#
+# The `SpectralDerivative1D` class provides a clean API for computing derivatives.
 
 # %%
-from spectraldiffx._src.difference import difference, spectral_difference
-from spectraldiffx._src.utils import (
-    calculate_aliasing,
-    calculate_fft_freq,
-    fft_transform,
-)
+# Create the derivative operator
+deriv = SpectralDerivative1D(grid=grid)
 
+# Compute first derivative
+du_dx = deriv(u, order=1)
 
-# %%
-
-# %%
-
-# calculate frequencies
-k_vec = calculate_fft_freq(Nx, Lx)
-cond = calculate_aliasing(k_vec)
-k_vec = jnp.where(cond, 0.0, k_vec)
-
-# forward transformation
-Fu = fft_transform(u[:], axis=0, inverse=False)
-
-# difference operator
-dFudx = spectral_difference(Fu, k_vec, axis=0, derivative=1)
-
-# # inverse transformation
-dudx_spectral = fft_transform(dFudx, axis=0, inverse=True)
-
+# Or use the gradient method
+du_dx_grad = deriv.gradient(u)
 
 # %%
-fig, ax = plt.subplots(figsize=(8,3))
+# Analytical solution for comparison
+du_dx_analytical = jax.vmap(df)(x_coords)
+du_dx_plot = jax.vmap(df)(x_plot_coords)
 
-ax.plot(x_plot_coords, dudx_plot, linestyle="-", color="black", label=r"$\partial_x u(x)$")
-ax.scatter(
-    x_coords, dudx_spectral[:], color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.scatter(
-    x_coords, dudx_analytical[:], color="red", marker="x", s=3, label="Analytical", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
+# %%
+fig, ax = plt.subplots(figsize=(8, 3))
+
+ax.plot(x_plot_coords, du_dx_plot, linestyle="-", color="black", label=r"$du/dx$ (analytical)")
+ax.scatter(x_coords, du_dx, color="green", marker=".", label="SpectralDerivative1D", zorder=3)
+ax.scatter(x_coords, du_dx_analytical, color="red", marker="x", s=20, label="Analytical", zorder=3)
+ax.set(xlabel=r"$x$", ylabel=r"$du/dx$")
 plt.legend()
+plt.tight_layout()
 plt.show()
 
 # %%
-fig, ax = plt.subplots(figsize=(8,3))
+# Check error
+error = jnp.abs(du_dx - du_dx_analytical)
+print(f"Max error in first derivative: {error.max():.2e}")
 
-ps_error = np.abs(dudx_spectral[:] - dudx_analytical[:])
+# %%
+fig, ax = plt.subplots(figsize=(8, 3))
 
-ax.plot(x_coords, ps_error, color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
+ax.semilogy(x_coords, error, color="green", marker=".", label="Error")
+ax.set(xlabel=r"$x$", ylabel=r"$|du/dx - du/dx_{analytical}|$")
+ax.set_title("First Derivative Error (Spectral Method)")
 plt.legend()
+plt.tight_layout()
 plt.show()
 
 # %% [markdown]
-# ### Simpler API
+# ## Second Derivative
+#
+# We can compute higher-order derivatives by specifying the `order` parameter,
+# or use the `laplacian` method for the second derivative.
 
 # %%
-# calculate frequencies
-k_vec = calculate_fft_freq(Nx, Lx)
+# Compute second derivative using order parameter
+d2u_dx2 = deriv(u, order=2)
 
-# pseudospectral transformation
-dudx_spectral = difference(u[:], k_vec=k_vec, axis=0)
+# Or use the laplacian method (equivalent for 1D)
+d2u_dx2_lap = deriv.laplacian(u)
+
+# Analytical solution
+d2u_dx2_analytical = jax.vmap(d2f)(x_coords)
+d2u_dx2_plot = jax.vmap(d2f)(x_plot_coords)
 
 # %%
-fig, ax = plt.subplots(figsize=(8,3))
+fig, ax = plt.subplots(figsize=(8, 3))
 
-ax.plot(x_plot_coords, dudx_plot, linestyle="-", color="black", label=r"$\partial_x u(x)$")
-ax.scatter(
-    x_coords, dudx_spectral[:], color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
+ax.plot(x_plot_coords, d2u_dx2_plot, linestyle="-", color="black", label=r"$d^2u/dx^2$ (analytical)")
+ax.scatter(x_coords, d2u_dx2, color="green", marker=".", label="SpectralDerivative1D", zorder=3)
+ax.scatter(x_coords, d2u_dx2_analytical, color="red", marker="x", s=20, label="Analytical", zorder=3)
+ax.set(xlabel=r"$x$", ylabel=r"$d^2u/dx^2$")
 plt.legend()
+plt.tight_layout()
+plt.show()
+
+# %%
+# Check error
+error_2nd = jnp.abs(d2u_dx2 - d2u_dx2_analytical)
+print(f"Max error in second derivative: {error_2nd.max():.2e}")
+
+# %%
+fig, ax = plt.subplots(figsize=(8, 3))
+
+ax.semilogy(x_coords, error_2nd, color="green", marker=".", label="Error")
+ax.set(xlabel=r"$x$", ylabel=r"$|d^2u/dx^2 - d^2u/dx^2_{analytical}|$")
+ax.set_title("Second Derivative Error (Spectral Method)")
+plt.legend()
+plt.tight_layout()
 plt.show()
 
 # %% [markdown]
-# ## Operator API
+# ## Dealiasing
+#
+# The grid has built-in dealiasing support (2/3 rule by default).
+# This is important for nonlinear terms to prevent aliasing errors.
 
 # %%
-from collections.abc import Iterable
-import math
-from typing import NamedTuple
+# View the dealiasing filter
+dealias_filter = grid.dealias_filter()
 
-
-class Difference(NamedTuple):
-    k_vec: Iterable[Array]
-    ratio: float
-    aliasing_cond: Iterable[Array]
-
-    @classmethod
-    def init(
-        cls,
-        N: Iterable[float],
-        L: Iterable[float] | None = None,
-        ratio: float | None = 1.0 / 3.0,
-    ):
-        # calculate fourier frequencies
-        if isinstance(N, (float, int)):
-            N = tuple(N)
-
-        if L is None:
-            L = (2 * math.pi,) * len(N)
-        elif isinstance(L, (int, float)):
-            L = (float(L),) * len(N)
-
-        assert len(N) == len(L)
-        k_vec = [calculate_fft_freq(N=iN, L=iL) for iN, iL in zip(N, L, strict=False)]
-        ratio = ratio
-        aliasing_cond = [calculate_aliasing(ikvec, ratio=ratio) for ikvec in k_vec]
-
-        return cls(k_vec=k_vec, ratio=ratio, aliasing_cond=aliasing_cond)
-
-    def get_k_vec(self, axis: int = 0, aliasing: bool = True):
-        k_vec = self.k_vec[axis]
-
-        if aliasing:
-            k_vec = jnp.where(self.aliasing_cond[axis], 0.0, k_vec)
-
-        return k_vec
-
-    def difference(
-        self,
-        u: Array,
-        axis: int = 0,
-        derivative: int = 1,
-        aliasing: bool = True,
-    ) -> Array:
-        k_vec = self.get_k_vec(axis=axis, aliasing=aliasing)
-        return difference(u=u, k_vec=k_vec, axis=axis, derivative=derivative)
-
-    def transform(self, u: Array, axis: int = 0) -> Array:
-        return fft_transform(u=u, axis=axis, inverse=False)
-
-    def inverse_transform(self, u: Array, axis: int = 0) -> Array:
-        return fft_transform(u=u, axis=axis, inverse=True)
-
-    def spectral_difference(
-        self, fu: Array, axis: int = 0, derivative: int = 1
-    ) -> Array:
-        k_vec = self.get_k_vec(axis=axis, aliasing=aliasing)
-        return spectral_difference(fu=fu, k_vec=k_vec, axis=axis, derivative=derivative)
-
-
-# %%
-
-diff_op = Difference.init(N=u.shape, L=[Lx], ratio=1.0/3.0)
-dudx_spectral = diff_op.difference(u[:])
-
-# %%
-fig, ax = plt.subplots(figsize=(8,3))
-
-ax.plot(x_plot_coords, dudx_plot, linestyle="-", color="black", label=r"$\partial_x u(x)$")
-ax.scatter(
-    x_coords, dudx_spectral[:], color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
-plt.legend()
+fig, ax = plt.subplots(figsize=(8, 3))
+ax.plot(grid.k, dealias_filter, ".-")
+ax.set(xlabel="Wavenumber $k$", ylabel="Filter value")
+ax.set_title("2/3 Dealiasing Filter")
+plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ### 2nd Derivative
-
 # %%
-d2udx2_plot = jax.vmap(d2f)(x_plot_coords)
-d2udx2_analytical = jax.vmap(d2f)(x_coords)
+# Apply dealiasing to a field
+u_dealiased = deriv.apply_dealias(u)
 
-# %% [markdown]
-# #### Pseudospectral
-
-# %%
-# derivative
-d2udx2_spectral = diff_op.difference(u[:], derivative=2)
-# d2udx2_spectral = F_spectral.difference_field(u=u_spectral, axis=0, derivative=2, real=True)
-
+print(f"Original field energy: {jnp.sum(jnp.abs(u)**2):.6f}")
+print(f"Dealiased field energy: {jnp.sum(jnp.abs(u_dealiased)**2):.6f}")
 
 # %% [markdown]
-# #### Viz: Derivatives
+# ## Working in Spectral Space
+#
+# If you're doing multiple operations in Fourier space, you can work directly
+# with spectral coefficients using `spectral=True`.
 
 # %%
-fig, ax = plt.subplots(figsize=(8,3))
+# Transform to spectral space
+u_hat = grid.transform(u)
 
-ax.plot(x_plot_coords, d2udx2_plot, linestyle="-", color="black", label=r"$\partial^2_x u(x)$")
-ax.scatter(
-    x_coords, d2udx2_spectral[:], color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.scatter(
-    x_coords, d2udx2_analytical[:], color="red", marker="x", s=3, label="Analytical", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
-plt.legend()
-plt.show()
+# Compute derivative in spectral space
+du_dx_from_spectral = deriv(u_hat, order=1, spectral=True)
+
+# Compare with physical space computation
+print(f"Max difference: {jnp.abs(du_dx - du_dx_from_spectral).max():.2e}")
 
 # %% [markdown]
-# #### Visualization: Numerical Error
-
-# %%
-fig, ax = plt.subplots(figsize=(8,3))
-
-ps_error = np.abs(d2udx2_spectral[:] - d2udx2_analytical[:])
-
-ax.plot(x_coords, ps_error, color="green", marker=".", label="Pseudospectral", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$f(x)$")
-plt.legend()
-plt.show()
+# ## Summary
+#
+# The new API provides:
+#
+# 1. **FourierGrid1D**: Grid setup with automatic wavenumber computation
+#    - `from_N_L()`: Create from number of points and domain length
+#    - `from_N_dx()`: Create from number of points and grid spacing
+#    - `from_L_dx()`: Create from domain length and grid spacing
+#    - Properties: `x`, `k`, `k_dealias`, `dealias_filter()`
+#    - Methods: `transform()`, `check_consistency()`
+#
+# 2. **SpectralDerivative1D**: Derivative operator
+#    - `__call__(u, order, spectral)`: Compute n-th derivative
+#    - `gradient(u)`: First derivative
+#    - `laplacian(u)`: Second derivative
+#    - `apply_dealias(u)`: Apply dealiasing filter

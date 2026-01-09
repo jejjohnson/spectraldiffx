@@ -5,27 +5,24 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.18.1
+#       jupytext_version: 1.16.0
 #   kernelspec:
-#     display_name: Python [conda env:jax_eo_py311]
+#     display_name: Python 3
 #     language: python
-#     name: conda-env-jax_eo_py311-py
+#     name: python3
 # ---
 
 # %% [markdown]
-# ---
-# title: PseudoSpectral Difference - 2D
-# ---
+# # Pseudospectral Differentiation - 2D
+#
+# This notebook demonstrates how to use the `spectraldiffx` library for
+# computing derivatives using the pseudospectral (Fourier) method in 2D.
 
 # %%
-# from jaxsw._src.domain.base import Domain
 import math
 
 import jax
 import jax.numpy as jnp
-
-# from jaxsw._src.fields.base import Field
-from jaxtyping import Array
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -34,401 +31,299 @@ jax.config.update("jax_enable_x64", True)
 sns.reset_defaults()
 sns.set_context(context="talk", font_scale=0.7)
 
-# %load_ext autoreload
-# %autoreload 2
-
 # %% [markdown]
+# ## Define Test Function
+#
+# We use a 2D periodic function:
 # $$
 # u(x,y) = \cos \left(m_x \frac{2\pi}{L_x}x \right) \sin \left(m_y \frac{2\pi}{L_y}y \right)
 # $$
 
 # %%
 def f(x, y, Lx, Ly, mx, my):
-    return jnp.cos(mx* 2 * jnp.pi * x / Lx) * jnp.sin(my * 2*jnp.pi*y / Ly)
+    return jnp.cos(mx * 2 * jnp.pi * x / Lx) * jnp.sin(my * 2 * jnp.pi * y / Ly)
 
-# define gradient functions
+
+# Define gradient functions using JAX autodiff
 df_dx = jax.grad(f, argnums=0)
 df_dy = jax.grad(f, argnums=1)
 
+# Second order derivatives
+d2f_dx2 = jax.grad(df_dx, argnums=0)
+d2f_dy2 = jax.grad(df_dy, argnums=1)
+
+# %% [markdown]
+# ## Setup Grid Using New API
+#
+# We use `FourierGrid2D` to define the 2D computational domain.
+
 # %%
+from spectraldiffx._src.grid import FourierGrid2D
+from spectraldiffx._src.operators import SpectralDerivative2D
+from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+
+# Grid and function parameters
 mx, my = 3, 2
 Nx, Ny = 64, 64
-# Lx, Ly = 2.0*jnp.pi, 2.0*jnp.pi
-Lx, Ly = 2*math.pi, 2*math.pi
-dx, dy = Lx/Nx, Ly/Ny
+Lx, Ly = 2 * math.pi, 2 * math.pi
 
-# initialize domains
-x_coords = jnp.arange(start=0, stop=Lx, step=dx)
-y_coords = jnp.arange(start=0, stop=Ly, step=dy)
-x_plot_coords = jnp.arange(start=0, stop=Lx, step=0.25 * dx)
-y_plot_coords = jnp.arange(start=0, stop=Ly, step=0.25 * dy)
+# Create 2D grid using the new API
+grid = FourierGrid2D.from_N_L(Nx=Nx, Ny=Ny, Lx=Lx, Ly=Ly, dealias="2/3")
 
-X, Y = jnp.meshgrid(x_coords, y_coords, indexing="ij")
-X_plot, Y_plot = jnp.meshgrid(x_plot_coords, y_plot_coords, indexing="ij")
+# Get meshgrid coordinates
+X, Y = grid.X
 
 # %%
+print(f"Grid points: Nx={grid.Nx}, Ny={grid.Ny}")
+print(f"Domain size: Lx={grid.Lx}, Ly={grid.Ly}")
+print(f"Grid spacing: dx={grid.dx:.4f}, dy={grid.dy:.4f}")
+print(f"Dealiasing: {grid.dealias}")
 
-kernel = lambda x,y: f(x,y,Lx,Ly,mx,my)
-kernel_grad_x = lambda x,y: df_dx(x,y,Lx,Ly,mx,my)
-kernel_grad_y = lambda x,y: df_dy(x,y,Lx,Ly,mx,my)
-
-def gram_matrix(f, x, y):
-    return jax.vmap(lambda x: jax.vmap(lambda y: f(x, y))(y))(x)
-
-u = gram_matrix(kernel, x_coords, y_coords)
-dudx = gram_matrix(kernel_grad_x, x_coords, y_coords)
-dudy = gram_matrix(kernel_grad_y, x_coords, y_coords)
+# %% [markdown]
+# ## Compute Fields and Analytical Derivatives
 
 # %%
-fig, ax = plt.subplots(ncols=3, figsize=(8,3))
+# Helper to compute field values on grid
+kernel = lambda x, y: f(x, y, Lx, Ly, mx, my)
+kernel_grad_x = lambda x, y: df_dx(x, y, Lx, Ly, mx, my)
+kernel_grad_y = lambda x, y: df_dy(x, y, Lx, Ly, mx, my)
+kernel_grad2_x2 = lambda x, y: d2f_dx2(x, y, Lx, Ly, mx, my)
+kernel_grad2_y2 = lambda x, y: d2f_dy2(x, y, Lx, Ly, mx, my)
 
-ax[0].contourf(X, Y, u[:],)
-ax[1].contourf(X, Y, dudx[:])
-ax[2].contourf(X, Y, dudy[:])
 
-ax[0].set(title="u(x,y)", xlabel="$x$", ylabel="$y$")
-ax[1].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[2].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
+def compute_on_grid(func, x, y):
+    """Evaluate function on meshgrid."""
+    return jax.vmap(lambda xi: jax.vmap(lambda yi: func(xi, yi))(y))(x)
+
+
+# Note: grid.x and grid.y are 1D arrays
+u = compute_on_grid(kernel, grid.x, grid.y)
+dudx_analytical = compute_on_grid(kernel_grad_x, grid.x, grid.y)
+dudy_analytical = compute_on_grid(kernel_grad_y, grid.x, grid.y)
+d2udx2_analytical = compute_on_grid(kernel_grad2_x2, grid.x, grid.y)
+d2udy2_analytical = compute_on_grid(kernel_grad2_y2, grid.x, grid.y)
+
+# %%
+fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
+
+ax[0].contourf(X.T, Y.T, u.T)
+ax[1].contourf(X.T, Y.T, dudx_analytical.T)
+ax[2].contourf(X.T, Y.T, dudy_analytical.T)
+
+ax[0].set(title="$u(x,y)$", xlabel="$x$", ylabel="$y$")
+ax[1].set(title=r"$\partial_x u(x,y)$", xlabel="$x$", ylabel="$y$")
+ax[2].set(title=r"$\partial_y u(x,y)$", xlabel="$x$", ylabel="$y$")
 plt.tight_layout()
 plt.show()
 
 # %% [markdown]
-# #### Pseudospectral
-
-# %% [markdown]
-# ### Functional API
+# ## Compute Derivatives Using SpectralDerivative2D
 
 # %%
-from spectraldiffx._src.difference import difference, spectral_difference
-from spectraldiffx._src.utils import (
-    calculate_aliasing,
-    calculate_fft_freq,
-    fft_transform,
-)
+# Create the 2D derivative operator
+deriv = SpectralDerivative2D(grid=grid)
+
+# Compute gradient (returns tuple of du/dx, du/dy)
+dudx_spectral, dudy_spectral = deriv.gradient(u)
 
 # %%
+fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(7, 8))
 
-# calculate frequencies
-k_vec = [calculate_fft_freq(Nx, Lx) for Nx, Lx in zip([Nx,Ny], [Lx,Ly], strict=False)]
-cond = [calculate_aliasing(ikvec) for ikvec in k_vec]
-# k_vec = jnp.where(cond, 0.0, k_vec)
+x_levels = np.linspace(dudx_analytical.min(), dudx_analytical.max(), 10)
+y_levels = np.linspace(dudy_analytical.min(), dudy_analytical.max(), 10)
 
-# Difference operator x
-Fux = fft_transform(u[:], axis=0, inverse=False)
-dFudx = spectral_difference(Fux, k_vec[0], axis=0, derivative=1)
-dudx_spectral = fft_transform(dFudx, axis=0, inverse=True)
+# Analytical
+ax[0, 0].contourf(X.T, Y.T, dudx_analytical.T, levels=x_levels)
+ax[0, 0].set(title=r"$\partial_x u$ (analytical)", xlabel="$x$", ylabel="$y$")
+ax[0, 1].contourf(X.T, Y.T, dudy_analytical.T, levels=y_levels)
+ax[0, 1].set(title=r"$\partial_y u$ (analytical)", xlabel="$x$", ylabel="$y$")
 
-# Difference operator y
-Fuy = fft_transform(u[:], axis=1, inverse=False)
-dFudy = spectral_difference(Fuy, k_vec[1], axis=1, derivative=1)
-dudy_spectral = fft_transform(dFudy, axis=1, inverse=True)
+# Spectral
+ax[1, 0].contourf(X.T, Y.T, dudx_spectral.T, levels=x_levels)
+ax[1, 0].set(title=r"$\partial_x u$ (spectral)", xlabel="$x$", ylabel="$y$")
+ax[1, 1].contourf(X.T, Y.T, dudy_spectral.T, levels=y_levels)
+ax[1, 1].set(title=r"$\partial_y u$ (spectral)", xlabel="$x$", ylabel="$y$")
 
+# Error
+err_x = np.abs(dudx_analytical - dudx_spectral)
+err_y = np.abs(dudy_analytical - dudy_spectral)
+pts = ax[2, 0].contourf(X.T, Y.T, err_x.T, cmap="Reds")
+plt.colorbar(pts, ax=ax[2, 0])
+ax[2, 0].set(title=r"$|\partial_x u|$ error", xlabel="$x$", ylabel="$y$")
+pts = ax[2, 1].contourf(X.T, Y.T, err_y.T, cmap="Reds")
+plt.colorbar(pts, ax=ax[2, 1])
+ax[2, 1].set(title=r"$|\partial_y u|$ error", xlabel="$x$", ylabel="$y$")
 
-# %%
-fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(7,7))
-
-x_levels = np.linspace(dudx[:].min(), dudx[:].max(), 6)
-y_levels = np.linspace(dudy[:].min(), dudy[:].max(), 6)
-
-
-pts = ax[0,0].contourf(X, Y, dudx[:], levels=x_levels)
-plt.colorbar(pts)
-pts = ax[0,1].contourf(X, Y, dudy[:], levels=y_levels)
-plt.colorbar(pts)
-
-
-pts = ax[1,0].contourf(X, Y, dudx_spectral[:], levels=x_levels)
-plt.colorbar(pts)
-pts = ax[1,1].contourf(X, Y, dudy_spectral[:], levels=y_levels)
-plt.colorbar(pts)
-
-ax[0,0].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[0,1].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
-
-ps_err_x = np.abs(dudx[:] - dudx_spectral[:])
-ps_err_y = np.abs(dudy[:] - dudy_spectral[:])
-
-pts=ax[2,0].contourf(X, Y, ps_err_x, cmap="Reds")
-plt.colorbar(pts)
-pts=ax[2,1].contourf(X, Y, ps_err_y, cmap="Reds")
-plt.colorbar(pts)
-
-ax[2,0].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[2,1].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
 plt.tight_layout()
 plt.show()
 
+# %%
+print(f"Max error in du/dx: {err_x.max():.2e}")
+print(f"Max error in du/dy: {err_y.max():.2e}")
+
 # %% [markdown]
-# ### Simpler Functional API
+# ## Laplacian
+#
+# The Laplacian operator $\nabla^2 u = \partial^2 u/\partial x^2 + \partial^2 u/\partial y^2$
+# is computed efficiently in spectral space as $-|k|^2 \hat{u}$.
 
 # %%
-# calculate frequencies
-k_vec = [calculate_fft_freq(Nx, Lx) for Nx, Lx in zip([Nx,Ny], [Lx,Ly], strict=False)]
-
-# pseudospectral transformation
-dudx_spectral = difference(u[:], k_vec=k_vec[0], axis=0)
-dudy_spectral = difference(u[:], k_vec=k_vec[1], axis=1)
+# Compute Laplacian
+laplacian_spectral = deriv.laplacian(u)
+laplacian_analytical = d2udx2_analytical + d2udy2_analytical
 
 # %%
-fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(7,7))
+fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
 
-x_levels = np.linspace(dudx[:].min(), dudx[:].max(), 6)
-y_levels = np.linspace(dudy[:].min(), dudy[:].max(), 6)
+levels = np.linspace(laplacian_analytical.min(), laplacian_analytical.max(), 10)
 
+ax[0].contourf(X.T, Y.T, laplacian_analytical.T, levels=levels)
+ax[0].set(title=r"$\nabla^2 u$ (analytical)", xlabel="$x$", ylabel="$y$")
 
-pts = ax[0,0].contourf(X, Y, dudx[:], levels=x_levels)
-plt.colorbar(pts)
-pts = ax[0,1].contourf(X, Y, dudy[:], levels=y_levels)
-plt.colorbar(pts)
+ax[1].contourf(X.T, Y.T, laplacian_spectral.T, levels=levels)
+ax[1].set(title=r"$\nabla^2 u$ (spectral)", xlabel="$x$", ylabel="$y$")
 
+err_lap = np.abs(laplacian_analytical - laplacian_spectral)
+pts = ax[2].contourf(X.T, Y.T, err_lap.T, cmap="Reds")
+plt.colorbar(pts, ax=ax[2])
+ax[2].set(title=r"$|\nabla^2 u|$ error", xlabel="$x$", ylabel="$y$")
 
-pts = ax[1,0].contourf(X, Y, dudx_spectral[:], levels=x_levels)
-plt.colorbar(pts)
-pts = ax[1,1].contourf(X, Y, dudy_spectral[:], levels=y_levels)
-plt.colorbar(pts)
+plt.tight_layout()
+plt.show()
 
-ax[0,0].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[0,1].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
+print(f"Max error in Laplacian: {err_lap.max():.2e}")
 
-ps_err_x = np.abs(dudx[:] - dudx_spectral[:])
-ps_err_y = np.abs(dudy[:] - dudy_spectral[:])
+# %% [markdown]
+# ## Divergence and Curl
+#
+# For vector fields, we can compute divergence and curl.
 
-pts=ax[2,0].contourf(X, Y, ps_err_x, cmap="Reds")
-plt.colorbar(pts)
-pts=ax[2,1].contourf(X, Y, ps_err_y, cmap="Reds")
-plt.colorbar(pts)
+# %%
+# Create a vector field: V = (u, -u) which has zero divergence
+vx = u
+vy = -u
 
-ax[2,0].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[2,1].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
+# Compute divergence: div(V) = du/dx + dv/dy
+div_V = deriv.divergence(vx, vy)
+
+# Compute curl (2D scalar): curl(V) = dv/dx - du/dy
+curl_V = deriv.curl(vx, vy)
+
+# %%
+fig, ax = plt.subplots(ncols=2, figsize=(8, 3))
+
+pts = ax[0].contourf(X.T, Y.T, div_V.T)
+plt.colorbar(pts, ax=ax[0])
+ax[0].set(title=r"$\nabla \cdot V$", xlabel="$x$", ylabel="$y$")
+
+pts = ax[1].contourf(X.T, Y.T, curl_V.T)
+plt.colorbar(pts, ax=ax[1])
+ax[1].set(title=r"$\nabla \times V$", xlabel="$x$", ylabel="$y$")
+
 plt.tight_layout()
 plt.show()
 
 # %% [markdown]
-# ### Operator API
+# ## Poisson Solver
+#
+# Solve $\nabla^2 \phi = f$ for $\phi$ given source term $f$.
 
 # %%
-from collections.abc import Iterable
-import math
-from typing import NamedTuple
+# Create solver
+solver = SpectralHelmholtzSolver2D(grid=grid)
 
+# Use the Laplacian of u as source term, should recover u (up to a constant)
+source = laplacian_analytical
 
-class Difference(NamedTuple):
-    k_vec: Iterable[Array]
-    ratio: float
-    aliasing_cond: Iterable[Array]
+# Solve Poisson equation
+phi = solver.solve(source, alpha=0.0, zero_mean=True)
 
-    @classmethod
-    def init(
-        cls,
-        N: Iterable[float],
-        L: Iterable[float] | None = None,
-        ratio: float | None = 1.0 / 3.0,
-    ):
-        # calculate fourier frequencies
-        if isinstance(N, (float, int)):
-            N = tuple(N)
-
-        if L is None:
-            L = (2 * math.pi,) * len(N)
-        elif isinstance(L, (int, float)):
-            L = (float(L),) * len(N)
-
-        assert len(N) == len(L)
-        k_vec = [calculate_fft_freq(N=iN, L=iL) for iN, iL in zip(N, L, strict=False)]
-        ratio = ratio
-        aliasing_cond = [calculate_aliasing(ikvec, ratio=ratio) for ikvec in k_vec]
-
-        return cls(k_vec=k_vec, ratio=ratio, aliasing_cond=aliasing_cond)
-
-    def get_k_vec(self, axis: int = 0, aliasing: bool = True):
-        k_vec = self.k_vec[axis]
-
-        if aliasing:
-            k_vec = jnp.where(self.aliasing_cond[axis], 0.0, k_vec)
-
-        return k_vec
-
-    def difference(
-        self,
-        u: Array,
-        axis: int = 0,
-        derivative: int = 1,
-        aliasing: bool = True,
-    ) -> Array:
-        k_vec = self.get_k_vec(axis=axis, aliasing=aliasing)
-        return difference(u=u, k_vec=k_vec, axis=axis, derivative=derivative)
-
-    def transform(self, u: Array, axis: int = 0) -> Array:
-        return fft_transform(u=u, axis=axis, inverse=False)
-
-    def inverse_transform(self, u: Array, axis: int = 0) -> Array:
-        return fft_transform(u=u, axis=axis, inverse=True)
-
-    def spectral_difference(
-        self, fu: Array, axis: int = 0, derivative: int = 1
-    ) -> Array:
-        k_vec = self.get_k_vec(axis=axis, aliasing=aliasing)
-        return spectral_difference(fu=fu, k_vec=k_vec, axis=axis, derivative=derivative)
-
+# The solution should match u (shifted to zero mean)
+u_zero_mean = u - u.mean()
+phi_normalized = phi - phi.mean()
 
 # %%
-fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(7,7))
+fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
 
-x_levels = np.linspace(dudx[:].min(), dudx[:].max(), 6)
-y_levels = np.linspace(dudy[:].min(), dudy[:].max(), 6)
+ax[0].contourf(X.T, Y.T, source.T)
+ax[0].set(title=r"Source $f = \nabla^2 u$", xlabel="$x$", ylabel="$y$")
 
+ax[1].contourf(X.T, Y.T, phi.T)
+ax[1].set(title=r"Solution $\phi$", xlabel="$x$", ylabel="$y$")
 
-pts = ax[0,0].contourf(X, Y, dudx[:], levels=x_levels)
-plt.colorbar(pts)
-pts = ax[0,1].contourf(X, Y, dudy[:], levels=y_levels)
-plt.colorbar(pts)
+ax[2].contourf(X.T, Y.T, u_zero_mean.T)
+ax[2].set(title=r"Original $u$ (zero mean)", xlabel="$x$", ylabel="$y$")
 
-
-pts = ax[1,0].contourf(X, Y, dudx_spectral[:], levels=x_levels)
-plt.colorbar(pts)
-pts = ax[1,1].contourf(X, Y, dudy_spectral[:], levels=y_levels)
-plt.colorbar(pts)
-
-ax[0,0].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[0,1].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
-
-ps_err_x = np.abs(dudx[:] - dudx_spectral[:])
-ps_err_y = np.abs(dudy[:] - dudy_spectral[:])
-
-pts=ax[2,0].contourf(X, Y, ps_err_x, cmap="Reds")
-plt.colorbar(pts)
-pts=ax[2,1].contourf(X, Y, ps_err_y, cmap="Reds")
-plt.colorbar(pts)
-
-ax[2,0].set(title=r"$\partial_x $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[2,1].set(title=r"$\partial_y$ u(x,y)", xlabel="$x$", ylabel="y")
 plt.tight_layout()
 plt.show()
 
+# %%
+err_poisson = np.abs(phi_normalized - u_zero_mean)
+print(f"Max error in Poisson solution: {err_poisson.max():.2e}")
 
 # %% [markdown]
-# ## Extracting Linear Operators
+# ## Dealiasing Filter
 
 # %%
-def f(x, y, Lx, Ly, mx, my):
-    return jnp.cos(mx* 2 * jnp.pi * x / Lx) * jnp.sin(my * 2*jnp.pi*y / Ly)
+# View the 2D dealiasing filter
+dealias_filter = grid.dealias_filter()
 
-# define gradient functions
-df_dx = jax.grad(f, argnums=0)
-df_dy = jax.grad(f, argnums=1)
-
-# second order functions
-d2f_dx2 = jax.grad(df_dx)
-d2f_dy2 = jax.grad(df_dy)
-
-# %%
-
-kernel = lambda x,y: f(x,y,Lx,Ly,mx,my)
-kernel_grad_x = lambda x,y: df_dx(x,y,Lx,Ly,mx,my)
-kernel_grad_y = lambda x,y: df_dy(x,y,Lx,Ly,mx,my)
-kernel_grad2_x2 = lambda x,y: d2f_dx2(x,y,Lx,Ly,mx,my)
-kernel_grad2_y2 = lambda x,y: d2f_dy2(x,y,Lx,Ly,mx,my)
-
-def gram_matrix(f, x, y):
-    return jax.vmap(lambda x: jax.vmap(lambda y: f(x, y))(y))(x)
-
-u = gram_matrix(kernel, x_coords, y_coords)
-dudx = gram_matrix(kernel_grad_x, x_coords, y_coords)
-dudy = gram_matrix(kernel_grad_y, x_coords, y_coords)
-d2udx2 = gram_matrix(kernel_grad2_x2, x_coords, y_coords)
-d2udy2 = gram_matrix(kernel_grad2_y2, x_coords, y_coords)
-
-# %%
-fig, ax = plt.subplots(ncols=3, figsize=(8,3))
-
-ax[0].contourf(X, Y, d2udx2[:],)
-ax[1].contourf(X, Y, d2udy2[:])
-ax[2].contourf(X, Y, d2udx2 + d2udy2)
-
-ax[0].set(title=r"$\partial^2_x $u(x,y)", xlabel="$x$", ylabel="$y$")
-ax[1].set(title=r"$\partial^2_y $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[2].set(title=r"$\partial^2_x $u(x,y) + $\partial^2_y $u(x,y)", xlabel="$x$", ylabel="y")
+fig, ax = plt.subplots(figsize=(5, 4))
+KX, KY = grid.KX
+pts = ax.contourf(KX.T, KY.T, dealias_filter.T)
+plt.colorbar(pts)
+ax.set(xlabel="$k_x$", ylabel="$k_y$", title="2/3 Dealiasing Filter")
 plt.tight_layout()
 plt.show()
 
-# %%
+# %% [markdown]
+# ## Advection Term
+#
+# For fluid dynamics, we often need to compute the advection term $(v \cdot \nabla) q$.
 
 # %%
-# d2udx2_spectral = diff_op.difference(u, axis=0, derivative=2)
-# d2udy2_spectral = diff_op.difference(u, axis=1, derivative=2)
-# # np.testing.assert_array_almost_equal(d2udx2_spectral, d2udy2_spectral)
-real = False
-# calculate frequencies
-k_vec = [calculate_fft_freq(Nx, Lx, real=real) for Nx, Lx in zip([Nx,Ny], [Lx,Ly], strict=False)]
-cond = [calculate_aliasing(ikvec) for ikvec in k_vec]
-k_vec = [jnp.where(icond, 0.0, ikvec) for icond, ikvec in zip(cond,k_vec, strict=False)]
+# Create velocity field
+vx = jnp.sin(2 * jnp.pi * X / Lx)
+vy = jnp.cos(2 * jnp.pi * Y / Ly)
 
-# Difference operator x
-Fux = fft_transform(u[:], axis=0, inverse=False, real=real)
-d2Fudx2 = spectral_difference(Fux, k_vec[0], axis=0, derivative=2)
-d2udx2_spectral = jnp.real(fft_transform(d2Fudx2, axis=0, inverse=True, real=real))
+# Scalar field to advect
+q = u
 
-# Difference operator y
-Fuy = fft_transform(u[:], axis=1, inverse=False, real=real)
-d2Fudy2 = spectral_difference(Fuy, k_vec[1], axis=1, derivative=2)
-d2udy2_spectral = jnp.real(fft_transform(d2Fudy2, axis=1, inverse=True, real=real))
+# Compute advection term
+advection = deriv.advection_scalar(vx, vy, q)
 
 # %%
-fig, ax = plt.subplots(ncols=3, figsize=(8,3))
+fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
 
-ax[0].contourf(X, Y, d2udx2_spectral[:],)
-ax[1].contourf(X, Y, d2udy2_spectral[:])
-ax[2].contourf(X, Y, d2udx2_spectral + d2udy2_spectral)
+ax[0].contourf(X.T, Y.T, vx.T)
+ax[0].set(title=r"$v_x$", xlabel="$x$", ylabel="$y$")
 
-ax[0].set(title=r"$\partial^2_x $u(x,y)", xlabel="$x$", ylabel="$y$")
-ax[1].set(title=r"$\partial^2_y $u(x,y)", xlabel="$x$", ylabel=r"y")
-ax[2].set(title=r"$\partial^2_x $u(x,y) + $\partial^2_y $u(x,y)", xlabel="$x$", ylabel="y")
+ax[1].contourf(X.T, Y.T, vy.T)
+ax[1].set(title=r"$v_y$", xlabel="$x$", ylabel="$y$")
+
+ax[2].contourf(X.T, Y.T, advection.T)
+ax[2].set(title=r"$(v \cdot \nabla) q$", xlabel="$x$", ylabel="$y$")
+
 plt.tight_layout()
 plt.show()
 
-
-# %%
-def calculate_fft_freq_(Nx: int, Lx: float = 2.0 * math.pi) -> Array:
-    """a helper function to generate 1D FFT frequencies
-
-    Args:
-        Nx (int): the number of points for the grid
-        Lx (float): the distance for the points along the grid
-
-    Returns:
-        freq (Array): the 1D fourier frequencies
-    """
-    # return jnp.fft.fftfreq(n=Nx, d=Lx / (2.0 * math.pi * Nx))
-    return (2 * math.pi / Lx) * jnp.fft.fftfreq(n=Nx, d=Lx / (Nx * 2.0 * math.pi))
-
-
-# %%
-k_vec = [calculate_fft_freq_(n,l) for n,l in zip([Nx,Ny],[Lx,Ly], strict=False)]
-K, L = [jnp.expand_dims(array, axis=i) for i, array in enumerate(k_vec)]
-
-# %%
-import functools as ft
-
-order = 1
-
-# expand each of the dimensions
-ks = [jnp.expand_dims(array, axis=i) for i, array in enumerate(k_vec)]
-
-# sum each of dimensions
-ksq = ft.reduce(lambda x, y: x ** (2 * order) + y ** (2 * order), ks)
-
-ksq = ksq.T
-
-# %%
-Fu = np.fft.fftn(u)
-
-lap_Fu = ksq @ Fu
-
-u_lap = np.real(np.fft.ifftn(lap_Fu))
-
-# %%
-plt.contourf(X,Y, u_lap)
-
-# %%
-
-# %%
+# %% [markdown]
+# ## Summary
+#
+# The 2D API provides:
+#
+# 1. **FourierGrid2D**: 2D grid with wavenumber meshgrids
+#    - Properties: `x`, `y`, `X` (meshgrid), `kx`, `ky`, `KX` (wavenumber meshgrid), `K2`
+#    - Methods: `transform()`, `dealias_filter()`, `check_consistency()`
+#
+# 2. **SpectralDerivative2D**: 2D derivative operators
+#    - `gradient(u)`: Returns (du/dx, du/dy)
+#    - `divergence(vx, vy)`: Computes div(V)
+#    - `curl(vx, vy)`: Computes 2D curl (scalar)
+#    - `laplacian(u)`: Computes nabla^2 u
+#    - `advection_scalar(vx, vy, q)`: Computes (v . grad) q
+#    - `apply_dealias(u)`: Apply dealiasing filter
+#    - `project_vector(vx, vy)`: Leray projection for incompressible flows
+#
+# 3. **SpectralHelmholtzSolver2D**: Solve elliptic equations
+#    - `solve(f, alpha)`: Solves (nabla^2 - alpha) phi = f
