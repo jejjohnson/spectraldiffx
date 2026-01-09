@@ -66,6 +66,16 @@ jlab = [
     "jupyter>=1.0.0",
     "autoroot>=1.0.0",
 ]
+examples = [
+    "cyclopts>=0.8.0",
+    "diffrax>=0.5.0",
+    "loguru>=0.7.2",
+    "matplotlib>=3.9.0",
+    "numpy>=1.26.0",
+    "tqdm>=4.66.0",
+    "xarray>=2024.6.0",
+    "netcdf4>=1.6.5", # required by xarray to save to .nc files
+]
 docs = [
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.0",
@@ -86,7 +96,7 @@ docs = [
     "matplotlib>=3.9.0",
 ]
 all = [
-    "spectraldiffx[test,dev,exp,jlab,docs]",
+    "spectraldiffx[test,dev,exp,jlab,docs,examples]",
 ]
 
 [build-system]

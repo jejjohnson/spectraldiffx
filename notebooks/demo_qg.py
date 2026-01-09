@@ -247,7 +247,7 @@ def rk4_step(q: jnp.ndarray, dt: float, params: QGParams) -> jnp.ndarray:
     return q + (dt / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
 
 
-@jax.jit
+@eqx.filter_jit
 def integrate_steps(q: jnp.ndarray, dt: float, n_steps: int, params: QGParams) -> jnp.ndarray:
     """Integrate for n_steps using RK4."""
     def body_fn(i, q):

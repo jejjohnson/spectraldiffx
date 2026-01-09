@@ -138,3 +138,38 @@ nb-execute: ## Execute all notebooks (converts to ipynb, runs, then cleans)
 	@printf "$(YELLOW)>>> Executing notebooks...$(RESET)\n"
 	@uv run jupytext --to notebook --execute $(NOTEBOOKS_DIR)/*.py
 	@printf "$(GREEN)>>> Notebooks executed.$(RESET)\n"
+
+
+##@ Examples
+.PHONY: install-examples
+install-examples: ## Install optional dependencies for running examples
+	@printf "$(YELLOW)>>> Installing dependencies for examples...$(RESET)\n"
+	@uv sync --extra examples
+	@printf "$(GREEN)>>> Example dependencies installed.$(RESET)\n"
+
+.PHONY: run-burgers
+run-burgers: ## Run the 1D Burgers' equation example
+	@printf "$(YELLOW)>>> Running Burgers' equation example...$(RESET)\n"
+	@uv run python scripts/burgers.py --nx 256 --viscosity 1e-3 --t-end 2.0
+	@printf "$(GREEN)>>> Example finished.$(RESET)\n"
+
+.PHONY: run-kdv
+run-kdv: ## Run the KdV (Korteweg-de Vries) equation example
+	@printf "$(YELLOW)>>> Running KdV equation example...$(RESET)\n"
+	@uv run python scripts/kdv.py --nx 512 --length 100 --t-end 20.0
+	@printf "$(GREEN)>>> Example finished.$(RESET)\n"
+
+.PHONY: run-navier-stokes
+run-navier-stokes: ## Run the 2D Navier-Stokes (vorticity) example
+	@printf "$(YELLOW)>>> Running 2D Navier-Stokes example...$(RESET)\n"
+	@uv run python scripts/navier_stokes_2d.py --nx 256 --ny 256 --viscosity 1e-6 --t-end 50.0
+	@printf "$(GREEN)>>> Example finished.$(RESET)\n"
+
+.PHONY: run-qg
+run-qg: ## Run the Quasigeostrophic (QG) model example
+	@printf "$(YELLOW)>>> Running QG model example...$(RESET)\n"
+	@uv run python scripts/qg_model.py --nx 128 --ny 128 --beta 10.0 --rossby-radius 0.1 --t-end 50.0
+	@printf "$(GREEN)>>> Example finished.$(RESET)\n"
+
+.PHONY: run-all-examples
+run-all-examples: run-burgers run-kdv run-navier-stokes run-qg ## Run all example scripts
