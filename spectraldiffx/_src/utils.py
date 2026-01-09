@@ -1,5 +1,5 @@
-from typing import Iterable
 import math
+
 import jax.numpy as jnp
 from jaxtyping import Array
 
@@ -23,7 +23,6 @@ def fft_transform(u: Array, axis: int = -1, inverse: bool = False) -> Array:
         return jnp.fft.fft(a=u, axis=axis)
     else:
         return jnp.fft.ifft(a=u, axis=axis)
-    
 
 
 def calculate_fft_freq(N: int, L: float = 2.0 * math.pi) -> Array:

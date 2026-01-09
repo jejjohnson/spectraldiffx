@@ -1,10 +1,10 @@
-import typing as tp
 import functools as ft
-from jaxtyping import Array, Float
-import jax
+import typing as tp
+
 import jax.numpy as jnp
-from spectraldiffx._src.utils import calculate_fft_freq, fft_transform
-import math
+from jaxtyping import Array
+
+from spectraldiffx._src.utils import fft_transform
 
 
 def spectral_difference(
@@ -26,7 +26,7 @@ def spectral_difference(
 
     # reshape axis
     fu = jnp.moveaxis(fu, axis, -1)
-    
+
     # calculate factor
     factor = (1j * k_vec) ** float(derivative)
 
@@ -40,8 +40,7 @@ def spectral_difference(
 
 
 def difference(
-    u: Array, k_vec: Array, axis: int = 0, derivative: int = 1,
-    real: bool=True
+    u: Array, k_vec: Array, axis: int = 0, derivative: int = 1, real: bool = True
 ) -> Array:
     """spectral difference from the real space
 
@@ -77,7 +76,6 @@ def elliptical_operator(
     alpha: float = 1.0,
     beta: float = 0.0,
 ) -> Array:
-
     # multiply by order
     fn = lambda x: x ** (2 * order)
     k_vec = [fn(ik) for ik in k_vec]
