@@ -4,7 +4,6 @@ Tests for SphericalPoissonSolver and SphericalHelmholtzSolver.
 
 import jax.numpy as jnp
 import numpy as np
-import pytest
 
 from spectraldiffx._src.spherical.grid import SphericalGrid1D, SphericalGrid2D
 from spectraldiffx._src.spherical.operators import SphericalDerivative2D

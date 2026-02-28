@@ -21,7 +21,7 @@ import equinox as eqx
 import jax.numpy as jnp
 from jaxtyping import Array, Float
 
-from .grid import SphericalGrid1D, SphericalGrid2D
+from .grid import SphericalGrid1D
 
 
 class SphericalPoissonSolver(eqx.Module):
@@ -67,7 +67,11 @@ class SphericalPoissonSolver(eqx.Module):
         phi : Array
             Solution field in physical space.
         """
-        R = self.grid.L / jnp.pi if isinstance(self.grid, SphericalGrid1D) else self.grid.Ly / jnp.pi
+        R = (
+            self.grid.L / jnp.pi
+            if isinstance(self.grid, SphericalGrid1D)
+            else self.grid.Ly / jnp.pi
+        )
         f_hat = f if spectral else self.grid.transform(f)
         l = self.grid.l  # (N,) or (Ny,)
         eigenval = l * (l + 1) / (R**2)
@@ -131,7 +135,11 @@ class SphericalHelmholtzSolver(eqx.Module):
         phi : Array
             Solution field in physical space.
         """
-        R = self.grid.L / jnp.pi if isinstance(self.grid, SphericalGrid1D) else self.grid.Ly / jnp.pi
+        R = (
+            self.grid.L / jnp.pi
+            if isinstance(self.grid, SphericalGrid1D)
+            else self.grid.Ly / jnp.pi
+        )
         f_hat = f if spectral else self.grid.transform(f)
         l = self.grid.l
         eigenval = l * (l + 1) / (R**2)

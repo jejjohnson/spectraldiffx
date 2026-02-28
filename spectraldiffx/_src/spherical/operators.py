@@ -20,12 +20,11 @@ References:
 [4] Durran, D. R. (2010). Numerical Methods for Fluid Dynamics.
 """
 
-import numpy as np
-
 import equinox as eqx
 import jax
 import jax.numpy as jnp
 from jaxtyping import Array, Float
+import numpy as np
 
 from .grid import SphericalGrid1D, SphericalGrid2D, _alp_matrix
 
@@ -305,9 +304,7 @@ class SphericalDerivative2D(eqx.Module):
         R = self.grid.Ly / jnp.pi
 
         # --- theta-component: vmap 1D gradient over longitude columns ---
-        u_phys = (
-            self.grid.transform(u, inverse=True).real if spectral else u
-        )
+        u_phys = self.grid.transform(u, inverse=True).real if spectral else u
         du_dtheta = jax.vmap(self.deriv_theta.gradient, in_axes=1, out_axes=1)(
             u_phys
         )  # (Ny, Nx)
@@ -315,7 +312,9 @@ class SphericalDerivative2D(eqx.Module):
         # --- phi-component via FFT ---
         u_hat_fft = jnp.fft.fft(u_phys, axis=-1)  # (Ny, Nx)
         m_phys = 2 * jnp.pi * jnp.fft.fftfreq(self.grid.Nx, self.grid.dx)  # (Nx,)
-        du_dphi = jnp.fft.ifft(1j * m_phys[None, :] * u_hat_fft, axis=-1).real  # (Ny, Nx)
+        du_dphi = jnp.fft.ifft(
+            1j * m_phys[None, :] * u_hat_fft, axis=-1
+        ).real  # (Ny, Nx)
 
         # Apply metric factors
         sin_theta = jnp.sin(self.grid.y)[:, None]  # (Ny, 1)
@@ -360,7 +359,9 @@ class SphericalDerivative2D(eqx.Module):
         # dV_phi/d_phi via FFT
         m_phys = 2 * jnp.pi * jnp.fft.fftfreq(self.grid.Nx, self.grid.dx)  # (Nx,)
         vp_hat = jnp.fft.fft(v_phi, axis=-1)  # (Ny, Nx)
-        d_vp_dphi = jnp.fft.ifft(1j * m_phys[None, :] * vp_hat, axis=-1).real  # (Ny, Nx)
+        d_vp_dphi = jnp.fft.ifft(
+            1j * m_phys[None, :] * vp_hat, axis=-1
+        ).real  # (Ny, Nx)
 
         return (d_vs_dtheta + d_vp_dphi) / (R * sin_theta)
 
@@ -395,7 +396,9 @@ class SphericalDerivative2D(eqx.Module):
         # dV_theta/d_phi via FFT
         m_phys = 2 * jnp.pi * jnp.fft.fftfreq(self.grid.Nx, self.grid.dx)  # (Nx,)
         vt_hat = jnp.fft.fft(v_theta, axis=-1)  # (Ny, Nx)
-        d_vt_dphi = jnp.fft.ifft(1j * m_phys[None, :] * vt_hat, axis=-1).real  # (Ny, Nx)
+        d_vt_dphi = jnp.fft.ifft(
+            1j * m_phys[None, :] * vt_hat, axis=-1
+        ).real  # (Ny, Nx)
 
         # d(V_phi * sin(theta))/d_theta
         vs = v_phi * sin_theta  # (Ny, Nx)

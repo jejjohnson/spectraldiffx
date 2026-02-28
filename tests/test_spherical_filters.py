@@ -4,7 +4,6 @@ Tests for SphericalFilter1D and SphericalFilter2D.
 
 import jax.numpy as jnp
 import numpy as np
-import pytest
 
 from spectraldiffx._src.spherical.filters import SphericalFilter1D, SphericalFilter2D
 from spectraldiffx._src.spherical.grid import SphericalGrid1D, SphericalGrid2D

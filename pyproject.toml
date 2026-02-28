@@ -145,6 +145,8 @@ ignore = [
     "E501",     # line too long (handled by formatter)
     "S101",     # use of assert
     "F722",     # syntax error in forward annotation
+    "E741",     # ambiguous variable name (false positives for math notation, e.g. `l` in spherical harmonics)
+    "E743",     # ambiguous function name (false positives for math notation, e.g. property `l`)
     "F821",     # undefined name (false positives with jaxtyping dimension annotations)
     "PLR2004",  # magic value comparison
     "PLR0913",  # too many arguments
