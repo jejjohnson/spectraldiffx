@@ -90,7 +90,6 @@ class Params(eqx.Module):
     deriv: SpectralDerivative2D = eqx.static_field()
     solver: SpectralHelmholtzSolver2D = eqx.static_field()
     forcing: Float[Array, "Ny Nx"] | None  # Forcing term F
-    planetary_vort: Float[Array, "Ny Nx"]
 
 
 class State(eqx.Module):
@@ -271,7 +270,6 @@ def run_qg_model(
         deriv=deriv,
         solver=solver_helmholtz,
         forcing=None,
-        planetary_vort=planetary_vort,
     )
     logger.info("Physical parameters:")
     logger.info(f"  - beta (planetary vorticity gradient): {beta}")
@@ -327,7 +325,7 @@ def run_qg_model(
     X, Y = grid.X
     ds = xr.Dataset(
         data_vars={
-            "q": (("time", "y", "x"), sol.ys.q + params.planetary_vort),
+            "q": (("time", "y", "x"), sol.ys.q + planetary_vort),
             "psi": (("time", "y", "x"), psi),
             "omega": (("time", "y", "x"), relative_vorticity),
             "u": (("time", "y", "x"), u),
