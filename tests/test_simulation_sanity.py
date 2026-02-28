@@ -17,8 +17,6 @@ from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D
 from spectraldiffx._src.operators import SpectralDerivative1D, SpectralDerivative2D
 from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
 
-jax.config.update("jax_enable_x64", True)
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -46,9 +44,6 @@ def grid1d():
 
 def test_kdv_rhs_no_nan(grid1d):
     """One KdV RHS evaluation produces finite output."""
-    from spectraldiffx._src.operators import SpectralDerivative1D
-
-    deriv = SpectralDerivative1D(grid1d)
     x = grid1d.x - grid1d.L / 2.0
     c1, x1 = 2.0, grid1d.L / 4.0
     u = 2 * c1 / jnp.cosh(jnp.sqrt(c1) * (x - x1)) ** 2
