@@ -63,7 +63,7 @@ import jax.numpy as jnp
 from spectraldiffx import FourierGrid1D, SpectralDerivative1D
 
 # Create a 1D Fourier grid
-grid = FourierGrid1D(Lx=2 * jnp.pi, Nx=64)
+grid = FourierGrid1D.from_N_L(N=64, L=2 * jnp.pi)
 
 # Create a spectral derivative operator
 deriv = SpectralDerivative1D(grid=grid)
