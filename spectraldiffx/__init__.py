@@ -19,6 +19,17 @@ from spectraldiffx._src.solvers import (
     SpectralHelmholtzSolver2D,
     SpectralHelmholtzSolver3D,
 )
+from spectraldiffx._src.spherical import (
+    SphericalDerivative1D,
+    SphericalDerivative2D,
+    SphericalFilter1D,
+    SphericalFilter2D,
+    SphericalGrid1D,
+    SphericalGrid2D,
+    SphericalHarmonicTransform,
+    SphericalHelmholtzSolver,
+    SphericalPoissonSolver,
+)
 
 __all__ = [
     # Fourier (periodic)
@@ -42,4 +53,14 @@ __all__ = [
     "ChebyshevFilter1D",
     "ChebyshevFilter2D",
     "ChebyshevHelmholtzSolver1D",
+    # Spherical harmonics
+    "SphericalGrid1D",
+    "SphericalGrid2D",
+    "SphericalHarmonicTransform",
+    "SphericalDerivative1D",
+    "SphericalDerivative2D",
+    "SphericalFilter1D",
+    "SphericalFilter2D",
+    "SphericalPoissonSolver",
+    "SphericalHelmholtzSolver",
 ]
