@@ -19,6 +19,7 @@ from spectraldiffx._src.solvers import (
     SpectralHelmholtzSolver2D,
     SpectralHelmholtzSolver3D,
 )
+
 from spectraldiffx._src.spherical import (
     SphericalDerivative1D,
     SphericalDerivative2D,
