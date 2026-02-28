@@ -160,10 +160,12 @@ class ChebyshevFilter2D(eqx.Module):
         Nx, Ny = self.grid.Nx, self.grid.Ny
         nx_modes = Nx + 1 if self.grid.node_type == "gauss-lobatto" else Nx
         ny_modes = Ny + 1 if self.grid.node_type == "gauss-lobatto" else Ny
-        kx = jnp.arange(nx_modes, dtype=jnp.float32)
-        ky = jnp.arange(ny_modes, dtype=jnp.float32)
-        Fx = jnp.exp(-alpha * (kx / Nx) ** power)
-        Fy = jnp.exp(-alpha * (ky / Ny) ** power)
+        # Use a dtype derived from the coefficients to avoid unintended downcasting.
+        filter_dtype = a.dtype if jnp.issubdtype(a.dtype, jnp.floating) else jnp.float32
+        kx = jnp.arange(nx_modes, dtype=filter_dtype)
+        ky = jnp.arange(ny_modes, dtype=filter_dtype)
+        Fx = jnp.exp(-filter_dtype.type(alpha) * (kx / Nx) ** power)
+        Fy = jnp.exp(-filter_dtype.type(alpha) * (ky / Ny) ** power)
         # Apply separable filter: F = Fy[:, None] * Fx[None, :]
         a_f = a * Fy[:, None] * Fx[None, :]
         return a_f if spectral else self.grid.transform(a_f, inverse=True)
