@@ -66,12 +66,12 @@ from spectraldiffx import FourierGrid1D, SpectralDerivative1D
 grid = FourierGrid1D(Lx=2 * jnp.pi, Nx=64)
 
 # Create a spectral derivative operator
-deriv = SpectralDerivative1D(grid=grid, order=1)
+deriv = SpectralDerivative1D(grid=grid)
 
 # Compute the derivative of sin(x)
 x = grid.x
 u = jnp.sin(x)
-du_dx = deriv(u)  # ≈ cos(x)
+du_dx = deriv(u, order=1)  # ≈ cos(x)
 ```
 
 ---
