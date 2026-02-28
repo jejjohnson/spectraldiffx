@@ -9,24 +9,30 @@ eddies with planetary waves (Rossby waves).
 
 Equation:
 ---------
-The QG potential vorticity (PV) equation is:
-  dq/dt + J(psi, q) = nu * laplacian^n(q) + F
+The full QG PV equation (in terms of total PV q_total = q' + beta*y) is:
+  dq_total/dt + J(psi, q_total) = nu * laplacian^n(q_total) + F
+
+The state variable evolved in this script is the **PV anomaly**:
+  q' = q_total - beta*y
+
+Rewriting in terms of q' and expanding J(psi, beta*y) = beta*v gives:
+  dq'/dt + J(psi, q') = -beta*v + nu * laplacian^n(q') + F
 
 Where:
-- q is the Potential Vorticity (PV).
+- q' is the PV anomaly (the state variable stored and evolved by the solver).
+- q_total = q' + beta*y is the full PV (reconstructed for output only).
 - psi is the geostrophic streamfunction.
-- J(psi, q) is the Jacobian (advection) of PV by the geostrophic flow.
+- J(psi, q') is the Jacobian (advection) of PV anomaly by the geostrophic flow.
+- -beta*v is the beta-plane term (= J(psi, beta*y) rewritten in doubly-periodic form).
 - nu, n, and F are viscosity, hyperviscosity order, and forcing.
 
-The key to the QG model is the relationship between PV and the streamfunction:
-  q = laplacian(psi) - (1/R^2)*psi + beta*y
+The key to the QG model is the PV inversion relationship:
+  q' = laplacian(psi) - (1/R^2)*psi
 
 Where:
 - laplacian(psi) is the relative vorticity.
-- -(1/R^2)*psi represents stretching of the water column due to vertical displacement.
+- -(1/R^2)*psi represents stretching due to vertical displacement of the water column.
   R is the Rossby radius of deformation.
-- beta*y is the planetary vorticity, where beta = df/dy is the gradient of the
-  Coriolis parameter f.
 
 Numerical Method:
 -----------------
