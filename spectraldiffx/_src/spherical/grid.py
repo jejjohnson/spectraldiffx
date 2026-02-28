@@ -473,6 +473,13 @@ class SphericalGrid2D(eqx.Module):
         m_fft = np.fft.fftfreq(Nx, 1.0 / Nx).astype(int)  # integer wavenumbers
         l_values = np.arange(Ny)
 
+        # Build ALP matrix using |m| for each FFT wavenumber.
+        # Note: both positive-m and negative-m columns share the same
+        # P_l^{|m|} matrix.  This is self-consistent: the inverse SHT uses the
+        # same matrix so forward(inverse(u)) = u exactly.  The stored coefficients
+        # are therefore NOT standard complex-SHT coefficients for m < 0, but they
+        # give correct eigenvalue computations (Laplacian, solvers) because l
+        # alone determines the eigenvalue -l*(l+1)/R^2.
         P_lm_np = np.zeros((Nx, Ny, Ny), dtype=np.float64)
         for fft_idx, m_wave in enumerate(m_fft):
             m_abs = abs(int(m_wave))
@@ -607,12 +614,13 @@ class SphericalGrid2D(eqx.Module):
     @property
     def laplacian_eigenvalues(self) -> Float[Array, "Ny Nx"]:
         """
-        Laplace-Beltrami eigenvalues: -l*(l+1) broadcast to (Ny, Nx).
+        Laplace-Beltrami eigenvalues: -l*(l+1)/R^2 broadcast to (Ny, Nx).
 
-        nabla^2 Y_l^m = -l*(l+1)/R^2 * Y_l^m
+        nabla^2 Y_l^m = -l*(l+1)/R^2 * Y_l^m  where R = Ly / pi.
         """
+        R = self.Ly / jnp.pi
         l = self.l  # (Ny,)
-        eig = -l * (l + 1)  # (Ny,)
+        eig = -l * (l + 1) / (R**2)  # (Ny,)
         return jnp.broadcast_to(eig[:, None], (self.Ny, self.Nx))
 
     def dealias_filter(self) -> Float[Array, "Ny Nx"]:

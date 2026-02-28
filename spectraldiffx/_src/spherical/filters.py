@@ -82,7 +82,11 @@ class SphericalFilter1D(eqx.Module):
         """
         Apply hyperviscous damping in Legendre coefficient space.
 
-            F(l) = exp(-nu_hyper * [l*(l+1)]^(power/2) * dt)
+            F(l) = exp(-nu_hyper * [l*(l+1)/R^2]^(power/2) * dt)
+
+        where R = grid.L / pi is the sphere radius.  This matches the physical
+        Laplacian eigenvalue so that the damping rate is independent of the
+        sphere radius for a given nu_hyper.
 
         Simulates high-order diffusion: du/dt = (-1)^(p+1) * nu_h * nabla^p u.
 
@@ -104,8 +108,9 @@ class SphericalFilter1D(eqx.Module):
         Array [N]
         """
         c = u if spectral else self.grid.transform(u)
+        R = self.grid.L / jnp.pi
         l = self.grid.l
-        eigenval = l * (l + 1)
+        eigenval = l * (l + 1) / (R**2)
         mask = jnp.exp(-nu_hyper * eigenval ** (power / 2.0) * dt)
         c_f = c * mask
         return c_f if spectral else self.grid.transform(c_f, inverse=True)
@@ -171,9 +176,11 @@ class SphericalFilter2D(eqx.Module):
         spectral: bool = False,
     ) -> Float[Array, "Ny Nx"]:
         """
-        Apply 2D hyperviscous damping using l*(l+1) eigenvalues.
+        Apply 2D hyperviscous damping using l*(l+1)/R^2 eigenvalues.
 
-            F(l) = exp(-nu_hyper * [l*(l+1)]^(power/2) * dt)
+            F(l) = exp(-nu_hyper * [l*(l+1)/R^2]^(power/2) * dt)
+
+        where R = grid.Ly / pi is the sphere radius.
 
         Parameters:
         -----------
@@ -193,8 +200,9 @@ class SphericalFilter2D(eqx.Module):
         Array [Ny, Nx]
         """
         u_hat = u if spectral else self.grid.transform(u)
+        R = self.grid.Ly / jnp.pi
         l = self.grid.l  # (Ny,)
-        eigenval = l * (l + 1)
+        eigenval = l * (l + 1) / (R**2)
         mask = jnp.exp(-nu_hyper * eigenval ** (power / 2.0) * dt)  # (Ny,)
         u_hat_f = u_hat * mask[:, None]
         return u_hat_f if spectral else self.grid.transform(u_hat_f, inverse=True)
