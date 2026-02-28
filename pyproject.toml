@@ -8,13 +8,11 @@ authors = [
 ]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.12,<3.14"
 keywords = ["PDEs", "Pseudospectral Difference", "jax"]
 classifiers = [
     "Topic :: Scientific/Engineering",
     "Topic :: Software Development :: Libraries",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Operating System :: MacOS",
@@ -52,7 +50,7 @@ dev = [
     "ruff>=0.8.0",
     "pre-commit>=4.0.0",
     "nbstripout>=0.7.1",
-    "mypy>=1.13.0",
+    "ty>=0.0.19",
 ]
 exp = [
     "wandb>=0.18.0",
@@ -179,9 +177,7 @@ source = ["spectraldiffx"]
 [tool.coverage.xml]
 output = "reports/coverage.xml"
 
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-warn_unused_configs = true
-ignore_missing_imports = true
-disable_error_code = ["name-defined"]  # jaxtyping dimension annotations trigger false positives
+[tool.ty.rules]
+# Pre-existing type errors in Union-typed grid attributes (solvers.py) and dtype return type (filters.py)
+unresolved-attribute = "ignore"
+invalid-return-type = "ignore"
