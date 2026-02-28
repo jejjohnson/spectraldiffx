@@ -111,9 +111,7 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     P : ndarray [Nl, Ny]
         Normalised ALP matrix.  Rows with l < m_abs are zero.
     """
-    from math import factorial
-
-    from scipy.special import lpmv
+    from scipy.special import lpmv, gammaln
 
     Nl = len(l_values)
     Ny = len(mu)
@@ -121,12 +119,10 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     for i, l in enumerate(l_values):
         if l < m_abs:
             continue  # P_l^m = 0 for l < m
-        norm = np.sqrt(
-            (2 * l + 1)
-            / 2.0
-            * float(factorial(l - m_abs))
-            / float(factorial(l + m_abs))
-        )
+        # Compute N_{l,m} = sqrt((2*l+1)/2 * (l-m)! / (l+m)!) in log-space
+        log_ratio = gammaln(l - m_abs + 1) - gammaln(l + m_abs + 1)
+        log_norm_sq = np.log((2 * l + 1) / 2.0) + log_ratio
+        norm = np.exp(0.5 * log_norm_sq)
         P[i, :] = norm * lpmv(m_abs, l, mu)
     return P
 
