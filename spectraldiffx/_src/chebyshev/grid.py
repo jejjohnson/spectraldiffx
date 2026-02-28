@@ -30,8 +30,8 @@ from typing import Literal
 import equinox as eqx
 import jax
 import jax.numpy as jnp
-import numpy as np
 from jaxtyping import Array, Float
+import numpy as np
 
 # ============================================================================
 # Internal numpy helpers (called once at __init__ time, not inside JIT)

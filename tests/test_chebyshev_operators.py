@@ -3,14 +3,12 @@ Tests for ChebyshevDerivative1D and ChebyshevDerivative2D.
 """
 
 import jax.numpy as jnp
-import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D, ChebyshevGrid2D
 from spectraldiffx._src.chebyshev.operators import (
     ChebyshevDerivative1D,
     ChebyshevDerivative2D,
 )
-
 
 # ============================================================================
 # 1D derivative tests
@@ -67,7 +65,7 @@ def test_cheb_deriv1d_laplacian_trig():
     x = grid.x
     u = jnp.cos(2 * jnp.pi * x)
     d2u = deriv.laplacian(u)
-    expected = -(2 * jnp.pi) ** 2 * jnp.cos(2 * jnp.pi * x)
+    expected = -((2 * jnp.pi) ** 2) * jnp.cos(2 * jnp.pi * x)
     assert jnp.allclose(d2u, expected, atol=1e-4), (
         f"max error = {jnp.abs(d2u - expected).max()}"
     )

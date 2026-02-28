@@ -3,7 +3,6 @@
 # ============================================================================
 
 import equinox as eqx
-import jax.numpy as jnp
 from jaxtyping import Array, Float
 
 from .grid import ChebyshevGrid1D, ChebyshevGrid2D
@@ -129,7 +128,7 @@ class ChebyshevDerivative2D(eqx.Module):
         Dx = self.grid.Dx
         Dy = self.grid.Dy
         du_dx = u @ Dx.T  # apply Dx along x-axis (axis 1)
-        du_dy = Dy @ u    # apply Dy along y-axis (axis 0)
+        du_dy = Dy @ u  # apply Dy along y-axis (axis 0)
         return du_dx, du_dy
 
     def laplacian(self, u: Array) -> Float[Array, "Ny1 Nx1"]:

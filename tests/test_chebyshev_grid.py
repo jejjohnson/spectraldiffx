@@ -3,10 +3,8 @@ Tests for ChebyshevGrid1D and ChebyshevGrid2D.
 """
 
 import jax.numpy as jnp
-import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D, ChebyshevGrid2D
-
 
 # ============================================================================
 # ChebyshevGrid1D — Gauss-Lobatto nodes
@@ -49,7 +47,7 @@ def test_chebyshev_grid_1d_node_symmetry():
     x = grid.x
     for j in range(N + 1):
         assert jnp.isclose(x[j], -x[N - j], atol=1e-6), (
-            f"Symmetry broken at j={j}: x[j]={x[j]}, -x[N-j]={-x[N-j]}"
+            f"Symmetry broken at j={j}: x[j]={x[j]}, -x[N-j]={-x[N - j]}"
         )
 
 

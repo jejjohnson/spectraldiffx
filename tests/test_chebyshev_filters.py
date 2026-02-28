@@ -3,11 +3,9 @@ Tests for ChebyshevFilter1D and ChebyshevFilter2D.
 """
 
 import jax.numpy as jnp
-import pytest
 
 from spectraldiffx._src.chebyshev.filters import ChebyshevFilter1D, ChebyshevFilter2D
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D, ChebyshevGrid2D
-
 
 # ============================================================================
 # 1D Filter tests
@@ -111,6 +109,4 @@ def test_cheb_filter2d_dc_preserved():
     filt = ChebyshevFilter2D(grid)
     u = jnp.ones((Ny + 1, Nx + 1)) * 4.2
     u_f = filt.exponential_filter(u)
-    assert jnp.allclose(u_f, u, atol=1e-4), (
-        f"max error = {jnp.abs(u_f - u).max()}"
-    )
+    assert jnp.allclose(u_f, u, atol=1e-4), f"max error = {jnp.abs(u_f - u).max()}"
