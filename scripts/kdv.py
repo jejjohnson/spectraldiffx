@@ -182,8 +182,10 @@ def run_kdv(
     # --- Setup Grid and Operators ---
     logger.info("Setting up grid and operators...")
     # The domain is shifted to be centered at 0 for convenience with the sech initial condition.
+    # Note: the FFT grid uses grid.x in [0, L), while x below is shifted to [-L/2, L/2).
+    # Soliton positions (x1, x2) below must be given relative to this shifted x coordinate.
     grid = FourierGrid1D.from_N_L(N=nx, L=domain_length, dealias="2/3")
-    x = grid.x - domain_length / 2.0  # Center domain at x=0
+    x = grid.x - domain_length / 2.0  # Center domain at x=0; used only for initial condition
     deriv = SpectralDerivative1D(grid)
     params = Params(grid=grid, deriv=deriv)
     logger.success(

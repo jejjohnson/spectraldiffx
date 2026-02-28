@@ -30,14 +30,17 @@ Where:
 
 Numerical Method:
 -----------------
-- **PV Inversion**: At each time step, given the PV `q`, we must find the
-  streamfunction `psi`. This requires solving the Helmholtz equation:
-    (laplacian - 1/R^2)psi = q - beta*y
+- **PV Inversion**: The model evolves the PV anomaly q' = q_total - beta*y. Given
+  the PV anomaly `q'`, the streamfunction `psi` is recovered by solving:
+    (laplacian - 1/R^2)psi = q'
+  This avoids FFT of the non-periodic beta*y ramp (which would cause Gibbs ringing).
+  The beta-plane effect is instead incorporated in the explicit RHS as -beta*v.
   This is handled efficiently in Fourier space by `SpectralHelmholtzSolver2D`.
 
 - **Time Integration**: A semi-implicit (IMEX) scheme with `diffrax.KenCarp4`.
-  The nonlinear advection `J(psi, q)` is explicit, and the diffusion `nu * laplacian^n(q)`
-  is implicit.
+  The nonlinear advection `J(psi, q)` and beta term `-beta*v` are explicit, and
+  the diffusion `nu * laplacian^n(q)` is implicit (computed in spectral space
+  without dealiasing to preserve the linearity of the implicit operator).
 
 Usage:
 ------
@@ -104,13 +107,15 @@ class State(eqx.Module):
 @eqx.filter_jit
 def get_psi_and_uv_from_q(q: Float[Array, "Ny Nx"], p: Params):
     """
-    Computes streamfunction and velocity from Potential Vorticity (PV).
-    1. Define the source term for the Helmholtz equation: f = q - beta*y.
-    2. Solve (laplacian - 1/R^2)psi = f for psi.
-    3. Compute u = -d(psi)/dy and v = d(psi)/dx.
+    Computes streamfunction and velocity from Potential Vorticity (PV) anomaly.
+    1. Solve (laplacian - 1/R^2)psi = q directly (q is the PV anomaly q' = q_total - beta*y).
+    2. Compute u = -d(psi)/dy and v = d(psi)/dx.
+
+    Note: The beta*y planetary vorticity is NOT subtracted here because q already
+    represents the PV anomaly. Subtracting beta*y (a non-periodic linear ramp) from
+    the Helmholtz RHS would introduce Gibbs ringing and cause NaN instability.
     """
-    helmholtz_rhs = q - p.planetary_vort
-    psi = p.solver.solve(helmholtz_rhs, alpha=p.r_def_inv_sq)
+    psi = p.solver.solve(q, alpha=p.r_def_inv_sq)
     dpsi_dx, dpsi_dy = p.deriv.gradient(psi)
     u, v = -dpsi_dy, dpsi_dx
     return psi, u, v
@@ -123,8 +128,11 @@ def get_psi_and_uv_from_q(q: Float[Array, "Ny Nx"], p: Params):
 
 def explicit_term(t: float, y: State, args: Params) -> State:
     """
-    Computes the explicit part of the RHS: Advection + Forcing.
-    RHS_exp = -J(psi, q) + F
+    Computes the explicit part of the RHS: Advection + Beta-plane term + Forcing.
+    RHS_exp = -J(psi, q) - beta*v + F
+
+    The beta-plane effect is incorporated as -beta*v (= J(psi, beta*y) in the
+    doubly-periodic formulation), avoiding direct use of the non-periodic beta*y field.
     """
     del t  # Autonomous equation
     q = y.q
@@ -135,8 +143,12 @@ def explicit_term(t: float, y: State, args: Params) -> State:
     # Advection of PV: -(u dot grad)q
     advection = -args.deriv.advection_scalar(u, v, q)
 
+    # Beta-plane term: replaces J(psi, beta*y) = beta * dpsi/dx = beta * v
+    beta_term = -args.beta * v
+
     # Add forcing if provided
-    rhs = advection + args.forcing if args.forcing is not None else advection
+    rhs = advection + beta_term
+    rhs = rhs + args.forcing if args.forcing is not None else rhs
 
     return State(q=rhs)
 
@@ -145,17 +157,19 @@ def implicit_term(t: float, y: State, args: Params) -> State:
     """
     Computes the implicit part of the RHS: Diffusion.
     RHS_imp = nu * laplacian^n(q)
+
+    The Laplacian is computed directly in spectral space WITHOUT dealiasing,
+    because the implicit operator must be a clean linear operator for the IMEX
+    solver to invert correctly. Applying dealiasing here would cause mode mismatch
+    at the dealiased boundary, leading to instability and NaN.
     """
     del t  # Autonomous equation
-    q = y.q
-
-    # Apply Laplacian `nv` times
-    lap_q = q
-    for _ in range(args.nv):
-        lap_q = args.deriv.laplacian(lap_q)
-
-    diffusion = args.nu * lap_q
-    return State(q=diffusion)
+    q_hat = args.grid.transform(y.q)
+    K2 = args.grid.K2
+    # Apply (-K2)^nv in spectral space for laplacian^nv, without dealiasing
+    lap_hat = ((-K2) ** args.nv) * q_hat
+    diffusion = args.grid.transform(lap_hat, inverse=True).real
+    return State(q=args.nu * diffusion)
 
 
 # ============================================================================
