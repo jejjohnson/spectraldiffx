@@ -183,7 +183,7 @@ def generate_initial_vorticity(grid: FourierGrid2D, seed: int = 42) -> jnp.ndarr
 
 def create_forcing(grid: FourierGrid2D, k_force: float) -> jnp.ndarray:
     """Creates a sinusoidal forcing pattern at a specific wavenumber."""
-    X, Y = grid.X
+    _X, Y = grid.X
     return jnp.sin(k_force * Y)
 
 

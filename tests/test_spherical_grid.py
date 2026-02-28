@@ -8,7 +8,6 @@ import pytest
 
 from spectraldiffx._src.spherical.grid import SphericalGrid1D, SphericalGrid2D
 
-
 # ---------------------------------------------------------------------------
 # SphericalGrid1D tests
 # ---------------------------------------------------------------------------

@@ -25,8 +25,8 @@ from typing import Literal
 
 import equinox as eqx
 import jax.numpy as jnp
-import numpy as np
 from jaxtyping import Array, Complex, Float
+import numpy as np
 
 
 def _gauss_legendre_nodes_weights(N: int):
@@ -111,7 +111,7 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     P : ndarray [Nl, Ny]
         Normalised ALP matrix.  Rows with l < m_abs are zero.
     """
-    from scipy.special import lpmv, gammaln
+    from scipy.special import gammaln, lpmv
 
     Nl = len(l_values)
     Ny = len(mu)
@@ -218,9 +218,7 @@ class SphericalGrid1D(eqx.Module):
         """
         expected_L = self.N * self.dx
         if not jnp.isclose(self.L, expected_L, rtol=rtol):
-            raise ValueError(
-                f"Grid inconsistency: L={self.L} vs N*dx={expected_L}"
-            )
+            raise ValueError(f"Grid inconsistency: L={self.L} vs N*dx={expected_L}")
         return True
 
     @classmethod

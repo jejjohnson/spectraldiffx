@@ -12,7 +12,6 @@ References:
 """
 
 import equinox as eqx
-import jax.numpy as jnp
 from jaxtyping import Array, Complex, Float
 
 from .grid import SphericalGrid2D
@@ -56,9 +55,7 @@ class SphericalHarmonicTransform(eqx.Module):
 
     grid: SphericalGrid2D
 
-    def to_spectral(
-        self, u: Float[Array, "Ny Nx"]
-    ) -> Complex[Array, "Ny Nx"]:
+    def to_spectral(self, u: Float[Array, "Ny Nx"]) -> Complex[Array, "Ny Nx"]:
         """
         Forward Spherical Harmonic Transform: u(theta, phi) -> u_hat(l, m).
 
@@ -75,9 +72,7 @@ class SphericalHarmonicTransform(eqx.Module):
         """
         return self.grid.transform(u, inverse=False)
 
-    def from_spectral(
-        self, u_hat: Complex[Array, "Ny Nx"]
-    ) -> Float[Array, "Ny Nx"]:
+    def from_spectral(self, u_hat: Complex[Array, "Ny Nx"]) -> Float[Array, "Ny Nx"]:
         """
         Inverse Spherical Harmonic Transform: u_hat(l, m) -> u(theta, phi).
 
@@ -93,9 +88,7 @@ class SphericalHarmonicTransform(eqx.Module):
         """
         return self.grid.transform(u_hat, inverse=True)
 
-    def to_spectral_1d(
-        self, u_col: Float[Array, "Ny"]
-    ) -> Float[Array, "Ny"]:
+    def to_spectral_1d(self, u_col: Float[Array, "Ny"]) -> Float[Array, "Ny"]:
         """
         1D forward Discrete Legendre Transform for a single column (m=0).
 
@@ -116,9 +109,7 @@ class SphericalHarmonicTransform(eqx.Module):
         w = self.grid._weights_y  # (Ny,)
         return P0 @ (w * u_col)
 
-    def from_spectral_1d(
-        self, c: Float[Array, "Ny"]
-    ) -> Float[Array, "Ny"]:
+    def from_spectral_1d(self, c: Float[Array, "Ny"]) -> Float[Array, "Ny"]:
         """
         1D inverse Discrete Legendre Transform (m=0 case).
 

@@ -14,11 +14,11 @@ from .operators import ChebyshevDerivative1D, ChebyshevDerivative2D
 from .solvers import ChebyshevHelmholtzSolver1D
 
 __all__ = [
-    "ChebyshevGrid1D",
-    "ChebyshevGrid2D",
     "ChebyshevDerivative1D",
     "ChebyshevDerivative2D",
     "ChebyshevFilter1D",
     "ChebyshevFilter2D",
+    "ChebyshevGrid1D",
+    "ChebyshevGrid2D",
     "ChebyshevHelmholtzSolver1D",
 ]

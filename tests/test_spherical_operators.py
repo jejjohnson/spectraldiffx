@@ -4,14 +4,12 @@ Tests for SphericalDerivative1D and SphericalDerivative2D.
 
 import jax.numpy as jnp
 import numpy as np
-import pytest
 
 from spectraldiffx._src.spherical.grid import SphericalGrid1D, SphericalGrid2D
 from spectraldiffx._src.spherical.operators import (
     SphericalDerivative1D,
     SphericalDerivative2D,
 )
-
 
 # ---------------------------------------------------------------------------
 # SphericalDerivative1D tests

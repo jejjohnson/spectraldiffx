@@ -9,12 +9,11 @@ These tests verify that:
 5. The fixed QG beta term (-beta*v) is periodic, unlike beta*y.
 """
 
-import jax
 import jax.numpy as jnp
 import pytest
 
 from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative1D, SpectralDerivative2D
+from spectraldiffx._src.operators import SpectralDerivative2D
 from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
 
 # ---------------------------------------------------------------------------
@@ -268,7 +267,9 @@ def test_poisson_inverts_laplacian(grid2d_nodealias):
     psi_exact = jnp.sin(X) * jnp.sin(2 * Y)
     f = deriv.laplacian(psi_exact)
     psi_solved = solver.solve(f, alpha=0.0)
-    assert jnp.allclose(psi_solved, psi_exact, atol=1e-4), "Poisson solver inversion failed"
+    assert jnp.allclose(psi_solved, psi_exact, atol=1e-4), (
+        "Poisson solver inversion failed"
+    )
 
 
 # ---------------------------------------------------------------------------

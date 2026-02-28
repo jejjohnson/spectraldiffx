@@ -3,11 +3,9 @@ Tests for ChebyshevHelmholtzSolver1D.
 """
 
 import jax.numpy as jnp
-import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D
 from spectraldiffx._src.chebyshev.solvers import ChebyshevHelmholtzSolver1D
-
 
 # ============================================================================
 # 1D Solver tests

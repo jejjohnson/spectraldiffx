@@ -31,13 +31,13 @@ from .operators import SphericalDerivative1D, SphericalDerivative2D
 from .solvers import SphericalHelmholtzSolver, SphericalPoissonSolver
 
 __all__ = [
-    "SphericalGrid1D",
-    "SphericalGrid2D",
-    "SphericalHarmonicTransform",
     "SphericalDerivative1D",
     "SphericalDerivative2D",
     "SphericalFilter1D",
     "SphericalFilter2D",
-    "SphericalPoissonSolver",
+    "SphericalGrid1D",
+    "SphericalGrid2D",
+    "SphericalHarmonicTransform",
     "SphericalHelmholtzSolver",
+    "SphericalPoissonSolver",
 ]
