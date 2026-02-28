@@ -111,7 +111,7 @@ dev = [
 
 [tool.pytest.ini_options]
 filterwarnings = ["error", "ignore::DeprecationWarning"]
-testpaths = ["spectraldiffx"]
+testpaths = ["spectraldiffx", "tests"]
 xfail_strict = true
 
 [tool.ruff]

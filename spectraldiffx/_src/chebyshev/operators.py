@@ -136,6 +136,10 @@ class ChebyshevDerivative2D(eqx.Module):
         """
         Compute the 2D Laplacian ∇²u = ∂²u/∂x² + ∂²u/∂y².
 
+        Uses precomputed second-derivative matrices Dx2 = Dx@Dx and Dy2 = Dy@Dy
+        (stored on the grid) to avoid recomputing the O(N³) matrix products
+        on every call.
+
         Parameters:
         -----------
         u : Array [Ny_pts, Nx_pts]
@@ -144,10 +148,8 @@ class ChebyshevDerivative2D(eqx.Module):
         --------
         lap_u : Array [Ny_pts, Nx_pts]
         """
-        Dx = self.grid.Dx
-        Dy = self.grid.Dy
-        d2u_dx2 = u @ (Dx @ Dx).T
-        d2u_dy2 = (Dy @ Dy) @ u
+        d2u_dx2 = u @ self.grid.Dx2.T
+        d2u_dy2 = self.grid.Dy2 @ u
         return d2u_dx2 + d2u_dy2
 
     def divergence(self, vx: Array, vy: Array) -> Float[Array, "Ny1 Nx1"]:

@@ -354,14 +354,20 @@ class ChebyshevGrid1D(eqx.Module):
 
         Inverse:
             u[n] = Σₖ a[k] Tₖ(xₙ)   (direct synthesis, no adjustment to a[0])
+
+        Dtypes are derived from the input to preserve precision in x64 mode.
         """
+        # Derive real and complex dtypes from the input to preserve precision.
+        real_dtype = jnp.result_type(u, jnp.float32)
+        complex_dtype = jnp.result_type(real_dtype, jnp.complex64)
+
         if not inverse:
             # Forward DCT-II: a[k] = (2/N) Σⱼ uⱼ cos(πk(2j+1)/(2N))
             # Via FFT: zero-pad, apply half-sample phase shift
-            u_pad = jnp.concatenate([u, jnp.zeros(N)])  # length 2N
+            u_pad = jnp.concatenate([u, jnp.zeros(N, dtype=real_dtype)])  # length 2N
             Y = jnp.fft.rfft(u_pad)  # complex, length N+1
-            k_idx = jnp.arange(N + 1, dtype=jnp.float32)
-            phase = jnp.exp(-1j * jnp.pi * k_idx / (2 * N))
+            k_idx = jnp.arange(N + 1, dtype=real_dtype)
+            phase = jnp.exp((-1j * jnp.pi * k_idx / (2 * N)).astype(complex_dtype))
             Z = Y * phase  # Z[k] = Σⱼ uⱼ exp(-iπ(2j+1)k/(2N))
             a = Z[:N].real * (2.0 / N)
             # Halve k=0 so that a[0] = (1/N) Σ uⱼ
@@ -373,10 +379,10 @@ class ChebyshevGrid1D(eqx.Module):
             # where h[k] = a[k] · exp(iπk/(2N))
             # NOTE: a[0] is NOT doubled here; the halving in the forward
             # is already accounted for since the synthesis uses a[k] directly.
-            k_idx = jnp.arange(N, dtype=jnp.float32)
-            phase = jnp.exp(1j * jnp.pi * k_idx / (2 * N))
-            h = u * phase  # complex, length N
-            H_full = jnp.concatenate([h, jnp.zeros(N, dtype=jnp.complex64)])
+            k_idx = jnp.arange(N, dtype=real_dtype)
+            phase = jnp.exp((1j * jnp.pi * k_idx / (2 * N)).astype(complex_dtype))
+            h = u.astype(complex_dtype) * phase  # complex, length N
+            H_full = jnp.concatenate([h, jnp.zeros(N, dtype=complex_dtype)])
             y = jnp.fft.ifft(H_full)
             return (2 * N * y.real)[:N]
 
@@ -469,6 +475,8 @@ class ChebyshevGrid2D(eqx.Module):
     dealias: Literal["2/3", None] | None
     _Dx: Array  # x-direction differentiation matrix
     _Dy: Array  # y-direction differentiation matrix
+    _Dx2: Array  # x-direction second-derivative matrix (Dx @ Dx)
+    _Dy2: Array  # y-direction second-derivative matrix (Dy @ Dy)
 
     def __init__(
         self,
@@ -487,11 +495,16 @@ class ChebyshevGrid2D(eqx.Module):
         self.dealias = dealias
 
         if node_type == "gauss-lobatto":
-            self._Dx = jnp.array(_cheb_diff_matrix_gl(Nx) / Lx)
-            self._Dy = jnp.array(_cheb_diff_matrix_gl(Ny) / Ly)
+            Dx_np = _cheb_diff_matrix_gl(Nx) / Lx
+            Dy_np = _cheb_diff_matrix_gl(Ny) / Ly
         else:
-            self._Dx = jnp.array(_cheb_diff_matrix_gauss(Nx) / Lx)
-            self._Dy = jnp.array(_cheb_diff_matrix_gauss(Ny) / Ly)
+            Dx_np = _cheb_diff_matrix_gauss(Nx) / Lx
+            Dy_np = _cheb_diff_matrix_gauss(Ny) / Ly
+
+        self._Dx = jnp.array(Dx_np)
+        self._Dy = jnp.array(Dy_np)
+        self._Dx2 = jnp.array(Dx_np @ Dx_np)
+        self._Dy2 = jnp.array(Dy_np @ Dy_np)
 
     @classmethod
     def from_N_L(
@@ -558,6 +571,16 @@ class ChebyshevGrid2D(eqx.Module):
     def Dy(self) -> Float[Array, "Ny1 Ny1"]:
         """y-direction differentiation matrix on [-Ly, Ly]."""
         return self._Dy
+
+    @property
+    def Dx2(self) -> Float[Array, "Nx1 Nx1"]:
+        """Precomputed x-direction second-derivative matrix: Dx @ Dx."""
+        return self._Dx2
+
+    @property
+    def Dy2(self) -> Float[Array, "Ny1 Ny1"]:
+        """Precomputed y-direction second-derivative matrix: Dy @ Dy."""
+        return self._Dy2
 
     def dealias_filter(
         self,

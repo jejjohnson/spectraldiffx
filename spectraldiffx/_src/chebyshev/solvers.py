@@ -88,6 +88,18 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         >>> f = -(jnp.pi**2) * jnp.sin(jnp.pi * x)
         >>> u = solver.solve(f, alpha=0.0, bc_left=0.0, bc_right=0.0)
         """
+        if self.grid.node_type != "gauss-lobatto":
+            raise ValueError(
+                "ChebyshevHelmholtzSolver1D requires 'gauss-lobatto' nodes "
+                "because the boundary-row replacement method uses the endpoints "
+                f"x[0]=+L and x[N]=-L. Got node_type='{self.grid.node_type}'."
+            )
+        if f.shape[0] != self.grid.N + 1:
+            raise ValueError(
+                f"f must have length N+1={self.grid.N + 1} for Gauss-Lobatto nodes, "
+                f"got length {f.shape[0]}."
+            )
+
         D = self.grid.D
         N = self.grid.N
 

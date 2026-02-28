@@ -9,6 +9,15 @@ from jaxtyping import Array
 from .grid import ChebyshevGrid1D, ChebyshevGrid2D
 
 
+def _coeff_dtype(a: Array) -> type:
+    """Return the real floating dtype of a coefficient array.
+
+    Falls back to float32 for non-floating dtypes so filter kernels always
+    have a well-defined real dtype.
+    """
+    return a.dtype if jnp.issubdtype(a.dtype, jnp.floating) else jnp.float32
+
+
 class ChebyshevFilter1D(eqx.Module):
     """
     1D Chebyshev spectral filter for smoothing and numerical stabilization.
@@ -69,8 +78,11 @@ class ChebyshevFilter1D(eqx.Module):
         a = u if spectral else self.grid.transform(u)
         N = self.grid.N
         n_modes = N + 1 if self.grid.node_type == "gauss-lobatto" else N
-        k = jnp.arange(n_modes, dtype=jnp.float32)
-        filter_mask = jnp.exp(-alpha * (k / N) ** power)
+        # Normalize by the highest mode index so F(k_max) = exp(-alpha).
+        k_max = max(1, n_modes - 1)
+        real_dtype = _coeff_dtype(a)
+        k = jnp.arange(n_modes, dtype=real_dtype)
+        filter_mask = jnp.exp(-alpha * (k / k_max) ** power)
         a_f = a * filter_mask
         return a_f if spectral else self.grid.transform(a_f, inverse=True)
 
@@ -109,7 +121,8 @@ class ChebyshevFilter1D(eqx.Module):
         a = u if spectral else self.grid.transform(u)
         N = self.grid.N
         n_modes = N + 1 if self.grid.node_type == "gauss-lobatto" else N
-        k = jnp.arange(n_modes, dtype=jnp.float32)
+        real_dtype = _coeff_dtype(a)
+        k = jnp.arange(n_modes, dtype=real_dtype)
         filter_mask = jnp.exp(-nu_hyper * k**power * dt)
         a_f = a * filter_mask
         return a_f if spectral else self.grid.transform(a_f, inverse=True)
@@ -160,12 +173,14 @@ class ChebyshevFilter2D(eqx.Module):
         Nx, Ny = self.grid.Nx, self.grid.Ny
         nx_modes = Nx + 1 if self.grid.node_type == "gauss-lobatto" else Nx
         ny_modes = Ny + 1 if self.grid.node_type == "gauss-lobatto" else Ny
-        # Use a dtype derived from the coefficients to avoid unintended downcasting.
-        filter_dtype = a.dtype if jnp.issubdtype(a.dtype, jnp.floating) else jnp.float32
-        kx = jnp.arange(nx_modes, dtype=filter_dtype)
-        ky = jnp.arange(ny_modes, dtype=filter_dtype)
-        Fx = jnp.exp(-filter_dtype.type(alpha) * (kx / Nx) ** power)
-        Fy = jnp.exp(-filter_dtype.type(alpha) * (ky / Ny) ** power)
+        # Normalize by the highest mode index; derive dtype from coefficients.
+        kx_max = max(1, nx_modes - 1)
+        ky_max = max(1, ny_modes - 1)
+        real_dtype = _coeff_dtype(a)
+        kx = jnp.arange(nx_modes, dtype=real_dtype)
+        ky = jnp.arange(ny_modes, dtype=real_dtype)
+        Fx = jnp.exp(-alpha * (kx / kx_max) ** power)
+        Fy = jnp.exp(-alpha * (ky / ky_max) ** power)
         # Apply separable filter: F = Fy[:, None] * Fx[None, :]
         a_f = a * Fy[:, None] * Fx[None, :]
         return a_f if spectral else self.grid.transform(a_f, inverse=True)
@@ -199,8 +214,9 @@ class ChebyshevFilter2D(eqx.Module):
         Nx, Ny = self.grid.Nx, self.grid.Ny
         nx_modes = Nx + 1 if self.grid.node_type == "gauss-lobatto" else Nx
         ny_modes = Ny + 1 if self.grid.node_type == "gauss-lobatto" else Ny
-        kx = jnp.arange(nx_modes, dtype=jnp.float32)
-        ky = jnp.arange(ny_modes, dtype=jnp.float32)
+        real_dtype = _coeff_dtype(a)
+        kx = jnp.arange(nx_modes, dtype=real_dtype)
+        ky = jnp.arange(ny_modes, dtype=real_dtype)
         # Separable: exp(-nu * kx^p * dt) * exp(-nu * ky^p * dt)
         Fx = jnp.exp(-nu_hyper * kx**power * dt)
         Fy = jnp.exp(-nu_hyper * ky**power * dt)
