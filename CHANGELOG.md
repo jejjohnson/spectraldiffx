@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.4](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.3...v0.0.4) (2026-03-10)
+
+
+### Bug Fixes
+
+* correct MkDocs configuration errors ([0533388](https://github.com/jejjohnson/spectraldiffx/commit/05333888721c4d55bc45702d74057883568bfeef))
+* correct MkDocs configuration errors blocking docs deployment ([d5eaad3](https://github.com/jejjohnson/spectraldiffx/commit/d5eaad3411ae178d84ba330b1be74d86e8b2e26a))
+
 ## [0.0.3](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.2...v0.0.3) (2026-03-10)
 
 
