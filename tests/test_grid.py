@@ -126,9 +126,7 @@ def test_fourier_grid_1d_k_dealias_none_unchanged():
     grid = FourierGrid1D.from_N_L(N, L, dealias=None)
     k = grid.k
     k_d = grid.k_dealias
-    assert jnp.allclose(k_d, k, atol=1e-15), (
-        "With dealias=None, k_dealias must equal k"
-    )
+    assert jnp.allclose(k_d, k, atol=1e-15), "With dealias=None, k_dealias must equal k"
 
 
 def test_fourier_grid_1d_k_dealias_dc_always_zero():

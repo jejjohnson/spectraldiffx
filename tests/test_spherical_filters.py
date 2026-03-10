@@ -126,7 +126,9 @@ def test_spherical_filter2d_exponential_high_modes_damped():
     filt = SphericalFilter2D(g)
 
     u_hat_high = jnp.zeros((Ny, Nx), dtype=jnp.complex128).at[-1, 0].set(1.0)
-    u_hat_filt = filt.exponential_filter(u_hat_high, alpha=36.0, power=16, spectral=True)
+    u_hat_filt = filt.exponential_filter(
+        u_hat_high, alpha=36.0, power=16, spectral=True
+    )
 
     assert float(jnp.abs(u_hat_filt[-1, 0])) < 1e-10, (
         f"SphericalFilter2D: highest-l mode should be near-zero after filtering; "

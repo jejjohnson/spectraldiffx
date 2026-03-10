@@ -79,21 +79,25 @@ def test_filter1d_hyperviscosity_monotone(grid1d):
         amplitudes.append(float(jnp.abs(u_filt[k])))
 
     # All amplitudes should be <= 1.0
-    assert all(a <= 1.0 for a in amplitudes), f"Hyperviscosity must not amplify: {amplitudes}"
+    assert all(a <= 1.0 for a in amplitudes), (
+        f"Hyperviscosity must not amplify: {amplitudes}"
+    )
     # Amplitudes should decrease with k (higher k → more damping → smaller amplitude)
     for i in range(len(amplitudes) - 1):
         assert amplitudes[i + 1] <= amplitudes[i], (
-            f"Hyperviscosity not monotone: F(k={[0,1,3,5,10,20][i]})={amplitudes[i]:.6f} "
-            f"> F(k={[0,1,3,5,10,20][i+1]})={amplitudes[i+1]:.6f}"
+            f"Hyperviscosity not monotone: F(k={[0, 1, 3, 5, 10, 20][i]})={amplitudes[i]:.6f} "
+            f"> F(k={[0, 1, 3, 5, 10, 20][i + 1]})={amplitudes[i + 1]:.6f}"
         )
 
 
 def test_filter3d_exponential_dc_preserved(grid3d):
     """3D exponential filter: F(k=0) = 1 — the DC mode must be unaffected."""
     filt = SpectralFilter3D(grid3d)
-    u_hat = jnp.zeros(
-        (grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128
-    ).at[0, 0, 0].set(1.0)
+    u_hat = (
+        jnp.zeros((grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128)
+        .at[0, 0, 0]
+        .set(1.0)
+    )
     u_hat_f = filt.exponential_filter(u_hat, spectral=True)
     assert jnp.isclose(jnp.abs(u_hat_f[0, 0, 0]), 1.0, atol=1e-15), (
         "3D exponential filter: DC mode must be preserved"
@@ -108,12 +112,16 @@ def test_filter3d_exponential_high_modes_damped(grid3d):
     """
     filt = SpectralFilter3D(grid3d)
 
-    u_low = jnp.zeros(
-        (grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128
-    ).at[2, 0, 0].set(1.0)
-    u_high = jnp.zeros(
-        (grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128
-    ).at[8, 0, 0].set(1.0)
+    u_low = (
+        jnp.zeros((grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128)
+        .at[2, 0, 0]
+        .set(1.0)
+    )
+    u_high = (
+        jnp.zeros((grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128)
+        .at[8, 0, 0]
+        .set(1.0)
+    )
 
     f_low = float(jnp.abs(filt.exponential_filter(u_low, spectral=True)[2, 0, 0]))
     f_high = float(jnp.abs(filt.exponential_filter(u_high, spectral=True)[8, 0, 0]))
@@ -127,9 +135,11 @@ def test_filter3d_exponential_high_modes_damped(grid3d):
 def test_filter3d_hyperviscosity_dc_preserved(grid3d):
     """3D hyperviscosity filter: DC mode must be exactly preserved."""
     filt = SpectralFilter3D(grid3d)
-    u_hat = jnp.zeros(
-        (grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128
-    ).at[0, 0, 0].set(1.0)
+    u_hat = (
+        jnp.zeros((grid3d.Nz, grid3d.Ny, grid3d.Nx), dtype=jnp.complex128)
+        .at[0, 0, 0]
+        .set(1.0)
+    )
     u_hat_f = filt.hyperviscosity(u_hat, nu_hyper=1e-4, dt=0.1, spectral=True)
     assert jnp.isclose(jnp.abs(u_hat_f[0, 0, 0]), 1.0, atol=1e-15), (
         "3D hyperviscosity: DC mode must be preserved"

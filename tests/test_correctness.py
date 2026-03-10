@@ -139,7 +139,7 @@ def test_spectral_convergence_1d():
     )
     assert errors[1] < errors[0] * 1e-6, (
         f"Going from N=8 to N=32 should reduce error by >1e6x, got only "
-        f"{errors[0]/errors[1]:.1f}x reduction"
+        f"{errors[0] / errors[1]:.1f}x reduction"
     )
 
 
@@ -292,8 +292,7 @@ def test_dealias_removes_aliased_energy_in_gradient():
         f"got {energy_k14_no_dealias:.4f}"
     )
     assert energy_k14_dealias < 1e-10, (
-        f"With dealiasing, aliased mode k=14 should be ~0, "
-        f"got {energy_k14_dealias:.2e}"
+        f"With dealiasing, aliased mode k=14 should be ~0, got {energy_k14_dealias:.2e}"
     )
 
 
@@ -427,7 +426,9 @@ def test_ns2d_enstrophy_decreases_with_viscosity():
         enstrophies.append(float(jnp.sum(omega**2) * dx * dy))
 
     # Enstrophy must decrease at every step with strong viscosity
-    assert all(enstrophies[i + 1] <= enstrophies[i] for i in range(len(enstrophies) - 1)), (
+    assert all(
+        enstrophies[i + 1] <= enstrophies[i] for i in range(len(enstrophies) - 1)
+    ), (
         f"Enstrophy did not decrease monotonically; values={[f'{e:.4f}' for e in enstrophies]}"
     )
     # No step should give NaN
@@ -528,7 +529,7 @@ def test_kdv_l2_conservation():
     assert jnp.all(jnp.isfinite(u)), "KdV: u contains NaN/Inf"
     relative_change = abs(l2_final - l2_initial) / (l2_initial + 1e-10)
     assert relative_change < 0.01, (
-        f"KdV L2 norm changed by {100*relative_change:.2f}% (should be <1%): "
+        f"KdV L2 norm changed by {100 * relative_change:.2f}% (should be <1%): "
         f"initial={l2_initial:.6f}, final={l2_final:.6f}"
     )
 
@@ -566,15 +567,11 @@ def test_chebyshev_convergence():
         err = float(jnp.max(jnp.abs(du_dx - exact)))
         errors.append(err)
 
-    assert errors[0] > 0.1, (
-        f"N=8 should have significant error; got {errors[0]:.2e}"
-    )
-    assert errors[1] < 1e-6, (
-        f"N=32 should be well below 1e-6, got {errors[1]:.2e}"
-    )
+    assert errors[0] > 0.1, f"N=8 should have significant error; got {errors[0]:.2e}"
+    assert errors[1] < 1e-6, f"N=32 should be well below 1e-6, got {errors[1]:.2e}"
     assert errors[1] < errors[0] * 1e-4, (
         f"Chebyshev convergence: expected >1e4x improvement from N=8 to N=32, "
-        f"got {errors[0]/errors[1]:.1f}x"
+        f"got {errors[0] / errors[1]:.1f}x"
     )
 
 

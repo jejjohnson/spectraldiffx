@@ -254,9 +254,7 @@ def test_spherical_deriv2d_advection_scalar_zero_velocity():
     q = jnp.cos(THETA)
     zero = jnp.zeros((Ny, Nx))
     adv = d.advection_scalar(zero, zero, q)
-    assert jnp.allclose(adv, 0.0, atol=1e-15), (
-        "Zero velocity must give zero advection"
-    )
+    assert jnp.allclose(adv, 0.0, atol=1e-15), "Zero velocity must give zero advection"
 
 
 def test_spherical_deriv2d_advection_scalar_zonal_flow():
