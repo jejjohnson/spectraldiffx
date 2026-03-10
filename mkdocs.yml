@@ -3,21 +3,7 @@ site_description: Pseudospectral differentiation, filtering, and PDE solvers in 
 site_author: J. Emmanuel Johnson
 repo_url: https://github.com/jejjohnson/spectraldiffx
 repo_name: jejjohnson/spectraldiffx
-docs_dir: .
-exclude_docs: |
-  spectraldiffx/
-  tests/
-  scripts/
-  .git/
-  .github/
-  uv.lock
-  pyproject.toml
-  Makefile
-  CHANGELOG.md
-  CODE_REVIEW.md
-  AGENTS.md
-  codecov.yaml
-  README.md
+docs_dir: docs
 
 theme:
   name: material
@@ -60,17 +46,16 @@ plugins:
   - mkdocs-jupyter:
       include_source: true
       execute: false
-      ignore_h1: false
 
 nav:
-  - Home: docs/index.md
-  - Installation: docs/installation.md
-  - Quick Start: docs/quickstart.md
+  - Home: index.md
+  - Installation: installation.md
+  - Quick Start: quickstart.md
   - Theory:
-    - Overview: docs/theory/index.md
-    - Fourier Pseudospectral Methods: docs/theory/fourier.md
-    - Chebyshev Pseudospectral Methods: docs/theory/chebyshev.md
-    - Spherical Harmonic Methods: docs/theory/spherical.md
+    - Overview: theory/index.md
+    - Fourier Pseudospectral Methods: theory/fourier.md
+    - Chebyshev Pseudospectral Methods: theory/chebyshev.md
+    - Spherical Harmonic Methods: theory/spherical.md
   - Examples:
     - 1D Differentiation: notebooks/demo_1d.py
     - 2D Differentiation: notebooks/demo_2d.py
@@ -81,21 +66,21 @@ nav:
     - QG Model: notebooks/qg_model.py
   - API Reference:
     - Fourier:
-      - Grids: docs/api/fourier/grids.md
-      - Operators: docs/api/fourier/operators.md
-      - Filters: docs/api/fourier/filters.md
-      - Solvers: docs/api/fourier/solvers.md
+      - Grids: api/fourier/grids.md
+      - Operators: api/fourier/operators.md
+      - Filters: api/fourier/filters.md
+      - Solvers: api/fourier/solvers.md
     - Chebyshev:
-      - Grids: docs/api/chebyshev/grids.md
-      - Operators: docs/api/chebyshev/operators.md
-      - Filters: docs/api/chebyshev/filters.md
-      - Solvers: docs/api/chebyshev/solvers.md
+      - Grids: api/chebyshev/grids.md
+      - Operators: api/chebyshev/operators.md
+      - Filters: api/chebyshev/filters.md
+      - Solvers: api/chebyshev/solvers.md
     - Spherical Harmonics:
-      - Grids: docs/api/spherical/grids.md
-      - Operators: docs/api/spherical/operators.md
-      - Filters: docs/api/spherical/filters.md
-      - Harmonics: docs/api/spherical/harmonics.md
-      - Solvers: docs/api/spherical/solvers.md
+      - Grids: api/spherical/grids.md
+      - Operators: api/spherical/operators.md
+      - Filters: api/spherical/filters.md
+      - Harmonics: api/spherical/harmonics.md
+      - Solvers: api/spherical/solvers.md
 
 markdown_extensions:
   - admonition
