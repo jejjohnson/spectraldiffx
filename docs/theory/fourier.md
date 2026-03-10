@@ -38,6 +38,17 @@ $$k_n = \frac{2\pi n}{L}, \quad n = 0, 1, \ldots, \frac{N}{2}-1, -\frac{N}{2}, \
 
 The **Nyquist wavenumber** $k_{N/2} = \pi N / L$ is the highest wavenumber that can be resolved on a grid of $N$ points.
 
+!!! note "FFT output ordering"
+    The mathematical index range $k = -N/2+1, \ldots, N/2$ (centered at zero) differs from
+    the **FFT output ordering** used by `numpy` and `jax.numpy`, which places positive frequencies
+    first:
+
+    $$n_{\text{fft}} = 0, 1, \ldots, \tfrac{N}{2}-1, -\tfrac{N}{2}, \ldots, -1$$
+
+    In SpectralDiffX, `FourierGrid1D.k` stores the wavenumbers $k_n = 2\pi n_{\text{fft}} / L$ in
+    this FFT order (as returned by `jnp.fft.fftfreq(N, d=L/N) * 2*pi`). When computing derivatives
+    or inspecting the spectrum, use `jnp.fft.fftshift` to reorder to the centered representation.
+
 ---
 
 ## 3. Spectral Differentiation

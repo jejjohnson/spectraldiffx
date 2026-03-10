@@ -306,7 +306,23 @@ def run_navier_stokes(
         f"Steps taken: {sol.stats['num_steps']}"
     )
 
-    return sol, params, grid
+    # --- Post-processing and output ---
+    logger.info("Post-processing results...")
+    ds = build_dataset(sol, params, grid)
+
+    if output_dir is None:
+        output_dir = pathlib.Path("./output/navier_stokes_2d")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / "ns2d_sim.nc"
+    ds.to_netcdf(output_path)
+    logger.success(f"Output saved to: {output_path}")
+
+    logger.info("Generating plots...")
+    plot_results(ds)
+    logger.success("Plots generated successfully!")
+    plt.show()
+
+    return ds
 
 
 # %% [markdown]

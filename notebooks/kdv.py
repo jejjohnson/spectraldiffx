@@ -237,7 +237,23 @@ def run_kdv(
         f"Steps taken: {sol.stats['num_steps']}"
     )
 
-    return sol, x, domain_length
+    # --- Post-processing and output ---
+    logger.info("Post-processing results...")
+    ds = build_dataset(sol, x, domain_length)
+
+    if output_dir is None:
+        output_dir = pathlib.Path("./output/kdv")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / "kdv_sim.nc"
+    ds.to_netcdf(output_path)
+    logger.success(f"Output saved to: {output_path}")
+
+    logger.info("Generating plots...")
+    plot_results(ds)
+    logger.success("Plots generated successfully!")
+    plt.show()
+
+    return ds
 
 
 # %% [markdown]

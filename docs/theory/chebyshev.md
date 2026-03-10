@@ -45,15 +45,15 @@ $$\int_{-1}^{1} T_m(x) T_n(x) \frac{dx}{\sqrt{1-x^2}} = \begin{cases} 0 & m \neq
 
 The **Chebyshev-Gauss-Lobatto (CGL)** nodes are the extrema of $T_N$ plus the endpoints:
 
-$$x_j = -\cos\!\left(\frac{j\pi}{N}\right), \quad j = 0, 1, \ldots, N$$
+$$x_j = \cos\!\left(\frac{j\pi}{N}\right), \quad j = 0, 1, \ldots, N$$
 
-These $N+1$ points lie in $[-1, 1]$ and **include both endpoints** $x_0 = -1$ and $x_N = +1$, which is essential for imposing boundary conditions.
+These $N+1$ points lie in $[-1, 1]$ and **include both endpoints** $x_0 = +1$ and $x_N = -1$, which is essential for imposing boundary conditions.
 
 ### Node Clustering at Boundaries
 
 The CGL nodes cluster quadratically near the boundaries:
 
-$$x_j \approx -1 + \frac{j^2\pi^2}{2N^2} \quad (j \text{ small}), \quad \Delta x_{\min} = O(N^{-2})$$
+$$x_j \approx 1 - \frac{j^2\pi^2}{2N^2} \quad (j \text{ small}), \quad \Delta x_{\min} = O(N^{-2})$$
 
 This clustering is the Chebyshev method's mechanism for controlling the **Runge phenomenon** — the oscillations near boundaries that plague high-degree polynomial interpolation on uniform grids. The boundary clustering means that the condition number of the differentiation matrix grows as $O(N^2)$ rather than exponentially.
 

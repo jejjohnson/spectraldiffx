@@ -12,7 +12,8 @@
 |--------|-----------|------------|
 | **Fourier** | `FourierGrid` | 1D, 2D, 3D |
 | **Spectral Operators** | `SpectralDerivative`, `SpectralFilter`, `SpectralHelmholtzSolver` | 1D, 2D, 3D |
-| **Chebyshev** | `ChebyshevGrid`, `ChebyshevDerivative`, `ChebyshevFilter`, `ChebyshevHelmholtzSolver` | 1D, 2D |
+| **Chebyshev** | `ChebyshevGrid`, `ChebyshevDerivative`, `ChebyshevFilter` | 1D, 2D |
+| **Chebyshev Solver** | `ChebyshevHelmholtzSolver` | 1D |
 | **Spherical Harmonics** | `SphericalGrid`, `SphericalDerivative`, `SphericalFilter`, `SphericalHarmonicTransform`, `SphericalHelmholtzSolver`, `SphericalPoissonSolver` | 1D, 2D |
 
 All classes are Equinox modules — fully pytree-compatible, immutable, and composable with `jax.jit`, `jax.vmap`, and `jax.grad`.

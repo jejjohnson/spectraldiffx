@@ -120,6 +120,10 @@ echo "Created Issue #$ISSUE2: revamp README"
 
 # -----------------------------------------------------------------------
 # Issue 3: Set up MkDocs documentation site
+# Created first. After issues 4-6 are created (they depend on issue 3),
+# we use `gh issue edit` to add back-references to the theory sub-issues.
+# This avoids fragile arithmetic like $(( ISSUE3 + N )) which assumes
+# consecutive GitHub issue numbering.
 # -----------------------------------------------------------------------
 ISSUE3=$(gh issue create \
   --repo "$REPO" \
@@ -161,9 +165,9 @@ Set up a full MkDocs-based documentation site for SpectralDiffX using the Materi
 
 ### Theory Section
 - [ ] Theory overview page linking to detail pages
-- [ ] Fourier methods theory page (see #$(( ISSUE3 + 1 )))
-- [ ] Chebyshev methods theory page (see #$(( ISSUE3 + 2 )))
-- [ ] Spherical harmonic methods theory page (see #$(( ISSUE3 + 3 )))
+- [ ] Fourier methods theory page (see sub-issue, added after creation)
+- [ ] Chebyshev methods theory page (see sub-issue, added after creation)
+- [ ] Spherical harmonic methods theory page (see sub-issue, added after creation)
 
 ## Tech Stack
 
@@ -214,7 +218,7 @@ Write a comprehensive, pedagogically rigorous theory page covering Fourier pseud
 - Uniform grid discretization: \$x_j = j \\Delta x\$
 - DFT definition and inverse DFT
 - Fast Fourier Transform (FFT) and \$O(N \\log N)\$ complexity
-- Wavenumber ordering and the Nyquist frequency
+- Wavenumber ordering and the Nyquist frequency (including FFT output ordering)
 
 ### 3. Spectral Differentiation
 - Key identity: \$\\widehat{u'}(k) = ik \\hat{u}(k)\$
@@ -292,7 +296,7 @@ While Fourier methods excel at periodic problems, **Chebyshev methods** handle n
 - The change of variables \$x = \\cos(\\theta)\$ connecting to Fourier
 
 ### 2. Chebyshev-Gauss-Lobatto (CGL) Nodes
-- Definition: \$x_j = \\cos(j\\pi/N)\$ for \$j = 0, \\ldots, N\$
+- Definition: \$x_j = \\cos(j\\pi/N)\$ for \$j = 0, \\ldots, N\$ (note: \$x_0=+1\$, \$x_N=-1\$)
 - Why these nodes? They minimize the Runge phenomenon
 - Clustering at boundaries and the \$O(1/N^2)\$ grid spacing issue
 - Comparison with equidistant grids
@@ -437,6 +441,75 @@ Spherical harmonics are the natural basis functions for problems on the sphere �
   --json number --jq '.number')
 
 echo "Created Issue #$ISSUE6: Spherical harmonics theory page"
+
+# -----------------------------------------------------------------------
+# Edit Issue 3 to add back-references to the theory sub-issues now that
+# their numbers are known. This avoids fragile arithmetic like
+# $(( ISSUE3 + 1 )) which assumes consecutive issue numbering.
+# -----------------------------------------------------------------------
+gh issue edit "$ISSUE3" \
+  --repo "$REPO" \
+  --body "## Summary
+
+Set up a full MkDocs-based documentation site for SpectralDiffX using the Material theme, with:
+1. API reference generated from docstrings via mkdocstrings
+2. Example notebooks rendered via mkdocs-jupyter
+3. Theory pages with mathematical formulations
+
+## Depends On
+
+- #${ISSUE1} (consolidated jupytext notebooks are needed for mkdocs-jupyter)
+- #${ISSUE2} (README should link to the docs site)
+
+## Tasks
+
+### Configuration
+- [ ] Create \`mkdocs.yml\` with Material theme configuration
+- [ ] Configure mkdocstrings plugin for Python API reference
+- [ ] Configure mkdocs-jupyter plugin to render jupytext notebooks
+- [ ] Configure pymdownx.arithmatex for LaTeX math rendering
+- [ ] Set up GitHub Actions deployment to GitHub Pages (via \`pages.yml\`)
+
+### Documentation Structure
+- [ ] \`docs/index.md\` — Homepage with feature overview and quick example
+- [ ] \`docs/installation.md\` — Installation guide (pip, uv dev setup)
+- [ ] \`docs/quickstart.md\` — Quick start with 1D, 2D, and solver examples
+
+### API Reference Pages
+- [ ] \`docs/api/fourier/\` — Grids, Operators, Filters, Solvers
+- [ ] \`docs/api/chebyshev/\` — Grids, Operators, Filters, Solvers
+- [ ] \`docs/api/spherical/\` — Grids, Operators, Filters, Harmonics, Solvers
+
+### Examples Section
+- [ ] All 7 jupytext notebooks from \`notebooks/\` rendered as doc pages
+
+### Theory Section
+- [ ] Theory overview page linking to detail pages
+- [ ] Fourier methods theory page (#${ISSUE4})
+- [ ] Chebyshev methods theory page (#${ISSUE5})
+- [ ] Spherical harmonic methods theory page (#${ISSUE6})
+
+## Tech Stack
+
+\`\`\`
+mkdocs                # core
+mkdocs-material       # Material theme
+mkdocstrings[python]  # API reference from docstrings
+mkdocs-jupyter        # render jupytext/ipynb notebooks
+pymdownx-arithmatex   # LaTeX math via MathJax
+\`\`\`
+
+## Acceptance Criteria
+
+- \`uv run mkdocs build\` completes without errors
+- \`uv run mkdocs serve\` shows a navigable, correct site
+- All API classes are documented
+- All 7 notebooks render correctly
+- LaTeX math renders in theory pages
+- Deployed to GitHub Pages via CI
+"
+
+echo "Updated Issue #$ISSUE3 with references to theory sub-issues #${ISSUE4}, #${ISSUE5}, #${ISSUE6}"
 
 # -----------------------------------------------------------------------
 # Issue 7: Meta-issue - Complete documentation revamp
