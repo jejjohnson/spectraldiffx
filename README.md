@@ -1,6 +1,7 @@
 # SpectralDiffX
 
 <a href="https://codecov.io/gh/jejjohnson/spectraldiffx"><img src="https://codecov.io/gh/jejjohnson/spectraldiffx/branch/main/graph/badge.svg?token=YGPQQEAK91"></a>
+<a href="https://jejjohnson.github.io/spectraldiffx"><img src="https://img.shields.io/badge/docs-latest-blue.svg"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
 <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.12+-blue.svg"></a>
 <a href="https://github.com/jejjohnson/spectraldiffx"><img src="https://img.shields.io/badge/status-pre--alpha-orange"></a>

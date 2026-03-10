@@ -84,12 +84,12 @@ class Params(eqx.Module):
     """Simulation parameters."""
 
     nu: float  # Kinematic viscosity (nu)
-    nv: int = eqx.static_field()  # Hyperviscosity order (n)
+    nv: int = eqx.field(static=True)  # Hyperviscosity order (n)
     beta: float  # Planetary vorticity gradient (beta)
     r_def_inv_sq: float  # Inverse squared Rossby radius of deformation (1/R^2)
-    grid: FourierGrid2D = eqx.static_field()
-    deriv: SpectralDerivative2D = eqx.static_field()
-    solver: SpectralHelmholtzSolver2D = eqx.static_field()
+    grid: FourierGrid2D = eqx.field(static=True)
+    deriv: SpectralDerivative2D = eqx.field(static=True)
+    solver: SpectralHelmholtzSolver2D = eqx.field(static=True)
     forcing: Float[Array, "Ny Nx"] | None  # Forcing term F
 
 
