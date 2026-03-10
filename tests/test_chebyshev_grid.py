@@ -3,6 +3,7 @@ Tests for ChebyshevGrid1D and ChebyshevGrid2D.
 """
 
 import jax.numpy as jnp
+import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D, ChebyshevGrid2D
 
@@ -199,3 +200,40 @@ def test_chebyshev_grid_2d_check_consistency():
     """2D grid check_consistency returns True."""
     grid = ChebyshevGrid2D.from_N_L(Nx=8, Ny=8, Lx=1.0, Ly=1.0)
     assert grid.check_consistency()
+
+
+# ============================================================================
+# Chebyshev basis coefficient recovery
+# ============================================================================
+
+
+@pytest.mark.parametrize("n", [0, 1, 2, 3, 4])
+def test_chebyshev_grid_1d_transform_chebyshev_basis(n: int):
+    """
+    Forward transform of T_n(x/L) must give coefficient vector with:
+        a[n] = 2 if n == 0, else 1
+        a[k] = 0 for all k != n.
+
+    This tests that the transform correctly identifies each Chebyshev basis
+    function T_n as having a single nonzero spectral coefficient.
+    The T_0 coefficient is 2 because the standard Chebyshev expansion is
+    f = a_0/2 * T_0 + sum_{k>=1} a_k * T_k, so transform(T_0) = a_0 = 2.
+    """
+    N = 24
+    L = 1.0
+    grid = ChebyshevGrid1D.from_N_L(N=N, L=L)
+    x = grid.x
+
+    # T_n(x/L) = cos(n * arccos(x/L)) — valid because x ∈ [-L, L]
+    u = jnp.cos(n * jnp.arccos(x / L))
+    a = grid.transform(u)
+
+    expected_amplitude = 2.0 if n == 0 else 1.0
+    assert jnp.isclose(a[n], expected_amplitude, atol=1e-12), (
+        f"T_{n}: a[{n}] = {float(a[n]):.8f}, expected {expected_amplitude}"
+    )
+    a_other = a.at[n].set(0.0)
+    assert jnp.allclose(a_other, 0.0, atol=1e-12), (
+        f"T_{n}: off-diagonal coefficients non-zero, max = "
+        f"{float(jnp.max(jnp.abs(a_other))):.2e}"
+    )

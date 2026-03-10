@@ -87,3 +87,53 @@ def test_spherical_poisson_1d():
 
     phi = solver.solve(f, zero_mean=True)
     assert jnp.allclose(phi, psi, atol=1e-8)
+
+
+def test_spherical_helmholtz_1d_eigenfunction():
+    """
+    Helmholtz equation on the 1D sphere: (∇²_sphere - alpha) phi = f.
+
+    For phi = P_2(cos(theta)) (l=2, eigenvalue -6/R²):
+        f = (∇² - alpha) phi = -(6/R² + alpha) * P_2
+    Solving should recover phi = P_2.
+    """
+    from scipy.special import eval_legendre
+
+    N = 32
+    g = SphericalGrid1D.from_N_L(N, np.pi)  # R = 1
+    solver = SphericalHelmholtzSolver(grid=g)
+    R = g.L / np.pi  # = 1
+
+    mu = np.array(g.cos_theta)
+    P2 = jnp.asarray(eval_legendre(2, mu))  # P_2, l=2 → eigenvalue 6/R²
+
+    alpha = 1.0
+    f = -(6.0 / R**2 + alpha) * P2  # (nabla^2 - alpha) P_2 = -(6/R^2 + alpha) * P_2
+
+    phi = solver.solve(f, alpha=alpha, zero_mean=False)
+    assert jnp.allclose(phi, P2, atol=1e-10), (
+        f"1D Helmholtz: max error = {float(jnp.max(jnp.abs(phi - P2))):.2e}"
+    )
+
+
+def test_spherical_helmholtz_1d_reduces_to_poisson():
+    """
+    With alpha=0, SphericalHelmholtzSolver reduces to Poisson: ∇² phi = f.
+    Solution of ∇² P_l = -l(l+1)/R² * P_l should give back P_l.
+    """
+    from scipy.special import eval_legendre
+
+    N = 32
+    g = SphericalGrid1D.from_N_L(N, np.pi)
+    solver = SphericalHelmholtzSolver(grid=g)
+    R = g.L / np.pi
+
+    mu = np.array(g.cos_theta)
+    l = 3
+    Pl = jnp.asarray(eval_legendre(l, mu))
+    f = -(l * (l + 1)) / R**2 * Pl  # ∇² Pl = -l(l+1)/R² * Pl
+
+    phi = solver.solve(f, alpha=0.0, zero_mean=True)
+    assert jnp.allclose(phi, Pl, atol=1e-10), (
+        f"1D Helmholtz alpha=0 (Poisson): max error = {float(jnp.max(jnp.abs(phi - Pl))):.2e}"
+    )

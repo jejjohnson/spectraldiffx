@@ -3,6 +3,7 @@ Tests for ChebyshevHelmholtzSolver1D.
 """
 
 import jax.numpy as jnp
+import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D
 from spectraldiffx._src.chebyshev.solvers import ChebyshevHelmholtzSolver1D
@@ -116,3 +117,28 @@ def test_cheb_poisson_1d_smooth_rhs():
     assert jnp.allclose(u_sol, u_exact, atol=1e-8), (
         f"Smooth Poisson max error = {jnp.abs(u_sol - u_exact).max()}"
     )
+
+
+def test_cheb_solver1d_raises_for_gauss_nodes():
+    """
+    ChebyshevHelmholtzSolver1D must raise ValueError when given Gauss (not
+    Gauss-Lobatto) nodes, because the boundary-row replacement method requires
+    the endpoints x[0]=+L and x[N]=-L.
+    """
+    grid_gauss = ChebyshevGrid1D.from_N_L(N=16, L=1.0, node_type="gauss")
+    solver = ChebyshevHelmholtzSolver1D(grid_gauss)
+    with pytest.raises(ValueError, match="gauss-lobatto"):
+        solver.solve(jnp.zeros(16), alpha=0.0)
+
+
+def test_cheb_solver1d_raises_for_wrong_f_shape():
+    """
+    ChebyshevHelmholtzSolver1D must raise ValueError when f has wrong length.
+
+    For N GL nodes, f must have length N+1; any other length should fail.
+    """
+    N = 16
+    grid_gl = ChebyshevGrid1D.from_N_L(N=N, L=1.0, node_type="gauss-lobatto")
+    solver = ChebyshevHelmholtzSolver1D(grid_gl)
+    with pytest.raises(ValueError, match=rf"N\+1={N + 1}"):
+        solver.solve(jnp.zeros(N), alpha=0.0)  # N instead of N+1
