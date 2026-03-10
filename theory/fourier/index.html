@@ -1,0 +1,2121 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Pseudospectral differentiation, filtering, and PDE solvers in JAX — fully differentiable and JIT-compatible.">
+      
+      
+        <meta name="author" content="J. Emmanuel Johnson">
+      
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../chebyshev/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Fourier Pseudospectral Methods - SpectralDiffX</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fourier-pseudospectral-methods" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SpectralDiffX" class="md-header__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SpectralDiffX
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fourier Pseudospectral Methods
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quick Start
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Theory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/demo_1d/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/fourier/grids/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SpectralDiffX" class="md-nav__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SpectralDiffX
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Theory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-mathematical-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Mathematical Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-discrete-fourier-transform-dft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Discrete Fourier Transform (DFT)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Discrete Fourier Transform (DFT)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wavenumbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wavenumbers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-spectral-differentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Spectral Differentiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-higher-order-derivatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Higher-Order Derivatives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Higher-Order Derivatives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nyquist-mode-treatment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nyquist Mode Treatment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-aliasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Aliasing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dealiasing-the-23-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Dealiasing — The 2/3 Rule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-spectral-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Spectral Filters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Spectral Filters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exponential-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exponential Filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raised-cosine-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raised-Cosine Filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-the-helmholtzpoisson-equation-in-spectral-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. The Helmholtz/Poisson Equation in Spectral Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-numerical-convergence-and-spectral-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Numerical Convergence and Spectral Accuracy
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonic Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_1d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudospectral Differentiation - 1D
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudospectral Differentiation - 2D
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_qg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quasi-Geostrophic (QG) Turbulence Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pseudospectral_part2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QG Simulation with Diffrax Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/kdv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Korteweg-de Vries (KdV) Equation Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/navier_stokes_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2D Navier-Stokes (Vorticity) Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/qg_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1.5-Layer Quasigeostrophic (QG) Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fourier
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chebyshev
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Spherical Harmonics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/harmonics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harmonics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-mathematical-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Mathematical Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-discrete-fourier-transform-dft" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Discrete Fourier Transform (DFT)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Discrete Fourier Transform (DFT)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wavenumbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wavenumbers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-spectral-differentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Spectral Differentiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-higher-order-derivatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Higher-Order Derivatives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Higher-Order Derivatives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nyquist-mode-treatment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nyquist Mode Treatment
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-aliasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Aliasing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dealiasing-the-23-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Dealiasing — The 2/3 Rule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-spectral-filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Spectral Filters
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Spectral Filters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exponential-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exponential Filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#raised-cosine-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raised-Cosine Filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-the-helmholtzpoisson-equation-in-spectral-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. The Helmholtz/Poisson Equation in Spectral Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-numerical-convergence-and-spectral-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Numerical Convergence and Spectral Accuracy
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="fourier-pseudospectral-methods">Fourier Pseudospectral Methods<a class="headerlink" href="#fourier-pseudospectral-methods" title="Permanent link">&para;</a></h1>
+<p>Fourier pseudospectral methods are the workhorse of computational fluid dynamics for problems with <strong>periodic boundary conditions</strong>. They achieve <strong>spectral (exponential) accuracy</strong> for smooth, periodic functions and are among the most efficient methods available per degree of freedom.</p>
+<hr />
+<h2 id="1-mathematical-setup">1. Mathematical Setup<a class="headerlink" href="#1-mathematical-setup" title="Permanent link">&para;</a></h2>
+<p>Consider a <span class="arithmatex">\(2\pi\)</span>-periodic function <span class="arithmatex">\(u : [0, 2\pi) \to \mathbb{R}\)</span>. The Fourier series representation is:</p>
+<div class="arithmatex">\[u(x) = \sum_{k=-\infty}^{\infty} \hat{u}_k \, e^{ikx}\]</div>
+<p>where the Fourier coefficients are:</p>
+<div class="arithmatex">\[\hat{u}_k = \frac{1}{2\pi} \int_0^{2\pi} u(x) \, e^{-ikx} \, dx\]</div>
+<p>For a domain <span class="arithmatex">\([0, L)\)</span>, the wavenumbers are rescaled: <span class="arithmatex">\(k \to 2\pi k / L\)</span>.</p>
+<hr />
+<h2 id="2-the-discrete-fourier-transform-dft">2. The Discrete Fourier Transform (DFT)<a class="headerlink" href="#2-the-discrete-fourier-transform-dft" title="Permanent link">&para;</a></h2>
+<p>Given <span class="arithmatex">\(N\)</span> uniformly spaced grid points <span class="arithmatex">\(x_j = j \Delta x\)</span>, <span class="arithmatex">\(j = 0, \ldots, N-1\)</span>, with <span class="arithmatex">\(\Delta x = L/N\)</span>, the <strong>Discrete Fourier Transform</strong> is:</p>
+<div class="arithmatex">\[\hat{u}_k = \frac{1}{N} \sum_{j=0}^{N-1} u_j \, e^{-2\pi i k j / N}, \quad k = -N/2+1, \ldots, N/2\]</div>
+<p>and the <strong>Inverse DFT</strong> is:</p>
+<div class="arithmatex">\[u_j = \sum_{k=-N/2+1}^{N/2} \hat{u}_k \, e^{2\pi i k j / N}\]</div>
+<p>The DFT can be computed in <span class="arithmatex">\(O(N \log N)\)</span> time via the <strong>Fast Fourier Transform</strong> (FFT).</p>
+<h3 id="wavenumbers">Wavenumbers<a class="headerlink" href="#wavenumbers" title="Permanent link">&para;</a></h3>
+<p>On a grid with <span class="arithmatex">\(N\)</span> points and domain length <span class="arithmatex">\(L\)</span>, the resolved wavenumbers are:</p>
+<div class="arithmatex">\[k_n = \frac{2\pi n}{L}, \quad n = 0, 1, \ldots, \frac{N}{2}-1, -\frac{N}{2}, \ldots, -1\]</div>
+<p>The <strong>Nyquist wavenumber</strong> <span class="arithmatex">\(k_{N/2} = \pi N / L\)</span> is the highest wavenumber that can be resolved on a grid of <span class="arithmatex">\(N\)</span> points.</p>
+<div class="admonition note">
+<p class="admonition-title">FFT output ordering</p>
+<p>The mathematical index range <span class="arithmatex">\(k = -N/2+1, \ldots, N/2\)</span> (centered at zero) differs from
+the <strong>FFT output ordering</strong> used by <code>numpy</code> and <code>jax.numpy</code>, which places positive frequencies
+first:</p>
+<div class="arithmatex">\[n_{\text{fft}} = 0, 1, \ldots, \tfrac{N}{2}-1, -\tfrac{N}{2}, \ldots, -1\]</div>
+<p>In SpectralDiffX, <code>FourierGrid1D.k</code> stores the wavenumbers <span class="arithmatex">\(k_n = 2\pi n_{\text{fft}} / L\)</span> in
+this FFT order (as returned by <code>jnp.fft.fftfreq(N, d=L/N) * 2*pi</code>). When computing derivatives
+or inspecting the spectrum, use <code>jnp.fft.fftshift</code> to reorder to the centered representation.</p>
+</div>
+<hr />
+<h2 id="3-spectral-differentiation">3. Spectral Differentiation<a class="headerlink" href="#3-spectral-differentiation" title="Permanent link">&para;</a></h2>
+<p>The key insight of spectral differentiation is that <strong>differentiation in physical space is equivalent to multiplication in spectral space</strong>. Formally, if:</p>
+<div class="arithmatex">\[u(x) = \sum_k \hat{u}_k \, e^{ikx}\]</div>
+<p>then:</p>
+<div class="arithmatex">\[\frac{d^n u}{dx^n}(x) = \sum_k (ik)^n \hat{u}_k \, e^{ikx}\]</div>
+<p>In matrix-free notation, the <span class="arithmatex">\(n\)</span>-th derivative is computed as:</p>
+<div class="arithmatex">\[\widehat{\left(\frac{d^n u}{dx^n}\right)}_k = (ik)^n \hat{u}_k\]</div>
+<p><strong>Algorithm:</strong></p>
+<ol>
+<li>Compute <span class="arithmatex">\(\hat{u}_k = \text{FFT}(u_j)\)</span></li>
+<li>Multiply: <span class="arithmatex">\(\hat{v}_k = (ik)^n \hat{u}_k\)</span></li>
+<li>Invert: <span class="arithmatex">\(v_j = \text{IFFT}(\hat{v}_k)\)</span></li>
+</ol>
+<p>This is exact up to machine precision for band-limited functions.</p>
+<hr />
+<h2 id="4-higher-order-derivatives">4. Higher-Order Derivatives<a class="headerlink" href="#4-higher-order-derivatives" title="Permanent link">&para;</a></h2>
+<p>The second, third, and fourth derivatives follow directly:</p>
+<div class="arithmatex">\[\frac{d^2 u}{dx^2} \longleftrightarrow (ik)^2 \hat{u}_k = -k^2 \hat{u}_k\]</div>
+<div class="arithmatex">\[\frac{d^3 u}{dx^3} \longleftrightarrow (ik)^3 \hat{u}_k = -ik^3 \hat{u}_k\]</div>
+<div class="arithmatex">\[\frac{d^4 u}{dx^4} \longleftrightarrow (ik)^4 \hat{u}_k = k^4 \hat{u}_k\]</div>
+<p>The <strong>Laplacian</strong> in <span class="arithmatex">\(d\)</span> dimensions is:</p>
+<div class="arithmatex">\[\nabla^2 u \longleftrightarrow -(k_1^2 + k_2^2 + \cdots + k_d^2) \hat{u}_\mathbf{k} = -|\mathbf{k}|^2 \hat{u}_\mathbf{k}\]</div>
+<h3 id="nyquist-mode-treatment">Nyquist Mode Treatment<a class="headerlink" href="#nyquist-mode-treatment" title="Permanent link">&para;</a></h3>
+<p>At the Nyquist wavenumber <span class="arithmatex">\(k = N/2\)</span>, the derivative of a real-valued function is ambiguous. The standard convention is to <strong>zero out</strong> the Nyquist mode before differentiating. For odd-order derivatives this is necessary to maintain a real output; for even orders it is optional but recommended.</p>
+<hr />
+<h2 id="5-aliasing">5. Aliasing<a class="headerlink" href="#5-aliasing" title="Permanent link">&para;</a></h2>
+<p><strong>Aliasing</strong> arises when the product of two band-limited signals creates energy at frequencies above the Nyquist limit. Those modes are then misidentified (aliased) as lower-frequency modes.</p>
+<p>Consider the product <span class="arithmatex">\(w = u \cdot v\)</span> where <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> have <span class="arithmatex">\(N/2\)</span> non-zero modes each. The product has up to <span class="arithmatex">\(N\)</span> non-zero modes, but our grid can only represent <span class="arithmatex">\(N/2\)</span> — the excess folds back onto lower modes.</p>
+<p>Concretely, on a grid of <span class="arithmatex">\(N\)</span> points, the wavenumber <span class="arithmatex">\(k\)</span> and <span class="arithmatex">\(k + N\)</span> are <strong>indistinguishable</strong>. A mode at <span class="arithmatex">\(k = 3N/4\)</span> will masquerade as <span class="arithmatex">\(k = -N/4\)</span>.</p>
+<p>This introduces an <strong>aliasing error</strong>:</p>
+<div class="arithmatex">\[\hat{w}_k^{\text{aliased}} = \hat{w}_k + \hat{w}_{k+N} + \hat{w}_{k-N} + \cdots\]</div>
+<hr />
+<h2 id="6-dealiasing-the-23-rule">6. Dealiasing — The 2/3 Rule<a class="headerlink" href="#6-dealiasing-the-23-rule" title="Permanent link">&para;</a></h2>
+<p>The standard remedy is the <strong>2/3 rule</strong> (Orszag, 1971): before computing a nonlinear product, truncate the spectrum so that only the lower <span class="arithmatex">\(2N/3\)</span> modes are retained. The upper <span class="arithmatex">\(N/3\)</span> modes are set to zero.</p>
+<p><strong>Why 2/3?</strong> If both operands have at most <span class="arithmatex">\(M = 2N/3\)</span> non-zero modes, their product has at most <span class="arithmatex">\(2M = 4N/3\)</span> non-zero modes. Since <span class="arithmatex">\(4N/3 \leq 2N\)</span>, the <span class="arithmatex">\(N\)</span>-point grid resolves all product modes without aliasing.</p>
+<p>The dealiasing filter is:</p>
+<div class="arithmatex">\[\mathcal{D}(\hat{u}_k) = \begin{cases} \hat{u}_k &amp; |k| \leq k_{\max}/3 \times 2 \\ 0 &amp; \text{otherwise} \end{cases}\]</div>
+<p><strong>Padding approach:</strong> An equivalent formulation zero-pads the signal to <span class="arithmatex">\(3N/2\)</span> points before the nonlinear operation and then truncates back to <span class="arithmatex">\(N\)</span> points afterwards. This is mathematically identical to the 2/3 rule but avoids an explicit dealiasing step.</p>
+<hr />
+<h2 id="7-spectral-filters">7. Spectral Filters<a class="headerlink" href="#7-spectral-filters" title="Permanent link">&para;</a></h2>
+<p>Beyond dealiasing, <strong>spectral filters</strong> are used to control numerical instability in under-resolved simulations. Rather than a sharp cutoff, they apply a smooth roll-off to high-frequency modes.</p>
+<h3 id="exponential-filter">Exponential Filter<a class="headerlink" href="#exponential-filter" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\sigma(k) = \exp\!\left(-\alpha \left(\frac{|k|}{k_{\max}}\right)^{2p}\right)\]</div>
+<p>where <span class="arithmatex">\(\alpha\)</span> controls the strength and <span class="arithmatex">\(p\)</span> is the order. Higher <span class="arithmatex">\(p\)</span> gives a sharper roll-off. A typical choice is <span class="arithmatex">\(\alpha = \ln(\epsilon_{\text{mach}}) \approx -36\)</span> and <span class="arithmatex">\(p = 4\)</span>.</p>
+<h3 id="raised-cosine-filter">Raised-Cosine Filter<a class="headerlink" href="#raised-cosine-filter" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\sigma(k) = \begin{cases} 1 &amp; |k| \leq k_c \\ \frac{1}{2}\left[1 + \cos\!\left(\pi \frac{|k| - k_c}{k_{\max} - k_c}\right)\right] &amp; k_c &lt; |k| \leq k_{\max} \end{cases}\]</div>
+<p>This provides a smooth transition from passband to stopband.</p>
+<hr />
+<h2 id="8-the-helmholtzpoisson-equation-in-spectral-space">8. The Helmholtz/Poisson Equation in Spectral Space<a class="headerlink" href="#8-the-helmholtzpoisson-equation-in-spectral-space" title="Permanent link">&para;</a></h2>
+<p>The <strong>Helmholtz equation</strong> is:</p>
+<div class="arithmatex">\[(\nabla^2 - \alpha) u = f\]</div>
+<p>In spectral space, this becomes a <strong>diagonal system</strong>:</p>
+<div class="arithmatex">\[(-|\mathbf{k}|^2 - \alpha) \hat{u}_\mathbf{k} = \hat{f}_\mathbf{k}\]</div>
+<p>Solving:</p>
+<div class="arithmatex">\[\hat{u}_\mathbf{k} = \frac{\hat{f}_\mathbf{k}}{-|\mathbf{k}|^2 - \alpha}\]</div>
+<p>The <span class="arithmatex">\(\mathbf{k} = 0\)</span> mode (mean) is singular for the <strong>Poisson equation</strong> (<span class="arithmatex">\(\alpha = 0\)</span>). The standard treatment is to fix <span class="arithmatex">\(\hat{u}_0 = 0\)</span> (zero mean solution).</p>
+<p><strong>Algorithm:</strong></p>
+<ol>
+<li><span class="arithmatex">\(\hat{f}_\mathbf{k} = \text{FFT}(f)\)</span></li>
+<li><span class="arithmatex">\(\hat{u}_\mathbf{k} = \hat{f}_\mathbf{k} / (-|\mathbf{k}|^2 - \alpha)\)</span>, with <span class="arithmatex">\(\hat{u}_0 = 0\)</span></li>
+<li><span class="arithmatex">\(u = \text{IFFT}(\hat{u}_\mathbf{k})\)</span></li>
+</ol>
+<p>This is the most efficient spectral solver — it requires only two FFTs and a pointwise division.</p>
+<hr />
+<h2 id="9-numerical-convergence-and-spectral-accuracy">9. Numerical Convergence and Spectral Accuracy<a class="headerlink" href="#9-numerical-convergence-and-spectral-accuracy" title="Permanent link">&para;</a></h2>
+<p>For a smooth, periodic function <span class="arithmatex">\(u \in C^\infty([0, L))\)</span>, the Fourier approximation error converges <strong>faster than any algebraic power of <span class="arithmatex">\(N\)</span></strong>:</p>
+<div class="arithmatex">\[\|u - u_N\|_\infty \leq C_s N^{-s} \quad \text{for all } s &gt; 0\]</div>
+<p>Equivalently, if <span class="arithmatex">\(u\)</span> is analytic (holomorphic in a strip), the error decays exponentially:</p>
+<div class="arithmatex">\[\|u - u_N\|_\infty \leq C \, e^{-\beta N}\]</div>
+<p>This <strong>spectral accuracy</strong> is the defining property of spectral methods. The practical implication: for smooth problems, spectral methods achieve the same accuracy as finite difference methods of order <span class="arithmatex">\(p\)</span> with far fewer grid points — the ratio grows as <span class="arithmatex">\(N^p / e^{\beta N}\)</span>.</p>
+<p><strong>Comparison of convergence rates</strong> (schematic):</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Error scaling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FD order 2</td>
+<td><span class="arithmatex">\(O(N^{-2})\)</span></td>
+</tr>
+<tr>
+<td>FD order 4</td>
+<td><span class="arithmatex">\(O(N^{-4})\)</span></td>
+</tr>
+<tr>
+<td>FD order 8</td>
+<td><span class="arithmatex">\(O(N^{-8})\)</span></td>
+</tr>
+<tr>
+<td>Spectral (analytic <span class="arithmatex">\(u\)</span>)</td>
+<td><span class="arithmatex">\(O(e^{-\beta N})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For non-smooth or discontinuous functions, spectral methods exhibit the <strong>Gibbs phenomenon</strong> — persistent oscillations near discontinuities — and algebraic convergence at best. In such cases, filtering, spectral mollification, or non-oscillatory reconstructions are required.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

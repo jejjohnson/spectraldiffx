@@ -1,0 +1,2255 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Pseudospectral differentiation, filtering, and PDE solvers in JAX — fully differentiable and JIT-compatible.">
+      
+      
+        <meta name="author" content="J. Emmanuel Johnson">
+      
+      
+      
+        <link rel="prev" href="../chebyshev/">
+      
+      
+        <link rel="next" href="../../notebooks/demo_1d/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Spherical Harmonic Methods - SpectralDiffX</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spherical-harmonic-methods" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SpectralDiffX" class="md-header__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SpectralDiffX
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Spherical Harmonic Methods
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quick Start
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Theory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/demo_1d/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/fourier/grids/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SpectralDiffX" class="md-nav__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SpectralDiffX
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Theory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonic Methods
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonic Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-spherical-coordinates-and-the-laplace-beltrami-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Spherical Coordinates and the Laplace-Beltrami Operator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-spherical-harmonics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Spherical Harmonics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Spherical Harmonics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#normalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalisation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orthogonality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orthogonality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-associated-legendre-polynomials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Associated Legendre Polynomials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-spherical-harmonic-transform-sht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Spherical Harmonic Transform (SHT)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. The Spherical Harmonic Transform (SHT)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discrete-sht-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discrete SHT Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-gauss-legendre-quadrature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Gauss-Legendre Quadrature
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-spectral-differentiation-on-the-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Spectral Differentiation on the Sphere
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Spectral Differentiation on the Sphere">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zonal-derivative-partialpartiallambda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zonal Derivative (\(\partial/\partial\lambda\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meridional-derivative-partialpartialtheta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meridional Derivative (\(\partial/\partial\theta\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-gradient-and-divergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Gradient and Divergence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-helmholtzpoisson-equations-on-the-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Helmholtz/Poisson Equations on the Sphere
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-applications-in-atmospheric-and-geophysical-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Applications in Atmospheric and Geophysical Modelling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Applications in Atmospheric and Geophysical Modelling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#barotropic-vorticity-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Barotropic Vorticity Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quasigeostrophic-model-on-the-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quasigeostrophic Model on the Sphere
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triangular-truncation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triangular Truncation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_1d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudospectral Differentiation - 1D
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudospectral Differentiation - 2D
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_qg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quasi-Geostrophic (QG) Turbulence Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pseudospectral_part2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QG Simulation with Diffrax Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/kdv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Korteweg-de Vries (KdV) Equation Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/navier_stokes_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2D Navier-Stokes (Vorticity) Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/qg_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1.5-Layer Quasigeostrophic (QG) Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fourier
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chebyshev
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Spherical Harmonics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/harmonics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harmonics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-spherical-coordinates-and-the-laplace-beltrami-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Spherical Coordinates and the Laplace-Beltrami Operator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-spherical-harmonics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Spherical Harmonics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Spherical Harmonics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#normalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalisation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orthogonality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orthogonality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-associated-legendre-polynomials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Associated Legendre Polynomials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-spherical-harmonic-transform-sht" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Spherical Harmonic Transform (SHT)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. The Spherical Harmonic Transform (SHT)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#discrete-sht-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discrete SHT Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-gauss-legendre-quadrature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Gauss-Legendre Quadrature
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-spectral-differentiation-on-the-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Spectral Differentiation on the Sphere
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Spectral Differentiation on the Sphere">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zonal-derivative-partialpartiallambda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zonal Derivative (\(\partial/\partial\lambda\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meridional-derivative-partialpartialtheta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Meridional Derivative (\(\partial/\partial\theta\))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-gradient-and-divergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Gradient and Divergence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-helmholtzpoisson-equations-on-the-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Helmholtz/Poisson Equations on the Sphere
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-applications-in-atmospheric-and-geophysical-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Applications in Atmospheric and Geophysical Modelling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Applications in Atmospheric and Geophysical Modelling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#barotropic-vorticity-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Barotropic Vorticity Equation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quasigeostrophic-model-on-the-sphere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quasigeostrophic Model on the Sphere
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triangular-truncation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triangular Truncation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="spherical-harmonic-methods">Spherical Harmonic Methods<a class="headerlink" href="#spherical-harmonic-methods" title="Permanent link">&para;</a></h1>
+<p>Spherical harmonic methods are the natural spectral approach for problems defined on the unit sphere <span class="arithmatex">\(S^2\)</span>. They are the foundation of global weather and climate models, where the governing equations live on the spherical Earth.</p>
+<hr />
+<h2 id="1-spherical-coordinates-and-the-laplace-beltrami-operator">1. Spherical Coordinates and the Laplace-Beltrami Operator<a class="headerlink" href="#1-spherical-coordinates-and-the-laplace-beltrami-operator" title="Permanent link">&para;</a></h2>
+<p>Points on the unit sphere are parameterised by colatitude <span class="arithmatex">\(\theta \in [0, \pi]\)</span> (or latitude <span class="arithmatex">\(\phi = \pi/2 - \theta\)</span>) and longitude <span class="arithmatex">\(\lambda \in [0, 2\pi)\)</span>:</p>
+<div class="arithmatex">\[\mathbf{x} = (\sin\theta \cos\lambda, \, \sin\theta \sin\lambda, \, \cos\theta)\]</div>
+<p>The <strong>surface gradient</strong> of a scalar <span class="arithmatex">\(f\)</span> on <span class="arithmatex">\(S^2\)</span> is:</p>
+<div class="arithmatex">\[\nabla_S f = \frac{1}{\sin\theta} \frac{\partial f}{\partial \lambda} \hat{\boldsymbol{\lambda}} + \frac{\partial f}{\partial \theta} \hat{\boldsymbol{\theta}}\]</div>
+<p>The <strong>Laplace-Beltrami operator</strong> (surface Laplacian) is:</p>
+<div class="arithmatex">\[\nabla_S^2 f = \frac{1}{\sin\theta} \frac{\partial}{\partial \theta}\!\left(\sin\theta \frac{\partial f}{\partial \theta}\right) + \frac{1}{\sin^2\theta} \frac{\partial^2 f}{\partial \lambda^2}\]</div>
+<p>This operator is the generalisation of the Laplacian to the curved spherical geometry.</p>
+<hr />
+<h2 id="2-spherical-harmonics">2. Spherical Harmonics<a class="headerlink" href="#2-spherical-harmonics" title="Permanent link">&para;</a></h2>
+<p>The <strong>spherical harmonics</strong> <span class="arithmatex">\(Y_\ell^m(\theta, \lambda)\)</span> are the eigenfunctions of the Laplace-Beltrami operator:</p>
+<div class="arithmatex">\[\nabla_S^2 Y_\ell^m = -\ell(\ell+1) Y_\ell^m\]</div>
+<p>They are defined as:</p>
+<div class="arithmatex">\[Y_\ell^m(\theta, \lambda) = N_\ell^m \, P_\ell^m(\cos\theta) \, e^{im\lambda}\]</div>
+<p>where:
+- <span class="arithmatex">\(\ell = 0, 1, 2, \ldots\)</span> is the <strong>total wavenumber</strong> (degree)
+- <span class="arithmatex">\(m = -\ell, \ldots, \ell\)</span> is the <strong>zonal wavenumber</strong> (order)
+- <span class="arithmatex">\(P_\ell^m\)</span> are the associated Legendre polynomials
+- <span class="arithmatex">\(N_\ell^m\)</span> is a normalisation constant</p>
+<h3 id="normalisation">Normalisation<a class="headerlink" href="#normalisation" title="Permanent link">&para;</a></h3>
+<p>Using the <strong>fully normalised</strong> convention (standard in geodesy and atmospheric science):</p>
+<div class="arithmatex">\[N_\ell^m = \sqrt{\frac{(2\ell+1)}{4\pi} \frac{(\ell-|m|)!}{(\ell+|m|)!}}\]</div>
+<h3 id="orthogonality">Orthogonality<a class="headerlink" href="#orthogonality" title="Permanent link">&para;</a></h3>
+<p>Spherical harmonics form a complete orthonormal basis on <span class="arithmatex">\(L^2(S^2)\)</span>:</p>
+<div class="arithmatex">\[\int_{S^2} Y_\ell^m(\hat{\mathbf{x}}) \overline{Y_{\ell'}^{m'}(\hat{\mathbf{x}})} \, d\Omega = \delta_{\ell\ell'} \delta_{mm'}\]</div>
+<p>where <span class="arithmatex">\(d\Omega = \sin\theta \, d\theta \, d\lambda\)</span> is the solid angle element.</p>
+<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Parity</strong>: <span class="arithmatex">\(Y_\ell^m(-\hat{\mathbf{x}}) = (-1)^\ell Y_\ell^m(\hat{\mathbf{x}})\)</span></li>
+<li><strong>Complex conjugate</strong>: <span class="arithmatex">\(\overline{Y_\ell^m} = (-1)^m Y_\ell^{-m}\)</span></li>
+<li><strong>Eigenvalue</strong>: <span class="arithmatex">\(\nabla_S^2 Y_\ell^m = -\ell(\ell+1) Y_\ell^m\)</span></li>
+<li><strong>Truncation</strong>: Truncation at degree <span class="arithmatex">\(L\)</span> gives <span class="arithmatex">\((L+1)^2\)</span> basis functions</li>
+</ul>
+<hr />
+<h2 id="3-associated-legendre-polynomials">3. Associated Legendre Polynomials<a class="headerlink" href="#3-associated-legendre-polynomials" title="Permanent link">&para;</a></h2>
+<p>The <strong>associated Legendre polynomials</strong> <span class="arithmatex">\(P_\ell^m : [-1,1] \to \mathbb{R}\)</span> satisfy the differential equation:</p>
+<div class="arithmatex">\[\frac{d}{d\mu}\!\left[(1-\mu^2) \frac{dP_\ell^m}{d\mu}\right] + \left[\ell(\ell+1) - \frac{m^2}{1-\mu^2}\right] P_\ell^m = 0, \quad \mu = \cos\theta\]</div>
+<p>They are generated by the recurrence:</p>
+<div class="arithmatex">\[P_0^0(\mu) = 1, \quad P_m^m(\mu) = -(2m-1)\sqrt{1-\mu^2} P_{m-1}^{m-1}(\mu)\]</div>
+<div class="arithmatex">\[P_{\ell+1}^m(\mu) = \frac{(2\ell+1)\mu P_\ell^m(\mu) - (\ell+m) P_{\ell-1}^m(\mu)}{\ell - m + 1}\]</div>
+<p>The Legendre recurrence is numerically stable when evaluated at the Gauss-Legendre quadrature nodes.</p>
+<hr />
+<h2 id="4-the-spherical-harmonic-transform-sht">4. The Spherical Harmonic Transform (SHT)<a class="headerlink" href="#4-the-spherical-harmonic-transform-sht" title="Permanent link">&para;</a></h2>
+<p>A scalar field <span class="arithmatex">\(f(\theta, \lambda)\)</span> on the sphere is expanded as:</p>
+<div class="arithmatex">\[f(\theta, \lambda) = \sum_{\ell=0}^{L} \sum_{m=-\ell}^{\ell} \hat{f}_\ell^m \, Y_\ell^m(\theta, \lambda)\]</div>
+<p>The <strong>spectral coefficients</strong> are:</p>
+<div class="arithmatex">\[\hat{f}_\ell^m = \int_0^{2\pi}\!\int_0^\pi f(\theta, \lambda) \overline{Y_\ell^m(\theta, \lambda)} \sin\theta \, d\theta \, d\lambda\]</div>
+<h3 id="discrete-sht-algorithm">Discrete SHT Algorithm<a class="headerlink" href="#discrete-sht-algorithm" title="Permanent link">&para;</a></h3>
+<p>The SHT is split into two steps:</p>
+<ol>
+<li>
+<p><strong>Zonal Fourier Transform</strong> (in <span class="arithmatex">\(\lambda\)</span>): For each colatitude <span class="arithmatex">\(\theta_j\)</span>, compute:
+   $<span class="arithmatex">\(F_m(\theta_j) = \frac{1}{2\pi} \int_0^{2\pi} f(\theta_j, \lambda) e^{-im\lambda} \, d\lambda \approx \text{FFT}\)</span>$</p>
+</li>
+<li>
+<p><strong>Legendre Transform</strong> (in <span class="arithmatex">\(\theta\)</span>): For each <span class="arithmatex">\(m\)</span>, compute:
+   $<span class="arithmatex">\(\hat{f}_\ell^m = \int_{-1}^{1} F_m(\mu) P_\ell^m(\mu) \, d\mu \approx \sum_j w_j F_m(\mu_j) P_\ell^m(\mu_j)\)</span>$</p>
+</li>
+</ol>
+<p>where <span class="arithmatex">\(\mu_j\)</span> are Gauss-Legendre nodes and <span class="arithmatex">\(w_j\)</span> are Gauss-Legendre weights.</p>
+<p>The total cost is <span class="arithmatex">\(O(L^3)\)</span> for the Legendre transform step (dominant) and <span class="arithmatex">\(O(L^2 \log L)\)</span> for the zonal FFT step.</p>
+<hr />
+<h2 id="5-gauss-legendre-quadrature">5. Gauss-Legendre Quadrature<a class="headerlink" href="#5-gauss-legendre-quadrature" title="Permanent link">&para;</a></h2>
+<p>The meridional integrals in the SHT are evaluated using <strong>Gauss-Legendre (GL) quadrature</strong>. For <span class="arithmatex">\(J\)</span> quadrature points <span class="arithmatex">\(\mu_j = \cos\theta_j\)</span> (zeros of <span class="arithmatex">\(P_J(\mu)\)</span>) with weights <span class="arithmatex">\(w_j\)</span>:</p>
+<div class="arithmatex">\[\int_{-1}^{1} g(\mu) \, d\mu \approx \sum_{j=1}^{J} w_j g(\mu_j)\]</div>
+<p>This quadrature is <strong>exact</strong> for polynomials of degree <span class="arithmatex">\(\leq 2J-1\)</span>. For the SHT with truncation <span class="arithmatex">\(L\)</span>, we need <span class="arithmatex">\(J \geq \lceil (3L+1)/2 \rceil\)</span> quadrature points to exactly integrate the products <span class="arithmatex">\(P_\ell^m P_{\ell'}^{m'}\)</span> without aliasing.</p>
+<p>The GL nodes and weights are computed from the eigenvalues and eigenvectors of the symmetric tridiagonal Jacobi matrix.</p>
+<hr />
+<h2 id="6-spectral-differentiation-on-the-sphere">6. Spectral Differentiation on the Sphere<a class="headerlink" href="#6-spectral-differentiation-on-the-sphere" title="Permanent link">&para;</a></h2>
+<h3 id="zonal-derivative-partialpartiallambda">Zonal Derivative (<span class="arithmatex">\(\partial/\partial\lambda\)</span>)<a class="headerlink" href="#zonal-derivative-partialpartiallambda" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\frac{\partial f}{\partial \lambda} = \sum_{\ell, m} im \hat{f}_\ell^m \, Y_\ell^m\]</div>
+<p>This is a simple multiplication by <span class="arithmatex">\(im\)</span> in spectral space, analogous to Fourier differentiation.</p>
+<h3 id="meridional-derivative-partialpartialtheta">Meridional Derivative (<span class="arithmatex">\(\partial/\partial\theta\)</span>)<a class="headerlink" href="#meridional-derivative-partialpartialtheta" title="Permanent link">&para;</a></h3>
+<p>The meridional derivative is more involved. In spectral space:</p>
+<div class="arithmatex">\[\frac{\partial Y_\ell^m}{\partial \theta} = -\sin\theta \frac{dP_\ell^m}{d(\cos\theta)} e^{im\lambda}\]</div>
+<p>Using the recurrence for the derivative of <span class="arithmatex">\(P_\ell^m\)</span>:</p>
+<div class="arithmatex">\[\frac{dP_\ell^m}{d\mu} = \frac{1}{1-\mu^2}\left[(\ell+1)\mu P_\ell^m - (\ell-m+1)P_{\ell+1}^m\right]\]</div>
+<h3 id="the-gradient-and-divergence">The Gradient and Divergence<a class="headerlink" href="#the-gradient-and-divergence" title="Permanent link">&para;</a></h3>
+<p>The surface gradient and divergence can be computed using <strong>vector spherical harmonics</strong> <span class="arithmatex">\(\mathbf{Y}_\ell^m\)</span>. For the vorticity-streamfunction formulation in atmospheric dynamics, the key relation is:</p>
+<div class="arithmatex">\[\nabla_S^2 \psi = \omega \quad \Longleftrightarrow \quad \hat{\psi}_\ell^m = \frac{-\hat{\omega}_\ell^m}{\ell(\ell+1)}\]</div>
+<p>(with <span class="arithmatex">\(\hat{\psi}_0^0 = 0\)</span> for uniqueness).</p>
+<hr />
+<h2 id="7-helmholtzpoisson-equations-on-the-sphere">7. Helmholtz/Poisson Equations on the Sphere<a class="headerlink" href="#7-helmholtzpoisson-equations-on-the-sphere" title="Permanent link">&para;</a></h2>
+<p>The <strong>Poisson equation</strong> on the sphere is:</p>
+<div class="arithmatex">\[\nabla_S^2 u = f\]</div>
+<p>Since <span class="arithmatex">\(Y_\ell^m\)</span> are eigenfunctions with eigenvalue <span class="arithmatex">\(-\ell(\ell+1)\)</span>, the solution is:</p>
+<div class="arithmatex">\[\hat{u}_\ell^m = \frac{-\hat{f}_\ell^m}{\ell(\ell+1)}, \quad \ell \geq 1\]</div>
+<p>The <span class="arithmatex">\(\ell = 0\)</span> mode (global mean) is set to zero.</p>
+<p>The <strong>Helmholtz equation</strong>:</p>
+<div class="arithmatex">\[(\nabla_S^2 - \alpha) u = f\]</div>
+<div class="arithmatex">\[\hat{u}_\ell^m = \frac{\hat{f}_\ell^m}{-\ell(\ell+1) - \alpha}\]</div>
+<p>For <span class="arithmatex">\(\alpha \neq 0\)</span>, the system is non-singular for all <span class="arithmatex">\(\ell\)</span>.</p>
+<hr />
+<h2 id="8-applications-in-atmospheric-and-geophysical-modelling">8. Applications in Atmospheric and Geophysical Modelling<a class="headerlink" href="#8-applications-in-atmospheric-and-geophysical-modelling" title="Permanent link">&para;</a></h2>
+<p>Spherical harmonic methods are the foundation of <strong>global spectral models</strong> in weather and climate prediction.</p>
+<h3 id="barotropic-vorticity-equation">Barotropic Vorticity Equation<a class="headerlink" href="#barotropic-vorticity-equation" title="Permanent link">&para;</a></h3>
+<p>The simplest atmospheric model evolves the <strong>vorticity</strong> <span class="arithmatex">\(\omega\)</span> on the sphere:</p>
+<div class="arithmatex">\[\frac{\partial \omega}{\partial t} + J(\psi, \omega + f) = \nu \nabla_S^{2n} \omega\]</div>
+<p>where <span class="arithmatex">\(f = 2\Omega\cos\theta\)</span> is the Coriolis parameter (<span class="arithmatex">\(f\)</span>-plane/beta-plane models) and <span class="arithmatex">\(J\)</span> is the spherical Jacobian.</p>
+<h3 id="quasigeostrophic-model-on-the-sphere">Quasigeostrophic Model on the Sphere<a class="headerlink" href="#quasigeostrophic-model-on-the-sphere" title="Permanent link">&para;</a></h3>
+<p>The QG potential vorticity equation:</p>
+<div class="arithmatex">\[q = \nabla_S^2\psi - \frac{\psi}{R^2} + f\]</div>
+<div class="arithmatex">\[\frac{\partial q}{\partial t} + J(\psi, q) = \text{dissipation} + \text{forcing}\]</div>
+<p>In spectral space, PV inversion reduces to:</p>
+<div class="arithmatex">\[\hat{\psi}_\ell^m = \frac{-\hat{q'}_\ell^m}{\ell(\ell+1) + R^{-2}}\]</div>
+<h3 id="triangular-truncation">Triangular Truncation<a class="headerlink" href="#triangular-truncation" title="Permanent link">&para;</a></h3>
+<p>Weather models typically use <strong>triangular truncation</strong> <span class="arithmatex">\(T_L\)</span>: retain all modes with <span class="arithmatex">\(\ell \leq L\)</span> and <span class="arithmatex">\(|m| \leq \ell\)</span>, giving <span class="arithmatex">\((L+1)^2\)</span> complex coefficients.</p>
+<p>The associated horizontal resolution is approximately <span class="arithmatex">\(\Delta x \approx \pi a / L\)</span> where <span class="arithmatex">\(a\)</span> is the Earth's radius. For example, T85 gives <span class="arithmatex">\(\sim 150\)</span> km resolution.</p>
+<hr />
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Durran, D.R. (2010). <em>Numerical Methods for Fluid Dynamics</em>. Springer.</li>
+<li>Holton, J.R. &amp; Hakim, G.J. (2012). <em>An Introduction to Dynamic Meteorology</em>. Academic Press.</li>
+<li>Jakob-Chien, R. et al. (1995). Spectral transform solutions to the shallow water test suite. <em>Monthly Weather Review</em>, 123(6).</li>
+<li>Shen, J., Tang, T. &amp; Wang, L.L. (2011). <em>Spectral Methods: Algorithms, Analysis and Applications</em>. Springer.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
