@@ -163,3 +163,36 @@ def test_spherical_grid_2d_laplacian_eigenvalues_shape():
     assert float(eig[0, 0]) == pytest.approx(0.0)
     # l=1 row should be -1*(1+1) = -2
     assert float(eig[1, 0]) == pytest.approx(-2.0)
+
+
+def test_spherical_grid_2d_weights_shape():
+    """SphericalGrid2D.weights must have shape (Ny, Nx)."""
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    assert g.weights.shape == (Ny, Nx)
+
+
+def test_spherical_grid_2d_weights_sphere_area():
+    """
+    The sum of SphericalGrid2D.weights should equal the area of the sphere.
+
+    Integrating u=1 over the sphere:
+        ∫∫ dΩ = ∫₀²π dphi * ∫₀^π sin(theta) dtheta = 2π * 2 = 4π
+
+    For radius R = Ly/π: area = 4π * R².
+    The weights w[j,k] = w_lat[j] * dx_lon absorb the sin(theta) Jacobian
+    (GL weights integrate mu=cos(theta) over [-1,1]), so:
+        Σ_jk w[j,k] * 1 = (Σ_j w_lat[j]) * Nx * dx = 2 * Lx = 4π (for R=1).
+    """
+    import math
+
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    R = g.Ly / np.pi
+
+    area = float(jnp.sum(g.weights))
+    expected = 4 * math.pi * R**2
+
+    assert abs(area - expected) < 1e-12, (
+        f"Sphere area: sum(weights) = {area:.12f}, expected 4πR² = {expected:.12f}"
+    )

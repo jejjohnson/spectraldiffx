@@ -181,3 +181,72 @@ def test_cheb_deriv2d_advection_scalar():
     adv = deriv.advection_scalar(vx, vy, q)
     expected = jnp.pi * jnp.cos(jnp.pi * X)
     assert jnp.allclose(adv, expected, atol=1e-5)
+
+
+def test_cheb_deriv2d_curl_of_gradient_zero():
+    """
+    curl(grad(phi)) = 0 for any smooth scalar phi on the Chebyshev grid.
+
+    curl(grad phi) = d²phi/dxdy - d²phi/dydx.
+    Because matrix multiplication is associative (Dy @ (u @ Dx.T) equals
+    (Dy @ u) @ Dx.T), the two mixed-partial expressions are identical and
+    their difference is exactly zero.
+    """
+    N = 16
+    grid = ChebyshevGrid2D.from_N_L(Nx=N, Ny=N, Lx=1.0, Ly=1.0)
+    deriv = ChebyshevDerivative2D(grid)
+    X, Y = grid.X
+
+    phi = jnp.sin(jnp.pi * X) * jnp.cos(jnp.pi * Y)
+    dphi_dx, dphi_dy = deriv.gradient(phi)
+    curl_val = deriv.curl(dphi_dx, dphi_dy)
+
+    assert jnp.allclose(curl_val, 0.0, atol=1e-10), (
+        f"curl(grad(phi)) ≠ 0: max abs = {float(jnp.max(jnp.abs(curl_val))):.2e}"
+    )
+
+
+def test_cheb_deriv2d_laplacian_equals_div_grad():
+    """
+    laplacian(u) == div(grad(u)) for the Chebyshev operators.
+
+    Both are constructed from D² applied along each axis, so they must agree
+    exactly up to floating-point rounding.
+    """
+    N = 16
+    grid = ChebyshevGrid2D.from_N_L(Nx=N, Ny=N, Lx=1.0, Ly=1.0)
+    deriv = ChebyshevDerivative2D(grid)
+    X, Y = grid.X
+
+    u = jnp.sin(jnp.pi * X) * jnp.cos(0.5 * jnp.pi * Y)
+    lap = deriv.laplacian(u)
+    gx, gy = deriv.gradient(u)
+    div_g = deriv.divergence(gx, gy)
+
+    assert jnp.allclose(lap, div_g, atol=1e-10), (
+        f"laplacian ≠ div(grad): max diff = {float(jnp.max(jnp.abs(lap - div_g))):.2e}"
+    )
+
+
+def test_cheb_deriv2d_gradient_known_values():
+    """
+    d/dx[sin(πx)cos(πy)] = π cos(πx)cos(πy) at Chebyshev nodes.
+    d/dy[sin(πx)cos(πy)] = -π sin(πx)sin(πy) at Chebyshev nodes.
+    """
+    N = 24
+    grid = ChebyshevGrid2D.from_N_L(Nx=N, Ny=N, Lx=1.0, Ly=1.0)
+    deriv = ChebyshevDerivative2D(grid)
+    X, Y = grid.X
+
+    u = jnp.sin(jnp.pi * X) * jnp.cos(jnp.pi * Y)
+    du_dx, du_dy = deriv.gradient(u)
+
+    expected_dx = jnp.pi * jnp.cos(jnp.pi * X) * jnp.cos(jnp.pi * Y)
+    expected_dy = -jnp.pi * jnp.sin(jnp.pi * X) * jnp.sin(jnp.pi * Y)
+
+    assert jnp.allclose(du_dx, expected_dx, atol=1e-8), (
+        f"d/dx error: {float(jnp.max(jnp.abs(du_dx - expected_dx))):.2e}"
+    )
+    assert jnp.allclose(du_dy, expected_dy, atol=1e-8), (
+        f"d/dy error: {float(jnp.max(jnp.abs(du_dy - expected_dy))):.2e}"
+    )

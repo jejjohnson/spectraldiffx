@@ -110,3 +110,59 @@ def test_cheb_filter2d_dc_preserved():
     u = jnp.ones((Ny + 1, Nx + 1)) * 4.2
     u_f = filt.exponential_filter(u)
     assert jnp.allclose(u_f, u, atol=1e-4), f"max error = {jnp.abs(u_f - u).max()}"
+
+
+def test_cheb_filter2d_hyperviscosity_dc_preserved():
+    """
+    ChebyshevFilter2D.hyperviscosity(): the k=0 coefficient must be unchanged.
+
+    F(kx=0, ky=0) = exp(-nu * 0^power * dt) = 1.
+    A constant field has only the k=0 Chebyshev mode and should pass through.
+    """
+    N = 8
+    grid = ChebyshevGrid2D.from_N_L(Nx=N, Ny=N, Lx=1.0, Ly=1.0)
+    filt = ChebyshevFilter2D(grid)
+    n_pts = N + 1  # Gauss-Lobatto has N+1 points
+    u = jnp.ones((n_pts, n_pts))
+    u_filt = filt.hyperviscosity(u, nu_hyper=1e-3, dt=0.1)
+    assert jnp.allclose(u_filt, u, atol=1e-13), (
+        f"Constant field should be unchanged by hyperviscosity filter; "
+        f"max diff = {float(jnp.max(jnp.abs(u_filt - u))):.2e}"
+    )
+
+
+def test_cheb_filter2d_hyperviscosity_high_modes_damped():
+    """ChebyshevFilter2D.hyperviscosity(): high-index coefficients are reduced."""
+    N = 8
+    grid = ChebyshevGrid2D.from_N_L(Nx=N, Ny=N, Lx=1.0, Ly=1.0)
+    filt = ChebyshevFilter2D(grid)
+    n_modes = N + 1  # Gauss-Lobatto
+
+    a_high = jnp.zeros((n_modes, n_modes)).at[-1, -1].set(1.0)
+    a_filt = filt.hyperviscosity(a_high, nu_hyper=1e-3, dt=0.1, spectral=True)
+    assert float(jnp.abs(a_filt[-1, -1])) < 1.0, (
+        "Highest Chebyshev coefficient should be damped by hyperviscosity"
+    )
+
+
+def test_cheb_filter2d_exponential_spectral_input_consistent():
+    """
+    ChebyshevFilter2D.exponential_filter(spectral=True) must match
+    transforming to spectral space, filtering, then transforming back.
+    """
+    N = 8
+    grid = ChebyshevGrid2D.from_N_L(Nx=N, Ny=N, Lx=1.0, Ly=1.0)
+    filt = ChebyshevFilter2D(grid)
+    X, Y = grid.X
+    u = jnp.sin(jnp.pi * X / 2) * jnp.cos(jnp.pi * Y / 2)
+
+    u_filt_phys = filt.exponential_filter(u, spectral=False)
+
+    a = grid.transform(u)
+    a_filt = filt.exponential_filter(a, spectral=True)
+    u_filt_from_spec = grid.transform(a_filt, inverse=True)
+
+    assert jnp.allclose(u_filt_phys, u_filt_from_spec, atol=1e-12), (
+        f"exponential_filter spectral=True vs False: max diff = "
+        f"{float(jnp.max(jnp.abs(u_filt_phys - u_filt_from_spec))):.2e}"
+    )

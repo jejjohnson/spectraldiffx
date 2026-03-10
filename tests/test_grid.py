@@ -85,3 +85,58 @@ def test_grid_invalid_n():
     """Ensure non-integer N detection raises error."""
     with pytest.raises(ValueError):
         FourierGrid1D.from_L_dx(L=1.0, dx=0.3)  # N = 3.33...
+
+
+# --- k_dealias correctness tests ---
+
+
+def test_fourier_grid_1d_k_dealias_zeros_above_cutoff():
+    """
+    FourierGrid1D.k_dealias must set |k| > k_max*2/3 to zero.
+
+    For N=32, k_max = 16 * 2π/L, cutoff = k_max * 2/3 ≈ 10.67 * 2π/L.
+    Wavenumbers with |k| > cutoff must be zeroed out.
+    """
+    N = 32
+    L = 2 * jnp.pi
+    grid = FourierGrid1D.from_N_L(N, L, dealias="2/3")
+    k = grid.k
+    k_d = grid.k_dealias
+
+    k_max = float(jnp.max(jnp.abs(k)))
+    cutoff = k_max * 2.0 / 3.0
+
+    above_cutoff_mask = jnp.abs(k) > cutoff
+    below_or_equal_mask = ~above_cutoff_mask
+
+    # Modes above cutoff must be zeroed
+    assert jnp.allclose(k_d[above_cutoff_mask], 0.0, atol=1e-15), (
+        "k_dealias: modes above cutoff must be zero"
+    )
+    # Modes below or equal cutoff must be preserved
+    assert jnp.allclose(k_d[below_or_equal_mask], k[below_or_equal_mask], atol=1e-15), (
+        "k_dealias: modes at or below cutoff must be unchanged"
+    )
+
+
+def test_fourier_grid_1d_k_dealias_none_unchanged():
+    """With dealias=None, k_dealias must equal k (no modes zeroed out)."""
+    N = 32
+    L = 2 * jnp.pi
+    grid = FourierGrid1D.from_N_L(N, L, dealias=None)
+    k = grid.k
+    k_d = grid.k_dealias
+    assert jnp.allclose(k_d, k, atol=1e-15), (
+        "With dealias=None, k_dealias must equal k"
+    )
+
+
+def test_fourier_grid_1d_k_dealias_dc_always_zero():
+    """
+    The DC mode (k=0) in k_dealias must always be zero (the 0th wavenumber
+    is zero in the FFT convention, so the dealiased value is also zero).
+    """
+    N = 32
+    grid = FourierGrid1D.from_N_L(N, 2 * jnp.pi, dealias="2/3")
+    k_d = grid.k_dealias
+    assert float(k_d[0]) == 0.0, "k_dealias[0] (DC mode) must be zero"

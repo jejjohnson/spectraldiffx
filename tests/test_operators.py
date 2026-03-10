@@ -175,3 +175,70 @@ def test_deriv3d_project_vector():
     vz_p, vy_p, vx_p = deriv.project_vector(vz, vy, vx)
     div = deriv.divergence(vz_p, vy_p, vx_p)
     assert jnp.allclose(div, 0.0, atol=1e-5)
+
+
+# --- 3D advection_scalar tests ---
+
+
+def test_deriv3d_advection_scalar_unit_velocity_x():
+    """(V·∇)q for V = (0, 0, vx=1), q = sin(x): result is cos(x)."""
+    N = 32
+    L = 2 * jnp.pi
+    grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
+    d = SpectralDerivative3D(grid)
+    Z, Y, X = grid.X
+
+    q = jnp.sin(X)
+    vz = jnp.zeros((N, N, N))
+    vy = jnp.zeros((N, N, N))
+    vx = jnp.ones((N, N, N))
+
+    adv = d.advection_scalar(vz, vy, vx, q)
+    assert jnp.allclose(adv, jnp.cos(X), atol=1e-10)
+
+
+def test_deriv3d_advection_scalar_unit_velocity_y():
+    """(V·∇)q for V = (0, vy=1, 0), q = sin(y): result is cos(y)."""
+    N = 32
+    L = 2 * jnp.pi
+    grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
+    d = SpectralDerivative3D(grid)
+    Z, Y, X = grid.X
+
+    q = jnp.sin(Y)
+    vz = jnp.zeros((N, N, N))
+    vy = jnp.ones((N, N, N))
+    vx = jnp.zeros((N, N, N))
+
+    adv = d.advection_scalar(vz, vy, vx, q)
+    assert jnp.allclose(adv, jnp.cos(Y), atol=1e-10)
+
+
+def test_deriv3d_advection_scalar_unit_velocity_z():
+    """(V·∇)q for V = (vz=1, 0, 0), q = sin(z): result is cos(z)."""
+    N = 32
+    L = 2 * jnp.pi
+    grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
+    d = SpectralDerivative3D(grid)
+    Z, Y, X = grid.X
+
+    q = jnp.sin(Z)
+    vz = jnp.ones((N, N, N))
+    vy = jnp.zeros((N, N, N))
+    vx = jnp.zeros((N, N, N))
+
+    adv = d.advection_scalar(vz, vy, vx, q)
+    assert jnp.allclose(adv, jnp.cos(Z), atol=1e-10)
+
+
+def test_deriv3d_advection_scalar_zero_velocity():
+    """Zero velocity gives zero advection for any tracer."""
+    N = 16
+    L = 2 * jnp.pi
+    grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
+    d = SpectralDerivative3D(grid)
+    Z, Y, X = grid.X
+    q = jnp.sin(X) * jnp.cos(Y) * jnp.sin(Z)
+    zero = jnp.zeros((N, N, N))
+    adv = d.advection_scalar(zero, zero, zero, q)
+    assert jnp.allclose(adv, 0.0, atol=1e-14)

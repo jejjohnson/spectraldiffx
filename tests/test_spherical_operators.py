@@ -2,6 +2,7 @@
 Tests for SphericalDerivative1D and SphericalDerivative2D.
 """
 
+import jax
 import jax.numpy as jnp
 import numpy as np
 
@@ -147,3 +148,161 @@ def test_spherical_deriv2d_curl_of_gradient_zero():
     grad_theta, grad_phi = d.gradient(u)
     zeta = d.curl(grad_theta, grad_phi)
     assert jnp.allclose(zeta, 0.0, atol=1e-6)
+
+
+# ---------------------------------------------------------------------------
+# SphericalDerivative2D.divergence tests
+# ---------------------------------------------------------------------------
+
+
+def test_spherical_deriv2d_divergence_of_zonal_gradient():
+    """
+    div(grad(cos(theta))) = laplacian(cos(theta)) for a zonal field.
+
+    For a purely zonal field (no phi dependence), the theta-gradient is
+    accurately computed by the 1D Legendre derivative, so div(grad(u))
+    should match laplacian(u) from the eigenvalue computation.
+    """
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    d = SphericalDerivative2D(g)
+    THETA = g.y[:, None] * jnp.ones((Ny, Nx))
+
+    u = jnp.cos(THETA)  # P_1(cos(theta)), l=1 eigenvalue -2/R^2
+    grad_th, grad_ph = d.gradient(u)
+    div_grad = d.divergence(grad_th, grad_ph)
+    lap = d.laplacian(u)
+
+    assert jnp.allclose(div_grad, lap, atol=1e-8), (
+        f"div(grad(cos(theta))) vs laplacian: max error = "
+        f"{float(jnp.max(jnp.abs(div_grad - lap))):.2e}"
+    )
+
+
+def test_spherical_deriv2d_divergence_free_streamfunction_velocity():
+    """
+    The velocity field derived from a streamfunction must be divergence-free.
+
+    For ψ(theta, phi) = (1 - cos²(theta)) * cos(phi), the geostrophic
+    velocity components are:
+        v_theta = -1/(R*sin) * dψ/dphi = sin(phi)*sin(theta)/R
+        v_phi   = 1/R * dψ/dtheta     = 2*sin(theta)*cos(theta)*cos(phi)/R
+
+    Analytically: div(v_theta, v_phi) = 0.
+    """
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    d = SphericalDerivative2D(g)
+    PHI, THETA = g.X
+    R = g.Ly / jnp.pi
+
+    # ψ = (1 - cos²θ)*cos(φ) = sin²(θ)*cos(φ) — theta part is polynomial in cos(θ)
+    psi = (1.0 - jnp.cos(THETA) ** 2) * jnp.cos(PHI)
+    sin_theta = jnp.sin(THETA)
+
+    psi_hat = jnp.fft.fft(psi, axis=-1)
+    m_phys = 2 * jnp.pi * jnp.fft.fftfreq(Nx, g.dx)
+    dpsi_dphi = jnp.fft.ifft(1j * m_phys[None, :] * psi_hat, axis=-1).real
+    dpsi_dtheta = jax.vmap(d.deriv_theta.gradient, in_axes=1, out_axes=1)(psi)
+
+    v_theta = -dpsi_dphi / (R * sin_theta)
+    v_phi = dpsi_dtheta / R
+
+    div_v = d.divergence(v_theta, v_phi)
+    assert jnp.allclose(div_v, 0.0, atol=1e-10), (
+        f"Streamfunction velocity should be divergence-free; "
+        f"max |div| = {float(jnp.max(jnp.abs(div_v))):.2e}"
+    )
+
+
+def test_spherical_deriv2d_divergence_known_div_free_field():
+    """
+    Analytically divergence-free field should have zero divergence.
+
+    For V = (sin(phi)*sin(theta)/R, sin(2*theta)*cos(phi)/R):
+        d(V_theta*sin)/dtheta = d(sin²θ*sin(phi)/R)/dtheta = sin(2θ)*sin(phi)/R
+        dV_phi/dphi = d(sin(2θ)*cos(phi)/R)/dphi = -sin(2θ)*sin(phi)/R
+    They cancel, so div = 0.
+    """
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    d = SphericalDerivative2D(g)
+    PHI, THETA = g.X
+    R = g.Ly / jnp.pi
+
+    v_theta = jnp.sin(PHI) * jnp.sin(THETA) / R
+    v_phi = jnp.sin(2 * THETA) * jnp.cos(PHI) / R
+
+    div_v = d.divergence(v_theta, v_phi)
+    assert jnp.allclose(div_v, 0.0, atol=1e-10), (
+        f"Known div-free field: max |div| = {float(jnp.max(jnp.abs(div_v))):.2e}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# SphericalDerivative2D.advection_scalar tests
+# ---------------------------------------------------------------------------
+
+
+def test_spherical_deriv2d_advection_scalar_zero_velocity():
+    """Zero velocity must give zero advection for any tracer field."""
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    d = SphericalDerivative2D(g)
+    THETA = g.y[:, None] * jnp.ones((Ny, Nx))
+
+    q = jnp.cos(THETA)
+    zero = jnp.zeros((Ny, Nx))
+    adv = d.advection_scalar(zero, zero, q)
+    assert jnp.allclose(adv, 0.0, atol=1e-15), (
+        "Zero velocity must give zero advection"
+    )
+
+
+def test_spherical_deriv2d_advection_scalar_zonal_flow():
+    """
+    For v_theta = 1/R, v_phi = 0, q = cos(theta) (zonal field):
+
+        (V·∇)q = v_theta * grad_theta(q)
+               = (1/R) * (-sin(theta)/R) = -sin(theta) / R²
+    """
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    d = SphericalDerivative2D(g)
+    PHI, THETA = g.X
+    R = g.Ly / jnp.pi
+
+    v_theta = jnp.ones((Ny, Nx)) / R
+    v_phi = jnp.zeros((Ny, Nx))
+    q = jnp.cos(THETA)
+
+    adv = d.advection_scalar(v_theta, v_phi, q)
+    expected = -jnp.sin(THETA) / R**2
+    assert jnp.allclose(adv, expected, atol=1e-10), (
+        f"Zonal advection: max error = {float(jnp.max(jnp.abs(adv - expected))):.2e}"
+    )
+
+
+def test_spherical_deriv2d_advection_scalar_phi_flow():
+    """
+    For v_theta = 0, v_phi = 1.0, q = cos(phi):
+
+        (V·∇)q = v_phi * grad_phi(cos(phi))
+               = 1.0 * (-sin(phi) / (R * sin(theta)))
+               = -sin(phi) / (R * sin(theta))
+    """
+    Nx, Ny = 32, 16
+    g = SphericalGrid2D.from_N_L(Nx, Ny)
+    d = SphericalDerivative2D(g)
+    PHI, THETA = g.X
+    R = g.Ly / jnp.pi
+
+    v_theta = jnp.zeros((Ny, Nx))
+    v_phi = jnp.ones((Ny, Nx))
+    q = jnp.cos(PHI)
+
+    adv = d.advection_scalar(v_theta, v_phi, q)
+    expected = -jnp.sin(PHI) / (R * jnp.sin(THETA))
+    assert jnp.allclose(adv, expected, atol=1e-10), (
+        f"Phi-flow advection: max error = {float(jnp.max(jnp.abs(adv - expected))):.2e}"
+    )
