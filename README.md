@@ -1,7 +1,7 @@
 # SpectralDiffX
 
-<a href="https://www.codefactor.io/repository/github/jejjohnson/spectraldiffx"><img src="https://www.codefactor.io/repository/github/jejjohnson/spectraldiffx/badge"></a>
 <a href="https://codecov.io/gh/jejjohnson/spectraldiffx"><img src="https://codecov.io/gh/jejjohnson/spectraldiffx/branch/main/graph/badge.svg?token=YGPQQEAK91"></a>
+<a href="https://jejjohnson.github.io/spectraldiffx"><img src="https://img.shields.io/badge/docs-latest-blue.svg"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
 <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.12+-blue.svg"></a>
 <a href="https://github.com/jejjohnson/spectraldiffx"><img src="https://img.shields.io/badge/status-pre--alpha-orange"></a>
@@ -76,6 +76,13 @@ du_dx = deriv(u, order=1)  # ≈ cos(x)
 
 ---
 
+## Documentation
+
+Full documentation, including API reference and theory, is available at:
+**https://jejjohnson.github.io/spectraldiffx**
+
+---
+
 ## References
 
 **Software**
@@ -93,4 +100,4 @@ du_dx = deriv(u, order=1)  # ≈ cos(x)
 
 ## License
 
-<a>MIT</a> © J Emmanuel Johnson
+[MIT](LICENSE) © J Emmanuel Johnson

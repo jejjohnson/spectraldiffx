@@ -1,0 +1,123 @@
+site_name: SpectralDiffX
+site_description: Pseudospectral differentiation, filtering, and PDE solvers in JAX — fully differentiable and JIT-compatible.
+site_author: J. Emmanuel Johnson
+repo_url: https://github.com/jejjohnson/spectraldiffx
+repo_name: jejjohnson/spectraldiffx
+docs_dir: .
+exclude_docs: |
+  spectraldiffx/
+  tests/
+  scripts/
+  .git/
+  .github/
+  uv.lock
+  pyproject.toml
+  Makefile
+  CHANGELOG.md
+  CODE_REVIEW.md
+  AGENTS.md
+  codecov.yaml
+  README.md
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.annotate
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            members_order: source
+            show_root_heading: true
+            show_root_full_path: false
+            show_object_full_path: false
+            group_by_category: true
+            show_category_heading: true
+  - mkdocs-jupyter:
+      include_source: true
+      execute: false
+      ignore_h1: false
+
+nav:
+  - Home: docs/index.md
+  - Installation: docs/installation.md
+  - Quick Start: docs/quickstart.md
+  - Theory:
+    - Overview: docs/theory/index.md
+    - Fourier Pseudospectral Methods: docs/theory/fourier.md
+    - Chebyshev Pseudospectral Methods: docs/theory/chebyshev.md
+    - Spherical Harmonic Methods: docs/theory/spherical.md
+  - Examples:
+    - 1D Differentiation: notebooks/demo_1d.py
+    - 2D Differentiation: notebooks/demo_2d.py
+    - QG Turbulence: notebooks/demo_qg.py
+    - QG with Diffrax: notebooks/pseudospectral_part2.py
+    - KdV Equation: notebooks/kdv.py
+    - Navier-Stokes 2D: notebooks/navier_stokes_2d.py
+    - QG Model: notebooks/qg_model.py
+  - API Reference:
+    - Fourier:
+      - Grids: docs/api/fourier/grids.md
+      - Operators: docs/api/fourier/operators.md
+      - Filters: docs/api/fourier/filters.md
+      - Solvers: docs/api/fourier/solvers.md
+    - Chebyshev:
+      - Grids: docs/api/chebyshev/grids.md
+      - Operators: docs/api/chebyshev/operators.md
+      - Filters: docs/api/chebyshev/filters.md
+      - Solvers: docs/api/chebyshev/solvers.md
+    - Spherical Harmonics:
+      - Grids: docs/api/spherical/grids.md
+      - Operators: docs/api/spherical/operators.md
+      - Filters: docs/api/spherical/filters.md
+      - Harmonics: docs/api/spherical/harmonics.md
+      - Solvers: docs/api/spherical/solvers.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
