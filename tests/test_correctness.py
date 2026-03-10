@@ -19,7 +19,6 @@ Tests cover:
 10. QG mean-PV conservation: Jacobian advection preserves total PV integral
 """
 
-import jax
 import jax.numpy as jnp
 import numpy as np
 import pytest
@@ -427,10 +426,9 @@ def test_ns2d_enstrophy_decreases_with_viscosity():
         omega = omega + dt * (adv + nu * diffusion)
         enstrophies.append(float(jnp.sum(omega**2) * dx * dy))
 
-    # Enstrophy must decrease overall with strong viscosity
-    assert enstrophies[-1] < enstrophies[0], (
-        f"Enstrophy did not decrease: initial={enstrophies[0]:.4f}, "
-        f"final={enstrophies[-1]:.4f}"
+    # Enstrophy must decrease at every step with strong viscosity
+    assert all(enstrophies[i + 1] <= enstrophies[i] for i in range(len(enstrophies) - 1)), (
+        f"Enstrophy did not decrease monotonically; values={[f'{e:.4f}' for e in enstrophies]}"
     )
     # No step should give NaN
     assert all(np.isfinite(e) for e in enstrophies), "Enstrophy contains NaN/Inf"
@@ -459,7 +457,8 @@ def test_ns2d_energy_finite_no_viscosity():
     X, Y = grid.X
     omega = jnp.sin(2 * X) * jnp.cos(3 * Y)
 
-    initial_energy = float(jnp.sum(omega**2) * dx * dy)
+    psi_init = solver.solve(omega, alpha=0.0)
+    initial_energy = float(0.5 * jnp.sum(omega * psi_init) * dx * dy)
 
     for _ in range(nsteps):
         psi = solver.solve(omega, alpha=0.0)
@@ -468,10 +467,11 @@ def test_ns2d_energy_finite_no_viscosity():
         adv = -deriv.advection_scalar(u, v, omega)
         omega = omega + dt * adv
 
-    final_energy = float(jnp.sum(omega**2) * dx * dy)
+    psi_final = solver.solve(omega, alpha=0.0)
+    final_energy = float(0.5 * jnp.sum(omega * psi_final) * dx * dy)
 
     assert jnp.all(jnp.isfinite(omega)), "Inviscid NS2D: omega contains NaN/Inf"
-    # Energy should remain within 10% for these small time steps
+    # Kinetic energy E = (1/2)*integral(psi*omega) should remain within 10%
     assert abs(final_energy - initial_energy) / (initial_energy + 1e-10) < 0.1, (
         f"Inviscid NS2D: energy changed by more than 10% in 20 small steps. "
         f"Initial={initial_energy:.4f}, final={final_energy:.4f}"
@@ -801,7 +801,7 @@ def test_qg_energy_bounded_many_steps():
     energy_final = compute_energy(q)
 
     assert jnp.all(jnp.isfinite(q)), "QG energy test: q contains NaN"
-    assert abs(energy_final) < abs(energy_initial) * 100, (
-        f"QG energy grew by more than 100x in 100 small steps: "
+    assert abs(energy_final - energy_initial) / abs(energy_initial) < 0.1, (
+        f"QG energy changed by more than 10% in 100 small steps: "
         f"initial={energy_initial:.4e}, final={energy_final:.4e}"
     )

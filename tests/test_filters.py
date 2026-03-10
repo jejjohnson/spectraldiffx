@@ -81,7 +81,7 @@ def test_filter1d_hyperviscosity_monotone(grid1d):
     # All amplitudes should be <= 1.0
     assert all(a <= 1.0 for a in amplitudes), f"Hyperviscosity must not amplify: {amplitudes}"
     # Amplitudes should decrease with k (higher k → more damping → smaller amplitude)
-    for i in range(1, len(amplitudes) - 1):
+    for i in range(len(amplitudes) - 1):
         assert amplitudes[i + 1] <= amplitudes[i], (
             f"Hyperviscosity not monotone: F(k={[0,1,3,5,10,20][i]})={amplitudes[i]:.6f} "
             f"> F(k={[0,1,3,5,10,20][i+1]})={amplitudes[i+1]:.6f}"

@@ -3,7 +3,6 @@ Tests for SphericalHarmonicTransform.
 """
 
 import jax.numpy as jnp
-import numpy as np
 
 from spectraldiffx._src.spherical.grid import SphericalGrid2D
 from spectraldiffx._src.spherical.harmonics import SphericalHarmonicTransform
