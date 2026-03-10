@@ -269,7 +269,7 @@ def test_spherical_deriv2d_advection_scalar_zonal_flow():
     Nx, Ny = 32, 16
     g = SphericalGrid2D.from_N_L(Nx, Ny)
     d = SphericalDerivative2D(g)
-    PHI, THETA = g.X
+    _PHI, THETA = g.X
     R = g.Ly / jnp.pi
 
     v_theta = jnp.ones((Ny, Nx)) / R

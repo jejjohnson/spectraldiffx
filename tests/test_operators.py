@@ -186,7 +186,7 @@ def test_deriv3d_advection_scalar_unit_velocity_x():
     L = 2 * jnp.pi
     grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
     d = SpectralDerivative3D(grid)
-    Z, Y, X = grid.X
+    _Z, _Y, X = grid.X
 
     q = jnp.sin(X)
     vz = jnp.zeros((N, N, N))
@@ -203,7 +203,7 @@ def test_deriv3d_advection_scalar_unit_velocity_y():
     L = 2 * jnp.pi
     grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
     d = SpectralDerivative3D(grid)
-    Z, Y, X = grid.X
+    _Z, Y, _X = grid.X
 
     q = jnp.sin(Y)
     vz = jnp.zeros((N, N, N))
@@ -220,7 +220,7 @@ def test_deriv3d_advection_scalar_unit_velocity_z():
     L = 2 * jnp.pi
     grid = FourierGrid3D.from_N_L(N, N, N, L, L, L, dealias=None)
     d = SpectralDerivative3D(grid)
-    Z, Y, X = grid.X
+    Z, _Y, _X = grid.X
 
     q = jnp.sin(Z)
     vz = jnp.ones((N, N, N))

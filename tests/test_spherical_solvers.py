@@ -108,7 +108,7 @@ def test_spherical_helmholtz_1d_eigenfunction():
     P2 = jnp.asarray(eval_legendre(2, mu))  # P_2, l=2 → eigenvalue 6/R²
 
     alpha = 1.0
-    f = -(6.0 / R**2 + alpha) * P2  # (∇² - α) P_2 = -(6/R² + α) * P_2
+    f = -(6.0 / R**2 + alpha) * P2  # (nabla^2 - alpha) P_2 = -(6/R^2 + alpha) * P_2
 
     phi = solver.solve(f, alpha=alpha, zero_mean=False)
     assert jnp.allclose(phi, P2, atol=1e-10), (
@@ -135,5 +135,5 @@ def test_spherical_helmholtz_1d_reduces_to_poisson():
 
     phi = solver.solve(f, alpha=0.0, zero_mean=True)
     assert jnp.allclose(phi, Pl, atol=1e-10), (
-        f"1D Helmholtz α=0 (Poisson): max error = {float(jnp.max(jnp.abs(phi - Pl))):.2e}"
+        f"1D Helmholtz alpha=0 (Poisson): max error = {float(jnp.max(jnp.abs(phi - Pl))):.2e}"
     )

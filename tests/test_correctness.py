@@ -757,7 +757,7 @@ def test_qg_pv_spectral_modes_preserved():
     q = jnp.sin(kx * X) * jnp.cos(ky * Y)
     psi = solver.solve(q, alpha=0.0)
 
-    # The Helmholtz solver solves (∇² - α)psi = q, so for α=0:
+    # The Helmholtz solver solves (nabla^2 - alpha)psi = q, so for alpha=0:
     # -(kx²+ky²) * psi_hat = q_hat → psi = -q / (kx²+ky²)
     expected_psi = -q / (kx**2 + ky**2)
     assert jnp.allclose(psi, expected_psi, atol=1e-10), (
