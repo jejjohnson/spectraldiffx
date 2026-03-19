@@ -61,10 +61,9 @@ import jax.numpy as jnp
 from jaxtyping import Array, Float
 from loguru import logger
 import matplotlib.pyplot as plt
-import xarray as xr
-
 from spectraldiffx._src.grid import FourierGrid1D
 from spectraldiffx._src.operators import SpectralDerivative1D
+import xarray as xr
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
