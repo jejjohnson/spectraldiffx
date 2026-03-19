@@ -1,6 +1,6 @@
 [project]
 name = "spectraldiffx"
-version = "0.0.5"
+version = "0.0.6"
 description = "Pre-, Geo-, and ML processing for ocean applications."
 authors = [
     { name = "Juan Emmanuel Johnson", email = "jemanjohnson34@gmail.com" },
