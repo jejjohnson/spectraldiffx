@@ -134,23 +134,69 @@ Each transform type diagonalises this operator under its corresponding boundary 
 
 ### Eigenvalue formulas
 
-**DST-I (Dirichlet BC):**
+The eigenvalue formula depends on the **boundary condition** and the **grid type** (regular/vertex-centred vs staggered/cell-centred). All formulas below use $k = 0, 1, \ldots, N-1$.
 
-$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(k+1)}{2(N+1)}\right), \quad k = 0, 1, \ldots, N-1$$
+#### Same-BC eigenvalues
 
-All eigenvalues are strictly negative — the Dirichlet Laplacian is negative definite.
+These cover problems where both boundaries of an axis share the same BC type.
 
-**DCT-II (Neumann BC):**
+**DST-I — Dirichlet BC, regular grid:**
 
-$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{2N}\right), \quad k = 0, 1, \ldots, N-1$$
+$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(k+1)}{2(N+1)}\right)$$
 
-The $k = 0$ eigenvalue is $\lambda_0 = 0$: the **null mode** (constant function), reflecting the fact that the Neumann Laplacian has a one-dimensional kernel.
+All eigenvalues are strictly negative — the Dirichlet Laplacian on a regular grid is negative definite.
 
-**FFT (Periodic BC):**
+**DST-II — Dirichlet BC, staggered grid:**
 
-$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{N}\right), \quad k = 0, 1, \ldots, N-1$$
+$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(k+1)}{2N}\right)$$
 
-Again $\lambda_0 = 0$ is a null mode.
+All eigenvalues are strictly negative. The forward transform is DST-II; the inverse is DST-III. Critical for incompressible flow solvers where the pressure lives on a cell-centred grid (projection method).
+
+**DCT-I — Neumann BC, regular grid:**
+
+$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{2(N-1)}\right)$$
+
+$\lambda_0 = 0$ (null mode). The DCT-I is self-inverse (up to normalisation). Requires $N \geq 2$.
+
+**DCT-II — Neumann BC, staggered grid:**
+
+$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{2N}\right)$$
+
+$\lambda_0 = 0$ (null mode). The forward transform is DCT-II; the inverse is DCT-III.
+
+**FFT — Periodic BC:**
+
+$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{N}\right)$$
+
+$\lambda_0 = 0$ is a null mode.
+
+#### Mixed-BC eigenvalues
+
+These cover problems with different BCs on the left and right boundaries of the same axis (e.g., Dirichlet on one side, Neumann on the other). All four mixed-BC types share a common eigenvalue formula — all eigenvalues are strictly negative (no null mode).
+
+**DST-III — Dirichlet-left + Neumann-right, regular grid:**
+**DCT-III — Neumann-left + Dirichlet-right, regular grid:**
+**DST-IV — Dirichlet-left + Neumann-right, staggered grid:**
+**DCT-IV — Neumann-left + Dirichlet-right, staggered grid:**
+
+$$\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(2k+1)}{4N}\right)$$
+
+!!! note "Why the same formula?"
+    Although these four cases involve different transforms (DST-III, DCT-III, DST-IV, DCT-IV) and different physical setups, the eigenvalue formula is identical because the mode indices are all half-integer-shifted. The distinction lies in the eigenfunctions and the forward/backward transforms used in the solver.
+
+#### Complete BC × grid-type mapping
+
+| BC | Grid | Transform | Eigenvalue formula | Null mode? |
+|----|------|-----------|--------------------|------------|
+| Dirichlet | Regular | DST-I | $-4/\Delta x^2 \cdot \sin^2(\pi(k{+}1)/[2(N{+}1)])$ | No |
+| Dirichlet | Staggered | DST-II/III | $-4/\Delta x^2 \cdot \sin^2(\pi(k{+}1)/[2N])$ | No |
+| Neumann | Regular | DCT-I | $-4/\Delta x^2 \cdot \sin^2(\pi k/[2(N{-}1)])$ | Yes |
+| Neumann | Staggered | DCT-II/III | $-4/\Delta x^2 \cdot \sin^2(\pi k/[2N])$ | Yes |
+| Periodic | Either | FFT | $-4/\Delta x^2 \cdot \sin^2(\pi k/N)$ | Yes |
+| Mixed (all 4) | Either | III/IV types | $-4/\Delta x^2 \cdot \sin^2(\pi(2k{+}1)/[4N])$ | No |
+
+!!! info "References"
+    This table is derived from Saverin (2023), "SailFFish" (Table 1) and Fuka (2014), "PoisFFT" (Tables 2–4).
 
 ### 2-D eigenvalue matrix
 
