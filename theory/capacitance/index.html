@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../chebyshev/">
+        <link rel="prev" href="../elliptic_solvers/">
       
       
-        <link rel="next" href="../../transforms_guide/">
+        <link rel="next" href="../chebyshev/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Spherical Harmonic Methods - SpectralDiffX</title>
+        <title>Capacitance Method - SpectralDiffX</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spherical-harmonic-methods" class="md-skip">
+        <a href="#the-capacitance-matrix-method" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Spherical Harmonic Methods
+              Capacitance Method
             
           </span>
         </div>
@@ -669,10 +669,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../capacitance/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Method
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -688,6 +715,136 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-problem-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Problem Statement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-key-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Key Idea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-inner-boundary-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Inner-Boundary Detection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-greens-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Green's Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-capacitance-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The Capacitance Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-online-solve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The Online Solve
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-complexity-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Complexity Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-choice-of-base-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Choice of Base Solver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-limitations-and-when-to-use-alternatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Limitations and When to Use Alternatives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -725,37 +882,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spherical Harmonic Methods
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../spherical/" class="md-nav__link">
         
   
   
@@ -771,259 +901,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-spherical-coordinates-and-the-laplace-beltrami-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Spherical Coordinates and the Laplace-Beltrami Operator
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-spherical-harmonics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Spherical Harmonics
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Spherical Harmonics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#normalisation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Normalisation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#orthogonality" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Orthogonality
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Properties
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-associated-legendre-polynomials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Associated Legendre Polynomials
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-the-spherical-harmonic-transform-sht" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. The Spherical Harmonic Transform (SHT)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. The Spherical Harmonic Transform (SHT)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#discrete-sht-algorithm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Discrete SHT Algorithm
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-gauss-legendre-quadrature" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Gauss-Legendre Quadrature
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-spectral-differentiation-on-the-sphere" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Spectral Differentiation on the Sphere
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="6. Spectral Differentiation on the Sphere">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#zonal-derivative-partialpartiallambda" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Zonal Derivative (\(\partial/\partial\lambda\))
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#meridional-derivative-partialpartialtheta" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Meridional Derivative (\(\partial/\partial\theta\))
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-gradient-and-divergence" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Gradient and Divergence
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-helmholtzpoisson-equations-on-the-sphere" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Helmholtz/Poisson Equations on the Sphere
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#8-applications-in-atmospheric-and-geophysical-modelling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        8. Applications in Atmospheric and Geophysical Modelling
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="8. Applications in Atmospheric and Geophysical Modelling">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#barotropic-vorticity-equation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Barotropic Vorticity Equation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quasigeostrophic-model-on-the-sphere" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quasigeostrophic Model on the Sphere
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#triangular-truncation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Triangular Truncation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        References
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2204,10 +2081,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-spherical-coordinates-and-the-laplace-beltrami-operator" class="md-nav__link">
+  <a href="#1-problem-statement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Spherical Coordinates and the Laplace-Beltrami Operator
+        1. Problem Statement
       
     </span>
   </a>
@@ -2215,60 +2092,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-spherical-harmonics" class="md-nav__link">
+  <a href="#2-the-key-idea" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Spherical Harmonics
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Spherical Harmonics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#normalisation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Normalisation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#orthogonality" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Orthogonality
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#properties" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Properties
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-associated-legendre-polynomials" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Associated Legendre Polynomials
+        2. The Key Idea
       
     </span>
   </a>
@@ -2276,38 +2103,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-the-spherical-harmonic-transform-sht" class="md-nav__link">
+  <a href="#3-inner-boundary-detection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. The Spherical Harmonic Transform (SHT)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. The Spherical Harmonic Transform (SHT)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#discrete-sht-algorithm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Discrete SHT Algorithm
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-gauss-legendre-quadrature" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Gauss-Legendre Quadrature
+        3. Inner-Boundary Detection
       
     </span>
   </a>
@@ -2315,60 +2114,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-spectral-differentiation-on-the-sphere" class="md-nav__link">
+  <a href="#4-greens-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. Spectral Differentiation on the Sphere
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="6. Spectral Differentiation on the Sphere">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#zonal-derivative-partialpartiallambda" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Zonal Derivative (\(\partial/\partial\lambda\))
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#meridional-derivative-partialpartialtheta" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Meridional Derivative (\(\partial/\partial\theta\))
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-gradient-and-divergence" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Gradient and Divergence
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#7-helmholtzpoisson-equations-on-the-sphere" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        7. Helmholtz/Poisson Equations on the Sphere
+        4. Green's Functions
       
     </span>
   </a>
@@ -2376,60 +2125,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-applications-in-atmospheric-and-geophysical-modelling" class="md-nav__link">
+  <a href="#5-the-capacitance-matrix" class="md-nav__link">
     <span class="md-ellipsis">
       
-        8. Applications in Atmospheric and Geophysical Modelling
+        5. The Capacitance Matrix
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="8. Applications in Atmospheric and Geophysical Modelling">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#barotropic-vorticity-equation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Barotropic Vorticity Equation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#quasigeostrophic-model-on-the-sphere" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quasigeostrophic Model on the Sphere
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#triangular-truncation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Triangular Truncation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
+  <a href="#6-the-online-solve" class="md-nav__link">
     <span class="md-ellipsis">
       
-        References
+        6. The Online Solve
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-complexity-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Complexity Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-choice-of-base-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Choice of Base Solver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-limitations-and-when-to-use-alternatives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Limitations and When to Use Alternatives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. References
       
     </span>
   </a>
@@ -2456,125 +2210,283 @@
   
 
 
-<h1 id="spherical-harmonic-methods">Spherical Harmonic Methods<a class="headerlink" href="#spherical-harmonic-methods" title="Permanent link">&para;</a></h1>
-<p>Spherical harmonic methods are the natural spectral approach for problems defined on the unit sphere <span class="arithmatex">\(S^2\)</span>. They are the foundation of global weather and climate models, where the governing equations live on the spherical Earth.</p>
+<h1 id="the-capacitance-matrix-method">The Capacitance Matrix Method<a class="headerlink" href="#the-capacitance-matrix-method" title="Permanent link">&para;</a></h1>
+<p>The spectral solvers (DST, DCT, FFT) are fast and elegant, but they require <strong>rectangular domains</strong>. Many physical problems — ocean basins with coastlines, rooms with pillars, flow around obstacles — have <strong>irregular boundaries</strong> defined by a mask. The <strong>capacitance matrix method</strong> (Buzbee, Golub &amp; Nielson, 1970) extends any fast rectangular solver to masked domains by computing a correction based on boundary Green's functions. The key insight is that the correction involves only the boundary points, so its cost is modest relative to the full rectangular solve.</p>
 <hr />
-<h2 id="1-spherical-coordinates-and-the-laplace-beltrami-operator">1. Spherical Coordinates and the Laplace-Beltrami Operator<a class="headerlink" href="#1-spherical-coordinates-and-the-laplace-beltrami-operator" title="Permanent link">&para;</a></h2>
-<p>Points on the unit sphere are parameterised by colatitude <span class="arithmatex">\(\theta \in [0, \pi]\)</span> (or latitude <span class="arithmatex">\(\phi = \pi/2 - \theta\)</span>) and longitude <span class="arithmatex">\(\lambda \in [0, 2\pi)\)</span>:</p>
-<div class="arithmatex">\[\mathbf{x} = (\sin\theta \cos\lambda, \, \sin\theta \sin\lambda, \, \cos\theta)\]</div>
-<p>The <strong>surface gradient</strong> of a scalar <span class="arithmatex">\(f\)</span> on <span class="arithmatex">\(S^2\)</span> is:</p>
-<div class="arithmatex">\[\nabla_S f = \frac{1}{\sin\theta} \frac{\partial f}{\partial \lambda} \hat{\boldsymbol{\lambda}} + \frac{\partial f}{\partial \theta} \hat{\boldsymbol{\theta}}\]</div>
-<p>The <strong>Laplace-Beltrami operator</strong> (surface Laplacian) is:</p>
-<div class="arithmatex">\[\nabla_S^2 f = \frac{1}{\sin\theta} \frac{\partial}{\partial \theta}\!\left(\sin\theta \frac{\partial f}{\partial \theta}\right) + \frac{1}{\sin^2\theta} \frac{\partial^2 f}{\partial \lambda^2}\]</div>
-<p>This operator is the generalisation of the Laplacian to the curved spherical geometry.</p>
-<hr />
-<h2 id="2-spherical-harmonics">2. Spherical Harmonics<a class="headerlink" href="#2-spherical-harmonics" title="Permanent link">&para;</a></h2>
-<p>The <strong>spherical harmonics</strong> <span class="arithmatex">\(Y_\ell^m(\theta, \lambda)\)</span> are the eigenfunctions of the Laplace-Beltrami operator:</p>
-<div class="arithmatex">\[\nabla_S^2 Y_\ell^m = -\ell(\ell+1) Y_\ell^m\]</div>
-<p>They are defined as:</p>
-<div class="arithmatex">\[Y_\ell^m(\theta, \lambda) = N_\ell^m \, P_\ell^m(\cos\theta) \, e^{im\lambda}\]</div>
-<p>where:
-- <span class="arithmatex">\(\ell = 0, 1, 2, \ldots\)</span> is the <strong>total wavenumber</strong> (degree)
-- <span class="arithmatex">\(m = -\ell, \ldots, \ell\)</span> is the <strong>zonal wavenumber</strong> (order)
-- <span class="arithmatex">\(P_\ell^m\)</span> are the associated Legendre polynomials
-- <span class="arithmatex">\(N_\ell^m\)</span> is a normalisation constant</p>
-<h3 id="normalisation">Normalisation<a class="headerlink" href="#normalisation" title="Permanent link">&para;</a></h3>
-<p>Using the <strong>fully normalised</strong> convention (standard in geodesy and atmospheric science):</p>
-<div class="arithmatex">\[N_\ell^m = \sqrt{\frac{(2\ell+1)}{4\pi} \frac{(\ell-|m|)!}{(\ell+|m|)!}}\]</div>
-<h3 id="orthogonality">Orthogonality<a class="headerlink" href="#orthogonality" title="Permanent link">&para;</a></h3>
-<p>Spherical harmonics form a complete orthonormal basis on <span class="arithmatex">\(L^2(S^2)\)</span>:</p>
-<div class="arithmatex">\[\int_{S^2} Y_\ell^m(\hat{\mathbf{x}}) \overline{Y_{\ell'}^{m'}(\hat{\mathbf{x}})} \, d\Omega = \delta_{\ell\ell'} \delta_{mm'}\]</div>
-<p>where <span class="arithmatex">\(d\Omega = \sin\theta \, d\theta \, d\lambda\)</span> is the solid angle element.</p>
-<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<h2 id="1-problem-statement">1. Problem Statement<a class="headerlink" href="#1-problem-statement" title="Permanent link">&para;</a></h2>
+<p>We wish to solve the screened Poisson (Helmholtz) equation on an irregular domain:</p>
+<div class="arithmatex">\[(\nabla^2 - \lambda) \, \psi = f \quad \text{on } \Omega\]</div>
+<p>where:</p>
 <ul>
-<li><strong>Parity</strong>: <span class="arithmatex">\(Y_\ell^m(-\hat{\mathbf{x}}) = (-1)^\ell Y_\ell^m(\hat{\mathbf{x}})\)</span></li>
-<li><strong>Complex conjugate</strong>: <span class="arithmatex">\(\overline{Y_\ell^m} = (-1)^m Y_\ell^{-m}\)</span></li>
-<li><strong>Eigenvalue</strong>: <span class="arithmatex">\(\nabla_S^2 Y_\ell^m = -\ell(\ell+1) Y_\ell^m\)</span></li>
-<li><strong>Truncation</strong>: Truncation at degree <span class="arithmatex">\(L\)</span> gives <span class="arithmatex">\((L+1)^2\)</span> basis functions</li>
+<li><span class="arithmatex">\(\Omega \subset R\)</span> is an irregular subdomain of a rectangle <span class="arithmatex">\(R = [0, L_x] \times [0, L_y]\)</span></li>
+<li><span class="arithmatex">\(\Omega\)</span> is defined by a <strong>binary mask</strong> <span class="arithmatex">\(M\)</span>: <span class="arithmatex">\(M[j,i] = 1\)</span> inside (wet), <span class="arithmatex">\(M[j,i] = 0\)</span> outside (dry)</li>
+<li><strong>Boundary condition</strong>: <span class="arithmatex">\(\psi = 0\)</span> at all inner-boundary points (where wet cells border dry cells)</li>
+<li><span class="arithmatex">\(\lambda \geq 0\)</span> is the Helmholtz parameter (<span class="arithmatex">\(\lambda = 0\)</span> gives the Poisson equation)</li>
+</ul>
+<p>The challenge is that DST, DCT, and FFT solvers can only invert the operator <span class="arithmatex">\(L = \nabla^2 - \lambda\)</span> on the <strong>full rectangle</strong> <span class="arithmatex">\(R\)</span>, not on the masked subdomain <span class="arithmatex">\(\Omega\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Why not just zero out dry cells?</p>
+<p>Simply setting <span class="arithmatex">\(f = 0\)</span> outside <span class="arithmatex">\(\Omega\)</span> and solving on <span class="arithmatex">\(R\)</span> does <strong>not</strong> enforce <span class="arithmatex">\(\psi = 0\)</span>
+at the irregular boundary. The rectangular solve has no knowledge of the mask geometry,
+so <span class="arithmatex">\(\psi\)</span> will generally be nonzero at inner-boundary points. The capacitance matrix method
+provides the systematic correction needed to enforce the boundary condition exactly.</p>
+</div>
+<hr />
+<h2 id="2-the-key-idea">2. The Key Idea<a class="headerlink" href="#2-the-key-idea" title="Permanent link">&para;</a></h2>
+<p>The method proceeds in two conceptual steps:</p>
+<p><strong>Step 1 — Rectangular solve.</strong> Solve on the full rectangle, ignoring the mask:</p>
+<div class="arithmatex">\[u = L_R^{-1} f\]</div>
+<p>This is fast — <span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span> via a spectral solver — but <span class="arithmatex">\(u\)</span> generally violates <span class="arithmatex">\(\psi = 0\)</span> at the inner-boundary points.</p>
+<p><strong>Step 2 — Boundary correction.</strong> Subtract a linear combination of Green's functions to enforce the boundary condition:</p>
+<div class="arithmatex">\[\psi = u - \sum_{k=1}^{N_b} \alpha_k \, g_k\]</div>
+<p>where <span class="arithmatex">\(g_k = L_R^{-1} e_{b_k}\)</span> is the Green's function (rectangular domain response to a unit impulse at boundary point <span class="arithmatex">\(b_k\)</span>), and the weights <span class="arithmatex">\(\alpha_k\)</span> are chosen so that:</p>
+<div class="arithmatex">\[\psi(b_k) = 0 \quad \text{for all } k = 1, \ldots, N_b\]</div>
+<p>This yields a <strong>linear system</strong> for the correction weights:</p>
+<div class="arithmatex">\[C \, \boldsymbol{\alpha} = \mathbf{u}_B\]</div>
+<p>where <span class="arithmatex">\(C\)</span> is the <strong>capacitance matrix</strong>, <span class="arithmatex">\(\boldsymbol{\alpha}\)</span> is the vector of correction weights, and <span class="arithmatex">\(\mathbf{u}_B\)</span> is the vector of uncorrected values at the boundary points.</p>
+<hr />
+<h2 id="3-inner-boundary-detection">3. Inner-Boundary Detection<a class="headerlink" href="#3-inner-boundary-detection" title="Permanent link">&para;</a></h2>
+<p>The inner-boundary points are the wet cells that are <strong>4-connected</strong> to at least one dry cell. Formally:</p>
+<div class="arithmatex">\[\mathcal{B} = \{ (j, i) : M[j,i] = 1 \text{ and } \exists \, (j', i') \in \mathcal{N}_4(j,i) \text{ with } M[j',i'] = 0 \}\]</div>
+<p>where <span class="arithmatex">\(\mathcal{N}_4(j,i) = \{(j\pm1, i), (j, i\pm1)\}\)</span> is the 4-connected neighborhood.</p>
+<p><strong>Detection algorithm:</strong></p>
+<ol>
+<li>Compute the exterior mask: <span class="arithmatex">\(E = \lnot M\)</span></li>
+<li>Dilate <span class="arithmatex">\(E\)</span> with a cross-shaped structuring element (the 4-connected kernel):</li>
+</ol>
+<div class="arithmatex">\[K = \begin{pmatrix} 0 &amp; 1 &amp; 0 \\ 1 &amp; 1 &amp; 1 \\ 0 &amp; 1 &amp; 0 \end{pmatrix}\]</div>
+<ol>
+<li>The inner boundary is the intersection: <span class="arithmatex">\(\mathcal{B} = \text{dilate}(E, K) \cap M\)</span></li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Offline computation</p>
+<p>Inner-boundary detection uses <code>scipy.ndimage.binary_dilation</code>, which is a standard
+NumPy/SciPy operation. This is performed <strong>once</strong> during the offline setup phase and
+is <strong>not</strong> JIT-traced by JAX. The result is a set of index pairs <span class="arithmatex">\((j_b, i_b)\)</span> for
+<span class="arithmatex">\(b = 1, \ldots, N_b\)</span>.</p>
+</div>
+<p><img alt="Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi." src="../../images/capacitance_mask_solution.png" /></p>
+<hr />
+<h2 id="4-greens-functions">4. Green's Functions<a class="headerlink" href="#4-greens-functions" title="Permanent link">&para;</a></h2>
+<p>For each boundary point <span class="arithmatex">\(b_k = (j_k, i_k)\)</span>, we solve:</p>
+<div class="arithmatex">\[L_R \, g_k = e_{b_k}\]</div>
+<p>where <span class="arithmatex">\(e_{b_k}\)</span> is the unit impulse array (all zeros except a one at position <span class="arithmatex">\((j_k, i_k)\)</span>). The solution <span class="arithmatex">\(g_k\)</span> is a full <span class="arithmatex">\(N_y \times N_x\)</span> array representing the <strong>response of the rectangular domain</strong> to a point source at <span class="arithmatex">\(b_k\)</span>.</p>
+<p>Computing the Green's functions requires <span class="arithmatex">\(N_b\)</span> rectangular solves — this is the expensive part of the offline setup. However, each solve is independent and can be batched or parallelized.</p>
+<p>The Green's functions are stored as a matrix:</p>
+<div class="arithmatex">\[G \in \mathbb{R}^{N_b \times (N_y \cdot N_x)}\]</div>
+<p>where row <span class="arithmatex">\(k\)</span> is the flattened Green's function <span class="arithmatex">\(g_k\)</span>. This matrix enables efficient matrix-vector products during the online solve.</p>
+<div class="admonition warning">
+<p class="admonition-title">Memory cost</p>
+<p>The Green's function matrix <span class="arithmatex">\(G\)</span> has <span class="arithmatex">\(N_b \times N_y \times N_x\)</span> entries. For a <span class="arithmatex">\(256 \times 256\)</span>
+grid with <span class="arithmatex">\(N_b = 200\)</span> boundary points, this is approximately <span class="arithmatex">\(200 \times 65{,}536 \approx 13\)</span>
+million entries (<span class="arithmatex">\(\sim\)</span>100 MB in float64). For larger grids, this can become the dominant
+memory cost.</p>
+</div>
+<hr />
+<h2 id="5-the-capacitance-matrix">5. The Capacitance Matrix<a class="headerlink" href="#5-the-capacitance-matrix" title="Permanent link">&para;</a></h2>
+<p>The <strong>capacitance matrix</strong> <span class="arithmatex">\(C \in \mathbb{R}^{N_b \times N_b}\)</span> is defined by:</p>
+<div class="arithmatex">\[C[k, l] = g_l(b_k)\]</div>
+<p>That is, the <span class="arithmatex">\((k, l)\)</span> entry is the value of Green's function <span class="arithmatex">\(g_l\)</span> evaluated at boundary point <span class="arithmatex">\(b_k\)</span>.</p>
+<p><strong>Physical interpretation:</strong> <span class="arithmatex">\(C[k,l]\)</span> quantifies how much a unit source at boundary point <span class="arithmatex">\(b_l\)</span> affects the solution at boundary point <span class="arithmatex">\(b_k\)</span>. The matrix encodes the <strong>mutual interaction</strong> between all pairs of boundary points, mediated by the rectangular-domain Green's function.</p>
+<p>Key properties:</p>
+<ul>
+<li><span class="arithmatex">\(C\)</span> is <span class="arithmatex">\(N_b \times N_b\)</span> — small when the boundary is thin relative to the domain</li>
+<li><span class="arithmatex">\(C\)</span> is symmetric if <span class="arithmatex">\(L_R\)</span> is self-adjoint (as it is for <span class="arithmatex">\(\nabla^2 - \lambda\)</span>)</li>
+<li><span class="arithmatex">\(C\)</span> is typically well-conditioned for the Helmholtz operator with <span class="arithmatex">\(\lambda &gt; 0\)</span></li>
+<li><span class="arithmatex">\(C\)</span> is <strong>pre-inverted</strong> during offline setup: <span class="arithmatex">\(C^{-1} = \text{inv}(C)\)</span>, costing <span class="arithmatex">\(O(N_b^3)\)</span></li>
 </ul>
 <hr />
-<h2 id="3-associated-legendre-polynomials">3. Associated Legendre Polynomials<a class="headerlink" href="#3-associated-legendre-polynomials" title="Permanent link">&para;</a></h2>
-<p>The <strong>associated Legendre polynomials</strong> <span class="arithmatex">\(P_\ell^m : [-1,1] \to \mathbb{R}\)</span> satisfy the differential equation:</p>
-<div class="arithmatex">\[\frac{d}{d\mu}\!\left[(1-\mu^2) \frac{dP_\ell^m}{d\mu}\right] + \left[\ell(\ell+1) - \frac{m^2}{1-\mu^2}\right] P_\ell^m = 0, \quad \mu = \cos\theta\]</div>
-<p>They are generated by the recurrence:</p>
-<div class="arithmatex">\[P_0^0(\mu) = 1, \quad P_m^m(\mu) = -(2m-1)\sqrt{1-\mu^2} P_{m-1}^{m-1}(\mu)\]</div>
-<div class="arithmatex">\[P_{\ell+1}^m(\mu) = \frac{(2\ell+1)\mu P_\ell^m(\mu) - (\ell+m) P_{\ell-1}^m(\mu)}{\ell - m + 1}\]</div>
-<p>The Legendre recurrence is numerically stable when evaluated at the Gauss-Legendre quadrature nodes.</p>
+<h2 id="6-the-online-solve">6. The Online Solve<a class="headerlink" href="#6-the-online-solve" title="Permanent link">&para;</a></h2>
+<p>Given a right-hand side <span class="arithmatex">\(f\)</span>, the solution <span class="arithmatex">\(\psi\)</span> is computed in four steps:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Operation</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Rectangular solve</td>
+<td><span class="arithmatex">\(u = L_R^{-1} f\)</span></td>
+<td><span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span></td>
+</tr>
+<tr>
+<td>2. Sample boundary</td>
+<td><span class="arithmatex">\(\mathbf{u}_B = u[j_b, i_b]\)</span></td>
+<td><span class="arithmatex">\(O(N_b)\)</span></td>
+</tr>
+<tr>
+<td>3. Correction weights</td>
+<td><span class="arithmatex">\(\boldsymbol{\alpha} = C^{-1} \, \mathbf{u}_B\)</span></td>
+<td><span class="arithmatex">\(O(N_b^2)\)</span></td>
+</tr>
+<tr>
+<td>4. Subtract correction</td>
+<td><span class="arithmatex">\(\psi = u - G^\top \boldsymbol{\alpha}\)</span></td>
+<td><span class="arithmatex">\(O(N_b \cdot N_y N_x)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The final result is then masked: <span class="arithmatex">\(\psi \leftarrow \psi \odot M\)</span> to ensure the solution is identically zero outside <span class="arithmatex">\(\Omega\)</span>.</p>
+<p><strong>Total online cost:</strong> <span class="arithmatex">\(O(N_y N_x \log(N_y N_x) + N_b \cdot N_y N_x)\)</span></p>
+<div class="admonition tip">
+<p class="admonition-title">JIT-compatible</p>
+<p>All four steps of the online solve use pure JAX operations (spectral transforms,
+array indexing, matrix-vector products) and are fully compatible with <code>jax.jit</code>.
+The pre-computed arrays (<span class="arithmatex">\(C^{-1}\)</span>, <span class="arithmatex">\(G\)</span>, boundary indices) are stored as static
+fields of an <code>equinox.Module</code>, so the solver can be JIT-compiled, vmapped, and
+differentiated.</p>
+</div>
+<p><img alt="Boundary enforcement. Left: rectangular DST solve without correction -- nonzero psi at boundary points. Right: capacitance-corrected solution -- psi approx 0 at all boundary points." src="../../images/capacitance_boundary.png" /></p>
 <hr />
-<h2 id="4-the-spherical-harmonic-transform-sht">4. The Spherical Harmonic Transform (SHT)<a class="headerlink" href="#4-the-spherical-harmonic-transform-sht" title="Permanent link">&para;</a></h2>
-<p>A scalar field <span class="arithmatex">\(f(\theta, \lambda)\)</span> on the sphere is expanded as:</p>
-<div class="arithmatex">\[f(\theta, \lambda) = \sum_{\ell=0}^{L} \sum_{m=-\ell}^{\ell} \hat{f}_\ell^m \, Y_\ell^m(\theta, \lambda)\]</div>
-<p>The <strong>spectral coefficients</strong> are:</p>
-<div class="arithmatex">\[\hat{f}_\ell^m = \int_0^{2\pi}\!\int_0^\pi f(\theta, \lambda) \overline{Y_\ell^m(\theta, \lambda)} \sin\theta \, d\theta \, d\lambda\]</div>
-<h3 id="discrete-sht-algorithm">Discrete SHT Algorithm<a class="headerlink" href="#discrete-sht-algorithm" title="Permanent link">&para;</a></h3>
-<p>The SHT is split into two steps:</p>
+<h2 id="7-complexity-analysis">7. Complexity Analysis<a class="headerlink" href="#7-complexity-analysis" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Time Complexity</th>
+<th>Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Offline: Green's functions</td>
+<td><span class="arithmatex">\(O(N_b \cdot N_y N_x \log(N_y N_x))\)</span></td>
+<td><span class="arithmatex">\(O(N_b \cdot N_y N_x)\)</span> for <span class="arithmatex">\(G\)</span></td>
+</tr>
+<tr>
+<td>Offline: <span class="arithmatex">\(C\)</span> inversion</td>
+<td><span class="arithmatex">\(O(N_b^3)\)</span></td>
+<td><span class="arithmatex">\(O(N_b^2)\)</span> for <span class="arithmatex">\(C^{-1}\)</span></td>
+</tr>
+<tr>
+<td>Online: rectangular solve</td>
+<td><span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span></td>
+<td><span class="arithmatex">\(O(N_y N_x)\)</span> working memory</td>
+</tr>
+<tr>
+<td>Online: correction</td>
+<td><span class="arithmatex">\(O(N_b \cdot N_y N_x)\)</span></td>
+<td><span class="arithmatex">\(O(N_y N_x)\)</span> working memory</td>
+</tr>
+</tbody>
+</table>
+<p>For typical irregular domains, the number of boundary points scales as:</p>
+<div class="arithmatex">\[N_b = O(\text{perimeter}) \sim O\!\left(\sqrt{N_y N_x}\right)\]</div>
+<p>so the correction step costs <span class="arithmatex">\(O\!\left((N_y N_x)^{3/2}\right)\)</span>, which is usually <strong>subdominant</strong> to the <span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span> spectral solve for moderate grid sizes.</p>
+<div class="admonition note">
+<p class="admonition-title">When does the correction dominate?</p>
+<p>For very fine grids or domains with long, fractal-like boundaries (large <span class="arithmatex">\(N_b\)</span>),
+the <span class="arithmatex">\(O(N_b \cdot N_y N_x)\)</span> correction step can dominate the total cost. In such cases,
+consider using iterative solvers (conjugate gradient) instead.</p>
+</div>
+<hr />
+<h2 id="8-choice-of-base-solver">8. Choice of Base Solver<a class="headerlink" href="#8-choice-of-base-solver" title="Permanent link">&para;</a></h2>
+<p>The rectangular solver <span class="arithmatex">\(L_R^{-1}\)</span> can use any of the three spectral transform types. The choice affects the boundary conditions on the <strong>rectangle</strong> <span class="arithmatex">\(R\)</span>, not on the irregular domain <span class="arithmatex">\(\Omega\)</span> (those are enforced by the capacitance correction):</p>
+<table>
+<thead>
+<tr>
+<th>Base solver</th>
+<th>Transform</th>
+<th>Rectangle BC</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"fft"</code></td>
+<td>Fast Fourier Transform</td>
+<td>Periodic on <span class="arithmatex">\(R\)</span></td>
+<td>Good default; correction handles actual BCs</td>
+</tr>
+<tr>
+<td><code>"dst"</code></td>
+<td>Discrete Sine Transform</td>
+<td>Dirichlet (<span class="arithmatex">\(\psi = 0\)</span>) on <span class="arithmatex">\(\partial R\)</span></td>
+<td>Already enforces <span class="arithmatex">\(\psi = 0\)</span> at rectangle edges, so fewer inner-boundary points near <span class="arithmatex">\(\partial R\)</span></td>
+</tr>
+<tr>
+<td><code>"dct"</code></td>
+<td>Discrete Cosine Transform</td>
+<td>Neumann (<span class="arithmatex">\(\partial_n \psi = 0\)</span>) on <span class="arithmatex">\(\partial R\)</span></td>
+<td>Less common for this application</td>
+</tr>
+</tbody>
+</table>
+<p>In practice, all three choices produce the same solution on <span class="arithmatex">\(\Omega\)</span> — the capacitance correction compensates for the difference in rectangular boundary conditions. The choice of base solver affects <span class="arithmatex">\(N_b\)</span> slightly:</p>
+<ul>
+<li><strong>DST</strong> tends to produce <strong>fewer</strong> inner-boundary points near the rectangle edges (since <span class="arithmatex">\(\psi = 0\)</span> is already enforced there), leading to a smaller capacitance matrix.</li>
+<li><strong>FFT</strong> may produce slightly <strong>more</strong> boundary points near the edges but is often faster per solve due to optimized FFT implementations.</li>
+</ul>
+<hr />
+<h2 id="9-limitations-and-when-to-use-alternatives">9. Limitations and When to Use Alternatives<a class="headerlink" href="#9-limitations-and-when-to-use-alternatives" title="Permanent link">&para;</a></h2>
+<p>The capacitance matrix method is powerful but has clear trade-offs:</p>
+<p><strong>Strengths:</strong></p>
+<ul>
+<li>Exact enforcement of boundary conditions (to machine precision)</li>
+<li>Fast online solves — amortizes the offline cost over many repeated solves</li>
+<li>Fully compatible with JAX transformations (JIT, vmap, grad)</li>
+<li>Simple implementation built on existing spectral solvers</li>
+</ul>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li><strong>Memory:</strong> The Green's function matrix <span class="arithmatex">\(G\)</span> grows as <span class="arithmatex">\(N_b \times N_y N_x\)</span>. For large domains with long boundaries, this can require gigabytes of storage.</li>
+<li><strong>Dense inversion:</strong> The <span class="arithmatex">\(O(N_b^3)\)</span> cost of inverting <span class="arithmatex">\(C\)</span> is acceptable for <span class="arithmatex">\(N_b \lesssim 1{,}000\)</span> but becomes problematic for very fine meshes with extensive irregular boundaries.</li>
+<li><strong>Static geometry:</strong> The capacitance matrix must be recomputed if the mask changes. Not suitable for problems with evolving boundaries.</li>
+</ul>
+<p><strong>Alternatives:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Memory</th>
+<th>Per-solve cost</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Capacitance matrix</td>
+<td><span class="arithmatex">\(O(N_b \cdot N_y N_x)\)</span></td>
+<td><span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span></td>
+<td>Moderate domains (<span class="arithmatex">\(N_b &lt; 500\)</span>), many repeated solves</td>
+</tr>
+<tr>
+<td>Preconditioned CG</td>
+<td><span class="arithmatex">\(O(N_y N_x)\)</span></td>
+<td><span class="arithmatex">\(O(k_{\text{iter}} \cdot N_y N_x)\)</span></td>
+<td>Large irregular domains, one-off solves</td>
+</tr>
+<tr>
+<td>Geometric multigrid</td>
+<td><span class="arithmatex">\(O(N_y N_x)\)</span></td>
+<td><span class="arithmatex">\(O(N_y N_x)\)</span></td>
+<td>Very large problems, optimal scaling</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Rule of thumb</p>
+<p>Use the <strong>capacitance matrix</strong> when <span class="arithmatex">\(N_b &lt; 500\)</span> and you need many repeated solves
+(e.g., time-stepping a PDE). Use <strong>conjugate gradient</strong> for large domains, one-off solves,
+or when memory is constrained. Use <strong>multigrid</strong> for the largest problems where optimal
+<span class="arithmatex">\(O(N)\)</span> scaling is required.</p>
+</div>
+<hr />
+<h2 id="10-references">10. References<a class="headerlink" href="#10-references" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
-<p><strong>Zonal Fourier Transform</strong> (in <span class="arithmatex">\(\lambda\)</span>): For each colatitude <span class="arithmatex">\(\theta_j\)</span>, compute:
-   $<span class="arithmatex">\(F_m(\theta_j) = \frac{1}{2\pi} \int_0^{2\pi} f(\theta_j, \lambda) e^{-im\lambda} \, d\lambda \approx \text{FFT}\)</span>$</p>
+<p>Buzbee, B.L., Golub, G.H. &amp; Nielson, C.W. (1970). "On Direct Methods for Solving Poisson's Equations." <em>SIAM Journal on Numerical Analysis</em>, 7(4), 627--656.</p>
 </li>
 <li>
-<p><strong>Legendre Transform</strong> (in <span class="arithmatex">\(\theta\)</span>): For each <span class="arithmatex">\(m\)</span>, compute:
-   $<span class="arithmatex">\(\hat{f}_\ell^m = \int_{-1}^{1} F_m(\mu) P_\ell^m(\mu) \, d\mu \approx \sum_j w_j F_m(\mu_j) P_\ell^m(\mu_j)\)</span>$</p>
+<p>Proskurowski, W. &amp; Widlund, O. (1976). "On the Numerical Solution of Helmholtz's Equation by the Capacitance Matrix Method." <em>Mathematics of Computation</em>, 30(135), 433--468.</p>
+</li>
+<li>
+<p>Hockney, R.W. (1970). "The Potential Calculation and Some Applications." <em>Methods in Computational Physics</em>, 9, 135--211.</p>
 </li>
 </ol>
-<p>where <span class="arithmatex">\(\mu_j\)</span> are Gauss-Legendre nodes and <span class="arithmatex">\(w_j\)</span> are Gauss-Legendre weights.</p>
-<p>The total cost is <span class="arithmatex">\(O(L^3)\)</span> for the Legendre transform step (dominant) and <span class="arithmatex">\(O(L^2 \log L)\)</span> for the zonal FFT step.</p>
-<hr />
-<h2 id="5-gauss-legendre-quadrature">5. Gauss-Legendre Quadrature<a class="headerlink" href="#5-gauss-legendre-quadrature" title="Permanent link">&para;</a></h2>
-<p>The meridional integrals in the SHT are evaluated using <strong>Gauss-Legendre (GL) quadrature</strong>. For <span class="arithmatex">\(J\)</span> quadrature points <span class="arithmatex">\(\mu_j = \cos\theta_j\)</span> (zeros of <span class="arithmatex">\(P_J(\mu)\)</span>) with weights <span class="arithmatex">\(w_j\)</span>:</p>
-<div class="arithmatex">\[\int_{-1}^{1} g(\mu) \, d\mu \approx \sum_{j=1}^{J} w_j g(\mu_j)\]</div>
-<p>This quadrature is <strong>exact</strong> for polynomials of degree <span class="arithmatex">\(\leq 2J-1\)</span>. For the SHT with truncation <span class="arithmatex">\(L\)</span>, we need <span class="arithmatex">\(J \geq \lceil (3L+1)/2 \rceil\)</span> quadrature points to exactly integrate the products <span class="arithmatex">\(P_\ell^m P_{\ell'}^{m'}\)</span> without aliasing.</p>
-<p>The GL nodes and weights are computed from the eigenvalues and eigenvectors of the symmetric tridiagonal Jacobi matrix.</p>
-<hr />
-<h2 id="6-spectral-differentiation-on-the-sphere">6. Spectral Differentiation on the Sphere<a class="headerlink" href="#6-spectral-differentiation-on-the-sphere" title="Permanent link">&para;</a></h2>
-<h3 id="zonal-derivative-partialpartiallambda">Zonal Derivative (<span class="arithmatex">\(\partial/\partial\lambda\)</span>)<a class="headerlink" href="#zonal-derivative-partialpartiallambda" title="Permanent link">&para;</a></h3>
-<div class="arithmatex">\[\frac{\partial f}{\partial \lambda} = \sum_{\ell, m} im \hat{f}_\ell^m \, Y_\ell^m\]</div>
-<p>This is a simple multiplication by <span class="arithmatex">\(im\)</span> in spectral space, analogous to Fourier differentiation.</p>
-<h3 id="meridional-derivative-partialpartialtheta">Meridional Derivative (<span class="arithmatex">\(\partial/\partial\theta\)</span>)<a class="headerlink" href="#meridional-derivative-partialpartialtheta" title="Permanent link">&para;</a></h3>
-<p>The meridional derivative is more involved. In spectral space:</p>
-<div class="arithmatex">\[\frac{\partial Y_\ell^m}{\partial \theta} = -\sin\theta \frac{dP_\ell^m}{d(\cos\theta)} e^{im\lambda}\]</div>
-<p>Using the recurrence for the derivative of <span class="arithmatex">\(P_\ell^m\)</span>:</p>
-<div class="arithmatex">\[\frac{dP_\ell^m}{d\mu} = \frac{1}{1-\mu^2}\left[(\ell+1)\mu P_\ell^m - (\ell-m+1)P_{\ell+1}^m\right]\]</div>
-<h3 id="the-gradient-and-divergence">The Gradient and Divergence<a class="headerlink" href="#the-gradient-and-divergence" title="Permanent link">&para;</a></h3>
-<p>The surface gradient and divergence can be computed using <strong>vector spherical harmonics</strong> <span class="arithmatex">\(\mathbf{Y}_\ell^m\)</span>. For the vorticity-streamfunction formulation in atmospheric dynamics, the key relation is:</p>
-<div class="arithmatex">\[\nabla_S^2 \psi = \omega \quad \Longleftrightarrow \quad \hat{\psi}_\ell^m = \frac{-\hat{\omega}_\ell^m}{\ell(\ell+1)}\]</div>
-<p>(with <span class="arithmatex">\(\hat{\psi}_0^0 = 0\)</span> for uniqueness).</p>
-<hr />
-<h2 id="7-helmholtzpoisson-equations-on-the-sphere">7. Helmholtz/Poisson Equations on the Sphere<a class="headerlink" href="#7-helmholtzpoisson-equations-on-the-sphere" title="Permanent link">&para;</a></h2>
-<p>The <strong>Poisson equation</strong> on the sphere is:</p>
-<div class="arithmatex">\[\nabla_S^2 u = f\]</div>
-<p>Since <span class="arithmatex">\(Y_\ell^m\)</span> are eigenfunctions with eigenvalue <span class="arithmatex">\(-\ell(\ell+1)\)</span>, the solution is:</p>
-<div class="arithmatex">\[\hat{u}_\ell^m = \frac{-\hat{f}_\ell^m}{\ell(\ell+1)}, \quad \ell \geq 1\]</div>
-<p>The <span class="arithmatex">\(\ell = 0\)</span> mode (global mean) is set to zero.</p>
-<p>The <strong>Helmholtz equation</strong>:</p>
-<div class="arithmatex">\[(\nabla_S^2 - \alpha) u = f\]</div>
-<div class="arithmatex">\[\hat{u}_\ell^m = \frac{\hat{f}_\ell^m}{-\ell(\ell+1) - \alpha}\]</div>
-<p>For <span class="arithmatex">\(\alpha \neq 0\)</span>, the system is non-singular for all <span class="arithmatex">\(\ell\)</span>.</p>
-<hr />
-<h2 id="8-applications-in-atmospheric-and-geophysical-modelling">8. Applications in Atmospheric and Geophysical Modelling<a class="headerlink" href="#8-applications-in-atmospheric-and-geophysical-modelling" title="Permanent link">&para;</a></h2>
-<p>Spherical harmonic methods are the foundation of <strong>global spectral models</strong> in weather and climate prediction.</p>
-<h3 id="barotropic-vorticity-equation">Barotropic Vorticity Equation<a class="headerlink" href="#barotropic-vorticity-equation" title="Permanent link">&para;</a></h3>
-<p>The simplest atmospheric model evolves the <strong>vorticity</strong> <span class="arithmatex">\(\omega\)</span> on the sphere:</p>
-<div class="arithmatex">\[\frac{\partial \omega}{\partial t} + J(\psi, \omega + f) = \nu \nabla_S^{2n} \omega\]</div>
-<p>where <span class="arithmatex">\(f = 2\Omega\cos\theta\)</span> is the Coriolis parameter (<span class="arithmatex">\(f\)</span>-plane/beta-plane models) and <span class="arithmatex">\(J\)</span> is the spherical Jacobian.</p>
-<h3 id="quasigeostrophic-model-on-the-sphere">Quasigeostrophic Model on the Sphere<a class="headerlink" href="#quasigeostrophic-model-on-the-sphere" title="Permanent link">&para;</a></h3>
-<p>The QG potential vorticity equation:</p>
-<div class="arithmatex">\[q = \nabla_S^2\psi - \frac{\psi}{R^2} + f\]</div>
-<div class="arithmatex">\[\frac{\partial q}{\partial t} + J(\psi, q) = \text{dissipation} + \text{forcing}\]</div>
-<p>In spectral space, PV inversion reduces to:</p>
-<div class="arithmatex">\[\hat{\psi}_\ell^m = \frac{-\hat{q'}_\ell^m}{\ell(\ell+1) + R^{-2}}\]</div>
-<h3 id="triangular-truncation">Triangular Truncation<a class="headerlink" href="#triangular-truncation" title="Permanent link">&para;</a></h3>
-<p>Weather models typically use <strong>triangular truncation</strong> <span class="arithmatex">\(T_L\)</span>: retain all modes with <span class="arithmatex">\(\ell \leq L\)</span> and <span class="arithmatex">\(|m| \leq \ell\)</span>, giving <span class="arithmatex">\((L+1)^2\)</span> complex coefficients.</p>
-<p>The associated horizontal resolution is approximately <span class="arithmatex">\(\Delta x \approx \pi a / L\)</span> where <span class="arithmatex">\(a\)</span> is the Earth's radius. For example, T85 gives <span class="arithmatex">\(\sim 150\)</span> km resolution.</p>
-<hr />
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Durran, D.R. (2010). <em>Numerical Methods for Fluid Dynamics</em>. Springer.</li>
-<li>Holton, J.R. &amp; Hakim, G.J. (2012). <em>An Introduction to Dynamic Meteorology</em>. Academic Press.</li>
-<li>Jakob-Chien, R. et al. (1995). Spectral transform solutions to the shallow water test suite. <em>Monthly Weather Review</em>, 123(6).</li>
-<li>Shen, J., Tang, T. &amp; Wang, L.L. (2011). <em>Spectral Methods: Algorithms, Analysis and Applications</em>. Springer.</li>
-</ul>
 
 
 

@@ -1,0 +1,3187 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Pseudospectral differentiation, filtering, and PDE solvers in JAX — fully differentiable and JIT-compatible.">
+      
+      
+        <meta name="author" content="J. Emmanuel Johnson">
+      
+      
+      
+        <link rel="prev" href="../spectral_transforms/">
+      
+      
+        <link rel="next" href="../capacitance/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Elliptic Solvers - SpectralDiffX</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spectral-elliptic-solvers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SpectralDiffX" class="md-header__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SpectralDiffX
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Elliptic Solvers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quick Start
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Theory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../transforms_guide/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/demo_1d/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/fourier/transforms/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SpectralDiffX" class="md-nav__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SpectralDiffX
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Theory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectral_transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elliptic Solvers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elliptic Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-helmholtz-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Helmholtz Equation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Helmholtz Equation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#special-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Special Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-discrete-5-point-laplacian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Discrete 5-Point Laplacian
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-spectral-solve-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Spectral Solve Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-dirichlet-bcs-dst-i-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Dirichlet BCs -- DST-I Solver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Dirichlet BCs -- DST-I Solver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boundary-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eigenvalues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-neumann-bcs-dct-ii-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Neumann BCs -- DCT-II Solver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Neumann BCs -- DCT-II Solver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boundary-conditions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eigenvalues_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-null-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Null Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-periodic-bcs-fft-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Periodic BCs -- FFT Solver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Periodic BCs -- FFT Solver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boundary-conditions_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eigenvalues_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#null-mode-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Null-Mode Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-d-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1-D Variants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#continuous-wavenumber-alternative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous-Wavenumber Alternative
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-null-mode-handling-zero-mean-gauge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Null-Mode Handling (Zero-Mean Gauge)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Null-Mode Handling (Zero-Mean Gauge)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jit-safe-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JIT-Safe Implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-layer-0-vs-layer-1-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Layer 0 vs Layer 1 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Layer 0 vs Layer 1 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-0-pure-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 0: Pure Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-module-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1: Module Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-which" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use Which
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-summary-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Summary Table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Method
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonic Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transforms_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../elliptic_solvers_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elliptic Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../capacitance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Solver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_1d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudospectral Differentiation - 1D
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudospectral Differentiation - 2D
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_qg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quasi-Geostrophic (QG) Turbulence Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pseudospectral_part2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QG Simulation with Diffrax Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/kdv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Korteweg-de Vries (KdV) Equation Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/navier_stokes_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2D Navier-Stokes (Vorticity) Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/qg_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1.5-Layer Quasigeostrophic (QG) Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic Solvers Demo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Solver Demo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fourier
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/eigenvalues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenvalues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/fourier/capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chebyshev
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/chebyshev/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Spherical Harmonics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/harmonics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harmonics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spherical/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-helmholtz-equation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Helmholtz Equation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Helmholtz Equation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#special-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Special Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-discrete-5-point-laplacian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Discrete 5-Point Laplacian
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-spectral-solve-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Spectral Solve Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-dirichlet-bcs-dst-i-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Dirichlet BCs -- DST-I Solver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Dirichlet BCs -- DST-I Solver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boundary-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eigenvalues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-neumann-bcs-dct-ii-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Neumann BCs -- DCT-II Solver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Neumann BCs -- DCT-II Solver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boundary-conditions_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eigenvalues_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-null-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Null Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-periodic-bcs-fft-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Periodic BCs -- FFT Solver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Periodic BCs -- FFT Solver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#boundary-conditions_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boundary Conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eigenvalues_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#null-mode-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Null-Mode Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-d-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1-D Variants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#continuous-wavenumber-alternative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous-Wavenumber Alternative
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-null-mode-handling-zero-mean-gauge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Null-Mode Handling (Zero-Mean Gauge)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Null-Mode Handling (Zero-Mean Gauge)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jit-safe-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JIT-Safe Implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-layer-0-vs-layer-1-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Layer 0 vs Layer 1 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Layer 0 vs Layer 1 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-0-pure-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 0: Pure Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-module-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1: Module Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-which" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use Which
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-summary-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Summary Table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="spectral-elliptic-solvers">Spectral Elliptic Solvers<a class="headerlink" href="#spectral-elliptic-solvers" title="Permanent link">&para;</a></h1>
+<p>Spectral elliptic solvers exploit the fact that spectral transforms (DST, DCT, FFT) <strong>diagonalise the discrete Laplacian</strong>, reducing a PDE solve to a pointwise division in spectral space. This page covers the Helmholtz, Poisson, and Laplace equations on rectangular domains with Dirichlet, Neumann, and periodic boundary conditions.</p>
+<p>The key advantage is cost: the entire solve runs in <span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span> time, dominated by two transforms. The spectral division itself is <span class="arithmatex">\(O(N_y N_x)\)</span>.</p>
+<hr />
+<h2 id="1-the-helmholtz-equation">1. The Helmholtz Equation<a class="headerlink" href="#1-the-helmholtz-equation" title="Permanent link">&para;</a></h2>
+<p>The <strong>Helmholtz equation</strong> on a rectangular domain <span class="arithmatex">\(\Omega = [0, L_x] \times [0, L_y]\)</span> is:</p>
+<div class="arithmatex">\[(\nabla^2 - \lambda)\,\psi = f\]</div>
+<p>where <span class="arithmatex">\(\nabla^2 = \partial^2/\partial x^2 + \partial^2/\partial y^2\)</span> is the Laplacian, <span class="arithmatex">\(\lambda \geq 0\)</span> is the Helmholtz parameter, and <span class="arithmatex">\(f\)</span> is a known source term.</p>
+<h3 id="special-cases">Special Cases<a class="headerlink" href="#special-cases" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Condition</th>
+<th>Equation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Poisson</strong></td>
+<td><span class="arithmatex">\(\lambda = 0\)</span></td>
+<td><span class="arithmatex">\(\nabla^2 \psi = f\)</span></td>
+</tr>
+<tr>
+<td><strong>Laplace</strong></td>
+<td><span class="arithmatex">\(\lambda = 0\)</span>, <span class="arithmatex">\(f = 0\)</span></td>
+<td><span class="arithmatex">\(\nabla^2 \psi = 0\)</span></td>
+</tr>
+<tr>
+<td><strong>Screened Poisson</strong></td>
+<td><span class="arithmatex">\(\lambda &gt; 0\)</span></td>
+<td><span class="arithmatex">\((\nabla^2 - \lambda)\,\psi = f\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Physical applications</p>
+<ul>
+<li><strong>Streamfunction from vorticity:</strong> <span class="arithmatex">\(\nabla^2 \psi = \omega\)</span> (Poisson)</li>
+<li><strong>Pressure correction:</strong> <span class="arithmatex">\(\nabla^2 p = \nabla \cdot \mathbf{u}^*\)</span> in projection methods</li>
+<li><strong>QG potential vorticity inversion:</strong> <span class="arithmatex">\((\nabla^2 - F)\,\psi = q\)</span></li>
+<li><strong>Shallow water models:</strong> Helmholtz problems arise after implicit treatment of gravity waves</li>
+</ul>
+</div>
+<h3 id="the-discrete-5-point-laplacian">The Discrete 5-Point Laplacian<a class="headerlink" href="#the-discrete-5-point-laplacian" title="Permanent link">&para;</a></h3>
+<p>On a 2-D grid with <span class="arithmatex">\(N_y \times N_x\)</span> points and spacings <span class="arithmatex">\(\Delta x\)</span>, <span class="arithmatex">\(\Delta y\)</span>, the second-order finite-difference Laplacian is the <strong>5-point stencil</strong>:</p>
+<div class="arithmatex">\[(\nabla^2_h \psi)_{j,i} = \frac{\psi_{j,i-1} - 2\psi_{j,i} + \psi_{j,i+1}}{\Delta x^2} + \frac{\psi_{j-1,i} - 2\psi_{j,i} + \psi_{j+1,i}}{\Delta y^2}\]</div>
+<p>This operator is a sparse <span class="arithmatex">\(N_y N_x \times N_y N_x\)</span> matrix. Direct inversion would be <span class="arithmatex">\(O(N^3)\)</span> or <span class="arithmatex">\(O(N^2)\)</span> with banded solvers. The spectral approach diagonalises it analytically, reducing the solve to <span class="arithmatex">\(O(N \log N)\)</span>.</p>
+<hr />
+<h2 id="2-the-spectral-solve-algorithm">2. The Spectral Solve Algorithm<a class="headerlink" href="#2-the-spectral-solve-algorithm" title="Permanent link">&para;</a></h2>
+<p>All three BC types (Dirichlet, Neumann, periodic) share the same four-step structure. Only the choice of transform <span class="arithmatex">\(\mathcal{T}\)</span> and the eigenvalue formula change.</p>
+<p><strong>Algorithm:</strong></p>
+<ol>
+<li><strong>Forward transform:</strong> <span class="arithmatex">\(\hat{f} = \mathcal{T}(f)\)</span> -- shape <span class="arithmatex">\([N_y, N_x]\)</span></li>
+<li><strong>Build eigenvalue matrix:</strong> <span class="arithmatex">\(\Lambda_{j,i} = \lambda_j^y + \lambda_i^x - \lambda\)</span> -- shape <span class="arithmatex">\([N_y, N_x]\)</span></li>
+<li><strong>Spectral division:</strong> <span class="arithmatex">\(\hat{\psi}_{j,i} = \hat{f}_{j,i}\;/\;\Lambda_{j,i}\)</span> -- shape <span class="arithmatex">\([N_y, N_x]\)</span></li>
+<li><strong>Inverse transform:</strong> <span class="arithmatex">\(\psi = \mathcal{T}^{-1}(\hat{\psi})\)</span> -- shape <span class="arithmatex">\([N_y, N_x]\)</span></li>
+</ol>
+<p>where <span class="arithmatex">\(\mathcal{T}\)</span> is one of:</p>
+<table>
+<thead>
+<tr>
+<th>BC type</th>
+<th>Transform <span class="arithmatex">\(\mathcal{T}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirichlet (<span class="arithmatex">\(\psi = 0\)</span>)</td>
+<td>DST-I</td>
+</tr>
+<tr>
+<td>Neumann (<span class="arithmatex">\(\partial\psi/\partial n = 0\)</span>)</td>
+<td>DCT-II</td>
+</tr>
+<tr>
+<td>Periodic</td>
+<td>FFT</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Why this works</p>
+<p>The spectral transform <span class="arithmatex">\(\mathcal{T}\)</span> diagonalises the discrete Laplacian <span class="arithmatex">\(L_h\)</span>, meaning
+<span class="arithmatex">\(\mathcal{T} \, L_h \, \mathcal{T}^{-1} = \text{diag}(\lambda_0, \lambda_1, \ldots)\)</span>.
+The PDE <span class="arithmatex">\(L_h \psi = f\)</span> becomes <span class="arithmatex">\(\hat{\psi}_k = \hat{f}_k / \lambda_k\)</span> in spectral space --
+a pointwise division instead of a matrix solve.</p>
+</div>
+<p><strong>Complexity:</strong> <span class="arithmatex">\(O(N_y N_x \log(N_y N_x))\)</span>, dominated by the two transforms. The spectral division is <span class="arithmatex">\(O(N_y N_x)\)</span>.</p>
+<hr />
+<h2 id="3-dirichlet-bcs-dst-i-solver">3. Dirichlet BCs -- DST-I Solver<a class="headerlink" href="#3-dirichlet-bcs-dst-i-solver" title="Permanent link">&para;</a></h2>
+<h3 id="boundary-conditions">Boundary Conditions<a class="headerlink" href="#boundary-conditions" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\psi = 0 \quad \text{on all four edges of } \Omega\]</div>
+<p>The sine transform is the natural basis: <span class="arithmatex">\(\sin(k\pi x / L)\)</span> vanishes at <span class="arithmatex">\(x = 0\)</span> and <span class="arithmatex">\(x = L\)</span>.</p>
+<h3 id="transform">Transform<a class="headerlink" href="#transform" title="Permanent link">&para;</a></h3>
+<p>The <strong>DST-I</strong> (Discrete Sine Transform, Type I) is applied in both directions:</p>
+<div class="arithmatex">\[\hat{f} = \text{DST-I}_y\!\left(\text{DST-I}_x(f)\right)\]</div>
+<h3 id="eigenvalues">Eigenvalues<a class="headerlink" href="#eigenvalues" title="Permanent link">&para;</a></h3>
+<p>The 1-D eigenvalues of the discrete Laplacian under Dirichlet BCs are:</p>
+<div class="arithmatex">\[\lambda_k^{\text{DST}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi(k+1)}{2(N+1)}\right), \quad k = 0, \ldots, N-1\]</div>
+<p>where <span class="arithmatex">\(N\)</span> is the number of <strong>interior</strong> grid points (the two boundary points with <span class="arithmatex">\(\psi = 0\)</span> are excluded).</p>
+<p>The 2-D eigenvalue matrix is:</p>
+<div class="arithmatex">\[\Lambda_{j,i} = \lambda_j^y + \lambda_i^x - \lambda\]</div>
+<h3 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>All eigenvalues are strictly negative</strong> (<span class="arithmatex">\(\lambda_k &lt; 0\)</span> for all <span class="arithmatex">\(k\)</span>). The discrete Dirichlet Laplacian is negative definite.</li>
+<li><strong>No null mode:</strong> the denominator <span class="arithmatex">\(\Lambda_{j,i}\)</span> is always nonzero for <span class="arithmatex">\(\lambda \geq 0\)</span>, so no special treatment is needed.</li>
+<li>The input <code>rhs</code> lives on the <span class="arithmatex">\(N_y \times N_x\)</span> interior grid; boundary values are implicit zeros.</li>
+</ul>
+<p><img alt="Eigenfunction recovery test: the DST-I Poisson solver recovers the exact eigenfunction to machine precision." src="../../images/eigenfunction_recovery.png" /></p>
+<h3 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Layer 0 — pure functions</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Layer 1 — module class</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="4-neumann-bcs-dct-ii-solver">4. Neumann BCs -- DCT-II Solver<a class="headerlink" href="#4-neumann-bcs-dct-ii-solver" title="Permanent link">&para;</a></h2>
+<h3 id="boundary-conditions_1">Boundary Conditions<a class="headerlink" href="#boundary-conditions_1" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\frac{\partial\psi}{\partial n} = 0 \quad \text{on all four edges of } \Omega\]</div>
+<p>The cosine transform is the natural basis: <span class="arithmatex">\(\cos(k\pi x / L)\)</span> has zero slope at <span class="arithmatex">\(x = 0\)</span> and <span class="arithmatex">\(x = L\)</span>.</p>
+<h3 id="transform_1">Transform<a class="headerlink" href="#transform_1" title="Permanent link">&para;</a></h3>
+<p>The <strong>DCT-II</strong> (Discrete Cosine Transform, Type II) is applied in both directions:</p>
+<div class="arithmatex">\[\hat{f} = \text{DCT-II}_y\!\left(\text{DCT-II}_x(f)\right)\]</div>
+<h3 id="eigenvalues_1">Eigenvalues<a class="headerlink" href="#eigenvalues_1" title="Permanent link">&para;</a></h3>
+<p>The 1-D eigenvalues of the discrete Laplacian under Neumann BCs are:</p>
+<div class="arithmatex">\[\lambda_k^{\text{DCT}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi k}{2N}\right), \quad k = 0, \ldots, N-1\]</div>
+<p>The 2-D eigenvalue matrix is:</p>
+<div class="arithmatex">\[\Lambda_{j,i} = \lambda_j^y + \lambda_i^x - \lambda\]</div>
+<h3 id="the-null-mode">The Null Mode<a class="headerlink" href="#the-null-mode" title="Permanent link">&para;</a></h3>
+<p>The <span class="arithmatex">\(k = 0\)</span> eigenvalue is exactly zero: <span class="arithmatex">\(\lambda_0^{\text{DCT}} = 0\)</span>. This corresponds to the <strong>constant mode</strong> of the Neumann Laplacian -- adding a constant to <span class="arithmatex">\(\psi\)</span> does not change <span class="arithmatex">\(\nabla^2 \psi\)</span>.</p>
+<ul>
+<li><strong>Poisson</strong> (<span class="arithmatex">\(\lambda = 0\)</span>): <span class="arithmatex">\(\Lambda_{0,0} = 0\)</span>, so the system is <strong>singular</strong>. The fix is the <strong>zero-mean gauge</strong>: set <span class="arithmatex">\(\hat{\psi}_{0,0} = 0\)</span>, which enforces <span class="arithmatex">\(\overline{\psi} = 0\)</span>.</li>
+<li><strong>Helmholtz</strong> (<span class="arithmatex">\(\lambda \neq 0\)</span>): <span class="arithmatex">\(\Lambda_{0,0} = -\lambda \neq 0\)</span>, so the system is non-singular -- no special treatment needed.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Compatibility condition</p>
+<p>For the Neumann Poisson equation (<span class="arithmatex">\(\lambda = 0\)</span>), the source term <span class="arithmatex">\(f\)</span> must satisfy
+<span class="arithmatex">\(\sum_{j,i} f_{j,i} = 0\)</span> (discrete compatibility condition). If this is violated, the
+zero-mean gauge still produces a solution, but it is the least-squares best fit rather
+than an exact solution.</p>
+</div>
+<h3 id="api_1">API<a class="headerlink" href="#api_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Layer 0 — pure functions</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_dct</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_poisson_dct</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Layer 1 — module class</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">NeumannHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="5-periodic-bcs-fft-solver">5. Periodic BCs -- FFT Solver<a class="headerlink" href="#5-periodic-bcs-fft-solver" title="Permanent link">&para;</a></h2>
+<h3 id="boundary-conditions_2">Boundary Conditions<a class="headerlink" href="#boundary-conditions_2" title="Permanent link">&para;</a></h3>
+<div class="arithmatex">\[\psi(x + L_x, y) = \psi(x, y), \quad \psi(x, y + L_y) = \psi(x, y)\]</div>
+<p>The complex exponential <span class="arithmatex">\(e^{2\pi i k x / L}\)</span> is the natural basis for periodic domains.</p>
+<h3 id="transform_2">Transform<a class="headerlink" href="#transform_2" title="Permanent link">&para;</a></h3>
+<p>The <strong>2-D FFT</strong> is applied:</p>
+<div class="arithmatex">\[\hat{f} = \text{FFT2}(f)\]</div>
+<h3 id="eigenvalues_2">Eigenvalues<a class="headerlink" href="#eigenvalues_2" title="Permanent link">&para;</a></h3>
+<p>The 1-D eigenvalues of the discrete Laplacian under periodic BCs are:</p>
+<div class="arithmatex">\[\lambda_k^{\text{FFT}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi k}{N}\right), \quad k = 0, \ldots, N-1\]</div>
+<p>The 2-D eigenvalue matrix is:</p>
+<div class="arithmatex">\[\Lambda_{j,i} = \lambda_j^y + \lambda_i^x - \lambda\]</div>
+<h3 id="null-mode-handling">Null-Mode Handling<a class="headerlink" href="#null-mode-handling" title="Permanent link">&para;</a></h3>
+<p>Same as Neumann: the <span class="arithmatex">\(k = 0\)</span> mode has <span class="arithmatex">\(\lambda_0^{\text{FFT}} = 0\)</span>, so the Poisson problem (<span class="arithmatex">\(\lambda = 0\)</span>) is singular at <span class="arithmatex">\((0, 0)\)</span>. The zero-mean gauge <span class="arithmatex">\(\hat{\psi}_{0,0} = 0\)</span> removes the singularity.</p>
+<h3 id="1-d-variants">1-D Variants<a class="headerlink" href="#1-d-variants" title="Permanent link">&para;</a></h3>
+<p>The periodic solver is also available in 1-D:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_fft_1d</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_poisson_fft_1d</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="continuous-wavenumber-alternative">Continuous-Wavenumber Alternative<a class="headerlink" href="#continuous-wavenumber-alternative" title="Permanent link">&para;</a></h3>
+<p>The Layer 1 classes <code>SpectralHelmholtzSolver1D</code>, <code>SpectralHelmholtzSolver2D</code>, and <code>SpectralHelmholtzSolver3D</code> use <strong>continuous Fourier wavenumbers</strong> <span class="arithmatex">\(k = 2\pi m / L\)</span> instead of discrete finite-difference eigenvalues. The spectral division becomes:</p>
+<div class="arithmatex">\[\hat{\psi}_{\mathbf{k}} = \frac{-\hat{f}_{\mathbf{k}}}{|\mathbf{k}|^2 + \alpha}\]</div>
+<p>where <span class="arithmatex">\(|\mathbf{k}|^2 = k_x^2 + k_y^2\)</span> (+ <span class="arithmatex">\(k_z^2\)</span> in 3-D). This is the exact inverse of the <strong>continuous</strong> Laplacian rather than the 5-point stencil, and is preferred when working within a fully spectral discretisation.</p>
+<h3 id="api_2">API<a class="headerlink" href="#api_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Layer 0 — pure functions (discrete eigenvalues)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_fft</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_poisson_fft</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Layer 1 — module classes (continuous wavenumbers)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">SpectralHelmholtzSolver2D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zero_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="6-null-mode-handling-zero-mean-gauge">6. Null-Mode Handling (Zero-Mean Gauge)<a class="headerlink" href="#6-null-mode-handling-zero-mean-gauge" title="Permanent link">&para;</a></h2>
+<p>For Neumann and periodic BCs, the <span class="arithmatex">\((0,0)\)</span> spectral mode has zero eigenvalue. This section summarises the handling across all cases.</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th><span class="arithmatex">\(\Lambda_{0,0}\)</span></th>
+<th>Singular?</th>
+<th>Treatment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirichlet, any <span class="arithmatex">\(\lambda \geq 0\)</span></td>
+<td><span class="arithmatex">\(\lambda_0^y + \lambda_0^x - \lambda &lt; 0\)</span></td>
+<td>No</td>
+<td>None needed</td>
+</tr>
+<tr>
+<td>Neumann/Periodic, <span class="arithmatex">\(\lambda &gt; 0\)</span></td>
+<td><span class="arithmatex">\(-\lambda \neq 0\)</span></td>
+<td>No</td>
+<td>Automatically handled</td>
+</tr>
+<tr>
+<td>Neumann/Periodic, <span class="arithmatex">\(\lambda = 0\)</span></td>
+<td><span class="arithmatex">\(0\)</span></td>
+<td>Yes</td>
+<td>Set <span class="arithmatex">\(\hat{\psi}_{0,0} = 0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Physical meaning:</strong> the null mode corresponds to the freedom to add an arbitrary constant to <span class="arithmatex">\(\psi\)</span> without affecting <span class="arithmatex">\(\nabla^2 \psi\)</span>. The zero-mean gauge pins this constant by enforcing <span class="arithmatex">\(\overline{\psi} = 0\)</span>.</p>
+<h3 id="jit-safe-implementation">JIT-Safe Implementation<a class="headerlink" href="#jit-safe-implementation" title="Permanent link">&para;</a></h3>
+<p>The null-mode fix must be compatible with JAX's <code>jit</code> and <code>vmap</code> transformations. The implementation uses a conditional safe-division pattern:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">is_null</span> <span class="o">=</span> <span class="p">(</span><span class="n">denom</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">denom_safe</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_null</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">denom</span><span class="p">)</span>   <span class="c1"># avoid 0/0</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">psi_hat</span> <span class="o">=</span> <span class="n">rhs_hat</span> <span class="o">/</span> <span class="n">denom_safe</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">psi_hat</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_null</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">psi_hat</span><span class="p">)</span>     <span class="c1"># zero the null mode</span>
+</code></pre></div>
+<p>This avoids Python-level <code>if</code> statements, keeping the computation traceable by JAX.</p>
+<div class="admonition info">
+<p class="admonition-title">Why not just clip the denominator?</p>
+<p>A common alternative is <code>denom = jnp.maximum(denom, eps)</code>. This avoids division by zero
+but introduces an <span class="arithmatex">\(O(1/\varepsilon)\)</span> error in the null mode. The <code>jnp.where</code> approach is
+exact and has no tunable parameter.</p>
+</div>
+<hr />
+<h2 id="7-layer-0-vs-layer-1-api">7. Layer 0 vs Layer 1 API<a class="headerlink" href="#7-layer-0-vs-layer-1-api" title="Permanent link">&para;</a></h2>
+<p>SpectralDiffX provides two levels of abstraction for elliptic solvers.</p>
+<h3 id="layer-0-pure-functions">Layer 0: Pure Functions<a class="headerlink" href="#layer-0-pure-functions" title="Permanent link">&para;</a></h3>
+<p>Pure functions that take arrays and grid spacings directly. They use <strong>discrete finite-difference eigenvalues</strong> and are the exact inverse of the 5-point stencil Laplacian.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_helmholtz_dst</span><span class="p">,</span> <span class="n">solve_poisson_fft</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Dirichlet Poisson solve</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># Helmholtz with periodic BCs</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_fft</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>No grid object required -- just arrays and floats</li>
+<li>Fully compatible with <code>jax.jit</code>, <code>jax.vmap</code>, and <code>jax.grad</code></li>
+<li>Easy to vmap over parameters (e.g., sweep over <span class="arithmatex">\(\lambda\)</span>)</li>
+<li>Ideal for composition inside custom solvers or time-stepping loops</li>
+</ul>
+<h3 id="layer-1-module-classes">Layer 1: Module Classes<a class="headerlink" href="#layer-1-module-classes" title="Permanent link">&para;</a></h3>
+<p><code>eqx.Module</code> wrappers that store solver parameters as pytree leaves. Callable or expose a <code>.solve()</code> method.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">,</span> <span class="n">SpectralHelmholtzSolver2D</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># DST-based Dirichlet solver (discrete eigenvalues)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># FFT-based periodic solver (continuous wavenumbers)</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">SpectralHelmholtzSolver2D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zero_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spectral</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>Store parameters once, call repeatedly</li>
+<li>The DST/DCT classes (<code>DirichletHelmholtzSolver2D</code>, <code>NeumannHelmholtzSolver2D</code>) use discrete eigenvalues</li>
+<li>The FFT classes (<code>SpectralHelmholtzSolver1D/2D/3D</code>) use continuous wavenumbers from <code>FourierGrid</code> and accept extra options (<code>zero_mean</code>, <code>spectral</code>)</li>
+<li>Ideal as reusable components inside larger models</li>
+</ul>
+<h3 id="when-to-use-which">When to Use Which<a class="headerlink" href="#when-to-use-which" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Use case</th>
+<th>Recommended layer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quick one-off solve</td>
+<td>Layer 0</td>
+</tr>
+<tr>
+<td>Vmap over <span class="arithmatex">\(\lambda\)</span> or grid spacings</td>
+<td>Layer 0</td>
+</tr>
+<tr>
+<td>Reusable solver inside an <code>eqx.Module</code> model</td>
+<td>Layer 1</td>
+</tr>
+<tr>
+<td>Fully spectral discretisation (continuous <span class="arithmatex">\(k\)</span>)</td>
+<td>Layer 1 (FFT classes)</td>
+</tr>
+<tr>
+<td>Finite-difference discretisation (5-point stencil)</td>
+<td>Layer 0 or Layer 1 (DST/DCT classes)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-summary-table">8. Summary Table<a class="headerlink" href="#8-summary-table" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>BC Type</th>
+<th>Transform</th>
+<th>Eigenvalue <span class="arithmatex">\(\lambda_k\)</span></th>
+<th>Null mode?</th>
+<th>Layer 0 Function</th>
+<th>Layer 1 Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirichlet (<span class="arithmatex">\(\psi = 0\)</span>)</td>
+<td>DST-I</td>
+<td><span class="arithmatex">\(-\dfrac{4}{\Delta x^2}\sin^2\!\left(\dfrac{\pi(k+1)}{2(N+1)}\right)\)</span></td>
+<td>No</td>
+<td><code>solve_helmholtz_dst</code></td>
+<td><code>DirichletHelmholtzSolver2D</code></td>
+</tr>
+<tr>
+<td>Neumann (<span class="arithmatex">\(\partial\psi/\partial n = 0\)</span>)</td>
+<td>DCT-II</td>
+<td><span class="arithmatex">\(-\dfrac{4}{\Delta x^2}\sin^2\!\left(\dfrac{\pi k}{2N}\right)\)</span></td>
+<td>Yes (<span class="arithmatex">\(k=0\)</span>)</td>
+<td><code>solve_helmholtz_dct</code></td>
+<td><code>NeumannHelmholtzSolver2D</code></td>
+</tr>
+<tr>
+<td>Periodic</td>
+<td>FFT</td>
+<td><span class="arithmatex">\(-\dfrac{4}{\Delta x^2}\sin^2\!\left(\dfrac{\pi k}{N}\right)\)</span></td>
+<td>Yes (<span class="arithmatex">\(k=0\)</span>)</td>
+<td><code>solve_helmholtz_fft</code></td>
+<td><code>SpectralHelmholtzSolver2D</code></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around." src="../../images/solver_comparison.png" /></p>
+<hr />
+<h2 id="9-references">9. References<a class="headerlink" href="#9-references" title="Permanent link">&para;</a></h2>
+<ul>
+<li>G. Strang, "The Discrete Cosine Transform," <em>SIAM Review</em>, 41(1), 1999.</li>
+<li>G. H. Golub and C. F. Van Loan, <em>Matrix Computations</em>, 4th edition, Johns Hopkins University Press, 2013.</li>
+<li>D. R. Durran, <em>Numerical Methods for Fluid Dynamics: With Applications to Geophysics</em>, 2nd edition, Springer, 2010.</li>
+<li>S. A. Orszag, "On the Elimination of Aliasing in Finite-Difference Schemes by Filtering High-Wavenumber Components," <em>Journal of the Atmospheric Sciences</em>, 28, 1971.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

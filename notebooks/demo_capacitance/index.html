@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../demo_1d/">
+        <link rel="prev" href="../demo_elliptic_solvers/">
       
       
-        <link rel="next" href="../demo_qg/">
+        <link rel="next" href="../../api/fourier/transforms/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Pseudospectral Differentiation - 2D - SpectralDiffX</title>
+        <title>Capacitance Matrix Solver Demo - SpectralDiffX</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pseudospectral-differentiation-2d" class="md-skip">
+        <a href="#capacitance-matrix-solver-demo" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Pseudospectral Differentiation - 2D
+              Capacitance Matrix Solver Demo
             
           </span>
         </div>
@@ -983,37 +983,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Pseudospectral Differentiation - 2D
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../demo_2d/" class="md-nav__link">
         
   
   
@@ -1029,136 +1002,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#define-test-function" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Define Test Function
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#setup-grid-using-new-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Setup Grid Using New API
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compute-fields-and-analytical-derivatives" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Compute Fields and Analytical Derivatives
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compute-derivatives-using-spectralderivative2d" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Compute Derivatives Using SpectralDerivative2D
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#laplacian" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Laplacian
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#divergence-and-curl" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Divergence and Curl
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#poisson-solver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Poisson Solver
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dealiasing-filter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dealiasing Filter
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advection-term" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Advection Term
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1336,10 +1179,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../demo_capacitance/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Solver Demo
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1355,6 +1225,92 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#section-1-build-a-circular-ocean-basin-mask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section 1: Build a Circular Ocean Basin Mask
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-2-build-the-capacitance-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section 2: Build the Capacitance Solver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-3-solve-poisson-on-the-masked-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section 3: Solve Poisson on the Masked Domain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-4-verify-boundary-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section 4: Verify Boundary Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-5-compare-dst-vs-fft-base-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section 5: Compare DST vs FFT Base Solver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#section-6-helmholtz-with-nonzero-lambda" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Section 6: Helmholtz with Nonzero Lambda
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2081,10 +2037,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#define-test-function" class="md-nav__link">
+  <a href="#section-1-build-a-circular-ocean-basin-mask" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Define Test Function
+        Section 1: Build a Circular Ocean Basin Mask
       
     </span>
   </a>
@@ -2092,10 +2048,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup-grid-using-new-api" class="md-nav__link">
+  <a href="#section-2-build-the-capacitance-solver" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup Grid Using New API
+        Section 2: Build the Capacitance Solver
       
     </span>
   </a>
@@ -2103,10 +2059,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#compute-fields-and-analytical-derivatives" class="md-nav__link">
+  <a href="#section-3-solve-poisson-on-the-masked-domain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compute Fields and Analytical Derivatives
+        Section 3: Solve Poisson on the Masked Domain
       
     </span>
   </a>
@@ -2114,10 +2070,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#compute-derivatives-using-spectralderivative2d" class="md-nav__link">
+  <a href="#section-4-verify-boundary-enforcement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compute Derivatives Using SpectralDerivative2D
+        Section 4: Verify Boundary Enforcement
       
     </span>
   </a>
@@ -2125,10 +2081,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#laplacian" class="md-nav__link">
+  <a href="#section-5-compare-dst-vs-fft-base-solver" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Laplacian
+        Section 5: Compare DST vs FFT Base Solver
       
     </span>
   </a>
@@ -2136,54 +2092,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#divergence-and-curl" class="md-nav__link">
+  <a href="#section-6-helmholtz-with-nonzero-lambda" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Divergence and Curl
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#poisson-solver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Poisson Solver
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dealiasing-filter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dealiasing Filter
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advection-term" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Advection Term
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
+        Section 6: Helmholtz with Nonzero Lambda
       
     </span>
   </a>
@@ -2646,19 +2558,30 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=08e8aeb1">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ecc3bb98">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="pseudospectral-differentiation-2d">Pseudospectral Differentiation - 2D<a class="anchor-link" href="#pseudospectral-differentiation-2d">¶</a></h1><p>This notebook demonstrates how to use the <code>spectraldiffx</code> library for
-computing derivatives using the pseudospectral (Fourier) method in 2D.</p>
+<h1 id="capacitance-matrix-solver-demo">Capacitance Matrix Solver Demo<a class="anchor-link" href="#capacitance-matrix-solver-demo">¶</a></h1><p>Solving Poisson or Helmholtz equations on <strong>irregular domains</strong> (e.g. ocean
+basins with coastlines) is more challenging than on rectangles because
+standard spectral transforms (DST/DCT/FFT) assume a rectangular grid.</p>
+<p>The <strong>capacitance matrix method</strong> (Buzbee, Golub &amp; Nielson, 1970) extends
+a fast rectangular spectral solver to masked domains.  The idea:</p>
+<ol>
+<li>Solve on the full rectangle, ignoring the mask.</li>
+<li>The solution violates $\psi = 0$ at inner-boundary points.</li>
+<li>Correct using precomputed Green's functions so that $\psi = 0$ is
+enforced at all boundary points of the irregular domain.</li>
+</ol>
+<p>The offline cost is $O(N_b)$ rectangular solves (one per boundary point).
+The online cost per solve is $O(N_b^2 + N \log N)$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=995ecc14">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=de7201e1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2676,50 +2599,42 @@ computing derivatives using the pseudospectral (Fourier) method in 2D.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
 <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">"jax_enable_x64"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">reset_defaults</span><span class="p">()</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s2">"talk"</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-1">import math
 
-import jax
+<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_capacitance_solver</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-1">import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 
 jax.config.update("jax_enable_x64", True)
-sns.reset_defaults()
-sns.set_context(context="talk", font_scale=0.7)</div>
+
+from spectraldiffx import build_capacitance_solver</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bf2a9820">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fe177e95">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="define-test-function">Define Test Function<a class="anchor-link" href="#define-test-function">¶</a></h2><p>We use a 2D periodic function:
-$$
-u(x,y) = \cos \left(m_x \frac{2\pi}{L_x}x \right) \sin \left(m_y \frac{2\pi}{L_y}y \right)
-$$</p>
+<h2 id="section-1-build-a-circular-ocean-basin-mask">Section 1: Build a Circular Ocean Basin Mask<a class="anchor-link" href="#section-1-build-a-circular-ocean-basin-mask">¶</a></h2><p>We create a binary mask on a 32x32 grid representing a circular ocean
+basin (True = ocean interior, False = land/exterior).</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=aa3326a9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9f1da278">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2737,47 +2652,44 @@ $$</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">mx</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">my</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="n">Ly</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span>
+<span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
 
+<span class="c1"># Coordinate arrays (cell centers)</span>
+<span class="n">j_idx</span><span class="p">,</span> <span class="n">i_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">Ny</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">Nx</span><span class="p">]</span>
+<span class="n">center_y</span><span class="p">,</span> <span class="n">center_x</span> <span class="o">=</span> <span class="n">Ny</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="mf">0.35</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span><span class="p">)</span>
 
-<span class="c1"># Define gradient functions using JAX autodiff</span>
-<span class="n">df_dx</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">argnums</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">df_dy</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">argnums</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Circular mask</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">i_idx</span> <span class="o">-</span> <span class="n">center_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">j_idx</span> <span class="o">-</span> <span class="n">center_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">radius</span>
 
-<span class="c1"># Second order derivatives</span>
-<span class="n">d2f_dx2</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">df_dx</span><span class="p">,</span> <span class="n">argnums</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">d2f_dy2</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">df_dy</span><span class="p">,</span> <span class="n">argnums</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid size: </span><span class="si">{</span><span class="n">Ny</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">Nx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Circle center: (</span><span class="si">{</span><span class="n">center_x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">center_y</span><span class="si">}</span><span class="s2">), radius: </span><span class="si">{</span><span class="n">radius</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Interior points: </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">Ny</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Nx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">def f(x, y, Lx, Ly, mx, my):
-    return jnp.cos(mx * 2 * jnp.pi * x / Lx) * jnp.sin(my * 2 * jnp.pi * y / Ly)
+<div class="clipboard-copy-txt" id="cell-2">Ny, Nx = 32, 32
+dx, dy = 1.0, 1.0
 
+# Coordinate arrays (cell centers)
+j_idx, i_idx = np.mgrid[0:Ny, 0:Nx]
+center_y, center_x = Ny / 2, Nx / 2
+radius = 0.35 * min(Ny, Nx)
 
-# Define gradient functions using JAX autodiff
-df_dx = jax.grad(f, argnums=0)
-df_dy = jax.grad(f, argnums=1)
+# Circular mask
+dist = np.sqrt((i_idx - center_x) ** 2 + (j_idx - center_y) ** 2)
+mask = dist &lt; radius
 
-# Second order derivatives
-d2f_dx2 = jax.grad(df_dx, argnums=0)
-d2f_dy2 = jax.grad(df_dy, argnums=1)</div>
+print(f"Grid size: {Ny} x {Nx}")
+print(f"Circle center: ({center_x}, {center_y}), radius: {radius}")
+print(f"Interior points: {mask.sum()} / {Ny * Nx}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7f086a85">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="setup-grid-using-new-api">Setup Grid Using New API<a class="anchor-link" href="#setup-grid-using-new-api">¶</a></h2><p>We use <code>FourierGrid2D</code> to define the 2D computational domain.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3512e770">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=314633e4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2795,42 +2707,41 @@ d2f_dy2 = jax.grad(df_dy, argnums=1)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralDerivative2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralHelmholtzSolver2D</span>
-
-<span class="c1"># Grid and function parameters</span>
-<span class="n">mx</span><span class="p">,</span> <span class="n">my</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span>
-<span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span>
-<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-
-<span class="c1"># Create 2D grid using the new API</span>
-<span class="n">grid</span> <span class="o">=</span> <span class="n">FourierGrid2D</span><span class="o">.</span><span class="n">from_N_L</span><span class="p">(</span><span class="n">Nx</span><span class="o">=</span><span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="o">=</span><span class="n">Ny</span><span class="p">,</span> <span class="n">Lx</span><span class="o">=</span><span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="o">=</span><span class="n">Ly</span><span class="p">,</span> <span class="n">dealias</span><span class="o">=</span><span class="s2">"2/3"</span><span class="p">)</span>
-
-<span class="c1"># Get meshgrid coordinates</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">X</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Blues"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Ocean basin mask (blue = interior)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
-
-# Grid and function parameters
-mx, my = 3, 2
-Nx, Ny = 64, 64
-Lx, Ly = 2 * math.pi, 2 * math.pi
-
-# Create 2D grid using the new API
-grid = FourierGrid2D.from_N_L(Nx=Nx, Ny=Ny, Lx=Lx, Ly=Ly, dealias="2/3")
-
-# Get meshgrid coordinates
-X, Y = grid.X</div>
+<div class="clipboard-copy-txt" id="cell-3">fig, ax = plt.subplots(figsize=(5, 5))
+ax.imshow(mask.astype(float), origin="lower", cmap="Blues", vmin=0, vmax=1)
+ax.set_title("Ocean basin mask (blue = interior)")
+ax.set_xlabel("i")
+ax.set_ylabel("j")
+plt.tight_layout()
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=890de4ae">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="section-2-build-the-capacitance-solver">Section 2: Build the Capacitance Solver<a class="anchor-link" href="#section-2-build-the-capacitance-solver">¶</a></h2><p><code>build_capacitance_solver</code> performs the offline precomputation:
+detecting inner-boundary points, computing Green's functions, and
+inverting the capacitance matrix.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=db9690b1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a6877dc5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2848,33 +2759,37 @@ X, Y = grid.X</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid points: Nx=</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">Nx</span><span class="si">}</span><span class="s2">, Ny=</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">Ny</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Domain size: Lx=</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">Lx</span><span class="si">}</span><span class="s2">, Ly=</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">Ly</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid spacing: dx=</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, dy=</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dealiasing: </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dealias</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_dst</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"dst"</span><span class="p">)</span>
+
+<span class="n">n_boundary</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of inner-boundary points: </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Base spectral solver: </span><span class="si">{</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">base_bc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz parameter: </span><span class="si">{</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">print(f"Grid points: Nx={grid.Nx}, Ny={grid.Ny}")
-print(f"Domain size: Lx={grid.Lx}, Ly={grid.Ly}")
-print(f"Grid spacing: dx={grid.dx:.4f}, dy={grid.dy:.4f}")
-print(f"Dealiasing: {grid.dealias}")</div>
+<div class="clipboard-copy-txt" id="cell-4">solver_dst = build_capacitance_solver(mask, dx, dy, lambda_=0.0, base_bc="dst")
+
+n_boundary = len(solver_dst._j_b)
+print(f"Number of inner-boundary points: {n_boundary}")
+print(f"Base spectral solver: {solver_dst.base_bc}")
+print(f"Helmholtz parameter: {solver_dst.lambda_}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1a6b4221">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3f45255d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="compute-fields-and-analytical-derivatives">Compute Fields and Analytical Derivatives<a class="anchor-link" href="#compute-fields-and-analytical-derivatives">¶</a></h2>
+<h2 id="section-3-solve-poisson-on-the-masked-domain">Section 3: Solve Poisson on the Masked Domain<a class="anchor-link" href="#section-3-solve-poisson-on-the-masked-domain">¶</a></h2><p>We set the RHS to ones inside the mask and zeros outside, then solve.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d8f8f5a2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=73a64d6f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2892,52 +2807,18 @@ print(f"Dealiasing: {grid.dealias}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Helper to compute field values on grid</span>
-<span class="n">kernel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
-<span class="n">kernel_grad_x</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">df_dx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
-<span class="n">kernel_grad_y</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">df_dy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
-<span class="n">kernel_grad2_x2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">d2f_dx2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
-<span class="n">kernel_grad2_y2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">d2f_dy2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">my</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_on_grid</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Evaluate function on meshgrid."""</span>
-    <span class="k">return</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">xi</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">yi</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">))(</span><span class="n">y</span><span class="p">))(</span><span class="n">x</span><span class="p">)</span>
-
-
-<span class="c1"># Note: grid.x and grid.y are 1D arrays</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">compute_on_grid</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-<span class="n">dudx_analytical</span> <span class="o">=</span> <span class="n">compute_on_grid</span><span class="p">(</span><span class="n">kernel_grad_x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-<span class="n">dudy_analytical</span> <span class="o">=</span> <span class="n">compute_on_grid</span><span class="p">(</span><span class="n">kernel_grad_y</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-<span class="n">d2udx2_analytical</span> <span class="o">=</span> <span class="n">compute_on_grid</span><span class="p">(</span><span class="n">kernel_grad2_x2</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-<span class="n">d2udy2_analytical</span> <span class="o">=</span> <span class="n">compute_on_grid</span><span class="p">(</span><span class="n">kernel_grad2_y2</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">rhs</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">psi</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5"># Helper to compute field values on grid
-kernel = lambda x, y: f(x, y, Lx, Ly, mx, my)
-kernel_grad_x = lambda x, y: df_dx(x, y, Lx, Ly, mx, my)
-kernel_grad_y = lambda x, y: df_dy(x, y, Lx, Ly, mx, my)
-kernel_grad2_x2 = lambda x, y: d2f_dx2(x, y, Lx, Ly, mx, my)
-kernel_grad2_y2 = lambda x, y: d2f_dy2(x, y, Lx, Ly, mx, my)
-
-
-def compute_on_grid(func, x, y):
-    """Evaluate function on meshgrid."""
-    return jax.vmap(lambda xi: jax.vmap(lambda yi: func(xi, yi))(y))(x)
-
-
-# Note: grid.x and grid.y are 1D arrays
-u = compute_on_grid(kernel, grid.x, grid.y)
-dudx_analytical = compute_on_grid(kernel_grad_x, grid.x, grid.y)
-dudy_analytical = compute_on_grid(kernel_grad_y, grid.x, grid.y)
-d2udx2_analytical = compute_on_grid(kernel_grad2_x2, grid.x, grid.y)
-d2udy2_analytical = compute_on_grid(kernel_grad2_y2, grid.x, grid.y)</div>
+<div class="clipboard-copy-txt" id="cell-5">rhs = jnp.where(jnp.array(mask), 1.0, 0.0)
+psi = solver_dst(rhs)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b2e8fa2b">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e2c26837">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2955,27 +2836,37 @@ d2udy2_analytical = compute_on_grid(kernel_grad2_y2, grid.x, grid.y)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dudx_analytical</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dudy_analytical</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rhs</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"RHS (ones inside mask)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"$u(x,y)$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\partial_x u(x,y)$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\partial_y u(x,y)$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Solution psi"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
+<div class="clipboard-copy-txt" id="cell-6">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
-ax[0].contourf(X.T, Y.T, u.T)
-ax[1].contourf(X.T, Y.T, dudx_analytical.T)
-ax[2].contourf(X.T, Y.T, dudy_analytical.T)
+im0 = axes[0].imshow(np.array(rhs), origin="lower", cmap="viridis")
+axes[0].set_title("RHS (ones inside mask)")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
 
-ax[0].set(title="$u(x,y)$", xlabel="$x$", ylabel="$y$")
-ax[1].set(title=r"$\partial_x u(x,y)$", xlabel="$x$", ylabel="$y$")
-ax[2].set(title=r"$\partial_y u(x,y)$", xlabel="$x$", ylabel="$y$")
+im1 = axes[1].imshow(np.array(psi), origin="lower", cmap="RdBu_r")
+axes[1].set_title("Solution psi")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
 plt.tight_layout()
 plt.show()</div>
 </div>
@@ -2984,18 +2875,19 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fd9c40d4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0b77dff6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="compute-derivatives-using-spectralderivative2d">Compute Derivatives Using SpectralDerivative2D<a class="anchor-link" href="#compute-derivatives-using-spectralderivative2d">¶</a></h2>
+<h2 id="section-4-verify-boundary-enforcement">Section 4: Verify Boundary Enforcement<a class="anchor-link" href="#section-4-verify-boundary-enforcement">¶</a></h2><p>The capacitance method enforces $\psi = 0$ at the inner-boundary points.
+Let us check.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fdcac84d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=225b4dd2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3013,24 +2905,26 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create the 2D derivative operator</span>
-<span class="n">deriv</span> <span class="o">=</span> <span class="n">SpectralDerivative2D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Extract solution values at inner-boundary points</span>
+<span class="n">psi_at_boundary</span> <span class="o">=</span> <span class="n">psi</span><span class="p">[</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">,</span> <span class="n">solver_dst</span><span class="o">.</span><span class="n">_i_b</span><span class="p">]</span>
 
-<span class="c1"># Compute gradient (returns tuple of du/dx, du/dy)</span>
-<span class="n">dudx_spectral</span><span class="p">,</span> <span class="n">dudy_spectral</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of boundary points: </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |psi| at boundary: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_at_boundary</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean |psi| at boundary: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_at_boundary</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7"># Create the 2D derivative operator
-deriv = SpectralDerivative2D(grid=grid)
+<div class="clipboard-copy-txt" id="cell-7"># Extract solution values at inner-boundary points
+psi_at_boundary = psi[solver_dst._j_b, solver_dst._i_b]
 
-# Compute gradient (returns tuple of du/dx, du/dy)
-dudx_spectral, dudy_spectral = deriv.gradient(u)</div>
+print(f"Number of boundary points: {n_boundary}")
+print(f"Max |psi| at boundary: {jnp.max(jnp.abs(psi_at_boundary)):.2e}")
+print(f"Mean |psi| at boundary: {jnp.mean(jnp.abs(psi_at_boundary)):.2e}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=808c27c8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c635943d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3048,63 +2942,33 @@ dudx_spectral, dudy_spectral = deriv.gradient(u)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Visualize the boundary points and their psi values</span>
+<span class="n">boundary_field</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span><span class="p">))</span>
+<span class="n">boundary_field</span> <span class="o">=</span> <span class="n">boundary_field</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">,</span> <span class="n">solver_dst</span><span class="o">.</span><span class="n">_i_b</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">psi_at_boundary</span>
+<span class="p">)</span>
 
-<span class="n">x_levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">dudx_analytical</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">dudx_analytical</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">y_levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">dudy_analytical</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">dudy_analytical</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span>
-
-<span class="c1"># Analytical</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dudx_analytical</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">x_levels</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\partial_x u$ (analytical)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dudy_analytical</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">y_levels</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\partial_y u$ (analytical)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="c1"># Spectral</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dudx_spectral</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">x_levels</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\partial_x u$ (spectral)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dudy_spectral</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">y_levels</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\partial_y u$ (spectral)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="c1"># Error</span>
-<span class="n">err_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dudx_analytical</span> <span class="o">-</span> <span class="n">dudx_spectral</span><span class="p">)</span>
-<span class="n">err_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dudy_analytical</span> <span class="o">-</span> <span class="n">dudy_spectral</span><span class="p">)</span>
-<span class="n">pts</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">err_x</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Reds"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|\partial_x u|$ error"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-<span class="n">pts</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">err_y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Reds"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|\partial_y u|$ error"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">boundary_field</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"psi at inner-boundary points"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">fig, ax = plt.subplots(ncols=2, nrows=3, figsize=(7, 8))
+<div class="clipboard-copy-txt" id="cell-8"># Visualize the boundary points and their psi values
+boundary_field = jnp.zeros((Ny, Nx))
+boundary_field = boundary_field.at[solver_dst._j_b, solver_dst._i_b].set(
+    psi_at_boundary
+)
 
-x_levels = np.linspace(dudx_analytical.min(), dudx_analytical.max(), 10)
-y_levels = np.linspace(dudy_analytical.min(), dudy_analytical.max(), 10)
-
-# Analytical
-ax[0, 0].contourf(X.T, Y.T, dudx_analytical.T, levels=x_levels)
-ax[0, 0].set(title=r"$\partial_x u$ (analytical)", xlabel="$x$", ylabel="$y$")
-ax[0, 1].contourf(X.T, Y.T, dudy_analytical.T, levels=y_levels)
-ax[0, 1].set(title=r"$\partial_y u$ (analytical)", xlabel="$x$", ylabel="$y$")
-
-# Spectral
-ax[1, 0].contourf(X.T, Y.T, dudx_spectral.T, levels=x_levels)
-ax[1, 0].set(title=r"$\partial_x u$ (spectral)", xlabel="$x$", ylabel="$y$")
-ax[1, 1].contourf(X.T, Y.T, dudy_spectral.T, levels=y_levels)
-ax[1, 1].set(title=r"$\partial_y u$ (spectral)", xlabel="$x$", ylabel="$y$")
-
-# Error
-err_x = np.abs(dudx_analytical - dudx_spectral)
-err_y = np.abs(dudy_analytical - dudy_spectral)
-pts = ax[2, 0].contourf(X.T, Y.T, err_x.T, cmap="Reds")
-plt.colorbar(pts, ax=ax[2, 0])
-ax[2, 0].set(title=r"$|\partial_x u|$ error", xlabel="$x$", ylabel="$y$")
-pts = ax[2, 1].contourf(X.T, Y.T, err_y.T, cmap="Reds")
-plt.colorbar(pts, ax=ax[2, 1])
-ax[2, 1].set(title=r"$|\partial_y u|$ error", xlabel="$x$", ylabel="$y$")
-
+fig, ax = plt.subplots(figsize=(5, 5))
+im = ax.imshow(np.array(boundary_field), origin="lower", cmap="RdBu_r")
+ax.set_title("psi at inner-boundary points")
+ax.set_xlabel("i")
+ax.set_ylabel("j")
+plt.colorbar(im, ax=ax, shrink=0.8)
 plt.tight_layout()
 plt.show()</div>
 </div>
@@ -3112,8 +2976,21 @@ plt.show()</div>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5fbdc993">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="section-5-compare-dst-vs-fft-base-solver">Section 5: Compare DST vs FFT Base Solver<a class="anchor-link" href="#section-5-compare-dst-vs-fft-base-solver">¶</a></h2><p>The capacitance method can use different rectangular base solvers.
+Inside the masked domain, the solutions should agree (they solve the
+same PDE with the same mask-boundary conditions).</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9bf62570">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4a84d859">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3131,30 +3008,32 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in du/dx: </span><span class="si">{</span><span class="n">err_x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in du/dy: </span><span class="si">{</span><span class="n">err_y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_fft</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"fft"</span><span class="p">)</span>
+
+<span class="n">psi_from_dst</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<span class="n">psi_from_fft</span> <span class="o">=</span> <span class="n">solver_fft</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+
+<span class="c1"># Difference inside the mask</span>
+<span class="n">diff_inside</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_from_dst</span> <span class="o">-</span> <span class="n">psi_from_fft</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |DST - FFT| inside mask: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">diff_inside</span><span class="p">)</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">print(f"Max error in du/dx: {err_x.max():.2e}")
-print(f"Max error in du/dy: {err_y.max():.2e}")</div>
+<div class="clipboard-copy-txt" id="cell-9">solver_fft = build_capacitance_solver(mask, dx, dy, lambda_=0.0, base_bc="fft")
+
+psi_from_dst = solver_dst(rhs)
+psi_from_fft = solver_fft(rhs)
+
+# Difference inside the mask
+diff_inside = jnp.where(jnp.array(mask), jnp.abs(psi_from_dst - psi_from_fft), 0.0)
+
+print(f"Max |DST - FFT| inside mask: {jnp.max(diff_inside):.2e}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0717b4d8">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="laplacian">Laplacian<a class="anchor-link" href="#laplacian">¶</a></h2><p>The Laplacian operator $\nabla^2 u = \partial^2 u/\partial x^2 + \partial^2 u/\partial y^2$
-is computed efficiently in spectral space as $-|k|^2 \hat{u}$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7f4f3ec9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3a0670e8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3172,20 +3051,68 @@ is computed efficiently in spectral space as $-|k|^2 \hat{u}$.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Compute Laplacian</span>
-<span class="n">laplacian_spectral</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">laplacian</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-<span class="n">laplacian_analytical</span> <span class="o">=</span> <span class="n">d2udx2_analytical</span> <span class="o">+</span> <span class="n">d2udy2_analytical</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_from_dst</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"DST base"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_from_fft</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"FFT base"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im2</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">diff_inside</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"hot"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"|DST - FFT| inside mask"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10"># Compute Laplacian
-laplacian_spectral = deriv.laplacian(u)
-laplacian_analytical = d2udx2_analytical + d2udy2_analytical</div>
+<div class="clipboard-copy-txt" id="cell-10">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+im0 = axes[0].imshow(np.array(psi_from_dst), origin="lower", cmap="RdBu_r")
+axes[0].set_title("DST base")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(np.array(psi_from_fft), origin="lower", cmap="RdBu_r")
+axes[1].set_title("FFT base")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+im2 = axes[2].imshow(np.array(diff_inside), origin="lower", cmap="hot")
+axes[2].set_title("|DST - FFT| inside mask")
+plt.colorbar(im2, ax=axes[2], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.tight_layout()
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d7ef4ca0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="section-6-helmholtz-with-nonzero-lambda">Section 6: Helmholtz with Nonzero Lambda<a class="anchor-link" href="#section-6-helmholtz-with-nonzero-lambda">¶</a></h2><p>Setting <code>lambda_ &gt; 0</code> solves the Helmholtz equation
+$(\nabla^2 - \lambda)\psi = f$ instead of pure Poisson.
+The solution is more localized because the $-\lambda\psi$ term
+acts as a damping/screening term.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5a4f8b74">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4a1e8378">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3203,63 +3130,26 @@ laplacian_analytical = d2udx2_analytical + d2udy2_analytical</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_helmholtz</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span>
+    <span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"dst"</span>
+<span class="p">)</span>
 
-<span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">laplacian_analytical</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">laplacian_analytical</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">laplacian_analytical</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\nabla^2 u$ (analytical)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">laplacian_spectral</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\nabla^2 u$ (spectral)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">err_lap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">laplacian_analytical</span> <span class="o">-</span> <span class="n">laplacian_spectral</span><span class="p">)</span>
-<span class="n">pts</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">err_lap</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Reds"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|\nabla^2 u|$ error"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in Laplacian: </span><span class="si">{</span><span class="n">err_lap</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">psi_poisson</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<span class="n">psi_helmholtz</span> <span class="o">=</span> <span class="n">solver_helmholtz</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-11">fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
+<div class="clipboard-copy-txt" id="cell-11">solver_helmholtz = build_capacitance_solver(
+    mask, dx, dy, lambda_=1.0, base_bc="dst"
+)
 
-levels = np.linspace(laplacian_analytical.min(), laplacian_analytical.max(), 10)
-
-ax[0].contourf(X.T, Y.T, laplacian_analytical.T, levels=levels)
-ax[0].set(title=r"$\nabla^2 u$ (analytical)", xlabel="$x$", ylabel="$y$")
-
-ax[1].contourf(X.T, Y.T, laplacian_spectral.T, levels=levels)
-ax[1].set(title=r"$\nabla^2 u$ (spectral)", xlabel="$x$", ylabel="$y$")
-
-err_lap = np.abs(laplacian_analytical - laplacian_spectral)
-pts = ax[2].contourf(X.T, Y.T, err_lap.T, cmap="Reds")
-plt.colorbar(pts, ax=ax[2])
-ax[2].set(title=r"$|\nabla^2 u|$ error", xlabel="$x$", ylabel="$y$")
-
-plt.tight_layout()
-plt.show()
-
-print(f"Max error in Laplacian: {err_lap.max():.2e}")</div>
+psi_poisson = solver_dst(rhs)
+psi_helmholtz = solver_helmholtz(rhs)</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6b0a1c18">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="divergence-and-curl">Divergence and Curl<a class="anchor-link" href="#divergence-and-curl">¶</a></h2><p>For vector fields, we can compute divergence and curl.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a3aba430">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=aae1fd71">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3277,32 +3167,60 @@ print(f"Max error in Laplacian: {err_lap.max():.2e}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create a vector field: V = (u, -u) which has zero divergence</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">u</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="o">-</span><span class="n">u</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="c1"># Compute divergence: div(V) = du/dx + dv/dy</span>
-<span class="n">div_V</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">divergence</span><span class="p">(</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">)</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">))),</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">))))</span>
 
-<span class="c1"># Compute curl (2D scalar): curl(V) = dv/dx - du/dy</span>
-<span class="n">curl_V</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">curl</span><span class="p">(</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">)</span>
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Poisson (lambda=0)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Helmholtz (lambda=1)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Capacitance solver: Poisson vs Helmholtz"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12"># Create a vector field: V = (u, -u) which has zero divergence
-vx = u
-vy = -u
+<div class="clipboard-copy-txt" id="cell-12">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
-# Compute divergence: div(V) = du/dx + dv/dy
-div_V = deriv.divergence(vx, vy)
+vmax = max(float(jnp.max(jnp.abs(psi_poisson))), float(jnp.max(jnp.abs(psi_helmholtz))))
 
-# Compute curl (2D scalar): curl(V) = dv/dx - du/dy
-curl_V = deriv.curl(vx, vy)</div>
+im0 = axes[0].imshow(
+    np.array(psi_poisson), origin="lower", cmap="RdBu_r", vmin=-vmax, vmax=vmax
+)
+axes[0].set_title("Poisson (lambda=0)")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(
+    np.array(psi_helmholtz), origin="lower", cmap="RdBu_r", vmin=-vmax, vmax=vmax
+)
+axes[1].set_title("Helmholtz (lambda=1)")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle("Capacitance solver: Poisson vs Helmholtz", fontsize=14)
+plt.tight_layout()
+plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e8a39c50">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c5c9c2d1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3320,369 +3238,15 @@ curl_V = deriv.curl(vx, vy)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-
-<span class="n">pts</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">div_V</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\nabla \cdot V$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">pts</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">curl_V</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\nabla \times V$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Poisson max |psi|: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz max |psi|: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"The Helmholtz solution is smaller due to the screening term."</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13">fig, ax = plt.subplots(ncols=2, figsize=(8, 3))
-
-pts = ax[0].contourf(X.T, Y.T, div_V.T)
-plt.colorbar(pts, ax=ax[0])
-ax[0].set(title=r"$\nabla \cdot V$", xlabel="$x$", ylabel="$y$")
-
-pts = ax[1].contourf(X.T, Y.T, curl_V.T)
-plt.colorbar(pts, ax=ax[1])
-ax[1].set(title=r"$\nabla \times V$", xlabel="$x$", ylabel="$y$")
-
-plt.tight_layout()
-plt.show()</div>
+<div class="clipboard-copy-txt" id="cell-13">print(f"Poisson max |psi|: {jnp.max(jnp.abs(psi_poisson)):.4f}")
+print(f"Helmholtz max |psi|: {jnp.max(jnp.abs(psi_helmholtz)):.4f}")
+print("The Helmholtz solution is smaller due to the screening term.")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0833e7ce">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="poisson-solver">Poisson Solver<a class="anchor-link" href="#poisson-solver">¶</a></h2><p>Solve $\nabla^2 \phi = f$ for $\phi$ given source term $f$.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c1135f36">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create solver</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SpectralHelmholtzSolver2D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
-
-<span class="c1"># Use the Laplacian of u as source term, should recover u (up to a constant)</span>
-<span class="n">source</span> <span class="o">=</span> <span class="n">laplacian_analytical</span>
-
-<span class="c1"># Solve Poisson equation</span>
-<span class="n">phi</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zero_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># The solution should match u (shifted to zero mean)</span>
-<span class="n">u_zero_mean</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">u</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">phi_normalized</span> <span class="o">=</span> <span class="n">phi</span> <span class="o">-</span> <span class="n">phi</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-14"># Create solver
-solver = SpectralHelmholtzSolver2D(grid=grid)
-
-# Use the Laplacian of u as source term, should recover u (up to a constant)
-source = laplacian_analytical
-
-# Solve Poisson equation
-phi = solver.solve(source, alpha=0.0, zero_mean=True)
-
-# The solution should match u (shifted to zero mean)
-u_zero_mean = u - u.mean()
-phi_normalized = phi - phi.mean()</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6618facf">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"Source $f = \nabla^2 u$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">phi</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"Solution $\phi$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">u_zero_mean</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"Original $u$ (zero mean)"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-15">fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
-
-ax[0].contourf(X.T, Y.T, source.T)
-ax[0].set(title=r"Source $f = \nabla^2 u$", xlabel="$x$", ylabel="$y$")
-
-ax[1].contourf(X.T, Y.T, phi.T)
-ax[1].set(title=r"Solution $\phi$", xlabel="$x$", ylabel="$y$")
-
-ax[2].contourf(X.T, Y.T, u_zero_mean.T)
-ax[2].set(title=r"Original $u$ (zero mean)", xlabel="$x$", ylabel="$y$")
-
-plt.tight_layout()
-plt.show()</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d3d21eb9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-16">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">err_poisson</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi_normalized</span> <span class="o">-</span> <span class="n">u_zero_mean</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in Poisson solution: </span><span class="si">{</span><span class="n">err_poisson</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-16">err_poisson = np.abs(phi_normalized - u_zero_mean)
-print(f"Max error in Poisson solution: {err_poisson.max():.2e}")</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fe5c208b">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="dealiasing-filter">Dealiasing Filter<a class="anchor-link" href="#dealiasing-filter">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0d296d63">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># View the 2D dealiasing filter</span>
-<span class="n">dealias_filter</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">dealias_filter</span><span class="p">()</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="n">KX</span><span class="p">,</span> <span class="n">KY</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">KX</span>
-<span class="n">pts</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">KX</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">KY</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">dealias_filter</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">"$k_x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$k_y$"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">"2/3 Dealiasing Filter"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-17"># View the 2D dealiasing filter
-dealias_filter = grid.dealias_filter()
-
-fig, ax = plt.subplots(figsize=(5, 4))
-KX, KY = grid.KX
-pts = ax.contourf(KX.T, KY.T, dealias_filter.T)
-plt.colorbar(pts)
-ax.set(xlabel="$k_x$", ylabel="$k_y$", title="2/3 Dealiasing Filter")
-plt.tight_layout()
-plt.show()</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=de3b105d">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="advection-term">Advection Term<a class="anchor-link" href="#advection-term">¶</a></h2><p>For fluid dynamics, we often need to compute the advection term $(v \cdot \nabla) q$.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=272a98f9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-18">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create velocity field</span>
-<span class="n">vx</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">X</span> <span class="o">/</span> <span class="n">Lx</span><span class="p">)</span>
-<span class="n">vy</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">Y</span> <span class="o">/</span> <span class="n">Ly</span><span class="p">)</span>
-
-<span class="c1"># Scalar field to advect</span>
-<span class="n">q</span> <span class="o">=</span> <span class="n">u</span>
-
-<span class="c1"># Compute advection term</span>
-<span class="n">advection</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">advection_scalar</span><span class="p">(</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-18"># Create velocity field
-vx = jnp.sin(2 * jnp.pi * X / Lx)
-vy = jnp.cos(2 * jnp.pi * Y / Ly)
-
-# Scalar field to advect
-q = u
-
-# Compute advection term
-advection = deriv.advection_scalar(vx, vy, q)</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c212b1a2">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-19">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vx</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$v_x$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vy</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$v_y$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">advection</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$(v \cdot \nabla) q$"</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"$y$"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-19">fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
-
-ax[0].contourf(X.T, Y.T, vx.T)
-ax[0].set(title=r"$v_x$", xlabel="$x$", ylabel="$y$")
-
-ax[1].contourf(X.T, Y.T, vy.T)
-ax[1].set(title=r"$v_y$", xlabel="$x$", ylabel="$y$")
-
-ax[2].contourf(X.T, Y.T, advection.T)
-ax[2].set(title=r"$(v \cdot \nabla) q$", xlabel="$x$", ylabel="$y$")
-
-plt.tight_layout()
-plt.show()</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4567314d">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><p>The 2D API provides:</p>
-<ol>
-<li><p><strong>FourierGrid2D</strong>: 2D grid with wavenumber meshgrids</p>
-<ul>
-<li>Properties: <code>x</code>, <code>y</code>, <code>X</code> (meshgrid), <code>kx</code>, <code>ky</code>, <code>KX</code> (wavenumber meshgrid), <code>K2</code></li>
-<li>Methods: <code>transform()</code>, <code>dealias_filter()</code>, <code>check_consistency()</code></li>
-</ul>
-</li>
-<li><p><strong>SpectralDerivative2D</strong>: 2D derivative operators</p>
-<ul>
-<li><code>gradient(u)</code>: Returns (du/dx, du/dy)</li>
-<li><code>divergence(vx, vy)</code>: Computes div(V)</li>
-<li><code>curl(vx, vy)</code>: Computes 2D curl (scalar)</li>
-<li><code>laplacian(u)</code>: Computes nabla^2 u</li>
-<li><code>advection_scalar(vx, vy, q)</code>: Computes (v . grad) q</li>
-<li><code>apply_dealias(u)</code>: Apply dealiasing filter</li>
-<li><code>project_vector(vx, vy)</code>: Leray projection for incompressible flows</li>
-</ul>
-</li>
-<li><p><strong>SpectralHelmholtzSolver2D</strong>: Solve elliptic equations</p>
-<ul>
-<li><code>solve(f, alpha)</code>: Solves (nabla^2 - alpha) phi = f</li>
-</ul>
-</li>
-</ol>
 </div>
 </div>
 </div>
