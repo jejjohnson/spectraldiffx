@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.6](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.5...v0.0.6) (2026-03-19)
+
+
+### Features
+
+* add eigenvalue functions for all BC/grid-type combinations ([492d8b1](https://github.com/jejjohnson/spectraldiffx/commit/492d8b130fb294347230c5dd058ea1bc700a5552)), closes [#38](https://github.com/jejjohnson/spectraldiffx/issues/38)
+* add solvers for all BC/grid-type combinations (1D, 2D, 3D) ([cafa3a6](https://github.com/jejjohnson/spectraldiffx/commit/cafa3a6f1b92f64fe17308e74d65f9f5c4c0946f)), closes [#38](https://github.com/jejjohnson/spectraldiffx/issues/38)
+* staggered-grid eigenvalues and solvers for all BC/grid-type combinations ([4c72fad](https://github.com/jejjohnson/spectraldiffx/commit/4c72fadb7eb058b9129c667ec2433c58a7092d82))
+
+
+### Bug Fixes
+
+* address PR review comments ([be9fdaf](https://github.com/jejjohnson/spectraldiffx/commit/be9fdaf327cd663171e342d2ace52dc643f4d207))
+
 ## [0.0.5](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.4...v0.0.5) (2026-03-19)
 
 
