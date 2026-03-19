@@ -13,12 +13,13 @@ Functional solvers that take arrays and grid spacings directly.
 * **Neumann, staggered (DCT-II/III):** 1D, 2D, 3D
 
 The DST/DCT solvers use discrete finite-difference eigenvalues, making
-them exact inverses of the 5-point stencil Laplacian.
+them exact inverses of the second-order finite-difference Laplacian
+(3-point stencil in 1D, 5-point in 2D, 7-point in 3D).
 
 **Backwards-compatible aliases:**
 
-* ``solve_helmholtz_dst`` → ``solve_helmholtz_dst1`` (Dirichlet, regular)
-* ``solve_helmholtz_dct`` → ``solve_helmholtz_dct2`` (Neumann, staggered)
+* ``solve_helmholtz_dst1`` = ``solve_helmholtz_dst`` (Dirichlet, regular)
+* ``solve_helmholtz_dct2`` = ``solve_helmholtz_dct`` (Neumann, staggered)
 
 Layer 1 — Module classes
 -------------------------

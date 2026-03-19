@@ -113,6 +113,10 @@ class TestDCT1Eigenvalues:
         eigs2 = dct1_eigenvalues(N, dx=2.0)
         assert jnp.allclose(eigs2, eigs1 / 4.0, atol=1e-6)
 
+    def test_raises_for_n_less_than_2(self):
+        with pytest.raises(ValueError, match="N >= 2"):
+            dct1_eigenvalues(1, dx=1.0)
+
 
 class TestDCT2Eigenvalues:
     """DCT-II eigenvalues (Neumann BCs, staggered grid)."""

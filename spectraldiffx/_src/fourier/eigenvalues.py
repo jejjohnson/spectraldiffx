@@ -163,7 +163,14 @@ def dct1_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
     Float[Array, " N"]
         1-D array of *N* eigenvalues, ordered k = 0, …, N−1.
         λ_0 = 0; all others < 0.
+
+    Raises
+    ------
+    ValueError
+        If N < 2 (DCT-I requires at least two grid points).
     """
+    if N < 2:
+        raise ValueError(f"dct1_eigenvalues requires N >= 2, got N={N}")
     k = jnp.arange(N)
     return -4.0 / dx**2 * jnp.sin(jnp.pi * k / (2 * (N - 1))) ** 2
 
