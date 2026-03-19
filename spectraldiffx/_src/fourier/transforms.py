@@ -83,7 +83,7 @@ def _norm_axis(axis: int, ndim: int) -> int:
     return axis
 
 
-def _make_idx(ndim: int, axis: int, pos: int) -> tuple:
+def _make_idx(ndim: int, axis: int, pos: int | slice) -> tuple:
     """Create index tuple selecting position *pos* along *axis*."""
     idx = [slice(None)] * ndim
     idx[axis] = pos

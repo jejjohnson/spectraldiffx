@@ -38,8 +38,14 @@ def fig_basis_functions():
     for k in range(4):
         ax = axes[0, k]
         vals = np.sin(np.pi * (n + 1) * (k + 1) / (N + 1))
-        ax.stem(n, vals, linefmt="C0-", markerfmt="C0o", basefmt="k-", )
-        ax.set_title(f"DST-I  k={k+1}", fontsize=10)
+        ax.stem(
+            n,
+            vals,
+            linefmt="C0-",
+            markerfmt="C0o",
+            basefmt="k-",
+        )
+        ax.set_title(f"DST-I  k={k + 1}", fontsize=10)
         ax.set_ylim(-1.2, 1.2)
         ax.axhline(0, color="k", lw=0.5)
         if k == 0:
@@ -49,7 +55,13 @@ def fig_basis_functions():
     for k in range(4):
         ax = axes[1, k]
         vals = np.cos(np.pi * k * (2 * n + 1) / (2 * N))
-        ax.stem(n, vals, linefmt="C1-", markerfmt="C1o", basefmt="k-", )
+        ax.stem(
+            n,
+            vals,
+            linefmt="C1-",
+            markerfmt="C1o",
+            basefmt="k-",
+        )
         ax.set_title(f"DCT-II  k={k}", fontsize=10)
         ax.set_ylim(-1.2, 1.2)
         ax.axhline(0, color="k", lw=0.5)
@@ -88,9 +100,9 @@ def fig_eigenvalues():
     k_fft = np.arange(N)
 
     # Continuous eigenvalues for comparison
-    cont_dst = -(np.pi * (k_dst + 1) / (N + 1)) ** 2 / dx**2
-    cont_dct = -(np.pi * k_dct / N) ** 2 / dx**2  # approximate
-    cont_fft = -(2 * np.pi * k_fft / (N * dx)) ** 2
+    cont_dst = -((np.pi * (k_dst + 1) / (N + 1)) ** 2) / dx**2
+    cont_dct = -((np.pi * k_dct / N) ** 2) / dx**2  # approximate
+    cont_fft = -((2 * np.pi * k_fft / (N * dx)) ** 2)
 
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
 
@@ -107,7 +119,9 @@ def fig_eigenvalues():
         ax.legend(fontsize=8)
         ax.grid(True, alpha=0.3)
 
-    fig.suptitle(f"Discrete vs Continuous Laplacian Eigenvalues  (N = {N})", fontsize=12, y=1.03)
+    fig.suptitle(
+        f"Discrete vs Continuous Laplacian Eigenvalues  (N = {N})", fontsize=12, y=1.03
+    )
     fig.tight_layout()
     fig.savefig(OUT / "eigenvalues_comparison.png", **COMPRESS)
     plt.close(fig)
@@ -150,7 +164,9 @@ def fig_solver_comparison():
         (axes[2], psi_dct, r"Neumann ($\partial\psi/\partial n=0$)"),
         (axes[3], psi_fft, "Periodic"),
     ]:
-        im = ax.imshow(np.array(psi), cmap="RdBu_r", origin="lower", vmin=vmin, vmax=vmax)
+        im = ax.imshow(
+            np.array(psi), cmap="RdBu_r", origin="lower", vmin=vmin, vmax=vmax
+        )
         ax.set_title(label, fontsize=10)
         plt.colorbar(im, ax=ax, shrink=0.8)
 
@@ -158,7 +174,9 @@ def fig_solver_comparison():
         ax.set_xticks([])
         ax.set_yticks([])
 
-    fig.suptitle(r"Poisson Solve: $\nabla^2 \psi = f$ with Different BCs", fontsize=12, y=1.03)
+    fig.suptitle(
+        r"Poisson Solve: $\nabla^2 \psi = f$ with Different BCs", fontsize=12, y=1.03
+    )
     fig.tight_layout()
     fig.savefig(OUT / "solver_comparison.png", **COMPRESS)
     plt.close(fig)
@@ -210,7 +228,11 @@ def fig_eigenfunction_recovery():
         ax.set_xticks([])
         ax.set_yticks([])
 
-    fig.suptitle(f"Eigenfunction Recovery: DST-I Poisson  (kx={kx}, ky={ky})", fontsize=12, y=1.03)
+    fig.suptitle(
+        f"Eigenfunction Recovery: DST-I Poisson  (kx={kx}, ky={ky})",
+        fontsize=12,
+        y=1.03,
+    )
     fig.tight_layout()
     fig.savefig(OUT / "eigenfunction_recovery.png", **COMPRESS)
     plt.close(fig)
@@ -255,7 +277,7 @@ def fig_capacitance_mask():
     mask_vis[~mask] = [0.85, 0.75, 0.6]  # tan = land
     mask_vis[inner_boundary] = [1.0, 0.3, 0.3]  # red = boundary
     axes[0].imshow(mask_vis, origin="lower")
-    j_b, i_b = np.where(inner_boundary)
+    j_b, _i_b = np.where(inner_boundary)
     axes[0].set_title(f"Mask  ({len(j_b)} boundary pts)", fontsize=10)
 
     # RHS
@@ -306,7 +328,7 @@ def fig_capacitance_boundary():
     struct = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
     dilated = binary_dilation(exterior, structure=struct)
     inner_boundary = mask & dilated
-    j_b, i_b = np.where(inner_boundary)
+    j_b, _i_b = np.where(inner_boundary)
 
     fig, axes = plt.subplots(1, 2, figsize=(9, 3.5))
 
@@ -338,7 +360,11 @@ def fig_capacitance_boundary():
         ax.set_xticks([])
         ax.set_yticks([])
 
-    fig.suptitle("Boundary Enforcement: Before vs After Capacitance Correction", fontsize=11, y=1.03)
+    fig.suptitle(
+        "Boundary Enforcement: Before vs After Capacitance Correction",
+        fontsize=11,
+        y=1.03,
+    )
     fig.tight_layout()
     fig.savefig(OUT / "capacitance_boundary.png", **COMPRESS)
     plt.close(fig)
@@ -372,7 +398,9 @@ def fig_ortho_parseval():
 
     fig, ax = plt.subplots(figsize=(6, 3.5))
     ax.plot(Ns, ratios_none, "s-", label=r"norm=None: $\|Y\|^2 / \|x\|^2$", color="C3")
-    ax.plot(Ns, ratios_ortho, "o-", label=r'norm="ortho": $\|Y\|^2 / \|x\|^2$', color="C0")
+    ax.plot(
+        Ns, ratios_ortho, "o-", label=r'norm="ortho": $\|Y\|^2 / \|x\|^2$', color="C0"
+    )
     ax.axhline(1.0, color="k", ls="--", lw=0.8, label="Parseval (ratio = 1)")
     ax.set_xlabel("N (vector length)")
     ax.set_ylabel(r"$\|DCT(x)\|^2 \,/\, \|x\|^2$")
