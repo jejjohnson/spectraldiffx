@@ -890,6 +890,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Eigenvalue formulas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#same-bc-eigenvalues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Same-BC eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed-bc-eigenvalues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixed-BC eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete-bc-grid-type-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete BC × grid-type mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -2479,6 +2518,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Eigenvalue formulas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#same-bc-eigenvalues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Same-BC eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed-bc-eigenvalues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixed-BC eigenvalues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complete-bc-grid-type-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete BC × grid-type mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -2786,15 +2864,95 @@
 <div class="arithmatex">\[(\mathcal{L} \, v)_i = \frac{v_{i-1} - 2 v_i + v_{i+1}}{\Delta x^2}\]</div>
 <p>Each transform type diagonalises this operator under its corresponding boundary conditions. That is, applying the transform converts the tridiagonal Laplacian matrix into a diagonal matrix of <strong>eigenvalues</strong>.</p>
 <h3 id="eigenvalue-formulas">Eigenvalue formulas<a class="headerlink" href="#eigenvalue-formulas" title="Permanent link">&para;</a></h3>
-<p><strong>DST-I (Dirichlet BC):</strong></p>
-<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(k+1)}{2(N+1)}\right), \quad k = 0, 1, \ldots, N-1\]</div>
-<p>All eigenvalues are strictly negative — the Dirichlet Laplacian is negative definite.</p>
-<p><strong>DCT-II (Neumann BC):</strong></p>
-<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{2N}\right), \quad k = 0, 1, \ldots, N-1\]</div>
-<p>The <span class="arithmatex">\(k = 0\)</span> eigenvalue is <span class="arithmatex">\(\lambda_0 = 0\)</span>: the <strong>null mode</strong> (constant function), reflecting the fact that the Neumann Laplacian has a one-dimensional kernel.</p>
-<p><strong>FFT (Periodic BC):</strong></p>
-<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{N}\right), \quad k = 0, 1, \ldots, N-1\]</div>
-<p>Again <span class="arithmatex">\(\lambda_0 = 0\)</span> is a null mode.</p>
+<p>The eigenvalue formula depends on the <strong>boundary condition</strong> and the <strong>grid type</strong> (regular/vertex-centred vs staggered/cell-centred). All formulas below use <span class="arithmatex">\(k = 0, 1, \ldots, N-1\)</span>.</p>
+<h4 id="same-bc-eigenvalues">Same-BC eigenvalues<a class="headerlink" href="#same-bc-eigenvalues" title="Permanent link">&para;</a></h4>
+<p>These cover problems where both boundaries of an axis share the same BC type.</p>
+<p><strong>DST-I — Dirichlet BC, regular grid:</strong></p>
+<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(k+1)}{2(N+1)}\right)\]</div>
+<p>All eigenvalues are strictly negative — the Dirichlet Laplacian on a regular grid is negative definite.</p>
+<p><strong>DST-II — Dirichlet BC, staggered grid:</strong></p>
+<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(k+1)}{2N}\right)\]</div>
+<p>All eigenvalues are strictly negative. The forward transform is DST-II; the inverse is DST-III. Critical for incompressible flow solvers where the pressure lives on a cell-centred grid (projection method).</p>
+<p><strong>DCT-I — Neumann BC, regular grid:</strong></p>
+<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{2(N-1)}\right)\]</div>
+<p><span class="arithmatex">\(\lambda_0 = 0\)</span> (null mode). The DCT-I is self-inverse (up to normalisation). Requires <span class="arithmatex">\(N \geq 2\)</span>.</p>
+<p><strong>DCT-II — Neumann BC, staggered grid:</strong></p>
+<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{2N}\right)\]</div>
+<p><span class="arithmatex">\(\lambda_0 = 0\)</span> (null mode). The forward transform is DCT-II; the inverse is DCT-III.</p>
+<p><strong>FFT — Periodic BC:</strong></p>
+<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi k}{N}\right)\]</div>
+<p><span class="arithmatex">\(\lambda_0 = 0\)</span> is a null mode.</p>
+<h4 id="mixed-bc-eigenvalues">Mixed-BC eigenvalues<a class="headerlink" href="#mixed-bc-eigenvalues" title="Permanent link">&para;</a></h4>
+<p>These cover problems with different BCs on the left and right boundaries of the same axis (e.g., Dirichlet on one side, Neumann on the other). All four mixed-BC types share a common eigenvalue formula — all eigenvalues are strictly negative (no null mode).</p>
+<p><strong>DST-III — Dirichlet-left + Neumann-right, regular grid:</strong>
+<strong>DCT-III — Neumann-left + Dirichlet-right, regular grid:</strong>
+<strong>DST-IV — Dirichlet-left + Neumann-right, staggered grid:</strong>
+<strong>DCT-IV — Neumann-left + Dirichlet-right, staggered grid:</strong></p>
+<div class="arithmatex">\[\lambda_k = -\frac{4}{\Delta x^2} \sin^2\!\left(\frac{\pi(2k+1)}{4N}\right)\]</div>
+<div class="admonition note">
+<p class="admonition-title">Why the same formula?</p>
+<p>Although these four cases involve different transforms (DST-III, DCT-III, DST-IV, DCT-IV) and different physical setups, the eigenvalue formula is identical because the mode indices are all half-integer-shifted. The distinction lies in the eigenfunctions and the forward/backward transforms used in the solver.</p>
+</div>
+<h4 id="complete-bc-grid-type-mapping">Complete BC × grid-type mapping<a class="headerlink" href="#complete-bc-grid-type-mapping" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>BC</th>
+<th>Grid</th>
+<th>Transform</th>
+<th>Eigenvalue formula</th>
+<th>Null mode?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirichlet</td>
+<td>Regular</td>
+<td>DST-I</td>
+<td><span class="arithmatex">\(-4/\Delta x^2 \cdot \sin^2(\pi(k{+}1)/[2(N{+}1)])\)</span></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Dirichlet</td>
+<td>Staggered</td>
+<td>DST-II/III</td>
+<td><span class="arithmatex">\(-4/\Delta x^2 \cdot \sin^2(\pi(k{+}1)/[2N])\)</span></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Neumann</td>
+<td>Regular</td>
+<td>DCT-I</td>
+<td><span class="arithmatex">\(-4/\Delta x^2 \cdot \sin^2(\pi k/[2(N{-}1)])\)</span></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Neumann</td>
+<td>Staggered</td>
+<td>DCT-II/III</td>
+<td><span class="arithmatex">\(-4/\Delta x^2 \cdot \sin^2(\pi k/[2N])\)</span></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Periodic</td>
+<td>Either</td>
+<td>FFT</td>
+<td><span class="arithmatex">\(-4/\Delta x^2 \cdot \sin^2(\pi k/N)\)</span></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Mixed (all 4)</td>
+<td>Either</td>
+<td>III/IV types</td>
+<td><span class="arithmatex">\(-4/\Delta x^2 \cdot \sin^2(\pi(2k{+}1)/[4N])\)</span></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">References</p>
+<p>This table is derived from Saverin (2023), "SailFFish" (Table 1) and Fuka (2014), "PoisFFT" (Tables 2–4).</p>
+</div>
 <h3 id="2-d-eigenvalue-matrix">2-D eigenvalue matrix<a class="headerlink" href="#2-d-eigenvalue-matrix" title="Permanent link">&para;</a></h3>
 <p>For a separable 2-D grid with spacings <span class="arithmatex">\(\Delta x\)</span> and <span class="arithmatex">\(\Delta y\)</span>, the eigenvalues of the 2-D Laplacian are the <strong>outer sum</strong> of the 1-D eigenvalues:</p>
 <div class="arithmatex">\[\Lambda_{j,i} = \lambda_j^{(y)} + \lambda_i^{(x)}\]</div>
