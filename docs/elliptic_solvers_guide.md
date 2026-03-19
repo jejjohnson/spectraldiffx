@@ -36,10 +36,20 @@ Do you have a rectangular domain (no mask)?
 |   What boundary conditions?
 |   |
 |   +-- Dirichlet (psi = 0 on boundary)
-|   |   --> solve_helmholtz_dst / solve_poisson_dst
+|   |   |
+|   |   +-- Regular grid (vertices on boundary)?
+|   |   |   --> solve_helmholtz_dst / solve_poisson_dst   (DST-I)
+|   |   |
+|   |   +-- Staggered grid (cell centres, boundary outside)?
+|   |       --> solve_helmholtz_dst2 / solve_poisson_dst2 (DST-II)
 |   |
 |   +-- Neumann (dpsi/dn = 0 on boundary)
-|   |   --> solve_helmholtz_dct / solve_poisson_dct
+|   |   |
+|   |   +-- Staggered grid (cell centres)?
+|   |   |   --> solve_helmholtz_dct / solve_poisson_dct   (DCT-II)
+|   |   |
+|   |   +-- Regular grid (vertices on boundary)?
+|   |       --> solve_helmholtz_dct1 / solve_poisson_dct1 (DCT-I)
 |   |
 |   +-- Periodic (domain wraps)
 |       --> solve_helmholtz_fft / solve_poisson_fft
@@ -52,6 +62,14 @@ Do you have a rectangular domain (no mask)?
     +-- Perimeter too large?
         --> Consider iterative solvers (CG in finitevolX)
 ```
+
+!!! tip "Regular vs staggered grids"
+    On a **regular** (vertex-centred) grid, the first and last grid points sit on
+    the domain boundary.  On a **staggered** (cell-centred) grid, all grid points
+    are at cell centres — the boundary is half a grid spacing outside the first and
+    last points.  The staggered Dirichlet solver (DST-II) is critical for
+    incompressible flow solvers using the projection method, where pressure lives
+    on a cell-centred grid.
 
 !!! tip "Poisson vs Helmholtz"
     The `solve_poisson_*` functions are convenience wrappers that call
@@ -121,6 +139,67 @@ psi = solve_poisson_fft(rhs, dx, dy)
 psi_helm = solve_helmholtz_fft(rhs, dx, dy, lambda_=1.0)
 ```
 
+### Dirichlet BCs, Staggered Grid (DST-II)
+
+For cell-centred grids where the Dirichlet boundary ($\psi = 0$) is half a
+grid spacing outside the first and last points:
+
+```python
+from spectraldiffx import solve_poisson_dst2, solve_helmholtz_dst2
+
+# Poisson: nabla^2 psi = rhs (staggered Dirichlet)
+psi = solve_poisson_dst2(rhs, dx, dy)
+
+# Helmholtz: (nabla^2 - 1.0) psi = rhs
+psi_helm = solve_helmholtz_dst2(rhs, dx, dy, lambda_=1.0)
+```
+
+### Neumann BCs, Regular Grid (DCT-I)
+
+For vertex-centred grids where the boundary points are included and
+$\partial\psi/\partial n = 0$ is enforced at the first and last points:
+
+```python
+from spectraldiffx import solve_poisson_dct1, solve_helmholtz_dct1
+
+# Poisson with regular Neumann BCs
+psi = solve_poisson_dct1(rhs, dx, dy)
+
+# Helmholtz with regular Neumann BCs
+psi_helm = solve_helmholtz_dct1(rhs, dx, dy, lambda_=1.0)
+```
+
+### 1-D Solvers
+
+All BC types have 1-D variants:
+
+```python
+from spectraldiffx import (
+    solve_helmholtz_dst1_1d,  # Dirichlet, regular
+    solve_helmholtz_dst2_1d,  # Dirichlet, staggered
+    solve_helmholtz_dct1_1d,  # Neumann, regular
+    solve_helmholtz_dct2_1d,  # Neumann, staggered
+    solve_helmholtz_fft_1d,   # Periodic
+)
+```
+
+### 3-D Solvers
+
+All BC types also have 3-D variants:
+
+```python
+from spectraldiffx import (
+    solve_helmholtz_dst1_3d,  # Dirichlet, regular
+    solve_helmholtz_dst2_3d,  # Dirichlet, staggered
+    solve_helmholtz_dct1_3d,  # Neumann, regular
+    solve_helmholtz_dct2_3d,  # Neumann, staggered
+    solve_helmholtz_fft_3d,   # Periodic
+)
+
+# Example: 3-D periodic Poisson solve
+psi_3d = solve_poisson_fft_3d(rhs_3d, dx, dy, dz)
+```
+
 ### 1-D Periodic Solvers
 
 For 1-D problems on periodic domains:
@@ -152,13 +231,31 @@ solver = DirichletHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
 psi = solver(rhs)  # solves nabla^2 psi = rhs with Dirichlet BCs
 ```
 
+### StaggeredDirichletHelmholtzSolver2D
+
+```python
+from spectraldiffx import StaggeredDirichletHelmholtzSolver2D
+
+solver = StaggeredDirichletHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
+psi = solver(rhs)  # Dirichlet BCs on staggered grid (DST-II)
+```
+
 ### NeumannHelmholtzSolver2D
 
 ```python
 from spectraldiffx import NeumannHelmholtzSolver2D
 
 solver = NeumannHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
-psi = solver(rhs)  # solves nabla^2 psi = rhs with Neumann BCs
+psi = solver(rhs)  # solves nabla^2 psi = rhs with Neumann BCs (staggered)
+```
+
+### RegularNeumannHelmholtzSolver2D
+
+```python
+from spectraldiffx import RegularNeumannHelmholtzSolver2D
+
+solver = RegularNeumannHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
+psi = solver(rhs)  # Neumann BCs on regular grid (DCT-I)
 ```
 
 ### SpectralHelmholtzSolver2D (Periodic)
@@ -223,16 +320,40 @@ psi_batch = solve_batch(rhs_batch)  # [10, 64, 64]
 
 ## Solver Comparison Table
 
-| Function               | BC type    | Null mode?                  | Best for                              |
-|------------------------|------------|-----------------------------|---------------------------------------|
-| `solve_helmholtz_dst`  | Dirichlet  | No (all eigenvalues < 0)    | Streamfunction, bounded domains       |
-| `solve_poisson_dst`    | Dirichlet  | No                          | Poisson on bounded domains            |
-| `solve_helmholtz_dct`  | Neumann    | Yes at (0,0) when lambda=0  | Free-surface, no-flux boundaries      |
-| `solve_poisson_dct`    | Neumann    | Yes (zero-mean gauge)       | Neumann Poisson, pressure correction  |
-| `solve_helmholtz_fft`  | Periodic   | Yes at (0,0) when lambda=0  | Doubly-periodic domains               |
-| `solve_poisson_fft`    | Periodic   | Yes (zero-mean gauge)       | Periodic Poisson                      |
-| `solve_helmholtz_fft_1d` | Periodic (1D) | Yes at k=0 when lambda=0 | 1-D periodic problems              |
-| `solve_poisson_fft_1d`   | Periodic (1D) | Yes (zero-mean gauge)   | 1-D periodic Poisson               |
+### 2-D Solvers
+
+| Function               | BC type    | Grid | Null mode? | Best for                              |
+|------------------------|------------|------|------------|---------------------------------------|
+| `solve_helmholtz_dst`  | Dirichlet  | Regular | No | Streamfunction, bounded domains       |
+| `solve_helmholtz_dst2` | Dirichlet  | Staggered | No | Pressure Poisson (projection method)  |
+| `solve_helmholtz_dct1` | Neumann    | Regular | Yes (k=0) | Vertex-centred Neumann problems       |
+| `solve_helmholtz_dct`  | Neumann    | Staggered | Yes (k=0) | Free-surface, no-flux boundaries |
+| `solve_helmholtz_fft`  | Periodic   | Either | Yes (k=0) | Doubly-periodic domains               |
+
+### 1-D Solvers
+
+| Function | BC type | Grid |
+|----------|---------|------|
+| `solve_helmholtz_dst1_1d` | Dirichlet | Regular |
+| `solve_helmholtz_dst2_1d` | Dirichlet | Staggered |
+| `solve_helmholtz_dct1_1d` | Neumann | Regular |
+| `solve_helmholtz_dct2_1d` | Neumann | Staggered |
+| `solve_helmholtz_fft_1d` | Periodic | Either |
+
+### 3-D Solvers
+
+| Function | BC type | Grid |
+|----------|---------|------|
+| `solve_helmholtz_dst1_3d` | Dirichlet | Regular |
+| `solve_helmholtz_dst2_3d` | Dirichlet | Staggered |
+| `solve_helmholtz_dct1_3d` | Neumann | Regular |
+| `solve_helmholtz_dct2_3d` | Neumann | Staggered |
+| `solve_helmholtz_fft_3d` | Periodic | Either |
+
+!!! note "Naming convention"
+    The original names (`solve_helmholtz_dst`, `solve_helmholtz_dct`) are preserved
+    as backwards-compatible aliases for `solve_helmholtz_dst1` (Dirichlet, regular)
+    and `solve_helmholtz_dct2` (Neumann, staggered) respectively.
 
 ![Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around.](images/solver_comparison.png)
 

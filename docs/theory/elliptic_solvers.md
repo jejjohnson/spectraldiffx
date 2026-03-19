@@ -51,11 +51,13 @@ All three BC types (Dirichlet, Neumann, periodic) share the same four-step struc
 
 where $\mathcal{T}$ is one of:
 
-| BC type | Transform $\mathcal{T}$ |
-|---------|------------------------|
-| Dirichlet ($\psi = 0$) | DST-I |
-| Neumann ($\partial\psi/\partial n = 0$) | DCT-II |
-| Periodic | FFT |
+| BC type | Grid | Transform $\mathcal{T}$ |
+|---------|------|------------------------|
+| Dirichlet ($\psi = 0$) | Regular (vertex) | DST-I |
+| Dirichlet ($\psi = 0$) | Staggered (cell) | DST-II |
+| Neumann ($\partial\psi/\partial n = 0$) | Regular (vertex) | DCT-I |
+| Neumann ($\partial\psi/\partial n = 0$) | Staggered (cell) | DCT-II |
+| Periodic | Either | FFT |
 
 !!! note "Why this works"
     The spectral transform $\mathcal{T}$ diagonalises the discrete Laplacian $L_h$, meaning
@@ -115,6 +117,46 @@ psi = solver(rhs)
 
 ---
 
+## 3a. Dirichlet BCs, Staggered Grid -- DST-II Solver
+
+### Grid Type
+
+On a **staggered** (cell-centred) grid, the grid points sit at cell centres. The Dirichlet boundary ($\psi = 0$) is located half a grid spacing *outside* the first and last grid points.
+
+This is the standard setup for **pressure correction** in incompressible flow solvers using the projection method, where the pressure lives on a cell-centred grid with the velocity at cell faces.
+
+### Transform
+
+The **DST-II** is applied in both directions:
+
+$$\hat{f} = \text{DST-II}_y\!\left(\text{DST-II}_x(f)\right)$$
+
+The inverse is the **DST-III** (SciPy convention: `idstn(type=2)` automatically applies DST-III).
+
+### Eigenvalues
+
+$$\lambda_k^{\text{DST-II}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi(k+1)}{2N}\right), \quad k = 0, \ldots, N-1$$
+
+### Properties
+
+- **All eigenvalues are strictly negative** — no null mode, no special treatment needed.
+- The eigenvalues differ from DST-I: the denominator is $2N$ (not $2(N+1)$), reflecting the different grid point count.
+- Eigenfunctions: $\sin\!\bigl(\pi(k+1)(2n+1)/(2N)\bigr)$
+
+### API
+
+```python
+# Layer 0 — pure functions
+psi = solve_helmholtz_dst2(rhs, dx, dy, lambda_)
+psi = solve_poisson_dst2(rhs, dx, dy)
+
+# Layer 1 — module class
+solver = StaggeredDirichletHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
+psi = solver(rhs)
+```
+
+---
+
 ## 4. Neumann BCs -- DCT-II Solver
 
 ### Boundary Conditions
@@ -161,6 +203,42 @@ psi = solve_poisson_dct(rhs, dx, dy)
 
 # Layer 1 — module class
 solver = NeumannHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
+psi = solver(rhs)
+```
+
+---
+
+## 4a. Neumann BCs, Regular Grid -- DCT-I Solver
+
+### Grid Type
+
+On a **regular** (vertex-centred) grid, the first and last grid points coincide with the domain boundary. The Neumann condition ($\partial\psi/\partial n = 0$) is enforced at these boundary points directly.
+
+### Transform
+
+The **DCT-I** is applied in both directions:
+
+$$\hat{f} = \text{DCT-I}_y\!\left(\text{DCT-I}_x(f)\right)$$
+
+The DCT-I is self-inverse (up to normalisation).
+
+### Eigenvalues
+
+$$\lambda_k^{\text{DCT-I}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi k}{2(N-1)}\right), \quad k = 0, \ldots, N-1$$
+
+### Null Mode
+
+Same as DCT-II: $\lambda_0 = 0$, handled by the zero-mean gauge ($\hat{\psi}_{0,0} = 0$).
+
+### API
+
+```python
+# Layer 0 — pure functions
+psi = solve_helmholtz_dct1(rhs, dx, dy, lambda_)
+psi = solve_poisson_dct1(rhs, dx, dy)
+
+# Layer 1 — module class
+solver = RegularNeumannHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
 psi = solver(rhs)
 ```
 
@@ -317,19 +395,40 @@ psi = solver.solve(f, alpha=0.0, zero_mean=True, spectral=False)
 
 ---
 
-## 8. Summary Table
+## 8. 1-D and 3-D Solvers
 
-| BC Type | Transform | Eigenvalue $\lambda_k$ | Null mode? | Layer 0 Function | Layer 1 Class |
-|---------|-----------|----------------------|------------|-----------------|---------------|
-| Dirichlet ($\psi = 0$) | DST-I | $-\dfrac{4}{\Delta x^2}\sin^2\!\left(\dfrac{\pi(k+1)}{2(N+1)}\right)$ | No | `solve_helmholtz_dst` | `DirichletHelmholtzSolver2D` |
-| Neumann ($\partial\psi/\partial n = 0$) | DCT-II | $-\dfrac{4}{\Delta x^2}\sin^2\!\left(\dfrac{\pi k}{2N}\right)$ | Yes ($k=0$) | `solve_helmholtz_dct` | `NeumannHelmholtzSolver2D` |
-| Periodic | FFT | $-\dfrac{4}{\Delta x^2}\sin^2\!\left(\dfrac{\pi k}{N}\right)$ | Yes ($k=0$) | `solve_helmholtz_fft` | `SpectralHelmholtzSolver2D` |
+The same spectral solve algorithm extends directly to 1-D and 3-D. In 3-D, the eigenvalue tensor is the outer sum of three 1-D eigenvalue vectors:
+
+$$\Lambda_{l,j,i} = \lambda_l^z + \lambda_j^y + \lambda_i^x - \lambda$$
+
+All five BC types (periodic, Dirichlet regular, Dirichlet staggered, Neumann regular, Neumann staggered) have 1-D, 2-D, and 3-D solver variants. The naming convention is:
+
+- 1-D: `solve_helmholtz_{type}_1d` (e.g., `solve_helmholtz_dst1_1d`)
+- 2-D: `solve_helmholtz_{type}` (e.g., `solve_helmholtz_dst`)
+- 3-D: `solve_helmholtz_{type}_3d` (e.g., `solve_helmholtz_dst1_3d`)
+
+---
+
+## 9. Summary Table
+
+| BC Type | Grid | Transform | Null mode? | Layer 0 (2D) | Layer 1 Class |
+|---------|------|-----------|------------|--------------|---------------|
+| Dirichlet | Regular | DST-I | No | `solve_helmholtz_dst` | `DirichletHelmholtzSolver2D` |
+| Dirichlet | Staggered | DST-II | No | `solve_helmholtz_dst2` | `StaggeredDirichletHelmholtzSolver2D` |
+| Neumann | Regular | DCT-I | Yes ($k=0$) | `solve_helmholtz_dct1` | `RegularNeumannHelmholtzSolver2D` |
+| Neumann | Staggered | DCT-II | Yes ($k=0$) | `solve_helmholtz_dct` | `NeumannHelmholtzSolver2D` |
+| Periodic | Either | FFT | Yes ($k=0$) | `solve_helmholtz_fft` | `SpectralHelmholtzSolver2D` |
+
+!!! tip "Backwards-compatible aliases"
+    The original names are preserved as aliases:
+    `solve_helmholtz_dst` = `solve_helmholtz_dst1` (Dirichlet, regular) and
+    `solve_helmholtz_dct` = `solve_helmholtz_dct2` (Neumann, staggered).
 
 ![Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around.](../images/solver_comparison.png)
 
 ---
 
-## 9. References
+## 10. References
 
 - G. Strang, "The Discrete Cosine Transform," *SIAM Review*, 41(1), 1999.
 - G. H. Golub and C. F. Van Loan, *Matrix Computations*, 4th edition, Johns Hopkins University Press, 2013.
