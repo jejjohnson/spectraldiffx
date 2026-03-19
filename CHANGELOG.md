@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.5](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.4...v0.0.5) (2026-03-19)
+
+
+### Features
+
+* add spectral transforms, elliptic solvers, and capacitance to fourier/ ([1f34f3b](https://github.com/jejjohnson/spectraldiffx/commit/1f34f3b69ed4568dcd466579a7ded9d3a4894594))
+* migrate spectral transforms, solvers, and capacitance from finitevolX ([f9759ac](https://github.com/jejjohnson/spectraldiffx/commit/f9759ac3e61a669f436e6e79039fe8abdc5eac31))
+
+
+### Bug Fixes
+
+* address PR review comments from Copilot ([1c29c8f](https://github.com/jejjohnson/spectraldiffx/commit/1c29c8fd12c2aa9c0df19c099f3724e053d91c88))
+* resolve lint, format, and type-check errors ([615cb13](https://github.com/jejjohnson/spectraldiffx/commit/615cb13f920dbc24f65399c7f189f78032cfb108))
+
 ## [0.0.4](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.3...v0.0.4) (2026-03-10)
 
 
