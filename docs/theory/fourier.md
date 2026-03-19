@@ -165,6 +165,14 @@ The $\mathbf{k} = 0$ mode (mean) is singular for the **Poisson equation** ($\alp
 
 This is the most efficient spectral solver — it requires only two FFTs and a pointwise division.
 
+!!! note "Non-periodic boundary conditions"
+    The FFT-based solver above assumes **periodic BCs**. For Dirichlet ($\psi = 0$) or
+    Neumann ($\partial\psi/\partial n = 0$) boundaries, the DST and DCT transforms play
+    the same role. See [Spectral Transforms: DST & DCT](spectral_transforms.md) for the
+    transform definitions and [Spectral Elliptic Solvers](elliptic_solvers.md) for the
+    full solver algorithms. For irregular (masked) domains, see the
+    [Capacitance Matrix Method](capacitance.md).
+
 ---
 
 ## 9. Numerical Convergence and Spectral Accuracy

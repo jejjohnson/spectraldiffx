@@ -63,8 +63,7 @@ from loguru import logger
 import matplotlib.pyplot as plt
 import xarray as xr
 
-from spectraldiffx._src.grid import FourierGrid1D
-from spectraldiffx._src.operators import SpectralDerivative1D
+from spectraldiffx import FourierGrid1D, SpectralDerivative1D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)

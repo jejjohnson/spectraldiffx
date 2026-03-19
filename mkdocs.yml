@@ -54,8 +54,15 @@ nav:
   - Theory:
     - Overview: theory/index.md
     - Fourier Pseudospectral Methods: theory/fourier.md
+    - Spectral Transforms: theory/spectral_transforms.md
+    - Elliptic Solvers: theory/elliptic_solvers.md
+    - Capacitance Method: theory/capacitance.md
     - Chebyshev Pseudospectral Methods: theory/chebyshev.md
     - Spherical Harmonic Methods: theory/spherical.md
+  - Guides:
+    - Spectral Transforms: transforms_guide.md
+    - Elliptic Solvers: elliptic_solvers_guide.md
+    - Capacitance Solver: capacitance_guide.md
   - Examples:
     - 1D Differentiation: notebooks/demo_1d.py
     - 2D Differentiation: notebooks/demo_2d.py
@@ -64,12 +71,17 @@ nav:
     - KdV Equation: notebooks/kdv.py
     - Navier-Stokes 2D: notebooks/navier_stokes_2d.py
     - QG Model: notebooks/qg_model.py
+    - Elliptic Solvers: notebooks/demo_elliptic_solvers.py
+    - Capacitance: notebooks/demo_capacitance.py
   - API Reference:
     - Fourier:
+      - Transforms: api/fourier/transforms.md
+      - Eigenvalues: api/fourier/eigenvalues.md
       - Grids: api/fourier/grids.md
       - Operators: api/fourier/operators.md
       - Filters: api/fourier/filters.md
       - Solvers: api/fourier/solvers.md
+      - Capacitance: api/fourier/capacitance.md
     - Chebyshev:
       - Grids: api/chebyshev/grids.md
       - Operators: api/chebyshev/operators.md

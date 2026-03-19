@@ -12,9 +12,9 @@ These tests verify that:
 import jax.numpy as jnp
 import pytest
 
-from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D
+from spectraldiffx._src.fourier.operators import SpectralDerivative2D
+from spectraldiffx._src.fourier.solvers import SpectralHelmholtzSolver2D
 
 # ---------------------------------------------------------------------------
 # Fixtures

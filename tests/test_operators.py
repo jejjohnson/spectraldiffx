@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 
-from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
-from spectraldiffx._src.operators import (
+from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
+from spectraldiffx._src.fourier.operators import (
     SpectralDerivative1D,
     SpectralDerivative2D,
     SpectralDerivative3D,

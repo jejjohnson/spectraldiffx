@@ -62,9 +62,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import xarray as xr
 
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+from spectraldiffx import FourierGrid2D, SpectralDerivative2D, SpectralHelmholtzSolver2D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
