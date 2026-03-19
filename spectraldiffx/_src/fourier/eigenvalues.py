@@ -4,14 +4,36 @@ Each helper returns the eigenvalues of the second-order finite-difference
 Laplacian discretised on *N* points with grid spacing *dx*, diagonalised by
 the corresponding spectral transform.
 
-* DST-I  (Dirichlet BCs):
-    λ_k = −4/dx² · sin²(π(k+1) / (2(N+1)))   k = 0, …, N−1
+Same-BC eigenvalues (both boundaries identical):
 
-* DCT-II (Neumann BCs):
-    λ_k = −4/dx² · sin²(πk / (2N))             k = 0, …, N−1
+* DST-I   (Dirichlet, regular grid):
+    λ_k = −4/dx² · sin²(π(k+1) / (2(N+1)))    k = 0, …, N−1
 
-* FFT    (Periodic BCs):
-    λ_k = −4/dx² · sin²(πk / N)               k = 0, …, N−1
+* DST-II  (Dirichlet, staggered grid):
+    λ_k = −4/dx² · sin²(π(k+1) / (2N))         k = 0, …, N−1
+
+* DCT-I   (Neumann, regular grid):
+    λ_k = −4/dx² · sin²(πk / (2(N−1)))          k = 0, …, N−1
+
+* DCT-II  (Neumann, staggered grid):
+    λ_k = −4/dx² · sin²(πk / (2N))              k = 0, …, N−1
+
+* FFT     (Periodic):
+    λ_k = −4/dx² · sin²(πk / N)                 k = 0, …, N−1
+
+Mixed-BC eigenvalues (different BCs on left/right):
+
+* DST-III (Dirichlet left + Neumann right, regular grid):
+    λ_k = −4/dx² · sin²(π(2k+1) / (4N))        k = 0, …, N−1
+
+* DCT-III (Neumann left + Dirichlet right, regular grid):
+    λ_k = −4/dx² · sin²(π(2k+1) / (4N))        k = 0, …, N−1
+
+* DST-IV  (Dirichlet left + Neumann right, staggered grid):
+    λ_k = −4/dx² · sin²(π(2k+1) / (4N))        k = 0, …, N−1
+
+* DCT-IV  (Neumann left + Dirichlet right, staggered grid):
+    λ_k = −4/dx² · sin²(π(2k+1) / (4N))        k = 0, …, N−1
 """
 
 from __future__ import annotations
@@ -81,6 +103,176 @@ def dct2_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
     """
     k = jnp.arange(N)
     return -4.0 / dx**2 * jnp.sin(jnp.pi * k / (2 * N)) ** 2
+
+
+def dst2_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """1-D Laplacian eigenvalues for the DST-II basis (Dirichlet BCs, staggered grid).
+
+    Returns the eigenvalues of the second-order finite-difference Laplacian
+    on *N* cell-centred points with homogeneous Dirichlet BCs at both
+    boundaries (ψ = 0 at the cell edges, half a grid spacing outside the
+    first and last points).
+
+    The DST-II diagonalises this operator, yielding:
+
+        λ_k = −4/dx² · sin²(π(k+1) / (2N)),   k = 0, …, N−1
+
+    All eigenvalues are strictly negative.  The forward transform is DST-II;
+    the inverse is DST-III (SciPy convention: ``idstn(type=2)``).
+
+    Parameters
+    ----------
+    N : int
+        Number of cell-centred grid points.
+    dx : float
+        Uniform grid spacing.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    k = jnp.arange(N)
+    return -4.0 / dx**2 * jnp.sin(jnp.pi * (k + 1) / (2 * N)) ** 2
+
+
+def dct1_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """1-D Laplacian eigenvalues for the DCT-I basis (Neumann BCs, regular grid).
+
+    Returns the eigenvalues of the second-order finite-difference Laplacian
+    on *N* vertex-centred points with homogeneous Neumann BCs
+    (∂ψ/∂n = 0 at both boundaries, which coincide with the first and last
+    grid points).
+
+    The DCT-I diagonalises this operator, yielding:
+
+        λ_k = −4/dx² · sin²(πk / (2(N−1))),   k = 0, …, N−1
+
+    The k = 0 eigenvalue is exactly zero (constant null mode).  Requires
+    N ≥ 2.  The DCT-I is self-inverse (up to normalisation).
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points (including both boundary points).
+    dx : float
+        Uniform grid spacing.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.
+        λ_0 = 0; all others < 0.
+    """
+    k = jnp.arange(N)
+    return -4.0 / dx**2 * jnp.sin(jnp.pi * k / (2 * (N - 1))) ** 2
+
+
+def _mixed_bc_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """Shared eigenvalue formula for all mixed-BC transforms (DST-III/IV, DCT-III/IV).
+
+        λ_k = −4/dx² · sin²(π(2k+1) / (4N)),   k = 0, …, N−1
+
+    All eigenvalues are strictly negative (no null mode).
+    """
+    k = jnp.arange(N)
+    return -4.0 / dx**2 * jnp.sin(jnp.pi * (2 * k + 1) / (4 * N)) ** 2
+
+
+def dst3_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """1-D Laplacian eigenvalues for Dirichlet-left + Neumann-right on a regular grid.
+
+    Pairs with DST-III forward / DST-II backward.
+
+        λ_k = −4/dx² · sin²(π(2k+1) / (4N)),   k = 0, …, N−1
+
+    All eigenvalues are strictly negative.
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points.
+    dx : float
+        Uniform grid spacing.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    return _mixed_bc_eigenvalues(N, dx)
+
+
+def dct3_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """1-D Laplacian eigenvalues for Neumann-left + Dirichlet-right on a regular grid.
+
+    Pairs with DCT-III forward / DCT-II backward.
+
+        λ_k = −4/dx² · sin²(π(2k+1) / (4N)),   k = 0, …, N−1
+
+    All eigenvalues are strictly negative.
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points.
+    dx : float
+        Uniform grid spacing.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    return _mixed_bc_eigenvalues(N, dx)
+
+
+def dst4_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """1-D Laplacian eigenvalues for Dirichlet-left + Neumann-right on a staggered grid.
+
+    Pairs with DST-IV (self-inverse).
+
+        λ_k = −4/dx² · sin²(π(2k+1) / (4N)),   k = 0, …, N−1
+
+    All eigenvalues are strictly negative.
+
+    Parameters
+    ----------
+    N : int
+        Number of cell-centred grid points.
+    dx : float
+        Uniform grid spacing.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    return _mixed_bc_eigenvalues(N, dx)
+
+
+def dct4_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
+    """1-D Laplacian eigenvalues for Neumann-left + Dirichlet-right on a staggered grid.
+
+    Pairs with DCT-IV (self-inverse).
+
+        λ_k = −4/dx² · sin²(π(2k+1) / (4N)),   k = 0, …, N−1
+
+    All eigenvalues are strictly negative.
+
+    Parameters
+    ----------
+    N : int
+        Number of cell-centred grid points.
+    dx : float
+        Uniform grid spacing.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    return _mixed_bc_eigenvalues(N, dx)
 
 
 def fft_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
