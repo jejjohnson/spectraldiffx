@@ -1,12 +1,12 @@
 import jax.numpy as jnp
 import pytest
 
-from spectraldiffx._src.filters import (
+from spectraldiffx._src.fourier.filters import (
     SpectralFilter1D,
     SpectralFilter2D,
     SpectralFilter3D,
 )
-from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
+from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 
 
 @pytest.fixture

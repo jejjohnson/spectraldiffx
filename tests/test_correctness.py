@@ -25,9 +25,12 @@ import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D
 from spectraldiffx._src.chebyshev.operators import ChebyshevDerivative1D
-from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative1D, SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D
+from spectraldiffx._src.fourier.operators import (
+    SpectralDerivative1D,
+    SpectralDerivative2D,
+)
+from spectraldiffx._src.fourier.solvers import SpectralHelmholtzSolver2D
 from spectraldiffx._src.spherical.grid import SphericalGrid1D
 from spectraldiffx._src.spherical.operators import SphericalDerivative1D
 

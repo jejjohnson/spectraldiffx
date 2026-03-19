@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import pytest
 
-from spectraldiffx._src.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
+from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 
 
 def test_fourier_grid_1d():
