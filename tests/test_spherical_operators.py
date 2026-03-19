@@ -46,17 +46,18 @@ def test_spherical_deriv1d_laplacian_eigenvalue():
 
     Tests l = 1, 2, 3, 5 (on unit sphere, R=1).
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 32
     g = SphericalGrid1D.from_N_L(N, np.pi)  # R = pi/pi = 1
     d = SphericalDerivative1D(g)
     mu = np.array(g.cos_theta)
+    V = np.array(legvander(mu, 5))  # V[j, l] = P_l(mu[j])
 
     for l in [1, 2, 3, 5]:
         if l >= N:
             continue
-        u = jnp.asarray(eval_legendre(l, mu))
+        u = jnp.asarray(V[:, l])
         lap = d.laplacian(u)
         expected = -float(l * (l + 1)) * u
         assert jnp.allclose(lap, expected, atol=1e-8), (
