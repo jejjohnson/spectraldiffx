@@ -31,7 +31,7 @@ import numpy as np
 
 def _gauss_legendre_nodes_weights(N: int):
     """
-    Compute Gauss-Legendre nodes and weights via scipy.
+    Compute Gauss-Legendre nodes and weights via orthax.
 
     Parameters:
     -----------
@@ -45,11 +45,13 @@ def _gauss_legendre_nodes_weights(N: int):
     weights : ndarray [N]
         GL weights summing to 2.  Ordered to match nodes.
     """
-    from scipy.special import roots_legendre
+    from orthax.legendre import leggauss
 
-    nodes, weights = roots_legendre(N)
-    # roots_legendre returns ascending order (-1 to 1); reverse to North-South.
-    return nodes[::-1].copy(), weights[::-1].copy()
+    nodes, weights = leggauss(N)
+    # leggauss returns ascending order (-1 to 1); reverse to North-South.
+    nodes = np.array(nodes)[::-1].copy()
+    weights = np.array(weights)[::-1].copy()
+    return nodes, weights
 
 
 def _legendre_matrix(l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
@@ -74,15 +76,61 @@ def _legendre_matrix(l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     P : ndarray [Nl, Ny]
         Normalised Legendre polynomial matrix.
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     Nl = len(l_values)
-    Ny = len(mu)
-    P = np.zeros((Nl, Ny), dtype=np.float64)
-    for i, l in enumerate(l_values):
-        norm = np.sqrt((2 * l + 1) / 2.0)
-        P[i, :] = norm * eval_legendre(l, mu)
+    max_l = int(np.max(l_values)) if Nl > 0 else 0
+    # V[j, l] = P_l(mu[j]), shape (Ny, max_l+1)
+    V = np.array(legvander(mu, max_l))
+    norms = np.sqrt((2 * l_values + 1) / 2.0)  # (Nl,)
+    P = norms[:, None] * V[:, l_values].T  # (Nl, Ny)
     return P
+
+
+def _lpmv(m: int, l: int, x: np.ndarray) -> np.ndarray:
+    """
+    Associated Legendre polynomial P_l^m(x) with Condon-Shortley phase.
+
+    Implements the same convention as scipy.special.lpmv using a three-term
+    recurrence relation:
+
+        P_m^m(x)   = (-1)^m * (2m-1)!! * (1-x^2)^(m/2)
+        P_{m+1}^m(x) = x * (2m+1) * P_m^m(x)
+        P_{l+1}^m(x) = ((2l+1)*x*P_l^m(x) - (l+m)*P_{l-1}^m(x)) / (l-m+1)
+
+    Parameters:
+    -----------
+    m : int
+        Order (>= 0).
+    l : int
+        Degree (>= m).
+    x : ndarray
+        Points at which to evaluate (cos(theta) values in [-1, 1]).
+
+    Returns:
+    --------
+    P : ndarray
+        P_l^m(x) with shape matching x.
+    """
+    x = np.asarray(x, dtype=np.float64)
+    # P_m^m initialised with Condon-Shortley phase and the double-factorial prefactor
+    pmm = np.ones_like(x)
+    if m > 0:
+        somx2 = np.sqrt(1.0 - x * x)
+        fact = 1.0
+        for _ in range(m):
+            pmm *= -fact * somx2
+            fact += 2.0
+    if l == m:
+        return pmm
+    pmmp1 = x * (2 * m + 1) * pmm
+    if l == m + 1:
+        return pmmp1
+    for ll in range(m + 2, l + 1):
+        pll = (x * (2 * ll - 1) * pmmp1 - (ll + m - 1) * pmm) / (ll - m)
+        pmm = pmmp1
+        pmmp1 = pll
+    return pmmp1
 
 
 def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
@@ -111,7 +159,7 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     P : ndarray [Nl, Ny]
         Normalised ALP matrix.  Rows with l < m_abs are zero.
     """
-    from scipy.special import gammaln, lpmv
+    import math
 
     Nl = len(l_values)
     Ny = len(mu)
@@ -120,10 +168,10 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
         if l < m_abs:
             continue  # P_l^m = 0 for l < m
         # Compute N_{l,m} = sqrt((2*l+1)/2 * (l-m)! / (l+m)!) in log-space
-        log_ratio = gammaln(l - m_abs + 1) - gammaln(l + m_abs + 1)
+        log_ratio = math.lgamma(l - m_abs + 1) - math.lgamma(l + m_abs + 1)
         log_norm_sq = np.log((2 * l + 1) / 2.0) + log_ratio
         norm = np.exp(0.5 * log_norm_sq)
-        P[i, :] = norm * lpmv(m_abs, l, mu)
+        P[i, :] = norm * _lpmv(m_abs, l, mu)
     return P
 
 
