@@ -167,9 +167,10 @@ The periodic solver classes use continuous Fourier wavenumbers (not
 finite-difference eigenvalues).  They require a `FourierGrid2D` object:
 
 ```python
+import jax.numpy as jnp
 from spectraldiffx import SpectralHelmholtzSolver2D, FourierGrid2D
 
-grid = FourierGrid2D(Lx=2 * jnp.pi, Ly=2 * jnp.pi, Nx=64, Ny=64)
+grid = FourierGrid2D.from_N_L(Nx=64, Ny=64, Lx=2 * jnp.pi, Ly=2 * jnp.pi)
 solver = SpectralHelmholtzSolver2D(grid=grid)
 
 # .solve() method (not __call__)

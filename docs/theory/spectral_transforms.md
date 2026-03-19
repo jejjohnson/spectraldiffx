@@ -117,7 +117,7 @@ Each type requires a **uniform scale** applied to all coefficients, plus possibl
 | DST-IV | $\sqrt{1/(2N)}$ | none |
 
 !!! note "DCT-I edge weights"
-    DCT-I ortho normalization requires asymmetric weighting of the boundary elements. Because both $x[0]$ and $x[N-1]$ carry different quadrature weights in the underlying cosine expansion, a custom implementation is needed — SciPy does **not** natively support `norm="ortho"` for DCT-I.
+    DCT-I ortho normalization requires asymmetric weighting of the boundary elements. Both $x[0]$ and $x[N-1]$ carry different quadrature weights (coefficient 1) than interior points (coefficient 2) in the underlying cosine expansion, so a simple uniform post-scaling of the unnormalized output is not sufficient — the endpoints must be pre-scaled by $1/\sqrt{2}$ before the transform.
 
 !!! tip "When to use ortho"
     Use orthonormal transforms whenever you need energy-preserving spectral analysis (Parseval), or when you want the transform to be its own inverse (types I and IV with `norm="ortho"` are exactly involutory). For solving PDEs where you control the eigenvalue division explicitly, the unnormalized convention is often simpler.

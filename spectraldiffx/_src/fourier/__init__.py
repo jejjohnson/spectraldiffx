@@ -1,5 +1,7 @@
 """Fourier spectral methods: grids, operators, filters, transforms, and solvers."""
 
+from __future__ import annotations
+
 from spectraldiffx._src.fourier.capacitance import (
     CapacitanceSolver,
     build_capacitance_solver,

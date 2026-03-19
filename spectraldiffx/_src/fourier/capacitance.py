@@ -85,6 +85,9 @@ class CapacitanceSolver(eqx.Module):
         Pre-inverted capacitance matrix.
     _green_flat : Float[Array, "Nb NyNx"]
         Green's functions (one row per boundary point), stored flat.
+    _mask : Float[Array, "Ny Nx"]
+        Domain mask (1.0 = interior, 0.0 = exterior).  Applied to the output
+        so that values outside the physical domain are exactly zero.
     _j_b : Array
         Row indices of inner-boundary points.
     _i_b : Array
@@ -101,6 +104,7 @@ class CapacitanceSolver(eqx.Module):
 
     _C_inv: Float[Array, "Nb Nb"]
     _green_flat: Float[Array, "Nb NyNx"]
+    _mask: Float[Array, "Ny Nx"]
     _j_b: Array
     _i_b: Array
     dx: float
@@ -121,9 +125,10 @@ class CapacitanceSolver(eqx.Module):
         2. Sample boundary:     u_B = u[j_b, i_b]             [N_b]
         3. Correction weights:  α = C⁻¹ · u_B                 [N_b]
         4. Subtract correction: ψ = u − Σ_k α_k g_k          [Ny, Nx]
+        5. Mask exterior:       ψ = ψ * mask                  [Ny, Nx]
 
-        The result satisfies ψ(b_k) ≈ 0 at all N_b inner-boundary points
-        and (∇² − λ)ψ = rhs at interior points.
+        The result satisfies ψ(b_k) ≈ 0 at all N_b inner-boundary points,
+        (∇² − λ)ψ = rhs at interior points, and ψ = 0 outside the mask.
 
         Parameters
         ----------
@@ -134,8 +139,8 @@ class CapacitanceSolver(eqx.Module):
         Returns
         -------
         Float[Array, "Ny Nx"]
-            Solution ψ on the full rectangular grid.  Satisfies ψ ≈ 0 at
-            inner-boundary points and outside the mask.
+            Solution ψ on the full rectangular grid.  Exactly zero outside
+            the mask, and ψ ≈ 0 at inner-boundary points.
         """
         Ny, Nx = rhs.shape
         # Step 1: rectangular spectral solve
@@ -146,7 +151,8 @@ class CapacitanceSolver(eqx.Module):
         alpha = self._C_inv @ u_b  # [Nb]
         # Step 4: correction field  sum_k alpha_k g_k
         correction = (self._green_flat.T @ alpha).reshape(Ny, Nx)  # [Ny, Nx]
-        return u - correction
+        # Step 5: zero out exterior cells
+        return (u - correction) * self._mask
 
 
 def build_capacitance_solver(
@@ -243,6 +249,7 @@ def build_capacitance_solver(
     return CapacitanceSolver(
         _C_inv=jnp.array(C_inv),
         _green_flat=jnp.array(green.reshape(N_b, Ny * Nx)),
+        _mask=jnp.array(mask_bool, dtype=float),
         _j_b=jnp.array(j_b),
         _i_b=jnp.array(i_b),
         dx=float(dx),
