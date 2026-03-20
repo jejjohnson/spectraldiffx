@@ -388,6 +388,15 @@ plt.show()
 
 # %%
 N_orth = 16
+
+
+def build_eigenfunctions_fft(N):
+    """FFT eigenfunctions: exp(2πi·k·n/N)."""
+    n = np.arange(N)
+    k = np.arange(N)
+    return np.exp(2j * np.pi * np.outer(n, k) / N)
+
+
 phi_sets = {
     "DST-I": build_eigenfunctions_dst1(N_orth),
     "DST-II": build_eigenfunctions_dst2(N_orth),
@@ -395,14 +404,18 @@ phi_sets = {
     "DCT-II": build_eigenfunctions_dct2(N_orth),
     "DST-III": build_eigenfunctions_dst3(N_orth),
     "DCT-III": build_eigenfunctions_dct3(N_orth),
+    "DST-IV": build_eigenfunctions_dst4(N_orth),
+    "DCT-IV": build_eigenfunctions_dct4(N_orth),
+    "FFT": build_eigenfunctions_fft(N_orth),
 }
 
-fig, axes = plt.subplots(2, 3, figsize=(16, 9))
+fig, axes = plt.subplots(3, 3, figsize=(16, 12))
 
 for idx, (name, phi) in enumerate(phi_sets.items()):
     row, col = divmod(idx, 3)
     ax = axes[row, col]
-    gram = phi.T @ phi
+    # Use conjugate transpose to handle complex FFT eigenfunctions
+    gram = phi.conj().T @ phi
     # Normalise to show structure (divide by diagonal)
     diag = np.diag(gram).copy()
     diag[diag == 0] = 1  # avoid division by zero
@@ -421,8 +434,10 @@ plt.show()
 # %% [markdown]
 # ![Orthogonality](../images/eigenfunction_gallery/orthogonality.png)
 #
-# All six Gram matrices show **diagonal-dominant** structure — the off-diagonal
-# entries are at machine precision, confirming orthogonality.
+# All nine Gram matrices show **diagonal-dominant** structure — the off-diagonal
+# entries are at machine precision, confirming orthogonality.  The FFT uses
+# complex exponentials ($e^{2\pi i k n/N}$), so its Gram matrix is computed
+# with the conjugate transpose.
 
 # %% [markdown]
 # ## 5. Stencil Verification
@@ -430,7 +445,7 @@ plt.show()
 # The eigenvalues are exact for the **discrete** second-order Laplacian.
 # We build the tridiagonal matrix $L = [1, -2, 1]/dx^2$ with appropriate
 # boundary modifications and verify that $L \phi_k = \lambda_k \phi_k$ holds
-# to machine precision for each transform type.
+# to machine precision for the DST-I/II and DCT-I/II cases shown below.
 
 # %%
 N_stencil = 16
@@ -560,10 +575,10 @@ plt.show()
 # | Vertex-centred (regular) | Dirichlet both sides | `dst1_eigenvalues` | `solve_*_dst` |
 # | Vertex-centred (regular) | Neumann both sides | `dct1_eigenvalues` | `solve_*_dct1` |
 # | Either | Periodic | `fft_eigenvalues` | `solve_*_fft` |
-# | Regular | Dir. left + Neu. right | `dst3_eigenvalues` | (coming in v0.0.7) |
-# | Regular | Neu. left + Dir. right | `dct3_eigenvalues` | (coming in v0.0.7) |
-# | Staggered | Dir. left + Neu. right | `dst4_eigenvalues` | (coming in v0.0.7) |
-# | Staggered | Neu. left + Dir. right | `dct4_eigenvalues` | (coming in v0.0.7) |
+# | Regular | Dir. left + Neu. right | `dst3_eigenvalues` | (planned solver) |
+# | Regular | Neu. left + Dir. right | `dct3_eigenvalues` | (planned solver) |
+# | Staggered | Dir. left + Neu. right | `dst4_eigenvalues` | (planned solver) |
+# | Staggered | Neu. left + Dir. right | `dct4_eigenvalues` | (planned solver) |
 #
 # The mixed-BC solvers (types III/IV) are planned for a future release.
 # The eigenvalue functions are already available for use in custom solvers.

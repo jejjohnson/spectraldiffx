@@ -261,13 +261,22 @@ plt.show()
 # %% [markdown]
 # ## 3. Manufactured Solution: Convergence Test
 #
-# We use a smooth manufactured solution to test convergence:
+# We choose manufactured solutions that **satisfy the BCs** of each solver:
 #
-# $$\psi_{\text{exact}}(x, y) = \sin(2\pi x)\,\sin(2\pi y)$$
+# - **Dirichlet** (DST-I, DST-II): $\psi = \sin(2\pi x)\sin(2\pi y)$
+#   — vanishes at $x,y \in \{0,1\}$.
+# - **Neumann** (DCT-I, DCT-II): $\psi = \cos(2\pi x)\cos(2\pi y)$
+#   — has $\partial\psi/\partial n = 0$ at $x,y \in \{0,1\}$.
+# - **Periodic** (FFT): $\psi = \sin(2\pi x)\sin(2\pi y)$
+#   — periodic on $[0,1)$.
 #
-# so the RHS is:
+# In all cases:
+# $f = \nabla^2\psi = -8\pi^2\,\psi$
 #
-# $$f(x, y) = \nabla^2 \psi = -8\pi^2 \sin(2\pi x)\,\sin(2\pi y)$$
+# **Important:** These solvers invert the **discrete** finite-difference
+# Laplacian ($[1,-2,1]/dx^2$ stencil), not the continuous one. By computing
+# $f$ from the continuous $\nabla^2$, we introduce an $O(dx^2)$ discretisation
+# error. All five solvers therefore converge at **second order**.
 #
 # We solve on the unit square $[0,1]^2$ at increasing resolutions and
 # measure the $L^\infty$ error for each solver.
@@ -297,11 +306,11 @@ for N in resolutions:
         float(jnp.max(jnp.abs(psi_dst1 - psi_exact_r)))
     )
 
-    # DCT-I: N points including both boundaries
+    # DCT-I: N points including both boundaries — Neumann-compatible solution
     dx_c1 = L / (N - 1) if N > 1 else L
     x_c1 = jnp.linspace(0, L, N)
     Xc1, Yc1 = jnp.meshgrid(x_c1, x_c1)
-    psi_exact_c1 = jnp.sin(2 * jnp.pi * Xc1) * jnp.sin(2 * jnp.pi * Yc1)
+    psi_exact_c1 = jnp.cos(2 * jnp.pi * Xc1) * jnp.cos(2 * jnp.pi * Yc1)
     rhs_c1 = -8.0 * jnp.pi**2 * psi_exact_c1
 
     psi_dct1 = solve_poisson_dct1(rhs_c1, dx_c1, dx_c1)
@@ -309,21 +318,27 @@ for N in resolutions:
         float(jnp.max(jnp.abs(psi_dct1 - psi_exact_c1)))
     )
 
-    # --- Staggered grids (DST-II, DCT-II): points at cell centres ---
+    # --- Staggered grids: points at cell centres ---
     dx_s = L / N
     x_s = jnp.linspace(dx_s / 2, L - dx_s / 2, N)
     Xs, Ys = jnp.meshgrid(x_s, x_s)
-    psi_exact_s = jnp.sin(2 * jnp.pi * Xs) * jnp.sin(2 * jnp.pi * Ys)
-    rhs_s = -8.0 * jnp.pi**2 * psi_exact_s
 
-    psi_dst2 = solve_poisson_dst2(rhs_s, dx_s, dx_s)
+    # DST-II (Dirichlet): sin solution vanishes at boundary
+    psi_exact_dst2 = jnp.sin(2 * jnp.pi * Xs) * jnp.sin(2 * jnp.pi * Ys)
+    rhs_dst2 = -8.0 * jnp.pi**2 * psi_exact_dst2
+
+    psi_dst2 = solve_poisson_dst2(rhs_dst2, dx_s, dx_s)
     errors["DST-II (Dirichlet, staggered)"].append(
-        float(jnp.max(jnp.abs(psi_dst2 - psi_exact_s)))
+        float(jnp.max(jnp.abs(psi_dst2 - psi_exact_dst2)))
     )
 
-    psi_dct2 = solve_poisson_dct(rhs_s, dx_s, dx_s)
+    # DCT-II (Neumann): cos solution has zero normal derivative at boundary
+    psi_exact_dct2 = jnp.cos(2 * jnp.pi * Xs) * jnp.cos(2 * jnp.pi * Ys)
+    rhs_dct2 = -8.0 * jnp.pi**2 * psi_exact_dct2
+
+    psi_dct2 = solve_poisson_dct(rhs_dct2, dx_s, dx_s)
     errors["DCT-II (Neumann, staggered)"].append(
-        float(jnp.max(jnp.abs(psi_dct2 - psi_exact_s)))
+        float(jnp.max(jnp.abs(psi_dct2 - psi_exact_dct2)))
     )
 
     # --- Periodic (FFT) ---
@@ -364,10 +379,14 @@ plt.show()
 #
 # **Observations:**
 #
-# - **FFT** achieves spectral (exponential) convergence because $\sin(2\pi x)$
-#   is exactly representable in the Fourier basis — errors are at machine precision.
-# - **DST/DCT solvers** converge at second order ($O(dx^2)$), consistent with the
-#   second-order finite-difference Laplacian they invert.
+# - All five solvers converge at **second order** ($O(dx^2)$).  This is because
+#   each solver inverts the discrete second-order finite-difference Laplacian
+#   ($[1,-2,1]/dx^2$ stencil), while the RHS was computed from the *continuous*
+#   $\nabla^2$.  The $O(dx^2)$ gap between the discrete and continuous operators
+#   dominates the error for all transform types.
+# - If instead we computed the RHS by *applying the discrete stencil* to the
+#   exact solution, the solve would be exact (to machine precision) for all five
+#   solvers, because the transform diagonalises that stencil exactly.
 # - Regular and staggered variants converge at the same rate but with slightly
 #   different constants.
 
@@ -377,6 +396,12 @@ plt.show()
 # We solve $\nabla^2 \psi = f$ for a Gaussian bump RHS and compare the
 # five solvers side by side.  The different boundary conditions produce
 # qualitatively different solutions near the domain edges.
+#
+# **Solvability condition:** For Neumann and periodic Poisson problems,
+# a solution exists only if $\langle f \rangle = 0$ (the RHS has zero mean).
+# The Gaussian bump has positive mean, so we subtract it for the DCT and
+# FFT cases.  The library handles the null mode by zeroing $\hat\psi_0$,
+# but we make the problem well-posed explicitly.
 
 # %%
 N = 64
@@ -387,11 +412,13 @@ Xs, Ys = jnp.meshgrid(x_s, x_s)
 # Gaussian bump centred at (0.5, 0.5)
 sigma = 0.12
 rhs_gauss = jnp.exp(-((Xs - 0.5) ** 2 + (Ys - 0.5) ** 2) / (2 * sigma**2))
+# Zero-mean version for Neumann / periodic (solvability condition)
+rhs_gauss_zm = rhs_gauss - jnp.mean(rhs_gauss)
 
 # Solve with staggered solvers (cell-centred grids)
 psi_dst2_g = solve_poisson_dst2(rhs_gauss, dx_s, dx_s)
-psi_dct2_g = solve_poisson_dct(rhs_gauss, dx_s, dx_s)
-psi_fft_g = solve_poisson_fft(rhs_gauss, dx_s, dx_s)
+psi_dct2_g = solve_poisson_dct(rhs_gauss_zm, dx_s, dx_s)
+psi_fft_g = solve_poisson_fft(rhs_gauss_zm, dx_s, dx_s)
 
 # Regular grids need their own coordinate arrays
 dx_r_dir = L / (N + 1)
@@ -404,7 +431,8 @@ dx_r_neu = L / (N - 1)
 x_r_neu = jnp.linspace(0, L, N)
 Xrn, Yrn = jnp.meshgrid(x_r_neu, x_r_neu)
 rhs_gauss_rn = jnp.exp(-((Xrn - 0.5) ** 2 + (Yrn - 0.5) ** 2) / (2 * sigma**2))
-psi_dct1_g = solve_poisson_dct1(rhs_gauss_rn, dx_r_neu, dx_r_neu)
+rhs_gauss_rn_zm = rhs_gauss_rn - jnp.mean(rhs_gauss_rn)
+psi_dct1_g = solve_poisson_dct1(rhs_gauss_rn_zm, dx_r_neu, dx_r_neu)
 
 # %%
 fig, axes = plt.subplots(2, 3, figsize=(15, 9))
@@ -522,7 +550,7 @@ plt.show()
 # | **Which solver for cell-centred Neumann?** | `solve_poisson_dct` (DCT-II) |
 # | **Which solver for vertex-centred Neumann?** | `solve_poisson_dct1` (DCT-I) |
 # | **Which solver for periodic?** | `solve_poisson_fft` |
-# | **Convergence rate?** | $O(dx^2)$ for all DST/DCT; spectral for FFT |
+# | **Convergence rate?** | $O(dx^2)$ for all five (discrete FD Laplacian) |
 # | **When does the choice matter?** | Always — using the wrong grid type introduces $O(dx^2)$ boundary error |
 #
 # The choice of solver must match where your unknowns live on the grid.
