@@ -112,7 +112,7 @@ fig.savefig(IMG_DIR / "basis_functions_stem.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![DST-I and DCT-II basis functions](../images/eigenfunction_gallery/basis_functions_stem.png)
+# ![DST-I and DCT-II basis functions](../../images/eigenfunction_gallery/basis_functions_stem.png)
 #
 # The DST-I modes vanish at the implicit boundary points (Dirichlet condition),
 # while the DCT-II $k=0$ mode is constant and higher modes have zero slope at
@@ -212,7 +212,7 @@ fig.savefig(IMG_DIR / "same_bc_eigenfunctions.png", dpi=150, bbox_inches="tight"
 plt.show()
 
 # %% [markdown]
-# ![Same-BC Eigenfunctions](../images/eigenfunction_gallery/same_bc_eigenfunctions.png)
+# ![Same-BC Eigenfunctions](../../images/eigenfunction_gallery/same_bc_eigenfunctions.png)
 #
 # **Key differences to notice:**
 #
@@ -303,7 +303,7 @@ fig.savefig(IMG_DIR / "mixed_bc_eigenfunctions.png", dpi=150, bbox_inches="tight
 plt.show()
 
 # %% [markdown]
-# ![Mixed-BC Eigenfunctions](../images/eigenfunction_gallery/mixed_bc_eigenfunctions.png)
+# ![Mixed-BC Eigenfunctions](../../images/eigenfunction_gallery/mixed_bc_eigenfunctions.png)
 #
 # **Key observations:**
 #
@@ -371,7 +371,7 @@ fig.savefig(IMG_DIR / "eigenvalue_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Eigenvalue Comparison](../images/eigenfunction_gallery/eigenvalue_comparison.png)
+# ![Eigenvalue Comparison](../../images/eigenfunction_gallery/eigenvalue_comparison.png)
 #
 # **Key insight:** The mixed-BC eigenvalues (DST-III, DCT-III, DST-IV,
 # DCT-IV) all collapse onto a single curve.  This is because they share
@@ -432,7 +432,7 @@ fig.savefig(IMG_DIR / "orthogonality.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Orthogonality](../images/eigenfunction_gallery/orthogonality.png)
+# ![Orthogonality](../../images/eigenfunction_gallery/orthogonality.png)
 #
 # All nine Gram matrices show **diagonal-dominant** structure — the off-diagonal
 # entries are at machine precision, confirming orthogonality.  The FFT uses
@@ -559,7 +559,7 @@ fig.savefig(IMG_DIR / "stencil_verification.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Stencil Verification](../images/eigenfunction_gallery/stencil_verification.png)
+# ![Stencil Verification](../../images/eigenfunction_gallery/stencil_verification.png)
 #
 # All residuals are at or below $10^{-14}$ — the eigenvalue formulas are
 # **exact** for the discrete Laplacian, not approximations.  This is why

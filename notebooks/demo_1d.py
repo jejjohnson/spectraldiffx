@@ -177,7 +177,7 @@ fig.savefig(IMG_DIR / "test_function.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Test function and grid points](../images/demo_1d/test_function.png)
+# ![Test function and grid points](../../images/demo_1d/test_function.png)
 
 # %% [markdown]
 # ## 3. First Derivative
@@ -221,7 +221,7 @@ fig.savefig(IMG_DIR / "first_derivative.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![First derivative comparison](../images/demo_1d/first_derivative.png)
+# ![First derivative comparison](../../images/demo_1d/first_derivative.png)
 
 # %%
 # Pointwise error -- should be at machine precision (~1e-14 for float64)
@@ -243,7 +243,7 @@ fig.savefig(IMG_DIR / "first_derivative_error.png", dpi=150, bbox_inches="tight"
 plt.show()
 
 # %% [markdown]
-# ![First derivative error](../images/demo_1d/first_derivative_error.png)
+# ![First derivative error](../../images/demo_1d/first_derivative_error.png)
 
 # %% [markdown]
 # ## 4. Second Derivative
@@ -284,7 +284,7 @@ fig.savefig(IMG_DIR / "second_derivative.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Second derivative comparison](../images/demo_1d/second_derivative.png)
+# ![Second derivative comparison](../../images/demo_1d/second_derivative.png)
 
 # %%
 error_2nd = jnp.abs(d2udx2_spectral - d2udx2_analytical)
@@ -304,7 +304,7 @@ fig.savefig(IMG_DIR / "second_derivative_error.png", dpi=150, bbox_inches="tight
 plt.show()
 
 # %% [markdown]
-# ![Second derivative error](../images/demo_1d/second_derivative_error.png)
+# ![Second derivative error](../../images/demo_1d/second_derivative_error.png)
 
 # %% [markdown]
 # ## 5. Convergence with Mode Number
@@ -352,7 +352,7 @@ fig.savefig(IMG_DIR / "convergence_modes.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Convergence with mode number](../images/demo_1d/convergence_modes.png)
+# ![Convergence with mode number](../../images/demo_1d/convergence_modes.png)
 #
 # For modes below the $N/3$ dealiasing cutoff, the error is at machine
 # precision. Above this cutoff, the dealiasing filter zeros out the mode,
@@ -427,7 +427,7 @@ fig.savefig(IMG_DIR / "dealiasing.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Dealiasing filter and effect](../images/demo_1d/dealiasing.png)
+# ![Dealiasing filter and effect](../../images/demo_1d/dealiasing.png)
 
 # %% [markdown]
 # ## 7. Spectral Filter
@@ -487,7 +487,7 @@ fig.savefig(IMG_DIR / "spectral_filter.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Spectral filter profiles](../images/demo_1d/spectral_filter.png)
+# ![Spectral filter profiles](../../images/demo_1d/spectral_filter.png)
 
 # %% [markdown]
 # ## 8. Working in Spectral Space
@@ -560,7 +560,7 @@ fig.savefig(IMG_DIR / "parseval_ortho.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Parseval's theorem](../images/demo_1d/parseval_ortho.png)
+# ![Parseval's theorem](../../images/demo_1d/parseval_ortho.png)
 #
 # With `norm='ortho'`, the energy ratio is exactly 1 for all $N$ — Parseval's
 # theorem holds. With `norm=None`, the ratio grows linearly with $N$ because

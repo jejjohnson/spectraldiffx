@@ -456,7 +456,7 @@ fig.savefig(IMG_DIR / "initial_state.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Initial state: vorticity, stream function, and velocities](../images/demo_qg/initial_state.png)
+# ![Initial state: vorticity, stream function, and velocities](../../images/demo_qg/initial_state.png)
 
 # %% [markdown]
 # ## Right-Hand Side with Hyperviscosity
@@ -661,7 +661,7 @@ fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Vorticity evolution at four time snapshots](../images/demo_qg/vorticity_evolution.png)
+# ![Vorticity evolution at four time snapshots](../../images/demo_qg/vorticity_evolution.png)
 
 # %% [markdown]
 # ## Final State with Velocity Vectors
@@ -715,7 +715,7 @@ fig.savefig(IMG_DIR / "final_state.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Final state: vorticity and stream function with velocity vectors](../images/demo_qg/final_state.png)
+# ![Final state: vorticity and stream function with velocity vectors](../../images/demo_qg/final_state.png)
 
 # %% [markdown]
 # ## Conservation Diagnostics
@@ -765,7 +765,7 @@ fig.savefig(IMG_DIR / "diagnostics.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Energy and enstrophy diagnostics](../images/demo_qg/diagnostics.png)
+# ![Energy and enstrophy diagnostics](../../images/demo_qg/diagnostics.png)
 
 # %%
 energy_change = 100 * (energies[-1] / energies[0] - 1)
