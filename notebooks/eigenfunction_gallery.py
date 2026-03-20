@@ -345,24 +345,24 @@ phi_sets = {
     "DCT-III": build_eigenfunctions_dct3(N_orth),
 }
 
-fig, axes = plt.subplots(2, 3, figsize=(14, 8))
-axes_flat = axes.ravel()
+fig, axes = plt.subplots(2, 3, figsize=(16, 9))
 
 for idx, (name, phi) in enumerate(phi_sets.items()):
-    ax = axes_flat[idx]
+    row, col = divmod(idx, 3)
+    ax = axes[row, col]
     gram = phi.T @ phi
     # Normalise to show structure (divide by diagonal)
     diag = np.diag(gram).copy()
     diag[diag == 0] = 1  # avoid division by zero
     gram_norm = gram / np.sqrt(np.outer(diag, diag))
     im = ax.imshow(np.abs(gram_norm), cmap="Blues", vmin=0, vmax=1)
-    ax.set_title(name, fontsize=11)
+    ax.set_title(name, fontsize=12)
     ax.set_xlabel("$k$")
     ax.set_ylabel("$j$")
+    fig.colorbar(im, ax=ax, shrink=0.8, fraction=0.046, pad=0.04)
 
-fig.colorbar(im, ax=axes_flat, shrink=0.6, label=r"$|G_{jk}| / \sqrt{G_{jj} G_{kk}}$")
-plt.suptitle(f"Normalised Gram Matrices ($N={N_orth}$)", fontsize=14, y=1.01)
-fig.subplots_adjust(wspace=0.3, hspace=0.3)
+plt.suptitle(f"Normalised Gram Matrices ($N={N_orth}$)", fontsize=14)
+plt.tight_layout()
 fig.savefig(IMG_DIR / "orthogonality.png", dpi=150, bbox_inches="tight")
 plt.show()
 
