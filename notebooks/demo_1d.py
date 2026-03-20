@@ -510,6 +510,67 @@ dudx_from_spectral = deriv(u_hat, order=1, spectral=True)
 print(f"Max difference (spectral vs physical input): {float(jnp.abs(dudx_spectral - dudx_from_spectral).max()):.2e}")
 
 # %% [markdown]
+# ## 9. Parseval's Theorem and Normalization
+#
+# When using spectral transforms, a natural question is: does the transform
+# preserve the "energy" (squared norm) of the signal?
+#
+# **Parseval's theorem** states that for an orthonormal transform $T$:
+#
+# $$
+# \|T(x)\|^2 = \|x\|^2
+# $$
+#
+# The DCT-II with `norm='ortho'` is orthonormal, so Parseval holds exactly.
+# With `norm=None` (the default unnormalized convention), the spectral
+# coefficients are scaled by $2N$, so $\|Y\|^2 / \|x\|^2 \propto N$.
+
+# %%
+from spectraldiffx import dct
+
+Ns = [8, 16, 32, 64, 128, 256]
+ratios_none = []
+ratios_ortho = []
+
+for N_p in Ns:
+    x_p = jnp.sin(jnp.linspace(0.1, 3.0, N_p)) + 0.5
+    energy_x = float(jnp.sum(x_p**2))
+
+    y_none = dct(x_p, type=2, norm=None)
+    ratios_none.append(float(jnp.sum(y_none**2)) / energy_x)
+
+    y_ortho = dct(x_p, type=2, norm="ortho")
+    ratios_ortho.append(float(jnp.sum(y_ortho**2)) / energy_x)
+
+    print(f"  N={N_p:4d}:  ratio(None)={ratios_none[-1]:8.2f},  ratio(ortho)={ratios_ortho[-1]:.6f}")
+
+# %%
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(Ns, ratios_none, "s-", label=r"norm=None: $\|Y\|^2 / \|x\|^2$", color="C3")
+ax.plot(Ns, ratios_ortho, "o-", label=r'norm="ortho": $\|Y\|^2 / \|x\|^2$', color="C0")
+ax.axhline(1.0, color="k", ls="--", lw=0.8, label="Parseval (ratio = 1)")
+ax.set_xlabel("$N$ (vector length)")
+ax.set_ylabel(r"$\|DCT(x)\|^2 \,/\, \|x\|^2$")
+ax.set_title("DCT-II Energy Ratio: effect of normalization")
+ax.legend(fontsize=9)
+ax.grid(True, alpha=0.3)
+ax.set_ylim(0, max(ratios_none) * 1.15)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "parseval_ortho.png", dpi=150, bbox_inches="tight")
+plt.show()
+
+# %% [markdown]
+# ![Parseval's theorem](../images/demo_1d/parseval_ortho.png)
+#
+# With `norm='ortho'`, the energy ratio is exactly 1 for all $N$ — Parseval's
+# theorem holds. With `norm=None`, the ratio grows linearly with $N$ because
+# the unnormalized DCT-II scales coefficients by a factor related to $2N$.
+#
+# **Takeaway**: Use `norm='ortho'` when energy conservation matters (e.g.,
+# in Parseval-based spectral energy calculations). Use `norm=None` (the
+# default) when you need the raw transform matching SciPy conventions.
+
+# %% [markdown]
 # ## Summary
 #
 # This tutorial demonstrated the core features of the `spectraldiffx` 1D API:

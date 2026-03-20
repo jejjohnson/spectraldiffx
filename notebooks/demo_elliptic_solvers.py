@@ -172,9 +172,35 @@ error_dst = float(jnp.max(jnp.abs(psi_dst - psi_exact)))
 print(f"Max error (Poisson DST): {error_dst:.2e}")
 print(f"Solution shape: {psi_dst.shape}")
 
+# %%
+fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
+
+im0 = axes[0].imshow(np.array(psi_exact), cmap="RdBu_r", origin="lower")
+axes[0].set_title(r"Exact $\psi$ (eigenfunction)")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(np.array(psi_dst), cmap="RdBu_r", origin="lower")
+axes[1].set_title(r"Computed $\psi$ (DST-I)")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+im2 = axes[2].imshow(np.array(jnp.abs(psi_dst - psi_exact)), cmap="hot_r", origin="lower")
+axes[2].set_title(f"Error (max = {error_dst:.1e})")
+plt.colorbar(im2, ax=axes[2], shrink=0.8, format="%.0e")
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle(f"Eigenfunction Recovery: DST-I Poisson ($p={p}, q={q}$)", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "eigenfunction_recovery.png", dpi=150, bbox_inches="tight")
+plt.show()
+
 # %% [markdown]
-# The error should be at machine precision ($\sim 10^{-14}$) because the
-# solver uses the exact same eigenvector basis as the test function.
+# ![Eigenfunction recovery](../images/demo_elliptic_solvers/eigenfunction_recovery.png)
+#
+# The error is at machine precision ($\sim 10^{-14}$) because the solver
+# uses the exact same eigenvector basis as the test function.
 
 # %% [markdown]
 # ## 3. Neumann BCs (DCT-II): Eigenfunction Recovery

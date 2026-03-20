@@ -46,7 +46,7 @@ The `solver` object is an `eqx.Module` (a pure pytree).  It stores the
 pre-inverted capacitance matrix and precomputed Green's functions, so the
 online solve is just one spectral solve plus a matrix-vector product.
 
-![Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi.](images/theory_figures/capacitance_mask_solution.png)
+![Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi.](images/demo_capacitance/rhs_and_solution.png)
 
 ---
 

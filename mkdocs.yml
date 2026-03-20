@@ -73,7 +73,6 @@ nav:
     - QG Turbulence: notebooks/demo_qg.py
     - QG with Diffrax: notebooks/pseudospectral_part2.py
     - KdV Equation: notebooks/kdv.py
-    - Theory Figures: notebooks/theory_figures.py
     - Navier-Stokes 2D: notebooks/navier_stokes_2d.py
     - QG Model: notebooks/qg_model.py
   - API Reference:

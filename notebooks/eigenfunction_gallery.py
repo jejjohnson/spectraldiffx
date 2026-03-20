@@ -67,6 +67,58 @@ IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "eigenfun
 IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 # %% [markdown]
+# ## 0. DST-I and DCT-II Basis Functions
+#
+# Before looking at all nine transform types, let us visualize the two most
+# common bases: **DST-I** (Dirichlet BCs) and **DCT-II** (Neumann BCs).
+#
+# - **DST-I** basis functions: $\phi_k(n) = \sin\!\left(\frac{\pi(n+1)(k+1)}{N+1}\right)$
+#   — vanish at the boundary points $n = -1$ and $n = N$.
+# - **DCT-II** basis functions: $\phi_k(n) = \cos\!\left(\frac{\pi k(2n+1)}{2N}\right)$
+#   — have zero slope at the boundary (cell faces).
+
+# %%
+N_stem = 8
+n_stem = np.arange(N_stem)
+
+fig, axes = plt.subplots(2, 4, figsize=(13, 5), sharex=True, sharey=True)
+
+# DST-I: sin(pi * (n+1)*(k+1) / (N+1))
+for ki in range(4):
+    ax = axes[0, ki]
+    vals = np.sin(np.pi * (n_stem + 1) * (ki + 1) / (N_stem + 1))
+    ax.stem(n_stem, vals, linefmt="C0-", markerfmt="C0o", basefmt="k-")
+    ax.set_title(f"DST-I  $k={ki+1}$", fontsize=10)
+    ax.set_ylim(-1.3, 1.3)
+    ax.axhline(0, color="k", lw=0.5)
+    if ki == 0:
+        ax.set_ylabel("Dirichlet (sin)")
+
+# DCT-II: cos(pi * k * (2n+1) / (2N))
+for ki in range(4):
+    ax = axes[1, ki]
+    vals = np.cos(np.pi * ki * (2 * n_stem + 1) / (2 * N_stem))
+    ax.stem(n_stem, vals, linefmt="C1-", markerfmt="C1o", basefmt="k-")
+    ax.set_title(f"DCT-II  $k={ki}$", fontsize=10)
+    ax.set_ylim(-1.3, 1.3)
+    ax.axhline(0, color="k", lw=0.5)
+    ax.set_xlabel("$n$")
+    if ki == 0:
+        ax.set_ylabel("Neumann (cos)")
+
+plt.suptitle(f"DST-I and DCT-II Basis Functions ($N = {N_stem}$)", fontsize=13, y=1.02)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "basis_functions_stem.png", dpi=150, bbox_inches="tight")
+plt.show()
+
+# %% [markdown]
+# ![DST-I and DCT-II basis functions](../images/eigenfunction_gallery/basis_functions_stem.png)
+#
+# The DST-I modes vanish at the implicit boundary points (Dirichlet condition),
+# while the DCT-II $k=0$ mode is constant and higher modes have zero slope at
+# the cell faces (Neumann condition).
+
+# %% [markdown]
 # ## 1. Same-BC Eigenfunctions
 #
 # When both boundaries have the **same** BC type (both Dirichlet or both

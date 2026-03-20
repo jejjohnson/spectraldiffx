@@ -355,7 +355,7 @@ psi_batch = solve_batch(rhs_batch)  # [10, 64, 64]
     as backwards-compatible aliases for `solve_helmholtz_dst1` (Dirichlet, regular)
     and `solve_helmholtz_dct2` (Neumann, staggered) respectively.
 
-![Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around.](images/theory_figures/solver_comparison.png)
+![Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around.](images/demo_elliptic_solvers/poisson_comparison_three_bcs.png)
 
 ---
 

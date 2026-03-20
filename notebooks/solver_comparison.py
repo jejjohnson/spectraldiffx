@@ -198,6 +198,67 @@ plt.show()
 # - FFT eigenvalues are symmetric about $k = N/2$ (aliasing).
 
 # %% [markdown]
+# ## 2b. Discrete vs Continuous Eigenvalues
+#
+# The spectral solvers use **discrete** finite-difference eigenvalues, not the
+# continuous $-k^2$. For low wavenumbers these agree, but they diverge near the
+# Nyquist frequency $k_{\max} = N/2$:
+#
+# $$
+# \lambda_k^{\text{discrete}} = -\frac{4}{dx^2}\sin^2\!\left(\frac{\pi k}{2N}\right)
+# \approx -\frac{\pi^2 k^2}{N^2 dx^2} = -k_{\text{phys}}^2
+# \quad \text{for } k \ll N
+# $$
+#
+# The discrete eigenvalues saturate at $-4/dx^2$ while the continuous ones
+# grow without bound. This is why spectral solvers are **exact inverses of the
+# discrete Laplacian** (not approximations to the continuous one).
+
+# %%
+from spectraldiffx import dst1_eigenvalues, dct2_eigenvalues, fft_eigenvalues
+
+N_dc = 32
+dx_dc = 1.0
+k_dc = np.arange(N_dc)
+
+eig_dst = np.array(dst1_eigenvalues(N_dc, dx_dc))
+eig_dct = np.array(dct2_eigenvalues(N_dc, dx_dc))
+eig_fft = np.array(fft_eigenvalues(N_dc, dx_dc))
+
+# Continuous eigenvalues for comparison
+cont_dst = -((np.pi * (k_dc + 1) / (N_dc + 1)) ** 2) / dx_dc**2
+cont_dct = -((np.pi * k_dc / N_dc) ** 2) / dx_dc**2
+cont_fft = -((2 * np.pi * k_dc / (N_dc * dx_dc)) ** 2)
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+
+for ax, eig, cont, label in [
+    (axes[0], eig_dst, cont_dst, "DST-I (Dirichlet)"),
+    (axes[1], eig_dct, cont_dct, "DCT-II (Neumann)"),
+    (axes[2], eig_fft, cont_fft, "FFT (Periodic)"),
+]:
+    ax.plot(k_dc, eig, "o-", ms=4, label="Discrete FD", color="C0")
+    ax.plot(k_dc, cont, "s--", ms=3, label=r"Continuous $-k^2$", color="C3", alpha=0.7)
+    ax.set_xlabel("Mode index $k$")
+    ax.set_ylabel(r"$\lambda_k$")
+    ax.set_title(label)
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.3)
+
+plt.suptitle(f"Discrete vs Continuous Eigenvalues ($N = {N_dc}$)", fontsize=13, y=1.02)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "discrete_vs_continuous_eigenvalues.png", dpi=150, bbox_inches="tight")
+plt.show()
+
+# %% [markdown]
+# ![Discrete vs continuous eigenvalues](../images/solver_comparison/discrete_vs_continuous_eigenvalues.png)
+#
+# At low $k$, the discrete and continuous eigenvalues overlap. Near the
+# Nyquist frequency, the discrete eigenvalues saturate at $-4/dx^2$ while
+# the continuous parabola keeps growing. This saturation is why discrete
+# spectral solvers cannot resolve arbitrarily high wavenumbers.
+
+# %% [markdown]
 # ## 3. Manufactured Solution: Convergence Test
 #
 # We use a smooth manufactured solution to test convergence:

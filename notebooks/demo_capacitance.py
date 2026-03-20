@@ -246,6 +246,68 @@ plt.show()
 # The whole point of the capacitance method is to enforce $\psi = 0$ at
 # the inner-boundary points. Let us verify this quantitatively.
 
+# %% [markdown]
+# ### Before vs After Capacitance Correction
+#
+# To appreciate what the capacitance method does, we compare the
+# **uncorrected** rectangular DST solve (which ignores the mask) with the
+# **corrected** capacitance solve.
+
+# %%
+from scipy.ndimage import binary_dilation
+from spectraldiffx import solve_poisson_dst
+
+# Uncorrected: solve on full rectangle, ignoring the mask
+psi_rect = solve_poisson_dst(rhs, dx, dy)
+
+# Detect inner boundary for visualization
+exterior = ~mask
+struct = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+dilated = binary_dilation(exterior, structure=struct)
+inner_boundary = mask & dilated
+j_b_vis, i_b_vis = np.where(inner_boundary)
+
+print(f"psi_rect shape:    {psi_rect.shape}")
+print(f"Max |psi| at boundary (uncorrected): {float(jnp.abs(psi_rect[j_b_vis, i_b_vis]).max()):.4f}")
+print(f"Max |psi| at boundary (capacitance): {float(jnp.abs(psi[j_b_vis, i_b_vis]).max()):.2e}")
+
+# %%
+fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+
+# Uncorrected
+psi_rect_masked = np.array(psi_rect) * mask
+im0 = axes[0].imshow(psi_rect_masked, origin="lower", cmap="RdBu_r")
+axes[0].scatter(i_b_vis, j_b_vis, c="red", s=12, zorder=5, label="Boundary pts")
+bnd_max_rect = float(jnp.abs(psi_rect[j_b_vis, i_b_vis]).max())
+axes[0].set_title(f"Rectangular solve (no correction)\nmax |ψ| at boundary = {bnd_max_rect:.3f}")
+axes[0].legend(fontsize=8, loc="upper right")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+# Corrected
+psi_masked = np.array(psi) * mask
+im1 = axes[1].imshow(psi_masked, origin="lower", cmap="RdBu_r")
+axes[1].scatter(i_b_vis, j_b_vis, c="red", s=12, zorder=5, label="Boundary pts")
+bnd_max_cap = float(jnp.abs(psi[j_b_vis, i_b_vis]).max())
+axes[1].set_title(f"Capacitance solve (corrected)\nmax |ψ| at boundary = {bnd_max_cap:.1e}")
+axes[1].legend(fontsize=8, loc="upper right")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle("Boundary Enforcement: Before vs After Capacitance Correction", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "boundary_before_after.png", dpi=150, bbox_inches="tight")
+plt.show()
+
+# %% [markdown]
+# ![Boundary before vs after correction](../images/demo_capacitance/boundary_before_after.png)
+#
+# The uncorrected rectangular solve has significant nonzero values at the
+# boundary points (red dots). The capacitance correction drives these to
+# machine precision.
+
 # %%
 # Extract solution values at inner-boundary points
 psi_at_boundary = psi[solver_dst._j_b, solver_dst._i_b]
