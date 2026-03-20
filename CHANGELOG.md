@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.8](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.7...v0.0.8) (2026-03-20)
+
+
+### Bug Fixes
+
+* **docs:** add MathJax config for $-delimiter support and SPA navigation ([4cd3c4d](https://github.com/jejjohnson/spectraldiffx/commit/4cd3c4d0390bf85755caf06db2277a7a4047a82f))
+* **docs:** add placeholder images for OOM notebooks (navier_stokes_2d, qg_model) ([6298476](https://github.com/jejjohnson/spectraldiffx/commit/62984764be1e1df862a807584509df08af80e299))
+* **docs:** correct image paths in notebook markdown embeds ([f2135a4](https://github.com/jejjohnson/spectraldiffx/commit/f2135a425ebb0b5295fdf2a3a8abde174719e976))
+
 ## [0.0.7](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.6...v0.0.7) (2026-03-20)
 
 
