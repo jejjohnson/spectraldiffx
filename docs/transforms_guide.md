@@ -101,7 +101,7 @@ X_raw = dct(x, type=2, norm=None)
 print(f"||X_raw||^2 = {jnp.sum(X_raw**2):.4f}")  # != 55
 ```
 
-![Energy ratio ||DCT(x)||^2 / ||x||^2 for varying N. With norm='ortho', the ratio is exactly 1 (Parseval's theorem). With norm=None, the ratio grows with N.](images/ortho_parseval.png)
+![Energy ratio ||DCT(x)||^2 / ||x||^2 for varying N. With norm='ortho', the ratio is exactly 1 (Parseval's theorem). With norm=None, the ratio grows with N.](images/theory_figures/ortho_parseval.png)
 
 ---
 
