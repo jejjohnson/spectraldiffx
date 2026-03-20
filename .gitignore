@@ -144,6 +144,7 @@ notebooks/*.gif
 *.png
 !jbook/content/*.png
 !docs/images/*.png
+!docs/images/**/*.png
 *.nc
 *.pickle
 *.pkl
