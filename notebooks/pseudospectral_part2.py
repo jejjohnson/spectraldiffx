@@ -27,19 +27,26 @@
 
 # %%
 import math
+from pathlib import Path
 from typing import NamedTuple
 
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
 
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "pseudospectral_part2"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
+
 # %%
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+from spectraldiffx import FourierGrid2D
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
 
 # %% [markdown]
 # ## Domain Setup
@@ -171,10 +178,14 @@ axes[2].set_title("Speed $|\\mathbf{u}|$")
 plt.colorbar(im, ax=axes[2])
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "initial_state.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 print(f"Initial energy: {compute_energy(q0):.6f}")
 print(f"Initial enstrophy: {compute_enstrophy(q0):.6f}")
+
+# %% [markdown]
+# ![Initial state: vorticity, stream function, and speed](../images/pseudospectral_part2/initial_state.png)
 
 # %% [markdown]
 # ## Right-Hand Side with Hyperviscosity
@@ -320,7 +331,11 @@ for ax, idx in zip(axes, indices):
 
 plt.suptitle("Vorticity Evolution (McWilliams 1984 IC)", fontsize=12)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Vorticity evolution at four time snapshots](../images/pseudospectral_part2/vorticity_evolution.png)
 
 # %% [markdown]
 # ## Final State
@@ -348,7 +363,11 @@ axes[1].set_title(f"Stream function (t={times[-1]:.1f})")
 plt.colorbar(im, ax=axes[1])
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "final_state.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Final state: vorticity and stream function with velocity vectors](../images/pseudospectral_part2/final_state.png)
 
 # %% [markdown]
 # ## Conservation Diagnostics
@@ -376,7 +395,11 @@ axes[1].legend()
 axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "diagnostics.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Energy and enstrophy diagnostics](../images/pseudospectral_part2/diagnostics.png)
 
 # %%
 energy_change = (energies[-1] - energies[0]) / energies[0] * 100

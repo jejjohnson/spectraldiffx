@@ -31,12 +31,20 @@
 # The online cost per solve is $O(N_b^2 + N \log N)$.
 
 # %%
+from pathlib import Path
+
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_capacitance"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 from spectraldiffx import build_capacitance_solver
 
@@ -70,7 +78,11 @@ ax.set_title("Ocean basin mask (blue = interior)")
 ax.set_xlabel("i")
 ax.set_ylabel("j")
 plt.tight_layout()
+fig.savefig(IMG_DIR / "ocean_basin_mask.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Ocean basin mask](../images/demo_capacitance/ocean_basin_mask.png)
 
 # %% [markdown]
 # ## Section 2: Build the Capacitance Solver
@@ -112,7 +124,11 @@ for ax in axes:
     ax.set_ylabel("j")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "rhs_and_solution.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![RHS and Poisson solution](../images/demo_capacitance/rhs_and_solution.png)
 
 # %% [markdown]
 # ## Section 4: Verify Boundary Enforcement
@@ -142,7 +158,11 @@ ax.set_xlabel("i")
 ax.set_ylabel("j")
 plt.colorbar(im, ax=ax, shrink=0.8)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "boundary_enforcement.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Psi at inner-boundary points](../images/demo_capacitance/boundary_enforcement.png)
 
 # %% [markdown]
 # ## Section 5: Compare DST vs FFT Base Solver
@@ -182,7 +202,11 @@ for ax in axes:
     ax.set_ylabel("j")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "dst_vs_fft_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![DST vs FFT base solver comparison](../images/demo_capacitance/dst_vs_fft_comparison.png)
 
 # %% [markdown]
 # ## Section 6: Helmholtz with Nonzero Lambda
@@ -223,7 +247,11 @@ for ax in axes:
 
 plt.suptitle("Capacitance solver: Poisson vs Helmholtz", fontsize=14)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "poisson_vs_helmholtz.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Poisson vs Helmholtz comparison](../images/demo_capacitance/poisson_vs_helmholtz.png)
 
 # %%
 print(f"Poisson max |psi|: {jnp.max(jnp.abs(psi_poisson)):.4f}")

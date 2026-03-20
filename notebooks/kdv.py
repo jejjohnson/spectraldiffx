@@ -50,6 +50,7 @@
 
 # %%
 import pathlib
+from pathlib import Path
 from typing import Annotated
 
 import cyclopts
@@ -57,16 +58,22 @@ import diffrax
 import equinox as eqx
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import xarray as xr
 from jaxtyping import Array, Float
 from loguru import logger
 
-from spectraldiffx._src.grid import FourierGrid1D
-from spectraldiffx._src.operators import SpectralDerivative1D
+matplotlib.use("Agg")
+
+from spectraldiffx import FourierGrid1D
+from spectraldiffx import SpectralDerivative1D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "kdv"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 # Initialize the cyclopts app
 app = cyclopts.App()
@@ -249,7 +256,8 @@ def run_kdv(
     logger.success(f"Output saved to: {output_path}")
 
     logger.info("Generating plots...")
-    plot_results(ds)
+    fig = plot_results(ds)
+    fig.savefig(IMG_DIR / "two_soliton_interaction.png", dpi=150, bbox_inches="tight")
     logger.success("Plots generated successfully!")
     plt.show()
 
@@ -371,7 +379,11 @@ ds.to_netcdf(output_path)
 logger.success(f"Output saved to: {output_path}")
 
 fig = plot_results(ds)
+fig.savefig(IMG_DIR / "two_soliton_interaction.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![KdV two-soliton interaction](../images/kdv/two_soliton_interaction.png)
 
 # %%
 

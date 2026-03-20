@@ -20,16 +20,23 @@
 
 # %%
 import math
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
 sns.reset_defaults()
 sns.set_context(context="talk", font_scale=0.7)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_2d"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 # %% [markdown]
 # ## Define Test Function
@@ -58,9 +65,9 @@ d2f_dy2 = jax.grad(df_dy, argnums=1)
 # We use `FourierGrid2D` to define the 2D computational domain.
 
 # %%
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+from spectraldiffx import FourierGrid2D
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
 
 # Grid and function parameters
 mx, my = 3, 2
@@ -114,7 +121,11 @@ ax[0].set(title="$u(x,y)$", xlabel="$x$", ylabel="$y$")
 ax[1].set(title=r"$\partial_x u(x,y)$", xlabel="$x$", ylabel="$y$")
 ax[2].set(title=r"$\partial_y u(x,y)$", xlabel="$x$", ylabel="$y$")
 plt.tight_layout()
+fig.savefig(IMG_DIR / "field_and_gradients.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Field and analytical gradients](../images/demo_2d/field_and_gradients.png)
 
 # %% [markdown]
 # ## Compute Derivatives Using SpectralDerivative2D
@@ -155,7 +166,11 @@ plt.colorbar(pts, ax=ax[2, 1])
 ax[2, 1].set(title=r"$|\partial_y u|$ error", xlabel="$x$", ylabel="$y$")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "gradient_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Gradient comparison: analytical vs spectral](../images/demo_2d/gradient_comparison.png)
 
 # %%
 print(f"Max error in du/dx: {err_x.max():.2e}")
@@ -189,8 +204,13 @@ plt.colorbar(pts, ax=ax[2])
 ax[2].set(title=r"$|\nabla^2 u|$ error", xlabel="$x$", ylabel="$y$")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "laplacian_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
 
+# %% [markdown]
+# ![Laplacian comparison](../images/demo_2d/laplacian_comparison.png)
+
+# %%
 print(f"Max error in Laplacian: {err_lap.max():.2e}")
 
 # %% [markdown]
@@ -221,7 +241,11 @@ plt.colorbar(pts, ax=ax[1])
 ax[1].set(title=r"$\nabla \times V$", xlabel="$x$", ylabel="$y$")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "divergence_curl.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Divergence and curl](../images/demo_2d/divergence_curl.png)
 
 # %% [markdown]
 # ## Poisson Solver
@@ -255,7 +279,11 @@ ax[2].contourf(X.T, Y.T, u_zero_mean.T)
 ax[2].set(title=r"Original $u$ (zero mean)", xlabel="$x$", ylabel="$y$")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "poisson_solver.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Poisson solver results](../images/demo_2d/poisson_solver.png)
 
 # %%
 err_poisson = np.abs(phi_normalized - u_zero_mean)
@@ -274,7 +302,11 @@ pts = ax.contourf(KX.T, KY.T, dealias_filter.T)
 plt.colorbar(pts)
 ax.set(xlabel="$k_x$", ylabel="$k_y$", title="2/3 Dealiasing Filter")
 plt.tight_layout()
+fig.savefig(IMG_DIR / "dealiasing_filter.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![2D dealiasing filter](../images/demo_2d/dealiasing_filter.png)
 
 # %% [markdown]
 # ## Advection Term
@@ -305,7 +337,11 @@ ax[2].contourf(X.T, Y.T, advection.T)
 ax[2].set(title=r"$(v \cdot \nabla) q$", xlabel="$x$", ylabel="$y$")
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "advection.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Advection term](../images/demo_2d/advection.png)
 
 # %% [markdown]
 # ## Summary

@@ -43,6 +43,7 @@
 # %%
 import math
 import pathlib
+from pathlib import Path
 from typing import Annotated
 
 import cyclopts
@@ -51,18 +52,24 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 import jax.random as jrandom
+import matplotlib
 import matplotlib.pyplot as plt
 import xarray as xr
 from jaxtyping import Array, Float
 from loguru import logger
 from tqdm import tqdm
 
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+matplotlib.use("Agg")
+
+from spectraldiffx import FourierGrid2D
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "navier_stokes_2d"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 app = cyclopts.App()
 
@@ -318,7 +325,8 @@ def run_navier_stokes(
     logger.success(f"Output saved to: {output_path}")
 
     logger.info("Generating plots...")
-    plot_results(ds)
+    fig = plot_results(ds)
+    fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
     logger.success("Plots generated successfully!")
     plt.show()
 
@@ -471,7 +479,11 @@ ds.to_netcdf(output_path)
 logger.success(f"Output saved to: {output_path}")
 
 fig = plot_results(ds)
+fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Vorticity evolution in 2D turbulence](../images/navier_stokes_2d/vorticity_evolution.png)
 
 # %%
 

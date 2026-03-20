@@ -30,12 +30,20 @@
 # Setting $\lambda = 0$ reduces the Helmholtz equation to the **Poisson equation** $\nabla^2\psi = f$.
 
 # %%
+from pathlib import Path
+
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_elliptic_solvers"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 from spectraldiffx import (
     DirichletHelmholtzSolver2D,
@@ -176,7 +184,11 @@ for ax, title, psi in zip(axes, titles, solutions):
 
 plt.suptitle("Poisson solutions for a Gaussian bump RHS", fontsize=14)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "poisson_comparison_three_bcs.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Poisson solutions for three BC types](../images/demo_elliptic_solvers/poisson_comparison_three_bcs.png)
 
 # %% [markdown]
 # ## Section 5: Using Layer 1 Classes

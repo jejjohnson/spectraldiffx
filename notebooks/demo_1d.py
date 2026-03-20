@@ -20,16 +20,23 @@
 
 # %%
 import math
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
 sns.reset_defaults()
 sns.set_context(context="talk", font_scale=0.7)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_1d"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 # %% [markdown]
 # ## Define Test Function
@@ -59,8 +66,8 @@ d2f = lambda x: -4.0 * jnp.sin(2.0 * x) - 12.5 * jnp.cos(5.0 * x)
 # We use `FourierGrid1D` to define the computational domain.
 
 # %%
-from spectraldiffx._src.grid import FourierGrid1D
-from spectraldiffx._src.operators import SpectralDerivative1D
+from spectraldiffx import FourierGrid1D
+from spectraldiffx import SpectralDerivative1D
 
 # Grid parameters
 Nx = 32
@@ -91,7 +98,11 @@ ax.scatter(x_coords, u, color="r", marker="*", label="$u_i$", zorder=3)
 ax.set(xlabel=r"$x$", ylabel=r"$u(x)$")
 plt.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "test_function.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Test function and grid points](../images/demo_1d/test_function.png)
 
 # %% [markdown]
 # ## First Derivative
@@ -145,7 +156,11 @@ ax.scatter(x_coords, du_dx_analytical, color="red", marker="x", s=20, label="Ana
 ax.set(xlabel=r"$x$", ylabel=r"$du/dx$")
 plt.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "first_derivative.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![First derivative comparison](../images/demo_1d/first_derivative.png)
 
 # %%
 # Check error
@@ -160,7 +175,11 @@ ax.set(xlabel=r"$x$", ylabel=r"$|du/dx - du/dx_{analytical}|$")
 ax.set_title("First Derivative Error (Spectral Method)")
 plt.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "first_derivative_error.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![First derivative error](../images/demo_1d/first_derivative_error.png)
 
 # %% [markdown]
 # ## Second Derivative
@@ -188,7 +207,11 @@ ax.scatter(x_coords, d2u_dx2_analytical, color="red", marker="x", s=20, label="A
 ax.set(xlabel=r"$x$", ylabel=r"$d^2u/dx^2$")
 plt.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "second_derivative.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Second derivative comparison](../images/demo_1d/second_derivative.png)
 
 # %%
 # Check error
@@ -203,7 +226,11 @@ ax.set(xlabel=r"$x$", ylabel=r"$|d^2u/dx^2 - d^2u/dx^2_{analytical}|$")
 ax.set_title("Second Derivative Error (Spectral Method)")
 plt.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "second_derivative_error.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Second derivative error](../images/demo_1d/second_derivative_error.png)
 
 # %% [markdown]
 # ## Dealiasing

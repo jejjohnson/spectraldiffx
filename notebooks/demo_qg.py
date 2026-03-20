@@ -36,21 +36,29 @@
 
 # %%
 import math
+from pathlib import Path
 from typing import NamedTuple
 
 import jax
 import jax.numpy as jnp
 import jax.random as jrandom
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
 
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_qg"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
+
 # %%
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
-from spectraldiffx._src.filters import SpectralFilter2D
+from spectraldiffx import FourierGrid2D
+import equinox as eqx
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
+from spectraldiffx import SpectralFilter2D
 
 # %% [markdown]
 # ## Domain Setup
@@ -190,7 +198,11 @@ axes[1, 1].set_ylabel("y")
 plt.colorbar(im, ax=axes[1, 1])
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "initial_state.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Initial state: vorticity, stream function, and velocities](../images/demo_qg/initial_state.png)
 
 # %% [markdown]
 # ## Right-Hand Side Function
@@ -313,7 +325,11 @@ for ax, idx in zip(axes, plot_indices):
 
 plt.suptitle("Vorticity Evolution", fontsize=14)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Vorticity evolution at four time snapshots](../images/demo_qg/vorticity_evolution.png)
 
 # %% [markdown]
 # ## Final State with Velocity Vectors
@@ -347,7 +363,11 @@ axes[1].set_ylabel("y")
 plt.colorbar(im, ax=axes[1])
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "final_state.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Final state: vorticity and stream function with velocity vectors](../images/demo_qg/final_state.png)
 
 # %% [markdown]
 # ## Energy and Enstrophy Diagnostics
@@ -384,8 +404,13 @@ axes[1].set_title("Enstrophy")
 axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "diagnostics.png", dpi=150, bbox_inches="tight")
 plt.show()
 
+# %% [markdown]
+# ![Energy and enstrophy diagnostics](../images/demo_qg/diagnostics.png)
+
+# %%
 print(f"Energy: initial={energies[0]:.4f}, final={energies[-1]:.4f}, "
       f"change={100*(energies[-1]/energies[0] - 1):.2f}%")
 print(f"Enstrophy: initial={enstrophies[0]:.4f}, final={enstrophies[-1]:.4f}, "
