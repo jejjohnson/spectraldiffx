@@ -162,23 +162,23 @@ def two_soliton_initial_condition(
 @app.default
 def run_kdv(
     nx: Annotated[
-        int, cyclopts.Option("--nx", help="Number of grid points (resolution).")
+        int, cyclopts.Parameter("--nx", help="Number of grid points (resolution).")
     ] = 512,
     domain_length: Annotated[
-        float, cyclopts.Option("--length", help="Length of the periodic domain.")
+        float, cyclopts.Parameter("--length", help="Length of the periodic domain.")
     ] = 100.0,
     t_end: Annotated[
-        float, cyclopts.Option("--t-end", help="Final simulation time.")
+        float, cyclopts.Parameter("--t-end", help="Final simulation time.")
     ] = 20.0,
     dt0: Annotated[
-        float, cyclopts.Option("--dt0", help="Initial time step for adaptive solver.")
+        float, cyclopts.Parameter("--dt0", help="Initial time step for adaptive solver.")
     ] = 1e-3,
     n_saves: Annotated[
-        int, cyclopts.Option("--n-saves", help="Number of time points to save.")
+        int, cyclopts.Parameter("--n-saves", help="Number of time points to save.")
     ] = 201,
     output_dir: Annotated[
         pathlib.Path | None,
-        cyclopts.Option("--output-dir", help="Directory to save the output NetCDF."),
+        cyclopts.Parameter("--output-dir", help="Directory to save the output NetCDF."),
     ] = None,
 ):
     """
