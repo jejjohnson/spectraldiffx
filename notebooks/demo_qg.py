@@ -94,7 +94,7 @@ class QGParams(NamedTuple):
     nv: int = 1            # hyperviscosity order (1=Laplacian, 2=biharmonic)
 
 
-params = QGParams(nu=1e-4, mu=0.0, nv=1)
+params = QGParams(nu=5e-4, mu=0.0, nv=1)
 print(f"Parameters: nu={params.nu}, mu={params.mu}, nv={params.nv}")
 
 # %% [markdown]
@@ -229,13 +229,13 @@ def qg_tendency(q: jnp.ndarray, params: QGParams) -> jnp.ndarray:
     # Initialize RHS with advection
     rhs = advection
 
-    # Diffusion term: nu * nabla^{2n} q
+    # Hyperviscosity: (-1)^{nv+1} * nu * nabla^{2nv} q
+    # Sign ensures dissipation: nv=1 → +nu*∇²q, nv=2 → -nu*∇⁴q, etc.
     if params.nu > 0:
-        # Apply Laplacian n times
         lap_q = q
         for _ in range(params.nv):
             lap_q = deriv.laplacian(lap_q)
-        rhs = rhs + params.nu * lap_q
+        rhs = rhs + (-1) ** (params.nv + 1) * params.nu * lap_q
 
     # Linear drag: -mu * q
     if params.mu > 0:
@@ -272,7 +272,7 @@ def integrate_steps(q: jnp.ndarray, dt: float, n_steps: int, params: QGParams) -
 
 # %%
 # Time stepping parameters
-dt = 0.01
+dt = 0.005
 t_final = 50.0
 n_steps_per_output = 100
 n_outputs = int(t_final / (dt * n_steps_per_output))
