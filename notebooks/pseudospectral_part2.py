@@ -78,7 +78,7 @@ class QGParams(NamedTuple):
     nv: int = 2            # hyperviscosity order (2=biharmonic)
 
 
-params = QGParams(nu=1e-8, mu=0.0, nv=2)
+params = QGParams(nu=1e-12, mu=0.0, nv=4)
 print(f"Hyperviscosity: nu={params.nu}, order={params.nv}")
 
 # %% [markdown]
@@ -204,12 +204,13 @@ def qg_tendency(q: jnp.ndarray, params: QGParams) -> jnp.ndarray:
     # Advection
     rhs = -deriv.advection_scalar(u, v, q)
 
-    # Hyperviscosity: nu * nabla^{2n} q
+    # Hyperviscosity: (-1)^{nv+1} * nu * nabla^{2nv} q
+    # Sign ensures dissipation: nv=1 → +nu*∇²q, nv=2 → -nu*∇⁴q, etc.
     if params.nu > 0:
         lap_q = q
         for _ in range(params.nv):
             lap_q = deriv.laplacian(lap_q)
-        rhs = rhs + params.nu * lap_q
+        rhs = rhs + (-1) ** (params.nv + 1) * params.nu * lap_q
 
     # Linear drag
     if params.mu > 0:
