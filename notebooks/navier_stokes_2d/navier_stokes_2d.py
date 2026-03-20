@@ -43,6 +43,7 @@
 # %%
 import math
 import pathlib
+from pathlib import Path
 from typing import Annotated
 
 import cyclopts
@@ -51,18 +52,24 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 import jax.random as jrandom
+import matplotlib
 import matplotlib.pyplot as plt
 import xarray as xr
 from jaxtyping import Array, Float
 from loguru import logger
 from tqdm import tqdm
 
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+matplotlib.use("Agg")
+
+from spectraldiffx import FourierGrid2D
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "navier_stokes_2d"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 app = cyclopts.App()
 
@@ -194,43 +201,43 @@ def create_forcing(grid: FourierGrid2D, k_force: float) -> jnp.ndarray:
 @app.default
 def run_navier_stokes(
     nx: Annotated[
-        int, cyclopts.Option("--nx", help="Number of grid points in x-direction.")
+        int, cyclopts.Parameter("--nx", help="Number of grid points in x-direction.")
     ] = 256,
     ny: Annotated[
-        int, cyclopts.Option("--ny", help="Number of grid points in y-direction.")
+        int, cyclopts.Parameter("--ny", help="Number of grid points in y-direction.")
     ] = 256,
     domain_length: Annotated[
-        float, cyclopts.Option("--length", help="Length of the square periodic domain.")
+        float, cyclopts.Parameter("--length", help="Length of the square periodic domain.")
     ] = 2.0 * math.pi,
     viscosity: Annotated[
-        float, cyclopts.Option("--viscosity", help="Kinematic viscosity (nu).")
+        float, cyclopts.Parameter("--viscosity", help="Kinematic viscosity (nu).")
     ] = 1e-6,
     hyperviscosity_order: Annotated[
         int,
-        cyclopts.Option(
+        cyclopts.Parameter(
             "--hyperviscosity-order",
             help="Order of hyperviscosity (n in laplacian^n). n=1 is standard viscosity.",
         ),
     ] = 2,
     forcing_wavenumber: Annotated[
         float | None,
-        cyclopts.Option(
+        cyclopts.Parameter(
             "--k-force",
             help="Wavenumber of the sinusoidal forcing. If not set, no forcing.",
         ),
     ] = 4.0,
     t_end: Annotated[
-        float, cyclopts.Option("--t-end", help="Final simulation time.")
+        float, cyclopts.Parameter("--t-end", help="Final simulation time.")
     ] = 50.0,
     dt0: Annotated[
-        float, cyclopts.Option("--dt0", help="Initial time step for adaptive solver.")
+        float, cyclopts.Parameter("--dt0", help="Initial time step for adaptive solver.")
     ] = 1e-3,
     n_saves: Annotated[
-        int, cyclopts.Option("--n-saves", help="Number of time points to save.")
+        int, cyclopts.Parameter("--n-saves", help="Number of time points to save.")
     ] = 101,
     output_dir: Annotated[
         pathlib.Path | None,
-        cyclopts.Option("--output-dir", help="Directory to save the output NetCDF."),
+        cyclopts.Parameter("--output-dir", help="Directory to save the output NetCDF."),
     ] = None,
 ):
     """
@@ -318,7 +325,8 @@ def run_navier_stokes(
     logger.success(f"Output saved to: {output_path}")
 
     logger.info("Generating plots...")
-    plot_results(ds)
+    fig = plot_results(ds)
+    fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
     logger.success("Plots generated successfully!")
     plt.show()
 
@@ -471,7 +479,11 @@ ds.to_netcdf(output_path)
 logger.success(f"Output saved to: {output_path}")
 
 fig = plot_results(ds)
+fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Vorticity evolution in 2D turbulence](../images/navier_stokes_2d/vorticity_evolution.png)
 
 # %%
 

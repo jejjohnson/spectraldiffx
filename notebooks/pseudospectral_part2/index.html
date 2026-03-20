@@ -27,7 +27,7 @@
     
     
       
-        <title>QG Simulation with Diffrax Integration - SpectralDiffX</title>
+        <title>QG Turbulence with Adaptive Time Stepping (Diffrax) - SpectralDiffX</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#qg-simulation-with-diffrax-integration" class="md-skip">
+        <a href="#qg-turbulence-with-adaptive-time-stepping-diffrax" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              QG Simulation with Diffrax Integration
+              QG Turbulence with Adaptive Time Stepping (Diffrax)
             
           </span>
         </div>
@@ -965,7 +965,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -993,7 +993,119 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1021,7 +1133,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1058,7 +1170,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1076,7 +1188,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1102,10 +1214,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#key-features-demonstrated" class="md-nav__link">
+  <a href="#introduction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Features Demonstrated:
+        Introduction
       
     </span>
   </a>
@@ -1113,21 +1225,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-setup" class="md-nav__link">
+  <a href="#governing-equations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#physical-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Physical Parameters
+        Governing Equations
       
     </span>
   </a>
@@ -1146,6 +1247,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#domain-and-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain and Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcwilliams-1984-initial-condition-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        McWilliams (1984) Initial Condition — Implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#diagnostic-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1157,10 +1280,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#right-hand-side-with-hyperviscosity" class="md-nav__link">
+  <a href="#visualize-initial-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Right-Hand Side with Hyperviscosity
+        Visualize Initial State
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rhs-implementation-with-hyperviscosity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RHS Implementation with Hyperviscosity
       
     </span>
   </a>
@@ -1179,10 +1313,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-simulation" class="md-nav__link">
+  <a href="#vorticity-evolution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Run Simulation
+        Vorticity Evolution
       
     </span>
   </a>
@@ -1190,21 +1324,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualize-evolution" class="md-nav__link">
+  <a href="#final-state-with-velocity-vectors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visualize Evolution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#final-state" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Final State
+        Final State with Velocity Vectors
       
     </span>
   </a>
@@ -1256,7 +1379,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1313,62 +1436,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -2103,10 +2170,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#key-features-demonstrated" class="md-nav__link">
+  <a href="#introduction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Features Demonstrated:
+        Introduction
       
     </span>
   </a>
@@ -2114,21 +2181,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-setup" class="md-nav__link">
+  <a href="#governing-equations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Setup
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#physical-parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Physical Parameters
+        Governing Equations
       
     </span>
   </a>
@@ -2147,6 +2203,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#domain-and-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain and Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcwilliams-1984-initial-condition-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        McWilliams (1984) Initial Condition — Implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#diagnostic-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2158,10 +2236,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#right-hand-side-with-hyperviscosity" class="md-nav__link">
+  <a href="#visualize-initial-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Right-Hand Side with Hyperviscosity
+        Visualize Initial State
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rhs-implementation-with-hyperviscosity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RHS Implementation with Hyperviscosity
       
     </span>
   </a>
@@ -2180,10 +2269,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-simulation" class="md-nav__link">
+  <a href="#vorticity-evolution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Run Simulation
+        Vorticity Evolution
       
     </span>
   </a>
@@ -2191,21 +2280,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#visualize-evolution" class="md-nav__link">
+  <a href="#final-state-with-velocity-vectors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visualize Evolution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#final-state" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Final State
+        Final State with Velocity Vectors
       
     </span>
   </a>
@@ -2690,26 +2768,102 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b72cc036">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=52cb01d1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="qg-simulation-with-diffrax-integration">QG Simulation with Diffrax Integration<a class="anchor-link" href="#qg-simulation-with-diffrax-integration">¶</a></h1><p>This notebook demonstrates a 2D barotropic quasi-geostrophic turbulence simulation
-using the <code>spectraldiffx</code> library for pseudospectral differentiation and
-<code>diffrax</code> for adaptive time stepping.</p>
-<h2 id="key-features-demonstrated">Key Features Demonstrated:<a class="anchor-link" href="#key-features-demonstrated">¶</a></h2><ul>
-<li>Using diffrax for adaptive ODE integration</li>
-<li>McWilliams (1984) initial conditions</li>
-<li>Hyperviscosity for numerical stability</li>
-<li>Energy and enstrophy diagnostics</li>
+<h1 id="qg-turbulence-with-adaptive-time-stepping-diffrax">QG Turbulence with Adaptive Time Stepping (Diffrax)<a class="anchor-link" href="#qg-turbulence-with-adaptive-time-stepping-diffrax">¶</a></h1><h2 id="introduction">Introduction<a class="anchor-link" href="#introduction">¶</a></h2><p>This notebook builds on the <code>demo_qg</code> tutorial, where we simulated decaying
+2D barotropic quasi-geostrophic turbulence with fixed-step RK4. Here we
+replace the fixed time stepper with <strong>adaptive ODE integration</strong> via the
+<a href="https://docs.kidger.site/diffrax/">diffrax</a> library.</p>
+<p><strong>Why adaptive time stepping?</strong></p>
+<p>With a fixed time step, we must choose $\Delta t$ small enough to satisfy the
+CFL condition during the <em>most demanding</em> phase of the simulation. But the
+flow intensity varies over time: early on, strong vortex interactions produce
+large velocities and sharp gradients, while later the flow becomes smoother
+as vortices merge. A fixed step wastes computation during the quiescent
+phases.</p>
+<p>Adaptive methods (like Tsitouras 5th-order, <code>Tsit5</code>) estimate the local
+truncation error at each step and adjust $\Delta t$ automatically:</p>
+<ul>
+<li><strong>Small steps</strong> when the flow is rapidly changing (early turbulent phase).</li>
+<li><strong>Large steps</strong> when the flow is smooth (late coherent-vortex phase).</li>
+</ul>
+<p>This can dramatically reduce the total number of RHS evaluations while
+maintaining accuracy.</p>
+<p><strong>What this notebook demonstrates:</strong></p>
+<ul>
+<li><code>spectraldiffx</code> operators: <code>FourierGrid2D</code>, <code>SpectralDerivative2D</code>,
+<code>SpectralHelmholtzSolver2D</code></li>
+<li>McWilliams (1984) initial conditions for realistic decaying turbulence</li>
+<li>High-order hyperviscosity ($\nabla^8$) enabled by adaptive stepping</li>
+<li><code>diffrax</code> integration: <code>ODETerm</code>, <code>Tsit5</code>, <code>PIDController</code>, <code>SaveAt</code></li>
+<li>Energy and enstrophy conservation diagnostics</li>
 </ul>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=166f615f">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="governing-equations">Governing Equations<a class="anchor-link" href="#governing-equations">¶</a></h2><p>The barotropic QG vorticity equation (see <code>demo_qg</code> for full derivation):</p>
+<p>$$
+\frac{\partial q}{\partial t} + J(\psi, q) = (-1)^{n_v+1} \, \nu \, (\nabla^2)^{n_v} q - \mu \, q
+$$</p>
+<p>with $q = \nabla^2 \psi$ (vorticity--stream function relation) and velocity
+$u = -\partial_y \psi$, $v = \partial_x \psi$.</p>
+<p>The key difference from <code>demo_qg</code> is the <strong>viscosity order</strong>: we use
+$n_v = 4$ (i.e., $\nabla^8$ hyperviscosity) with a very small coefficient
+$\nu = 10^{-12}$. This concentrates dissipation at the grid scale and
+leaves the resolved dynamics essentially inviscid.</p>
+<p>With fixed-step RK4, the explicit stability constraint
+$\Delta t \cdot \nu \cdot k_{\max}^{2 n_v} &lt; 2.8$ would require impossibly
+small time steps for $n_v = 4$. Adaptive stepping sidesteps this: diffrax
+detects the stiffness and reduces $\Delta t$ only when needed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3a17eb3b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="mcwilliams-1984-initial-condition">McWilliams (1984) Initial Condition<a class="anchor-link" href="#mcwilliams-1984-initial-condition">¶</a></h2><p>McWilliams (1984) introduced a canonical initial condition for decaying 2D
+turbulence simulations. The procedure constructs a random vorticity field
+with a prescribed energy spectrum peaked at intermediate wavenumbers:</p>
+<ol>
+<li><p><strong>Spectral amplitude</strong>: For each wavenumber $|\mathbf{k}|$, set the
+amplitude of the stream function as:
+$$
+|\hat{\psi}(k)| \propto \frac{1}{k \left(1 + (k^2/k_0^2)^2\right)^{1/2}}
+$$
+where $k_0 = 6$ is the peak wavenumber. This gives an energy spectrum
+$E(k) \propto k \, |\hat{\psi}|^2$ that is broadband with a peak near $k_0$.</p>
+</li>
+<li><p><strong>Random phases</strong>: Multiply each spectral coefficient by a random complex
+phase (uniform on the unit circle).</p>
+</li>
+<li><p><strong>Compute vorticity</strong>: $\hat{q} = -|k|^2 \hat{\psi}$ (Poisson relation
+in spectral space).</p>
+</li>
+<li><p><strong>Normalize</strong>: Scale to unit energy.</p>
+</li>
+</ol>
+<p>The result is a field with many small vortices that will merge into fewer,
+larger vortices over time — the hallmark of the inverse energy cascade.</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=25d285ef">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4b0e80a7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2728,31 +2882,51 @@ using the <code>spectraldiffx</code> library for pseudospectral differentiation 
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jrandom</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"Agg"</span><span class="p">)</span>
+
 <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">"jax_enable_x64"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">IMG_DIR</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"pseudospectral_part2"</span>
+<span class="p">)</span>
+<span class="n">IMG_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-1">import math
+from pathlib import Path
 from typing import NamedTuple
 
 import jax
 import jax.numpy as jnp
+import jax.random as jrandom
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-jax.config.update("jax_enable_x64", True)</div>
+matplotlib.use("Agg")
+
+jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = (
+    Path(__file__).resolve().parent.parent / "docs" / "images" / "pseudospectral_part2"
+)
+IMG_DIR.mkdir(parents=True, exist_ok=True)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e5983c90">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d6e4a7b4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2770,31 +2944,92 @@ jax.config.update("jax_enable_x64", True)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralDerivative2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralHelmholtzSolver2D</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FourierGrid2D</span><span class="p">,</span>
+    <span class="n">SpectralDerivative2D</span><span class="p">,</span>
+    <span class="n">SpectralHelmholtzSolver2D</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D</div>
+<div class="clipboard-copy-txt" id="cell-2">from spectraldiffx import (
+    FourierGrid2D,
+    SpectralDerivative2D,
+    SpectralHelmholtzSolver2D,
+)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=da6809bc">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d4c6d781">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="domain-setup">Domain Setup<a class="anchor-link" href="#domain-setup">¶</a></h2>
+<h2 id="domain-and-parameters">Domain and Parameters<a class="anchor-link" href="#domain-and-parameters">¶</a></h2><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Physical meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Nx, Ny</code></td>
+<td>128</td>
+<td>Grid resolution. $k_{\max} = 64$.</td>
+</tr>
+<tr>
+<td><code>Lx, Ly</code></td>
+<td>$2\pi$</td>
+<td>Domain size. Wavenumber spacing $\Delta k = 1$.</td>
+</tr>
+<tr>
+<td><code>nu</code></td>
+<td>1e-12</td>
+<td>$\nabla^8$ hyperviscosity coefficient (very small).</td>
+</tr>
+<tr>
+<td><code>nv</code></td>
+<td>4</td>
+<td>Viscosity order: $(\nabla^2)^4 = \nabla^8$.</td>
+</tr>
+<tr>
+<td><code>mu</code></td>
+<td>0.0</td>
+<td>No Ekman drag (free decay).</td>
+</tr>
+<tr>
+<td><code>dt0</code></td>
+<td>0.01</td>
+<td>Initial step size hint for diffrax.</td>
+</tr>
+<tr>
+<td><code>t_end</code></td>
+<td>20.0</td>
+<td>Integration horizon.</td>
+</tr>
+<tr>
+<td><code>dealias</code></td>
+<td>2/3</td>
+<td>Standard 2/3 dealiasing rule.</td>
+</tr>
+</tbody>
+</table>
+<p>The $\nabla^8$ operator has spectral eigenvalue $|k|^8$. At $k_{\max} = 64$:</p>
+<p>$$
+\nu \cdot k_{\max}^{2 n_v} = 10^{-12} \times 64^8 \approx 0.28
+$$</p>
+<p>This is large enough to dissipate enstrophy at the grid scale while being
+negligible at resolved wavenumbers ($k \lesssim k_{\max}/3$). The adaptive
+integrator handles the resulting stiffness automatically.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=48fae5d4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9433b617">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2824,8 +3059,12 @@ from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D</div>
 <span class="c1"># Get meshgrid for plotting</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">X</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid: </span><span class="si">{</span><span class="n">Nx</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">Ny</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Domain: [0, </span><span class="si">{</span><span class="n">Lx</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">] x [0, </span><span class="si">{</span><span class="n">Ly</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid:       </span><span class="si">{</span><span class="n">Nx</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">Ny</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Domain:     [0, </span><span class="si">{</span><span class="n">Lx</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">] x [0, </span><span class="si">{</span><span class="n">Ly</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resolution: dx = </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">, dy = </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dy</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"k_max:      </span><span class="si">{</span><span class="n">Nx</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="mi">2</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"X shape:    </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Y shape:    </span><span class="si">{</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3"># Grid parameters
 Nx, Ny = 128, 128
@@ -2839,26 +3078,19 @@ solver = SpectralHelmholtzSolver2D(grid=grid)
 # Get meshgrid for plotting
 X, Y = grid.X
 
-print(f"Grid: {Nx} x {Ny}")
-print(f"Domain: [0, {Lx:.4f}] x [0, {Ly:.4f}]")</div>
+print(f"Grid:       {Nx} x {Ny}")
+print(f"Domain:     [0, {Lx:.4f}] x [0, {Ly:.4f}]")
+print(f"Resolution: dx = {grid.dx:.6f}, dy = {grid.dy:.6f}")
+print(f"k_max:      {Nx // 2}")
+print(f"X shape:    {X.shape}")
+print(f"Y shape:    {Y.shape}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=19d4395d">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="physical-parameters">Physical Parameters<a class="anchor-link" href="#physical-parameters">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=25f20a78">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fb745087">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2877,43 +3109,60 @@ print(f"Domain: [0, {Lx:.4f}] x [0, {Ly:.4f}]")</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">QGParams</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Parameters for QG simulation with hyperviscosity."""</span>
-    <span class="n">nu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span>       <span class="c1"># hyperviscosity coefficient</span>
-    <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>        <span class="c1"># linear drag coefficient</span>
-    <span class="n">nv</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>            <span class="c1"># hyperviscosity order (2=biharmonic)</span>
+<span class="w">    </span><span class="sd">"""Parameters for the QG simulation with high-order hyperviscosity."""</span>
+    <span class="n">nu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span>   <span class="c1"># hyperviscosity coefficient</span>
+    <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>    <span class="c1"># linear drag (Ekman friction)</span>
+    <span class="n">nv</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>        <span class="c1"># viscosity order: (nabla^2)^nv</span>
 
 
-<span class="n">params</span> <span class="o">=</span> <span class="n">QGParams</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">nv</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Hyperviscosity: nu=</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">nu</span><span class="si">}</span><span class="s2">, order=</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">nv</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">QGParams</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">nv</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Viscosity:       nu = </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">nu</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Viscosity order: nv = </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">nv</span><span class="si">}</span><span class="s2">  (nabla^</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">params</span><span class="o">.</span><span class="n">nv</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ekman drag:      mu = </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">mu</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Effective dissipation at k_max</span>
+<span class="n">k_max</span> <span class="o">=</span> <span class="n">Nx</span> <span class="o">//</span> <span class="mi">2</span>
+<span class="n">dissipation_kmax</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">nu</span> <span class="o">*</span> <span class="n">k_max</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">nv</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">nu * k_max^(2*nv) = </span><span class="si">{</span><span class="n">dissipation_kmax</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  (dissipation rate at the grid scale)"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">class QGParams(NamedTuple):
-    """Parameters for QG simulation with hyperviscosity."""
-    nu: float = 1e-8       # hyperviscosity coefficient
-    mu: float = 0.0        # linear drag coefficient
-    nv: int = 2            # hyperviscosity order (2=biharmonic)
+    """Parameters for the QG simulation with high-order hyperviscosity."""
+    nu: float = 1e-8   # hyperviscosity coefficient
+    mu: float = 0.0    # linear drag (Ekman friction)
+    nv: int = 2        # viscosity order: (nabla^2)^nv
 
 
-params = QGParams(nu=1e-8, mu=0.0, nv=2)
-print(f"Hyperviscosity: nu={params.nu}, order={params.nv}")</div>
+params = QGParams(nu=1e-12, mu=0.0, nv=4)
+
+print(f"Viscosity:       nu = {params.nu}")
+print(f"Viscosity order: nv = {params.nv}  (nabla^{2 * params.nv})")
+print(f"Ekman drag:      mu = {params.mu}")
+
+# Effective dissipation at k_max
+k_max = Nx // 2
+dissipation_kmax = params.nu * k_max ** (2 * params.nv)
+print(f"\nnu * k_max^(2*nv) = {dissipation_kmax:.4f}")
+print(f"  (dissipation rate at the grid scale)")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f0bac1f7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2a040729">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="mcwilliams-1984-initial-condition">McWilliams (1984) Initial Condition<a class="anchor-link" href="#mcwilliams-1984-initial-condition">¶</a></h2><p>Generate random initial conditions with a specific energy spectrum,
-as used in the classic decaying 2D turbulence study.</p>
+<h2 id="mcwilliams-1984-initial-condition-implementation">McWilliams (1984) Initial Condition — Implementation<a class="anchor-link" href="#mcwilliams-1984-initial-condition-implementation">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b5befd72">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=71209a45">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2933,38 +3182,60 @@ as used in the classic decaying 2D turbulence study.</p>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mcwilliams_ic</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">FourierGrid2D</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    Generate McWilliams (1984) initial condition.</span>
+<span class="sd">    Generate McWilliams (1984) initial condition for decaying 2D turbulence.</span>
 
-<span class="sd">    Creates random vorticity with energy spectrum peaked at intermediate scales.</span>
+<span class="sd">    The energy spectrum is shaped by:</span>
+<span class="sd">        |psi_hat(k)| ~ 1 / (k * sqrt(1 + (k^2/36)^2))</span>
+
+<span class="sd">    This peaks near k ~ 6 and decays at both large and small scales,</span>
+<span class="sd">    providing broadband initial turbulence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : FourierGrid2D</span>
+<span class="sd">        Spectral grid providing wavenumber arrays.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        Random seed for reproducibility.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    q : jnp.ndarray, shape [Nx, Ny]</span>
+<span class="sd">        Vorticity field normalized to unit energy.</span>
 <span class="sd">    """</span>
     <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
-    <span class="c1"># Wavenumber magnitudes</span>
+    <span class="c1"># Wavenumber magnitudes |k| = sqrt(kx^2 + ky^2)</span>
     <span class="n">K2</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">K2</span>
     <span class="n">wv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">K2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Wavenumber grid: shape = </span><span class="si">{</span><span class="n">wv</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, max|k| = </span><span class="si">{</span><span class="n">wv</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="c1"># Energy spectrum: peaked at intermediate wavenumbers</span>
-    <span class="c1"># ckappa = k * (1 + (k^2/36)^2)^{-1/2}</span>
+    <span class="c1"># Spectral amplitude of stream function:</span>
+    <span class="c1">#   |psi_hat(k)| ~ 1 / (k * sqrt(1 + (k^2/36)^2))</span>
+    <span class="c1"># This gives energy spectrum E(k) ~ k |psi_hat|^2 peaked near k = 6</span>
     <span class="n">fk</span> <span class="o">=</span> <span class="n">wv</span> <span class="o">!=</span> <span class="mi">0</span>
     <span class="n">ckappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">wv</span><span class="p">)</span>
-    <span class="n">ckappa</span><span class="p">[</span><span class="n">fk</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wv</span><span class="p">[</span><span class="n">fk</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">wv</span><span class="p">[</span><span class="n">fk</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mf">36.0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ckappa</span><span class="p">[</span><span class="n">fk</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">wv</span><span class="p">[</span><span class="n">fk</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">wv</span><span class="p">[</span><span class="n">fk</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="mf">36.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Spectral envelope: max amplitude = </span><span class="si">{</span><span class="n">ckappa</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="c1"># Random stream function in spectral space</span>
+    <span class="c1"># Random stream function in spectral space (random phase + prescribed amplitude)</span>
     <span class="n">psi_hat</span> <span class="o">=</span> <span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span><span class="p">))</span> <span class="o">*</span> <span class="n">ckappa</span>
 
-    <span class="c1"># Transform to physical space</span>
+    <span class="c1"># Transform to physical space and remove mean</span>
     <span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft2</span><span class="p">(</span><span class="n">psi_hat</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
     <span class="n">psi</span> <span class="o">=</span> <span class="n">psi</span> <span class="o">-</span> <span class="n">psi</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Stream function: shape = </span><span class="si">{</span><span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, range = [</span><span class="si">{</span><span class="n">psi</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">psi</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 
-    <span class="c1"># Compute vorticity q = nabla^2 psi</span>
+    <span class="c1"># Compute vorticity: q = nabla^2 psi  =&gt;  q_hat = -|k|^2 * psi_hat</span>
     <span class="n">psi_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
     <span class="n">q_hat</span> <span class="o">=</span> <span class="o">-</span><span class="n">K2</span> <span class="o">*</span> <span class="n">psi_hat</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft2</span><span class="p">(</span><span class="n">q_hat</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Vorticity:       shape = </span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, range = [</span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 
-    <span class="c1"># Normalize to unit energy</span>
+    <span class="c1"># Normalize to unit energy: E = sum|q_hat|^2 / N^2 -&gt; 1</span>
     <span class="n">q_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_hat</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nx</span> <span class="o">*</span> <span class="n">Ny</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_hat</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nx</span> <span class="o">*</span> <span class="n">Ny</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  After normalization: energy proxy = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">q</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">Nx</span><span class="o">*</span><span class="n">Ny</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 
@@ -2973,38 +3244,60 @@ as used in the classic decaying 2D turbulence study.</p>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">def mcwilliams_ic(grid: FourierGrid2D, seed: int = 42) -&gt; jnp.ndarray:
     """
-    Generate McWilliams (1984) initial condition.
+    Generate McWilliams (1984) initial condition for decaying 2D turbulence.
 
-    Creates random vorticity with energy spectrum peaked at intermediate scales.
+    The energy spectrum is shaped by:
+        |psi_hat(k)| ~ 1 / (k * sqrt(1 + (k^2/36)^2))
+
+    This peaks near k ~ 6 and decays at both large and small scales,
+    providing broadband initial turbulence.
+
+    Parameters
+    ----------
+    grid : FourierGrid2D
+        Spectral grid providing wavenumber arrays.
+    seed : int
+        Random seed for reproducibility.
+
+    Returns
+    -------
+    q : jnp.ndarray, shape [Nx, Ny]
+        Vorticity field normalized to unit energy.
     """
     rng = np.random.RandomState(seed)
 
-    # Wavenumber magnitudes
+    # Wavenumber magnitudes |k| = sqrt(kx^2 + ky^2)
     K2 = grid.K2
     wv = np.sqrt(np.array(K2))
+    print(f"  Wavenumber grid: shape = {wv.shape}, max|k| = {wv.max():.1f}")
 
-    # Energy spectrum: peaked at intermediate wavenumbers
-    # ckappa = k * (1 + (k^2/36)^2)^{-1/2}
+    # Spectral amplitude of stream function:
+    #   |psi_hat(k)| ~ 1 / (k * sqrt(1 + (k^2/36)^2))
+    # This gives energy spectrum E(k) ~ k |psi_hat|^2 peaked near k = 6
     fk = wv != 0
     ckappa = np.zeros_like(wv)
-    ckappa[fk] = np.sqrt(wv[fk]**2 * (1.0 + (wv[fk]**2 / 36.0)**2))**(-1)
+    ckappa[fk] = np.sqrt(wv[fk] ** 2 * (1.0 + (wv[fk] ** 2 / 36.0) ** 2)) ** (-1)
+    print(f"  Spectral envelope: max amplitude = {ckappa.max():.4f}")
 
-    # Random stream function in spectral space
+    # Random stream function in spectral space (random phase + prescribed amplitude)
     psi_hat = (rng.randn(Nx, Ny) + 1j * rng.randn(Nx, Ny)) * ckappa
 
-    # Transform to physical space
+    # Transform to physical space and remove mean
     psi = np.fft.ifft2(psi_hat).real
     psi = psi - psi.mean()
+    print(f"  Stream function: shape = {psi.shape}, range = [{psi.min():.4f}, {psi.max():.4f}]")
 
-    # Compute vorticity q = nabla^2 psi
+    # Compute vorticity: q = nabla^2 psi  =&gt;  q_hat = -|k|^2 * psi_hat
     psi_hat = np.fft.fft2(psi)
     q_hat = -K2 * psi_hat
     q = np.fft.ifft2(q_hat).real
+    print(f"  Vorticity:       shape = {q.shape}, range = [{q.min():.4f}, {q.max():.4f}]")
 
-    # Normalize to unit energy
+    # Normalize to unit energy: E = sum|q_hat|^2 / N^2 -&gt; 1
     q_hat = np.fft.fft2(q)
-    energy = np.sum(np.abs(q_hat)**2) / (Nx * Ny)**2
+    energy = np.sum(np.abs(q_hat) ** 2) / (Nx * Ny) ** 2
     q = q / np.sqrt(energy)
+    print(f"  After normalization: energy proxy = {np.sum(np.abs(np.fft.fft2(q))**2) / (Nx*Ny)**2:.4f}")
 
     return jnp.asarray(q)
 
@@ -3016,18 +3309,24 @@ q0 = mcwilliams_ic(grid, seed=42)</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00782b7c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=56b63847">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="diagnostic-functions">Diagnostic Functions<a class="anchor-link" href="#diagnostic-functions">¶</a></h2>
+<h2 id="diagnostic-functions">Diagnostic Functions<a class="anchor-link" href="#diagnostic-functions">¶</a></h2><p>Same diagnostics as <code>demo_qg</code>:</p>
+<ul>
+<li><strong>Stream function</strong> $\psi$: Poisson inversion of $q$.</li>
+<li><strong>Velocity</strong> $(u, v)$: from $\psi$ via $u = -\partial_y \psi$, $v = \partial_x \psi$.</li>
+<li><strong>Energy</strong>: $E = \tfrac{1}{2}\langle u^2 + v^2 \rangle$.</li>
+<li><strong>Enstrophy</strong>: $Z = \tfrac{1}{2}\langle q^2 \rangle$.</li>
+</ul>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=afea4c82">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=926d2a05">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3046,55 +3345,69 @@ q0 = mcwilliams_ic(grid, seed=42)</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_stream_function</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Compute stream function from vorticity."""</span>
+<span class="w">    </span><span class="sd">"""Solve nabla^2 psi = q for the stream function."""</span>
     <span class="k">return</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zero_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_velocities</span><span class="p">(</span><span class="n">psi</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Compute velocity from stream function."""</span>
+<span class="w">    </span><span class="sd">"""Velocity from stream function: u = -dpsi/dy, v = dpsi/dx."""</span>
     <span class="n">dpsi_dx</span><span class="p">,</span> <span class="n">dpsi_dy</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
     <span class="k">return</span> <span class="o">-</span><span class="n">dpsi_dy</span><span class="p">,</span> <span class="n">dpsi_dx</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_energy</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Kinetic energy."""</span>
+<span class="w">    </span><span class="sd">"""Kinetic energy: E = (1/2) &lt;u^2 + v^2&gt;."""</span>
     <span class="n">psi</span> <span class="o">=</span> <span class="n">compute_stream_function</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
     <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">compute_velocities</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">u</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_enstrophy</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Enstrophy."""</span>
+<span class="w">    </span><span class="sd">"""Enstrophy: Z = (1/2) &lt;q^2&gt;."""</span>
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6">def compute_stream_function(q: jnp.ndarray) -&gt; jnp.ndarray:
-    """Compute stream function from vorticity."""
+    """Solve nabla^2 psi = q for the stream function."""
     return solver.solve(q, alpha=0.0, zero_mean=True)
 
 
 def compute_velocities(psi: jnp.ndarray) -&gt; tuple[jnp.ndarray, jnp.ndarray]:
-    """Compute velocity from stream function."""
+    """Velocity from stream function: u = -dpsi/dy, v = dpsi/dx."""
     dpsi_dx, dpsi_dy = deriv.gradient(psi)
     return -dpsi_dy, dpsi_dx
 
 
 def compute_energy(q: jnp.ndarray) -&gt; float:
-    """Kinetic energy."""
+    """Kinetic energy: E = (1/2) <u^2 +="" v^2="">."""
     psi = compute_stream_function(q)
     u, v = compute_velocities(psi)
     return 0.5 * jnp.mean(u**2 + v**2)
 
 
 def compute_enstrophy(q: jnp.ndarray) -&gt; float:
-    """Enstrophy."""
-    return 0.5 * jnp.mean(q**2)</div>
+    """Enstrophy: Z = (1/2) <q^2>."""
+    return 0.5 * jnp.mean(q**2)</q^2></u^2></div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=83975687">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="visualize-initial-state">Visualize Initial State<a class="anchor-link" href="#visualize-initial-state">¶</a></h2><p>The McWilliams initial condition produces broadband vorticity with many
+small-scale structures. The stream function is smoother (Poisson inversion
+suppresses high wavenumbers). The speed field $|\mathbf{u}|$ shows where
+the strongest currents are.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=edc9142c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2ef942d2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3112,75 +3425,32 @@ def compute_enstrophy(q: jnp.ndarray) -&gt; float:
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Visualize initial condition</span>
-<span class="n">psi0</span> <span class="o">=</span> <span class="n">compute_stream_function</span><span class="p">(</span><span class="n">q0</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi0</span> <span class="o">=</span> <span class="n">compute_stream_function</span><span class="p">(</span><span class="n">q0</span><span class="p">)</span>
 <span class="n">u0</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">compute_velocities</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span>
+<span class="n">speed0</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-
-<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">q0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Vorticity $q_0$"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">psi0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Stream function $\psi_0$"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-<span class="c1"># Speed</span>
-<span class="n">speed</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">speed</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"magma"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Speed $|</span><span class="se">\\</span><span class="s2">mathbf</span><span class="si">{u}</span><span class="s2">|$"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial energy: </span><span class="si">{</span><span class="n">compute_energy</span><span class="p">(</span><span class="n">q0</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial enstrophy: </span><span class="si">{</span><span class="n">compute_enstrophy</span><span class="p">(</span><span class="n">q0</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial vorticity:       shape = </span><span class="si">{</span><span class="n">q0</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">,     range = [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">q0</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">q0</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial stream function: shape = </span><span class="si">{</span><span class="n">psi0</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">,   range = [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">psi0</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">psi0</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial speed:           shape = </span><span class="si">{</span><span class="n">speed0</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, max   = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">speed0</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Initial energy:    E0 = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">compute_energy</span><span class="p">(</span><span class="n">q0</span><span class="p">))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial enstrophy: Z0 = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">compute_enstrophy</span><span class="p">(</span><span class="n">q0</span><span class="p">))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7"># Visualize initial condition
-psi0 = compute_stream_function(q0)
+<div class="clipboard-copy-txt" id="cell-7">psi0 = compute_stream_function(q0)
 u0, v0 = compute_velocities(psi0)
+speed0 = jnp.sqrt(u0**2 + v0**2)
 
-fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-
-im = axes[0].pcolormesh(X.T, Y.T, q0.T, cmap="RdBu_r", shading="auto")
-axes[0].set_title("Vorticity $q_0$")
-plt.colorbar(im, ax=axes[0])
-
-im = axes[1].pcolormesh(X.T, Y.T, psi0.T, cmap="viridis", shading="auto")
-axes[1].set_title(r"Stream function $\psi_0$")
-plt.colorbar(im, ax=axes[1])
-
-# Speed
-speed = jnp.sqrt(u0**2 + v0**2)
-im = axes[2].pcolormesh(X.T, Y.T, speed.T, cmap="magma", shading="auto")
-axes[2].set_title("Speed $|\\mathbf{u}|$")
-plt.colorbar(im, ax=axes[2])
-
-plt.tight_layout()
-plt.show()
-
-print(f"Initial energy: {compute_energy(q0):.6f}")
-print(f"Initial enstrophy: {compute_enstrophy(q0):.6f}")</div>
+print(f"Initial vorticity:       shape = {q0.shape},     range = [{float(q0.min()):.3f}, {float(q0.max()):.3f}]")
+print(f"Initial stream function: shape = {psi0.shape},   range = [{float(psi0.min()):.3f}, {float(psi0.max()):.3f}]")
+print(f"Initial speed:           shape = {speed0.shape}, max   = {float(speed0.max()):.3f}")
+print(f"\nInitial energy:    E0 = {float(compute_energy(q0)):.6f}")
+print(f"Initial enstrophy: Z0 = {float(compute_enstrophy(q0)):.6f}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0792de28">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="right-hand-side-with-hyperviscosity">Right-Hand Side with Hyperviscosity<a class="anchor-link" href="#right-hand-side-with-hyperviscosity">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8814c79a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0e501bb0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3198,75 +3468,92 @@ print(f"Initial enstrophy: {compute_enstrophy(q0):.6f}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">qg_tendency</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">QGParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    QG tendency with hyperviscosity.</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="sd">    dq/dt = -u * dq/dx - v * dq/dy + nu * nabla^{2n} q</span>
-<span class="sd">    """</span>
-    <span class="c1"># Stream function and velocities</span>
-    <span class="n">psi</span> <span class="o">=</span> <span class="n">compute_stream_function</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">compute_velocities</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">q0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Vorticity $q_0$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="c1"># Advection</span>
-    <span class="n">rhs</span> <span class="o">=</span> <span class="o">-</span><span class="n">deriv</span><span class="o">.</span><span class="n">advection_scalar</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">psi0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Stream function $\psi_0$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="c1"># Hyperviscosity: nu * nabla^{2n} q</span>
-    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">nu</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">lap_q</span> <span class="o">=</span> <span class="n">q</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">nv</span><span class="p">):</span>
-            <span class="n">lap_q</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">laplacian</span><span class="p">(</span><span class="n">lap_q</span><span class="p">)</span>
-        <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">nu</span> <span class="o">*</span> <span class="n">lap_q</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">speed0</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"magma"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Speed $|</span><span class="se">\\</span><span class="s2">mathbf</span><span class="si">{u}</span><span class="s2">_0|$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
-    <span class="c1"># Linear drag</span>
-    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">mu</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">q</span>
-
-    <span class="k">return</span> <span class="n">rhs</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"McWilliams (1984) Initial Condition"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"initial_state.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">def qg_tendency(q: jnp.ndarray, params: QGParams) -&gt; jnp.ndarray:
-    """
-    QG tendency with hyperviscosity.
+<div class="clipboard-copy-txt" id="cell-8">fig, axes = plt.subplots(1, 3, figsize=(14, 4))
 
-    dq/dt = -u * dq/dx - v * dq/dy + nu * nabla^{2n} q
-    """
-    # Stream function and velocities
-    psi = compute_stream_function(q)
-    u, v = compute_velocities(psi)
+im = axes[0].pcolormesh(X.T, Y.T, q0.T, cmap="RdBu_r", shading="auto")
+axes[0].set_title("Vorticity $q_0$")
+axes[0].set_xlabel("x")
+axes[0].set_ylabel("y")
+plt.colorbar(im, ax=axes[0])
 
-    # Advection
-    rhs = -deriv.advection_scalar(u, v, q)
+im = axes[1].pcolormesh(X.T, Y.T, psi0.T, cmap="viridis", shading="auto")
+axes[1].set_title(r"Stream function $\psi_0$")
+axes[1].set_xlabel("x")
+axes[1].set_ylabel("y")
+plt.colorbar(im, ax=axes[1])
 
-    # Hyperviscosity: nu * nabla^{2n} q
-    if params.nu &gt; 0:
-        lap_q = q
-        for _ in range(params.nv):
-            lap_q = deriv.laplacian(lap_q)
-        rhs = rhs + params.nu * lap_q
+im = axes[2].pcolormesh(X.T, Y.T, speed0.T, cmap="magma", shading="auto")
+axes[2].set_title("Speed $|\\mathbf{u}_0|$")
+axes[2].set_xlabel("x")
+axes[2].set_ylabel("y")
+plt.colorbar(im, ax=axes[2])
 
-    # Linear drag
-    if params.mu &gt; 0:
-        rhs = rhs - params.mu * q
-
-    return rhs</div>
+plt.suptitle("McWilliams (1984) Initial Condition", fontsize=14)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "initial_state.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e1a4745b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=354bcf1c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="diffrax-integration">Diffrax Integration<a class="anchor-link" href="#diffrax-integration">¶</a></h2><p>We use diffrax with adaptive time stepping (Dormand-Prince 5th order).</p>
+<p><img alt="Initial state: vorticity, stream function, and speed" src="../images/pseudospectral_part2/initial_state.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=46e30cae">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="rhs-implementation-with-hyperviscosity">RHS Implementation with Hyperviscosity<a class="anchor-link" href="#rhs-implementation-with-hyperviscosity">¶</a></h2><p>The right-hand side is the same as in <code>demo_qg</code>, but with $n_v = 4$
+($\nabla^8$ hyperviscosity):</p>
+<p>$$
+\frac{\partial q}{\partial t} = -J(\psi, q)
+  + \underbrace{(-1)^{5} \cdot \nu \cdot (\nabla^2)^4 q}_{= -\nu \nabla^8 q}
+$$</p>
+<p>The sign $(-1)^{n_v+1} = (-1)^5 = -1$ ensures dissipation: the eigenvalue
+of $(\nabla^2)^4$ is $|k|^8 &gt; 0$, so the contribution $-\nu |k|^8 \hat{q}$
+damps all modes.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=263bca1e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cc1c6253">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3284,26 +3571,132 @@ print(f"Initial enstrophy: {compute_enstrophy(q0):.6f}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">diffrax</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dfx</span>
-    <span class="n">HAS_DIFFRAX</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"diffrax not installed. Using simple RK4 integration instead."</span><span class="p">)</span>
-    <span class="n">HAS_DIFFRAX</span> <span class="o">=</span> <span class="kc">False</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">qg_tendency</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">QGParams</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    QG tendency with high-order hyperviscosity.</span>
+
+<span class="sd">    dq/dt = -J(psi, q) + (-1)^(nv+1) * nu * (nabla^2)^nv q - mu * q</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    q : jnp.ndarray, shape [Nx, Ny]</span>
+<span class="sd">        Vorticity field.</span>
+<span class="sd">    params : QGParams</span>
+<span class="sd">        Physical parameters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rhs : jnp.ndarray, shape [Nx, Ny]</span>
+<span class="sd">        Time tendency.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Poisson inversion: psi from q</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">compute_stream_function</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="c1"># Velocity: u = -dpsi/dy, v = dpsi/dx</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">compute_velocities</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+
+    <span class="c1"># Advection (dealiased): -J(psi, q) = -(u dq/dx + v dq/dy)</span>
+    <span class="n">rhs</span> <span class="o">=</span> <span class="o">-</span><span class="n">deriv</span><span class="o">.</span><span class="n">advection_scalar</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+
+    <span class="c1"># Hyperviscosity: (-1)^(nv+1) * nu * (nabla^2)^nv q</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">nu</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">lap_q</span> <span class="o">=</span> <span class="n">q</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">nv</span><span class="p">):</span>
+            <span class="n">lap_q</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">laplacian</span><span class="p">(</span><span class="n">lap_q</span><span class="p">)</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">nv</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">nu</span> <span class="o">*</span> <span class="n">lap_q</span>
+
+    <span class="c1"># Linear drag</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">mu</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span> <span class="o">-</span> <span class="n">params</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">q</span>
+
+    <span class="k">return</span> <span class="n">rhs</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">try:
-    import diffrax as dfx
-    HAS_DIFFRAX = True
-except ImportError:
-    print("diffrax not installed. Using simple RK4 integration instead.")
-    HAS_DIFFRAX = False</div>
+<div class="clipboard-copy-txt" id="cell-9">def qg_tendency(q: jnp.ndarray, params: QGParams) -&gt; jnp.ndarray:
+    """
+    QG tendency with high-order hyperviscosity.
+
+    dq/dt = -J(psi, q) + (-1)^(nv+1) * nu * (nabla^2)^nv q - mu * q
+
+    Parameters
+    ----------
+    q : jnp.ndarray, shape [Nx, Ny]
+        Vorticity field.
+    params : QGParams
+        Physical parameters.
+
+    Returns
+    -------
+    rhs : jnp.ndarray, shape [Nx, Ny]
+        Time tendency.
+    """
+    # Poisson inversion: psi from q
+    psi = compute_stream_function(q)
+
+    # Velocity: u = -dpsi/dy, v = dpsi/dx
+    u, v = compute_velocities(psi)
+
+    # Advection (dealiased): -J(psi, q) = -(u dq/dx + v dq/dy)
+    rhs = -deriv.advection_scalar(u, v, q)
+
+    # Hyperviscosity: (-1)^(nv+1) * nu * (nabla^2)^nv q
+    if params.nu &gt; 0:
+        lap_q = q
+        for _ in range(params.nv):
+            lap_q = deriv.laplacian(lap_q)
+        rhs = rhs + (-1) ** (params.nv + 1) * params.nu * lap_q
+
+    # Linear drag
+    if params.mu &gt; 0:
+        rhs = rhs - params.mu * q
+
+    return rhs</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5aee0fca">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="diffrax-integration">Diffrax Integration<a class="anchor-link" href="#diffrax-integration">¶</a></h2><p>We use <a href="https://docs.kidger.site/diffrax/">diffrax</a> for adaptive ODE
+integration. The key components are:</p>
+<ul>
+<li><strong><code>ODETerm</code></strong>: Wraps the RHS function into a diffrax term.</li>
+<li><strong><code>Tsit5()</code></strong>: Tsitouras 5th-order Runge--Kutta method (similar to
+Dormand--Prince but with optimized coefficients).</li>
+<li><strong><code>PIDController</code></strong>: Adaptive step size controller using a PID
+(proportional-integral-derivative) algorithm to adjust $\Delta t$ based
+on the estimated local error.</li>
+<li><strong><code>SaveAt</code></strong>: Specifies which times to save the solution at (without
+affecting the internal time stepping).</li>
+</ul>
+<pre><code>Diffrax integration pipeline
+=============================
+
+  ODETerm(vector_field)     wraps dq/dt = f(t, q, params)
+        |
+        v
+  Tsit5()                   5th-order adaptive RK method
+        |
+        v
+  PIDController(rtol, atol) adjusts dt to keep error &lt; tol
+        |
+        v
+  diffeqsolve(...)          drives the integration, saves at SaveAt times
+        |
+        v
+  sol.ys.q                  solution snapshots [n_saves, Nx, Ny]
+</code></pre>
+<p>If diffrax is not available, we fall back to a simple fixed-step RK4.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=66949ae1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=dbc3cc6c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3321,79 +3714,30 @@ except ImportError:
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="k">if</span> <span class="n">HAS_DIFFRAX</span><span class="p">:</span>
-    <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-        <span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">diffrax</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dfx</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">vector_field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="n">rhs</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">State</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">rhs</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">integrate_diffrax</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">dt0</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">saveat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Integrate using diffrax."""</span>
-        <span class="n">solver</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">Tsit5</span><span class="p">()</span>  <span class="c1"># 5th order Tsitouras method</span>
-        <span class="n">stepsize_controller</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">PIDController</span><span class="p">(</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
-
-        <span class="n">sol</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">diffeqsolve</span><span class="p">(</span>
-            <span class="n">terms</span><span class="o">=</span><span class="n">dfx</span><span class="o">.</span><span class="n">ODETerm</span><span class="p">(</span><span class="n">vector_field</span><span class="p">),</span>
-            <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
-            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
-            <span class="n">t1</span><span class="o">=</span><span class="n">t1</span><span class="p">,</span>
-            <span class="n">dt0</span><span class="o">=</span><span class="n">dt0</span><span class="p">,</span>
-            <span class="n">y0</span><span class="o">=</span><span class="n">State</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q0</span><span class="p">),</span>
-            <span class="n">saveat</span><span class="o">=</span><span class="n">saveat</span><span class="p">,</span>
-            <span class="n">args</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-            <span class="n">stepsize_controller</span><span class="o">=</span><span class="n">stepsize_controller</span><span class="p">,</span>
-            <span class="n">max_steps</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">sol</span>
+    <span class="n">HAS_DIFFRAX</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"diffrax version: </span><span class="si">{</span><span class="n">dfx</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"diffrax not installed. Will use fallback RK4 integration."</span><span class="p">)</span>
+    <span class="n">HAS_DIFFRAX</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10">if HAS_DIFFRAX:
-    class State(NamedTuple):
-        q: jnp.ndarray
+<div class="clipboard-copy-txt" id="cell-10">try:
+    import diffrax as dfx
 
-    def vector_field(t, state: State, args) -&gt; State:
-        params = args
-        rhs = qg_tendency(state.q, params)
-        return State(q=rhs)
-
-    def integrate_diffrax(q0, t0, t1, dt0, params, saveat=None):
-        """Integrate using diffrax."""
-        solver = dfx.Tsit5()  # 5th order Tsitouras method
-        stepsize_controller = dfx.PIDController(rtol=1e-5, atol=1e-5)
-
-        sol = dfx.diffeqsolve(
-            terms=dfx.ODETerm(vector_field),
-            solver=solver,
-            t0=t0,
-            t1=t1,
-            dt0=dt0,
-            y0=State(q=q0),
-            saveat=saveat,
-            args=params,
-            stepsize_controller=stepsize_controller,
-            max_steps=50000,
-        )
-        return sol</div>
+    HAS_DIFFRAX = True
+    print(f"diffrax version: {dfx.__version__}")
+except ImportError:
+    print("diffrax not installed. Will use fallback RK4 integration.")
+    HAS_DIFFRAX = False</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d85fd654">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="run-simulation">Run Simulation<a class="anchor-link" href="#run-simulation">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d1d3fe79">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a772aac0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3412,21 +3756,29 @@ except ImportError:
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Time parameters</span>
-<span class="n">t0</span><span class="p">,</span> <span class="n">t1</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">20.0</span>
+<span class="n">t0</span><span class="p">,</span> <span class="n">t_end</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">20.0</span>
 <span class="n">dt0</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="n">n_saves</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Integration interval: [</span><span class="si">{</span><span class="n">t0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">t_end</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial step size:    dt0 = </span><span class="si">{</span><span class="n">dt0</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of snapshots:  </span><span class="si">{</span><span class="n">n_saves</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-11"># Time parameters
-t0, t1 = 0.0, 20.0
+t0, t_end = 0.0, 20.0
 dt0 = 0.01
-n_saves = 50</div>
+n_saves = 50
+
+print(f"Integration interval: [{t0}, {t_end}]")
+print(f"Initial step size:    dt0 = {dt0}")
+print(f"Number of snapshots:  {n_saves}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6523ee98">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=990920ca">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3445,96 +3797,229 @@ n_saves = 50</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">if</span> <span class="n">HAS_DIFFRAX</span><span class="p">:</span>
-    <span class="c1"># Save at regular intervals</span>
-    <span class="n">t_save</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">n_saves</span><span class="p">)</span>
+    <span class="c1"># -- Diffrax integration --</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""ODE state vector (just vorticity)."""</span>
+        <span class="n">q</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ndarray</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">vector_field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Diffrax vector field: dq/dt = qg_tendency(q, params)."""</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">State</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">rhs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">integrate_diffrax</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">dt0</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">saveat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Integrate the QG equation using diffrax adaptive stepping.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        q0 : jnp.ndarray, shape [Nx, Ny]</span>
+<span class="sd">            Initial vorticity.</span>
+<span class="sd">        t0, t1 : float</span>
+<span class="sd">            Start and end times.</span>
+<span class="sd">        dt0 : float</span>
+<span class="sd">            Initial step size (hint for the adaptive controller).</span>
+<span class="sd">        params : QGParams</span>
+<span class="sd">            Physical parameters.</span>
+<span class="sd">        saveat : dfx.SaveAt</span>
+<span class="sd">            Times at which to save the solution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sol : diffrax Solution object</span>
+<span class="sd">            Contains sol.ts (save times) and sol.ys.q (vorticity snapshots).</span>
+<span class="sd">        """</span>
+        <span class="n">ode_term</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">ODETerm</span><span class="p">(</span><span class="n">vector_field</span><span class="p">)</span>
+        <span class="n">ode_solver</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">Tsit5</span><span class="p">()</span>
+        <span class="n">controller</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">PIDController</span><span class="p">(</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
+
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">diffeqsolve</span><span class="p">(</span>
+            <span class="n">terms</span><span class="o">=</span><span class="n">ode_term</span><span class="p">,</span>
+            <span class="n">solver</span><span class="o">=</span><span class="n">ode_solver</span><span class="p">,</span>
+            <span class="n">t0</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span>
+            <span class="n">t1</span><span class="o">=</span><span class="n">t1</span><span class="p">,</span>
+            <span class="n">dt0</span><span class="o">=</span><span class="n">dt0</span><span class="p">,</span>
+            <span class="n">y0</span><span class="o">=</span><span class="n">State</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q0</span><span class="p">),</span>
+            <span class="n">saveat</span><span class="o">=</span><span class="n">saveat</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">stepsize_controller</span><span class="o">=</span><span class="n">controller</span><span class="p">,</span>
+            <span class="n">max_steps</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">sol</span>
+
+    <span class="c1"># Run the integration</span>
+    <span class="n">t_save</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">t0</span><span class="p">,</span> <span class="n">t_end</span><span class="p">,</span> <span class="n">n_saves</span><span class="p">)</span>
     <span class="n">saveat</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">SaveAt</span><span class="p">(</span><span class="n">ts</span><span class="o">=</span><span class="n">t_save</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Integrating from t=</span><span class="si">{</span><span class="n">t0</span><span class="si">}</span><span class="s2"> to t=</span><span class="si">{</span><span class="n">t1</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate_diffrax</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">dt0</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">saveat</span><span class="o">=</span><span class="n">saveat</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Integrating with diffrax (Tsit5 + PID controller)..."</span><span class="p">)</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">integrate_diffrax</span><span class="p">(</span><span class="n">q0</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t_end</span><span class="p">,</span> <span class="n">dt0</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">saveat</span><span class="o">=</span><span class="n">saveat</span><span class="p">)</span>
 
     <span class="n">times</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">ts</span>
     <span class="n">q_history</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">ys</span><span class="o">.</span><span class="n">q</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Completed! Saved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="si">}</span><span class="s2"> snapshots."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Done! Saved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="si">}</span><span class="s2"> snapshots."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  q_history shape: </span><span class="si">{</span><span class="n">q_history</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Time range: [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+
 <span class="k">else</span><span class="p">:</span>
-    <span class="c1"># Fallback: simple RK4</span>
+    <span class="c1"># -- Fallback: fixed-step RK4 --</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Using fallback RK4 integration (no diffrax)..."</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">rk4_step</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Single RK4 time step."""</span>
         <span class="n">k1</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="n">k2</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">k1</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="n">k3</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">k2</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="n">k4</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="n">dt</span><span class="o">*</span><span class="n">k3</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">q</span> <span class="o">+</span> <span class="p">(</span><span class="n">dt</span><span class="o">/</span><span class="mi">6</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">k1</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">k3</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">k2</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">k4</span> <span class="o">=</span> <span class="n">qg_tendency</span><span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">k3</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span> <span class="o">+</span> <span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span>
 
-    <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
-    <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t1</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>
-    <span class="n">save_every</span> <span class="o">=</span> <span class="n">n_steps</span> <span class="o">//</span> <span class="n">n_saves</span>
+    <span class="n">dt_fixed</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t_end</span> <span class="o">/</span> <span class="n">dt_fixed</span><span class="p">)</span>
+    <span class="n">save_every</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_steps</span> <span class="o">//</span> <span class="n">n_saves</span><span class="p">)</span>
 
-    <span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
-    <span class="n">q_history</span> <span class="o">=</span> <span class="p">[</span><span class="n">q0</span><span class="p">]</span>
+    <span class="n">times_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">q_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">q0</span><span class="p">]</span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">q0</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">rk4_step</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">rk4_step</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">dt_fixed</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">save_every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
-            <span class="n">q_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">times_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt_fixed</span><span class="p">)</span>
+            <span class="n">q_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times_list</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  t = </span><span class="si">{</span><span class="n">times_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="n">times</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
-    <span class="n">q_history</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">q_history</span><span class="p">)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times_list</span><span class="p">)</span>
+    <span class="n">q_history</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">q_list</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Done! Saved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="si">}</span><span class="s2"> snapshots."</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  q_history shape: </span><span class="si">{</span><span class="n">q_history</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-12">if HAS_DIFFRAX:
-    # Save at regular intervals
-    t_save = np.linspace(t0, t1, n_saves)
+    # -- Diffrax integration --
+
+    class State(NamedTuple):
+        """ODE state vector (just vorticity)."""
+        q: jnp.ndarray
+
+    def vector_field(t, state: State, args) -&gt; State:
+        """Diffrax vector field: dq/dt = qg_tendency(q, params)."""
+        params = args
+        rhs = qg_tendency(state.q, params)
+        return State(q=rhs)
+
+    def integrate_diffrax(q0, t0, t1, dt0, params, saveat):
+        """
+        Integrate the QG equation using diffrax adaptive stepping.
+
+        Parameters
+        ----------
+        q0 : jnp.ndarray, shape [Nx, Ny]
+            Initial vorticity.
+        t0, t1 : float
+            Start and end times.
+        dt0 : float
+            Initial step size (hint for the adaptive controller).
+        params : QGParams
+            Physical parameters.
+        saveat : dfx.SaveAt
+            Times at which to save the solution.
+
+        Returns
+        -------
+        sol : diffrax Solution object
+            Contains sol.ts (save times) and sol.ys.q (vorticity snapshots).
+        """
+        ode_term = dfx.ODETerm(vector_field)
+        ode_solver = dfx.Tsit5()
+        controller = dfx.PIDController(rtol=1e-5, atol=1e-5)
+
+        sol = dfx.diffeqsolve(
+            terms=ode_term,
+            solver=ode_solver,
+            t0=t0,
+            t1=t1,
+            dt0=dt0,
+            y0=State(q=q0),
+            saveat=saveat,
+            args=params,
+            stepsize_controller=controller,
+            max_steps=50000,
+        )
+        return sol
+
+    # Run the integration
+    t_save = np.linspace(t0, t_end, n_saves)
     saveat = dfx.SaveAt(ts=t_save)
 
-    print(f"Integrating from t={t0} to t={t1}...")
-    sol = integrate_diffrax(q0, t0, t1, dt0, params, saveat=saveat)
+    print(f"Integrating with diffrax (Tsit5 + PID controller)...")
+    sol = integrate_diffrax(q0, t0, t_end, dt0, params, saveat=saveat)
 
     times = sol.ts
     q_history = sol.ys.q
-    print(f"Completed! Saved {len(times)} snapshots.")
+    print(f"Done! Saved {len(times)} snapshots.")
+    print(f"  q_history shape: {q_history.shape}")
+    print(f"  Time range: [{float(times[0]):.2f}, {float(times[-1]):.2f}]")
+
 else:
-    # Fallback: simple RK4
+    # -- Fallback: fixed-step RK4 --
+    import equinox as eqx
+
+    print("Using fallback RK4 integration (no diffrax)...")
+
     def rk4_step(q, dt, params):
+        """Single RK4 time step."""
         k1 = qg_tendency(q, params)
-        k2 = qg_tendency(q + 0.5*dt*k1, params)
-        k3 = qg_tendency(q + 0.5*dt*k2, params)
-        k4 = qg_tendency(q + dt*k3, params)
-        return q + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
+        k2 = qg_tendency(q + 0.5 * dt * k1, params)
+        k3 = qg_tendency(q + 0.5 * dt * k2, params)
+        k4 = qg_tendency(q + dt * k3, params)
+        return q + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
-    dt = 0.01
-    n_steps = int(t1 / dt)
-    save_every = n_steps // n_saves
+    dt_fixed = 0.01
+    n_steps = int(t_end / dt_fixed)
+    save_every = max(1, n_steps // n_saves)
 
-    times = [0.0]
-    q_history = [q0]
+    times_list = [0.0]
+    q_list = [q0]
     q = q0
 
     for i in range(n_steps):
-        q = rk4_step(q, dt, params)
+        q = rk4_step(q, dt_fixed, params)
         if (i + 1) % save_every == 0:
-            times.append((i + 1) * dt)
-            q_history.append(q)
+            times_list.append((i + 1) * dt_fixed)
+            q_list.append(q)
+            if len(times_list) % 10 == 0:
+                print(f"  t = {times_list[-1]:.1f}")
 
-    times = jnp.array(times)
-    q_history = jnp.stack(q_history)</div>
+    times = jnp.array(times_list)
+    q_history = jnp.stack(q_list)
+
+    print(f"Done! Saved {len(times)} snapshots.")
+    print(f"  q_history shape: {q_history.shape}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7b8febde">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6d0eadfb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="visualize-evolution">Visualize Evolution<a class="anchor-link" href="#visualize-evolution">¶</a></h2>
+<h2 id="vorticity-evolution">Vorticity Evolution<a class="anchor-link" href="#vorticity-evolution">¶</a></h2><p>Four snapshots show the emergence of coherent vortices from the initially
+random McWilliams field. The $\nabla^8$ hyperviscosity keeps the small-scale
+filaments sharp (less artificial smoothing than Laplacian viscosity), while
+the inverse cascade drives vortex merging at large scales.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a9f82592">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=77476bcb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3552,48 +4037,56 @@ else:
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Select snapshots to plot</span>
-<span class="n">n_plots</span> <span class="o">=</span> <span class="mi">4</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">n_plots</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_plots</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_plots</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
-<span class="n">vmax</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_history</span><span class="p">))</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_history</span><span class="p">)))</span>
 
 <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
     <span class="n">q_plot</span> <span class="o">=</span> <span class="n">q_history</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
     <span class="n">t_plot</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">q_plot</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span>
-                       <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"$t = </span><span class="si">{</span><span class="n">t_plot</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">$"</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span>
+        <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">q_plot</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"$t = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">t_plot</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">$"</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Vorticity Evolution (McWilliams 1984 IC)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Vorticity Evolution (McWilliams 1984 IC, $</span><span class="se">\\</span><span class="s2">nabla^8$ hyperviscosity)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"vorticity_evolution.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13"># Select snapshots to plot
-n_plots = 4
+<div class="clipboard-copy-txt" id="cell-13">n_plots = 4
 indices = np.linspace(0, len(times) - 1, n_plots, dtype=int)
 
-fig, axes = plt.subplots(1, n_plots, figsize=(14, 3.5))
+fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+axes = axes.flatten()
 
-vmax = jnp.max(jnp.abs(q_history))
+vmax = float(jnp.max(jnp.abs(q_history)))
 
 for ax, idx in zip(axes, indices):
     q_plot = q_history[idx]
     t_plot = times[idx]
 
-    im = ax.pcolormesh(X.T, Y.T, q_plot.T, cmap="RdBu_r",
-                       vmin=-vmax, vmax=vmax, shading="auto")
-    ax.set_title(f"$t = {t_plot:.1f}$")
+    im = ax.pcolormesh(
+        X.T, Y.T, q_plot.T, cmap="RdBu_r",
+        vmin=-vmax, vmax=vmax, shading="auto",
+    )
+    ax.set_title(f"$t = {float(t_plot):.1f}$")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
+    plt.colorbar(im, ax=ax)
 
-plt.suptitle("Vorticity Evolution (McWilliams 1984 IC)", fontsize=12)
+plt.suptitle("Vorticity Evolution (McWilliams 1984 IC, $\\nabla^8$ hyperviscosity)", fontsize=12)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
@@ -3601,18 +4094,32 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b3202dbb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2deb5ffc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="final-state">Final State<a class="anchor-link" href="#final-state">¶</a></h2>
+<p><img alt="Vorticity evolution at four time snapshots" src="../images/pseudospectral_part2/vorticity_evolution.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=978b0590">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="final-state-with-velocity-vectors">Final State with Velocity Vectors<a class="anchor-link" href="#final-state-with-velocity-vectors">¶</a></h2><p>The final state shows coherent vortices with velocity vectors indicating
+the flow structure. Compared to the Laplacian viscosity case in <code>demo_qg</code>,
+the filaments are thinner and sharper thanks to the selective $\nabla^8$
+dissipation.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cf325546">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=290549d0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3634,67 +4141,24 @@ plt.show()</div>
 <span class="n">psi_final</span> <span class="o">=</span> <span class="n">compute_stream_function</span><span class="p">(</span><span class="n">q_final</span><span class="p">)</span>
 <span class="n">u_final</span><span class="p">,</span> <span class="n">v_final</span> <span class="o">=</span> <span class="n">compute_velocities</span><span class="p">(</span><span class="n">psi_final</span><span class="p">)</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-
-<span class="c1"># Vorticity with velocity vectors</span>
-<span class="n">skip</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">//</span> <span class="mi">24</span><span class="p">)</span>
-<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">q_final</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">X</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-               <span class="n">u_final</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">v_final</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-               <span class="n">color</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Vorticity (t=</span><span class="si">{</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="c1"># Stream function</span>
-<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">psi_final</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">psi_final</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stream function (t=</span><span class="si">{</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final vorticity:       range = [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">q_final</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">q_final</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final stream function: range = [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">psi_final</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">psi_final</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final max speed:       </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u_final</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">v_final</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-14">q_final = q_history[-1]
 psi_final = compute_stream_function(q_final)
 u_final, v_final = compute_velocities(psi_final)
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 4))
-
-# Vorticity with velocity vectors
-skip = max(1, Nx // 24)
-im = axes[0].pcolormesh(X.T, Y.T, q_final.T, cmap="RdBu_r", shading="auto")
-axes[0].quiver(X[::skip, ::skip].T, Y[::skip, ::skip].T,
-               u_final[::skip, ::skip].T, v_final[::skip, ::skip].T,
-               color='black', alpha=0.6, scale=30)
-axes[0].set_title(f"Vorticity (t={times[-1]:.1f})")
-plt.colorbar(im, ax=axes[0])
-
-# Stream function
-im = axes[1].pcolormesh(X.T, Y.T, psi_final.T, cmap="viridis", shading="auto")
-axes[1].contour(X.T, Y.T, psi_final.T, colors='white', alpha=0.5, linewidths=0.5)
-axes[1].set_title(f"Stream function (t={times[-1]:.1f})")
-plt.colorbar(im, ax=axes[1])
-
-plt.tight_layout()
-plt.show()</div>
+print(f"Final vorticity:       range = [{float(q_final.min()):.3f}, {float(q_final.max()):.3f}]")
+print(f"Final stream function: range = [{float(psi_final.min()):.3f}, {float(psi_final.max()):.3f}]")
+print(f"Final max speed:       {float(jnp.sqrt(u_final**2 + v_final**2).max()):.3f}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1554ed4d">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="conservation-diagnostics">Conservation Diagnostics<a class="anchor-link" href="#conservation-diagnostics">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c0588f70">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c1da393c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3712,60 +4176,104 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">compute_energy</span><span class="p">(</span><span class="n">q_history</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))]</span>
-<span class="n">enstrophies</span> <span class="o">=</span> <span class="p">[</span><span class="n">compute_enstrophy</span><span class="p">(</span><span class="n">q_history</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))]</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="c1"># Subsample for quiver plot</span>
+<span class="n">skip</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">//</span> <span class="mi">24</span><span class="p">)</span>
 
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="s1">'b-'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'Initial'</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Time"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Energy"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Kinetic Energy Conservation"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="c1"># Vorticity with velocity vectors</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">q_final</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+    <span class="n">u_final</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">v_final</span><span class="p">[::</span><span class="n">skip</span><span class="p">,</span> <span class="p">::</span><span class="n">skip</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Vorticity &amp; velocity ($t = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">$)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">enstrophies</span><span class="p">,</span> <span class="s1">'r-'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">enstrophies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">'--'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'Initial'</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Time"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Enstrophy"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Enstrophy (decays due to hyperviscosity)"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="c1"># Stream function with contours</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">psi_final</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">psi_final</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stream function ($t = </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">$)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"final_state.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-15">energies = [compute_energy(q_history[i]) for i in range(len(times))]
-enstrophies = [compute_enstrophy(q_history[i]) for i in range(len(times))]
+<div class="clipboard-copy-txt" id="cell-15">fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+# Subsample for quiver plot
+skip = max(1, Nx // 24)
 
-axes[0].plot(times, energies, 'b-', linewidth=2)
-axes[0].axhline(energies[0], color='gray', linestyle='--', alpha=0.5, label='Initial')
-axes[0].set_xlabel("Time")
-axes[0].set_ylabel("Energy")
-axes[0].set_title("Kinetic Energy Conservation")
-axes[0].legend()
-axes[0].grid(True, alpha=0.3)
+# Vorticity with velocity vectors
+im = axes[0].pcolormesh(X.T, Y.T, q_final.T, cmap="RdBu_r", shading="auto")
+axes[0].quiver(
+    X[::skip, ::skip].T, Y[::skip, ::skip].T,
+    u_final[::skip, ::skip].T, v_final[::skip, ::skip].T,
+    color="black", alpha=0.6, scale=30,
+)
+axes[0].set_title(f"Vorticity &amp; velocity ($t = {float(times[-1]):.1f}$)")
+axes[0].set_xlabel("x")
+axes[0].set_ylabel("y")
+plt.colorbar(im, ax=axes[0])
 
-axes[1].plot(times, enstrophies, 'r-', linewidth=2)
-axes[1].axhline(enstrophies[0], color='gray', linestyle='--', alpha=0.5, label='Initial')
-axes[1].set_xlabel("Time")
-axes[1].set_ylabel("Enstrophy")
-axes[1].set_title("Enstrophy (decays due to hyperviscosity)")
-axes[1].legend()
-axes[1].grid(True, alpha=0.3)
+# Stream function with contours
+im = axes[1].pcolormesh(X.T, Y.T, psi_final.T, cmap="viridis", shading="auto")
+axes[1].contour(X.T, Y.T, psi_final.T, colors="white", alpha=0.5, linewidths=0.5)
+axes[1].set_title(f"Stream function ($t = {float(times[-1]):.1f}$)")
+axes[1].set_xlabel("x")
+axes[1].set_ylabel("y")
+plt.colorbar(im, ax=axes[1])
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "final_state.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7ca5f96e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Final state: vorticity and stream function with velocity vectors" src="../images/pseudospectral_part2/final_state.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5dafd69b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="conservation-diagnostics">Conservation Diagnostics<a class="anchor-link" href="#conservation-diagnostics">¶</a></h2><p>With $\nabla^8$ hyperviscosity ($\nu = 10^{-12}$, $n_v = 4$):</p>
+<ul>
+<li><p><strong>Energy</strong> decays by approximately 8%. The inverse cascade transfers
+energy to large scales where dissipation is negligible, so most energy
+is preserved. The small decay comes from the energy in small-scale
+filaments that are dissipated.</p>
+</li>
+<li><p><strong>Enstrophy</strong> decays by approximately 58%. The forward enstrophy cascade
+efficiently transports enstrophy to the grid scale where hyperviscosity
+removes it. This large decay — contrasted with the small energy decay —
+is the hallmark of 2D turbulence.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=249dece6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2522a0f1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3783,41 +4291,178 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">energy_change</span> <span class="o">=</span> <span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
-<span class="n">enstrophy_change</span> <span class="o">=</span> <span class="p">(</span><span class="n">enstrophies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">enstrophies</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">enstrophies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">compute_energy</span><span class="p">(</span><span class="n">q_history</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))]</span>
+<span class="n">enstrophies</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">compute_enstrophy</span><span class="p">(</span><span class="n">q_history</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Energy change: </span><span class="si">{</span><span class="n">energy_change</span><span class="si">:</span><span class="s2">+.4f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Enstrophy change: </span><span class="si">{</span><span class="n">enstrophy_change</span><span class="si">:</span><span class="s2">+.4f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<span class="n">E0</span><span class="p">,</span> <span class="n">E_final</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">energies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">Z0</span><span class="p">,</span> <span class="n">Z_final</span> <span class="o">=</span> <span class="n">enstrophies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">enstrophies</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Energy:    E0 = </span><span class="si">{</span><span class="n">E0</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">,  E_final = </span><span class="si">{</span><span class="n">E_final</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">,  change = </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">E_final</span><span class="o">/</span><span class="n">E0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Enstrophy: Z0 = </span><span class="si">{</span><span class="n">Z0</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">,  Z_final = </span><span class="si">{</span><span class="n">Z_final</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">,  change = </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">Z_final</span><span class="o">/</span><span class="n">Z0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-16">energy_change = (energies[-1] - energies[0]) / energies[0] * 100
-enstrophy_change = (enstrophies[-1] - enstrophies[0]) / enstrophies[0] * 100
+<div class="clipboard-copy-txt" id="cell-16">energies = [float(compute_energy(q_history[i])) for i in range(len(times))]
+enstrophies = [float(compute_enstrophy(q_history[i])) for i in range(len(times))]
 
-print(f"Energy change: {energy_change:+.4f}%")
-print(f"Enstrophy change: {enstrophy_change:+.4f}%")</div>
+E0, E_final = energies[0], energies[-1]
+Z0, Z_final = enstrophies[0], enstrophies[-1]
+
+print(f"Energy:    E0 = {E0:.6f},  E_final = {E_final:.6f},  change = {100*(E_final/E0 - 1):+.2f}%")
+print(f"Enstrophy: Z0 = {Z0:.6f},  Z_final = {Z_final:.6f},  change = {100*(Z_final/Z0 - 1):+.2f}%")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0c560699">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># Energy</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="s2">"b-"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">energies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Initial"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Time"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Energy $E$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Kinetic Energy"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># Enstrophy</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">enstrophies</span><span class="p">,</span> <span class="s2">"r-"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">enstrophies</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Initial"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Time"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Enstrophy $Z$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Enstrophy (forward cascade $</span><span class="se">\\</span><span class="s2">rightarrow$ dissipation)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"diagnostics.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-17">fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+# Energy
+axes[0].plot(times, energies, "b-", linewidth=2)
+axes[0].axhline(energies[0], color="gray", linestyle="--", alpha=0.5, label="Initial")
+axes[0].set_xlabel("Time")
+axes[0].set_ylabel("Energy $E$")
+axes[0].set_title("Kinetic Energy")
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# Enstrophy
+axes[1].plot(times, enstrophies, "r-", linewidth=2)
+axes[1].axhline(enstrophies[0], color="gray", linestyle="--", alpha=0.5, label="Initial")
+axes[1].set_xlabel("Time")
+axes[1].set_ylabel("Enstrophy $Z$")
+axes[1].set_title("Enstrophy (forward cascade $\\rightarrow$ dissipation)")
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+fig.savefig(IMG_DIR / "diagnostics.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d4efd468">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=421182a5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><p>This notebook demonstrated:</p>
+<p><img alt="Energy and enstrophy diagnostics" src="../images/pseudospectral_part2/diagnostics.png"/></p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2535c511">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-18">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">energy_change</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">E_final</span> <span class="o">/</span> <span class="n">E0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">enstrophy_change</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">Z_final</span> <span class="o">/</span> <span class="n">Z0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Energy change:    </span><span class="si">{</span><span class="n">energy_change</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}</span><span class="s2">%  (slow decay — large scales protected by inverse cascade)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Enstrophy change: </span><span class="si">{</span><span class="n">enstrophy_change</span><span class="si">:</span><span class="s2">+.2f</span><span class="si">}</span><span class="s2">%  (fast decay — forward cascade feeds grid-scale dissipation)"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-18">energy_change = 100 * (E_final / E0 - 1)
+enstrophy_change = 100 * (Z_final / Z0 - 1)
+
+print(f"Energy change:    {energy_change:+.2f}%  (slow decay — large scales protected by inverse cascade)")
+print(f"Enstrophy change: {enstrophy_change:+.2f}%  (fast decay — forward cascade feeds grid-scale dissipation)")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b1fe737c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><p>This notebook demonstrated adaptive time stepping for QG turbulence using
+<code>spectraldiffx</code> and <code>diffrax</code>:</p>
 <ol>
-<li><strong>McWilliams (1984) initial conditions</strong> - realistic decaying turbulence setup</li>
-<li><strong>Hyperviscosity</strong> ($\nabla^4$) for numerical stability at high resolution</li>
-<li><strong>Diffrax integration</strong> with adaptive time stepping</li>
-<li><strong>Conservation diagnostics</strong> - energy conservation and enstrophy decay</li>
+<li><p><strong>McWilliams (1984) initial conditions</strong> — broadband random vorticity with
+controlled spectral shape, the standard benchmark for decaying 2D turbulence.</p>
+</li>
+<li><p><strong>High-order hyperviscosity</strong> ($\nabla^8$, $\nu = 10^{-12}$) — concentrates
+dissipation at the grid scale while leaving resolved dynamics essentially
+inviscid. This is only feasible with adaptive stepping; fixed-step RK4
+would violate the explicit stability constraint.</p>
+</li>
+<li><p><strong>Diffrax adaptive integration</strong> — <code>Tsit5</code> (5th-order Runge--Kutta) with
+<code>PIDController</code> for automatic step size control. The solver takes small
+steps during the initial turbulent adjustment and large steps once the
+flow becomes smoother.</p>
+</li>
+<li><p><strong>Conservation diagnostics</strong> — energy decays slowly (~8%), enstrophy
+decays rapidly (~58%), confirming the dual cascade of 2D turbulence.</p>
+</li>
 </ol>
-<p>The spectraldiffx library provides:</p>
+<p><strong>Key references:</strong></p>
 <ul>
-<li><code>FourierGrid2D</code> for domain setup</li>
-<li><code>SpectralDerivative2D</code> for gradient, Laplacian, and advection</li>
-<li><code>SpectralHelmholtzSolver2D</code> for Poisson inversion</li>
+<li>McWilliams, J.C. (1984). <em>The emergence of isolated coherent vortices in
+turbulent flow.</em> J. Fluid Mech., 146, 21--43.</li>
+<li>Kidger, P. (2022). <em>On Neural Differential Equations.</em> PhD thesis.
+(diffrax documentation: <a href="https://docs.kidger.site/diffrax/">https://docs.kidger.site/diffrax/</a>)</li>
 </ul>
 </div>
 </div>

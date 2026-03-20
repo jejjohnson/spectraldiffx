@@ -16,7 +16,7 @@
         <link rel="prev" href="../demo_elliptic_solvers/">
       
       
-        <link rel="next" href="../../api/fourier/transforms/">
+        <link rel="next" href="../demo_qg/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Capacitance Matrix Solver Demo - SpectralDiffX</title>
+        <title>Capacitance Matrix Method: Poisson & Helmholtz on Irregular Domains - SpectralDiffX</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#capacitance-matrix-solver-demo" class="md-skip">
+        <a href="#capacitance-matrix-method-poisson-helmholtz-on-irregular-domains" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Capacitance Matrix Solver Demo
+              Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
             
           </span>
         </div>
@@ -965,7 +965,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -993,7 +993,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
   
 
     
@@ -1014,6 +1014,320 @@
   
   
     <li class="md-nav__item">
+      <a href="../eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-tutorial-covers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this tutorial covers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-how-the-capacitance-matrix-method-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. How the Capacitance Matrix Method Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. How the Capacitance Matrix Method Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#algorithm-three-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm (three steps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-build-a-circular-ocean-basin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Build a Circular Ocean Basin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-build-the-capacitance-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Build the Capacitance Solver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-solve-poisson-on-the-masked-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Solve Poisson on the Masked Domain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-boundary-enforcement-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Boundary Enforcement Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Boundary Enforcement Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-vs-after-capacitance-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before vs After Capacitance Correction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dst-vs-fft-base-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. DST vs FFT Base Solver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-helmholtz-screening-lambda-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Helmholtz Screening ($\lambda &gt; 0$)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../demo_qg/" class="md-nav__link">
         
   
@@ -1021,7 +1335,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1049,7 +1363,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1077,7 +1391,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1142,175 +1456,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#section-1-build-a-circular-ocean-basin-mask" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 1: Build a Circular Ocean Basin Mask
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-2-build-the-capacitance-solver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 2: Build the Capacitance Solver
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-3-solve-poisson-on-the-masked-domain" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 3: Solve Poisson on the Masked Domain
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-4-verify-boundary-enforcement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 4: Verify Boundary Enforcement
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-5-compare-dst-vs-fft-base-solver" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 5: Compare DST vs FFT Base Solver
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-6-helmholtz-with-nonzero-lambda" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 6: Helmholtz with Nonzero Lambda
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2037,10 +2182,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#section-1-build-a-circular-ocean-basin-mask" class="md-nav__link">
+  <a href="#what-this-tutorial-covers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 1: Build a Circular Ocean Basin Mask
+        What this tutorial covers
       
     </span>
   </a>
@@ -2048,10 +2193,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-2-build-the-capacitance-solver" class="md-nav__link">
+  <a href="#1-how-the-capacitance-matrix-method-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 2: Build the Capacitance Solver
+        1. How the Capacitance Matrix Method Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. How the Capacitance Matrix Method Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#algorithm-three-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm (three steps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-build-a-circular-ocean-basin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Build a Circular Ocean Basin
       
     </span>
   </a>
@@ -2059,10 +2254,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-3-solve-poisson-on-the-masked-domain" class="md-nav__link">
+  <a href="#3-build-the-capacitance-solver" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 3: Solve Poisson on the Masked Domain
+        3. Build the Capacitance Solver
       
     </span>
   </a>
@@ -2070,10 +2265,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-4-verify-boundary-enforcement" class="md-nav__link">
+  <a href="#4-solve-poisson-on-the-masked-domain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 4: Verify Boundary Enforcement
+        4. Solve Poisson on the Masked Domain
       
     </span>
   </a>
@@ -2081,10 +2276,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-5-compare-dst-vs-fft-base-solver" class="md-nav__link">
+  <a href="#5-boundary-enforcement-verification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 5: Compare DST vs FFT Base Solver
+        5. Boundary Enforcement Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Boundary Enforcement Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-vs-after-capacitance-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before vs After Capacitance Correction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dst-vs-fft-base-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. DST vs FFT Base Solver
       
     </span>
   </a>
@@ -2092,10 +2315,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-6-helmholtz-with-nonzero-lambda" class="md-nav__link">
+  <a href="#7-helmholtz-screening-lambda-0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 6: Helmholtz with Nonzero Lambda
+        7. Helmholtz Screening ($\lambda &gt; 0$)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
       
     </span>
   </a>
@@ -2558,30 +2792,84 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f35ad7b6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=98059a6c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="capacitance-matrix-solver-demo">Capacitance Matrix Solver Demo<a class="anchor-link" href="#capacitance-matrix-solver-demo">¶</a></h1><p>Solving Poisson or Helmholtz equations on <strong>irregular domains</strong> (e.g. ocean
-basins with coastlines) is more challenging than on rectangles because
-standard spectral transforms (DST/DCT/FFT) assume a rectangular grid.</p>
-<p>The <strong>capacitance matrix method</strong> (Buzbee, Golub &amp; Nielson, 1970) extends
-a fast rectangular spectral solver to masked domains.  The idea:</p>
+<h1 id="capacitance-matrix-method-poisson-helmholtz-on-irregular-domains">Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains<a class="anchor-link" href="#capacitance-matrix-method-poisson-helmholtz-on-irregular-domains">¶</a></h1><h2 id="what-this-tutorial-covers">What this tutorial covers<a class="anchor-link" href="#what-this-tutorial-covers">¶</a></h2><p>Standard spectral elliptic solvers (DST, DCT, FFT) assume a
+<strong>rectangular domain</strong>. But many real-world problems live on
+irregular domains:</p>
+<ul>
+<li><strong>Ocean basins</strong> bounded by coastlines</li>
+<li><strong>Aerodynamic bodies</strong> with complex cross-sections</li>
+<li><strong>Semiconductor devices</strong> with etched geometries</li>
+<li><strong>Medical imaging</strong> domains defined by organ boundaries</li>
+</ul>
+<p>The <strong>capacitance matrix method</strong> (Buzbee, Golub &amp; Nielson, 1970)
+extends fast rectangular spectral solvers to handle <strong>masked
+(irregular) domains</strong> where $\psi = 0$ is enforced at the boundary
+of an arbitrary interior region.</p>
+<p>This notebook demonstrates the full workflow:</p>
 <ol>
-<li>Solve on the full rectangle, ignoring the mask.</li>
-<li>The solution violates $\psi = 0$ at inner-boundary points.</li>
-<li>Correct using precomputed Green's functions so that $\psi = 0$ is
-enforced at all boundary points of the irregular domain.</li>
+<li>Build a circular ocean-basin mask</li>
+<li>Construct the capacitance solver (offline precomputation)</li>
+<li>Solve Poisson on the masked domain</li>
+<li>Verify boundary enforcement</li>
+<li>Compare DST vs FFT base solvers</li>
+<li>Demonstrate Helmholtz screening ($\lambda &gt; 0$)</li>
 </ol>
-<p>The offline cost is $O(N_b)$ rectangular solves (one per boundary point).
-The online cost per solve is $O(N_b^2 + N \log N)$.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2c687b27">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="1-how-the-capacitance-matrix-method-works">1. How the Capacitance Matrix Method Works<a class="anchor-link" href="#1-how-the-capacitance-matrix-method-works">¶</a></h2><h3 id="the-problem">The problem<a class="anchor-link" href="#the-problem">¶</a></h3><p>We want to solve $\nabla^2 \psi = f$ (or $(\nabla^2 - \lambda)\psi = f$)
+on an irregular sub-domain $\Omega$ of a rectangle, with $\psi = 0$ on
+the boundary $\partial\Omega$.</p>
+<h3 id="the-idea">The idea<a class="anchor-link" href="#the-idea">¶</a></h3><pre><code>Masked domain (ocean):        Full rectangular domain:
+┌─────────────────┐           ┌─────────────────┐
+│ ░░░░░░░░░░░░░░░ │           │                 │
+│ ░░░┌───────┐░░░ │           │                 │
+│ ░░░│ ocean │░░░ │    →      │   spectral      │
+│ ░░░│ (psi) │░░░ │           │   solve here    │
+│ ░░░└───────┘░░░ │           │                 │
+│ ░░░░░░░░░░░░░░░ │           │                 │
+└─────────────────┘           └─────────────────┘
+░ = land (psi = 0)
+</code></pre>
+<h3 id="algorithm-three-steps">Algorithm (three steps)<a class="anchor-link" href="#algorithm-three-steps">¶</a></h3><p><strong>Offline</strong> (done once per mask):</p>
+<ol>
+<li>Identify the $N_b$ inner-boundary points — ocean cells adjacent to land.</li>
+<li>For each boundary point $x_j$, solve $\nabla^2 G_j = \delta_{x_j}$ on
+the full rectangle. This gives the Green's function column $G_j$.</li>
+<li>Build the $N_b \times N_b$ <strong>capacitance matrix</strong> $C$ where
+$C_{ij} = G_j(x_i)$ (Green's function of point $j$ evaluated at
+boundary point $i$). Invert $C$.</li>
+</ol>
+<p><strong>Online</strong> (each solve):</p>
+<p>$$\boxed{\psi = \text{mask} \cdot \bigl[\psi_0 - G \, C^{-1} \, \psi_0\big|_{\partial\Omega}\bigr]}$$</p>
+<p>where $\psi_0$ is the uncorrected full-domain solve.</p>
+<p>In LaTeX:</p>
+<ol>
+<li>Solve $\nabla^2 \psi_0 = f$ on the full rectangle → fast spectral solve, $O(N \log N)$</li>
+<li>Extract $\psi_0$ at boundary points: $\mathbf{b} = \psi_0\big|_{\partial\Omega}$</li>
+<li>Compute correction coefficients: $\mathbf{c} = C^{-1}\,\mathbf{b}$, cost $O(N_b^2)$</li>
+<li>Correct: $\psi = \text{mask} \cdot (\psi_0 - \sum_j c_j\,G_j)$</li>
+</ol>
+<p><strong>Total online cost</strong>: $O(N \log N + N_b^2)$ — still dominated by the
+spectral transform for typical masks where $N_b \ll N$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8034fd5c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bcb8af67">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2599,21 +2887,37 @@ The online cost per solve is $O(N_b^2 + N \log N)$.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"Agg"</span><span class="p">)</span>
+
 <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">"jax_enable_x64"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">IMG_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"demo_capacitance"</span>
+<span class="n">IMG_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_capacitance_solver</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">import jax
+<div class="clipboard-copy-txt" id="cell-1">from pathlib import Path
+
+import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_capacitance"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 from spectraldiffx import build_capacitance_solver</div>
 </div>
@@ -2622,19 +2926,28 @@ from spectraldiffx import build_capacitance_solver</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a3011bbb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=dcb20fd7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-1-build-a-circular-ocean-basin-mask">Section 1: Build a Circular Ocean Basin Mask<a class="anchor-link" href="#section-1-build-a-circular-ocean-basin-mask">¶</a></h2><p>We create a binary mask on a 32x32 grid representing a circular ocean
-basin (True = ocean interior, False = land/exterior).</p>
+<h2 id="2-build-a-circular-ocean-basin">2. Build a Circular Ocean Basin<a class="anchor-link" href="#2-build-a-circular-ocean-basin">¶</a></h2><p>We create a binary mask on a $32 \times 32$ grid representing a circular
+ocean basin. Points inside the circle are "ocean" (<code>True</code>); points
+outside are "land" (<code>False</code>).</p>
+<p><strong>Parameter choices</strong>:</p>
+<ul>
+<li>Grid size $32 \times 32$: small enough for fast precomputation, large
+enough to see smooth solutions.</li>
+<li>Radius $= 0.35 \cdot \min(N_y, N_x)$: leaves a comfortable margin
+from the rectangular boundary so the circle is fully interior.</li>
+<li>$\Delta x = \Delta y = 1.0$: unit spacing for simplicity.</li>
+</ul>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=658ac0b6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=af4dfc8a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2655,41 +2968,53 @@ basin (True = ocean interior, False = land/exterior).</p>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span>
 <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
 
-<span class="c1"># Coordinate arrays (cell centers)</span>
+<span class="c1"># Cell-center coordinates</span>
 <span class="n">j_idx</span><span class="p">,</span> <span class="n">i_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">Ny</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">Nx</span><span class="p">]</span>
 <span class="n">center_y</span><span class="p">,</span> <span class="n">center_x</span> <span class="o">=</span> <span class="n">Ny</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Nx</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="mf">0.35</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span><span class="p">)</span>
 
-<span class="c1"># Circular mask</span>
+<span class="c1"># Distance from center</span>
 <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">i_idx</span> <span class="o">-</span> <span class="n">center_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">j_idx</span> <span class="o">-</span> <span class="n">center_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Binary mask: True = ocean interior</span>
 <span class="n">mask</span> <span class="o">=</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">radius</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid size: </span><span class="si">{</span><span class="n">Ny</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">Nx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Circle center: (</span><span class="si">{</span><span class="n">center_x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">center_y</span><span class="si">}</span><span class="s2">), radius: </span><span class="si">{</span><span class="n">radius</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Interior points: </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">Ny</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Nx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid shape:      (</span><span class="si">{</span><span class="n">Ny</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">Nx</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid spacing:    dx=</span><span class="si">{</span><span class="n">dx</span><span class="si">}</span><span class="s2">, dy=</span><span class="si">{</span><span class="n">dy</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Circle center:   (</span><span class="si">{</span><span class="n">center_x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">center_y</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Circle radius:   </span><span class="si">{</span><span class="n">radius</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Interior points: </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">Ny</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Nx</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">Ny</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Nx</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mask shape:      </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mask dtype:      </span><span class="si">{</span><span class="n">mask</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2">Ny, Nx = 32, 32
 dx, dy = 1.0, 1.0
 
-# Coordinate arrays (cell centers)
+# Cell-center coordinates
 j_idx, i_idx = np.mgrid[0:Ny, 0:Nx]
 center_y, center_x = Ny / 2, Nx / 2
 radius = 0.35 * min(Ny, Nx)
 
-# Circular mask
+# Distance from center
 dist = np.sqrt((i_idx - center_x) ** 2 + (j_idx - center_y) ** 2)
+
+# Binary mask: True = ocean interior
 mask = dist &lt; radius
 
-print(f"Grid size: {Ny} x {Nx}")
-print(f"Circle center: ({center_x}, {center_y}), radius: {radius}")
-print(f"Interior points: {mask.sum()} / {Ny * Nx}")</div>
+print(f"Grid shape:      ({Ny}, {Nx})")
+print(f"Grid spacing:    dx={dx}, dy={dy}")
+print(f"Circle center:   ({center_x}, {center_y})")
+print(f"Circle radius:   {radius}")
+print(f"Interior points: {mask.sum()} / {Ny * Nx} ({100 * mask.sum() / (Ny * Nx):.1f}%)")
+print(f"Mask shape:      {mask.shape}")
+print(f"Mask dtype:      {mask.dtype}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=58adad32">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9a6a7113">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2709,18 +3034,20 @@ print(f"Interior points: {mask.sum()} / {Ny * Nx}")</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"Blues"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Ocean basin mask (blue = interior)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Ocean basin mask (blue = ocean interior)"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"ocean_basin_mask.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">fig, ax = plt.subplots(figsize=(5, 5))
 ax.imshow(mask.astype(float), origin="lower", cmap="Blues", vmin=0, vmax=1)
-ax.set_title("Ocean basin mask (blue = interior)")
+ax.set_title("Ocean basin mask (blue = ocean interior)")
 ax.set_xlabel("i")
 ax.set_ylabel("j")
 plt.tight_layout()
+fig.savefig(IMG_DIR / "ocean_basin_mask.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
@@ -2728,20 +3055,36 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ea3ec4cc">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c4ac7466">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-2-build-the-capacitance-solver">Section 2: Build the Capacitance Solver<a class="anchor-link" href="#section-2-build-the-capacitance-solver">¶</a></h2><p><code>build_capacitance_solver</code> performs the offline precomputation:
-detecting inner-boundary points, computing Green's functions, and
-inverting the capacitance matrix.</p>
+<p><img alt="Ocean basin mask" src="../images/demo_capacitance/ocean_basin_mask.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=351ad3b4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="3-build-the-capacitance-solver">3. Build the Capacitance Solver<a class="anchor-link" href="#3-build-the-capacitance-solver">¶</a></h2><p><code>build_capacitance_solver</code> performs all the offline precomputation:</p>
+<ol>
+<li>Detect inner-boundary points (ocean cells with at least one land neighbor)</li>
+<li>Compute Green's function columns ($N_b$ spectral solves)</li>
+<li>Build and invert the capacitance matrix</li>
+</ol>
+<p>The returned <code>CapacitanceSolver</code> is an <code>eqx.Module</code> — a frozen pytree
+that stores all precomputed data and is callable.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=09e887b3">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2bc97650">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2762,34 +3105,54 @@ inverting the capacitance matrix.</p>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_dst</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"dst"</span><span class="p">)</span>
 
 <span class="n">n_boundary</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of inner-boundary points: </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Base spectral solver: </span><span class="si">{</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">base_bc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz parameter: </span><span class="si">{</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Base spectral solver:       </span><span class="si">{</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">base_bc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz parameter:        lambda = </span><span class="si">{</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of boundary points:  N_b = </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Capacitance matrix size:    (</span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total grid points:          N = </span><span class="si">{</span><span class="n">Ny</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Nx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ratio N_b / N:              </span><span class="si">{</span><span class="n">n_boundary</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">Ny</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Nx</span><span class="p">)</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">solver_dst = build_capacitance_solver(mask, dx, dy, lambda_=0.0, base_bc="dst")
 
 n_boundary = len(solver_dst._j_b)
-print(f"Number of inner-boundary points: {n_boundary}")
-print(f"Base spectral solver: {solver_dst.base_bc}")
-print(f"Helmholtz parameter: {solver_dst.lambda_}")</div>
+print(f"Base spectral solver:       {solver_dst.base_bc}")
+print(f"Helmholtz parameter:        lambda = {solver_dst.lambda_}")
+print(f"Number of boundary points:  N_b = {n_boundary}")
+print(f"Capacitance matrix size:    ({n_boundary}, {n_boundary})")
+print(f"Total grid points:          N = {Ny * Nx}")
+print(f"Ratio N_b / N:              {n_boundary / (Ny * Nx):.2%}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a5b62581">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e5674e94">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-3-solve-poisson-on-the-masked-domain">Section 3: Solve Poisson on the Masked Domain<a class="anchor-link" href="#section-3-solve-poisson-on-the-masked-domain">¶</a></h2><p>We set the RHS to ones inside the mask and zeros outside, then solve.</p>
+<p>The number of boundary points $N_b$ is much smaller than $N$, which is
+what makes the method efficient. The online cost per solve is
+$O(N \log N + N_b^2)$ rather than $O(N^2)$ or $O(N^{3/2})$.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=36e99bc8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="4-solve-poisson-on-the-masked-domain">4. Solve Poisson on the Masked Domain<a class="anchor-link" href="#4-solve-poisson-on-the-masked-domain">¶</a></h2><p>We create a Gaussian-bump RHS centered in the basin and solve
+$\nabla^2 \psi = f$ with $\psi = 0$ on the basin boundary.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2d9a3723">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=62957f3e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2807,18 +3170,36 @@ print(f"Helmholtz parameter: {solver_dst.lambda_}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">rhs</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-<span class="n">psi</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Gaussian bump RHS (only nonzero inside the mask)</span>
+<span class="n">sigma_rhs</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">radius</span>  <span class="c1"># width relative to basin radius</span>
+<span class="n">rhs</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+    <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span>
+    <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">i_idx</span> <span class="o">-</span> <span class="n">center_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">j_idx</span> <span class="o">-</span> <span class="n">center_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_rhs</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span>
+    <span class="mf">0.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RHS shape: </span><span class="si">{</span><span class="n">rhs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RHS range: [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rhs</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rhs</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RHS nonzero points: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">rhs</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">rhs = jnp.where(jnp.array(mask), 1.0, 0.0)
-psi = solver_dst(rhs)</div>
+<div class="clipboard-copy-txt" id="cell-5"># Gaussian bump RHS (only nonzero inside the mask)
+sigma_rhs = 0.25 * radius  # width relative to basin radius
+rhs = jnp.where(
+    jnp.array(mask),
+    jnp.exp(-((i_idx - center_x) ** 2 + (j_idx - center_y) ** 2) / (2 * sigma_rhs**2)),
+    0.0,
+)
+
+print(f"RHS shape: {rhs.shape}")
+print(f"RHS range: [{float(jnp.min(rhs)):.4f}, {float(jnp.max(rhs)):.4f}]")
+print(f"RHS nonzero points: {int(jnp.sum(rhs &gt; 0))}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4446b539">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4f14ab10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2836,58 +3217,22 @@ psi = solver_dst(rhs)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
 
-<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rhs</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"RHS (ones inside mask)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Solution psi"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Solution shape: </span><span class="si">{</span><span class="n">psi</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Solution range: [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+<div class="clipboard-copy-txt" id="cell-6">psi = solver_dst(rhs)
 
-im0 = axes[0].imshow(np.array(rhs), origin="lower", cmap="viridis")
-axes[0].set_title("RHS (ones inside mask)")
-plt.colorbar(im0, ax=axes[0], shrink=0.8)
-
-im1 = axes[1].imshow(np.array(psi), origin="lower", cmap="RdBu_r")
-axes[1].set_title("Solution psi")
-plt.colorbar(im1, ax=axes[1], shrink=0.8)
-
-for ax in axes:
-    ax.set_xlabel("i")
-    ax.set_ylabel("j")
-
-plt.tight_layout()
-plt.show()</div>
+print(f"Solution shape: {psi.shape}")
+print(f"Solution range: [{float(jnp.min(psi)):.4f}, {float(jnp.max(psi)):.4f}]")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=937ab927">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-4-verify-boundary-enforcement">Section 4: Verify Boundary Enforcement<a class="anchor-link" href="#section-4-verify-boundary-enforcement">¶</a></h2><p>The capacitance method enforces $\psi = 0$ at the inner-boundary points.
-Let us check.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e5e1545b">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=71941358">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2905,26 +3250,98 @@ Let us check.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Extract solution values at inner-boundary points</span>
-<span class="n">psi_at_boundary</span> <span class="o">=</span> <span class="n">psi</span><span class="p">[</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">,</span> <span class="n">solver_dst</span><span class="o">.</span><span class="n">_i_b</span><span class="p">]</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of boundary points: </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |psi| at boundary: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_at_boundary</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean |psi| at boundary: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_at_boundary</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rhs</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"viridis"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"RHS (Gaussian bump)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Solution $\psi$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Capacitance solver: $\nabla^2\psi = f$ on circular basin"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"rhs_and_solution.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7"># Extract solution values at inner-boundary points
-psi_at_boundary = psi[solver_dst._j_b, solver_dst._i_b]
+<div class="clipboard-copy-txt" id="cell-7">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
-print(f"Number of boundary points: {n_boundary}")
-print(f"Max |psi| at boundary: {jnp.max(jnp.abs(psi_at_boundary)):.2e}")
-print(f"Mean |psi| at boundary: {jnp.mean(jnp.abs(psi_at_boundary)):.2e}")</div>
+im0 = axes[0].imshow(np.array(rhs), origin="lower", cmap="viridis")
+axes[0].set_title("RHS (Gaussian bump)")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(np.array(psi), origin="lower", cmap="RdBu_r")
+axes[1].set_title(r"Solution $\psi$")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle(r"Capacitance solver: $\nabla^2\psi = f$ on circular basin", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "rhs_and_solution.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=84a17e48">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="RHS and Poisson solution" src="../images/demo_capacitance/rhs_and_solution.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=10559987">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>The solution is smooth inside the basin and drops to zero at the
+boundary, as enforced by the capacitance correction.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=edd567c5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="5-boundary-enforcement-verification">5. Boundary Enforcement Verification<a class="anchor-link" href="#5-boundary-enforcement-verification">¶</a></h2><p>The whole point of the capacitance method is to enforce $\psi = 0$ at
+the inner-boundary points. Let us verify this quantitatively.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f1c7723a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="before-vs-after-capacitance-correction">Before vs After Capacitance Correction<a class="anchor-link" href="#before-vs-after-capacitance-correction">¶</a></h3><p>To appreciate what the capacitance method does, we compare the
+<strong>uncorrected</strong> rectangular DST solve (which ignores the mask) with the
+<strong>corrected</strong> capacitance solve.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=128cbd9e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d20b132e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2942,55 +3359,46 @@ print(f"Mean |psi| at boundary: {jnp.mean(jnp.abs(psi_at_boundary)):.2e}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Visualize the boundary points and their psi values</span>
-<span class="n">boundary_field</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span><span class="p">))</span>
-<span class="n">boundary_field</span> <span class="o">=</span> <span class="n">boundary_field</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">,</span> <span class="n">solver_dst</span><span class="o">.</span><span class="n">_i_b</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-    <span class="n">psi_at_boundary</span>
-<span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">binary_dilation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_poisson_dst</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">boundary_field</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"psi at inner-boundary points"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># Uncorrected: solve on full rectangle, ignoring the mask</span>
+<span class="n">psi_rect</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+
+<span class="c1"># Detect inner boundary for visualization</span>
+<span class="n">exterior</span> <span class="o">=</span> <span class="o">~</span><span class="n">mask</span>
+<span class="n">struct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+<span class="n">dilated</span> <span class="o">=</span> <span class="n">binary_dilation</span><span class="p">(</span><span class="n">exterior</span><span class="p">,</span> <span class="n">structure</span><span class="o">=</span><span class="n">struct</span><span class="p">)</span>
+<span class="n">inner_boundary</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="n">dilated</span>
+<span class="n">j_b_vis</span><span class="p">,</span> <span class="n">i_b_vis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">inner_boundary</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"psi_rect shape:    </span><span class="si">{</span><span class="n">psi_rect</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |psi| at boundary (uncorrected): </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_rect</span><span class="p">[</span><span class="n">j_b_vis</span><span class="p">,</span><span class="w"> </span><span class="n">i_b_vis</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |psi| at boundary (capacitance): </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">[</span><span class="n">j_b_vis</span><span class="p">,</span><span class="w"> </span><span class="n">i_b_vis</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8"># Visualize the boundary points and their psi values
-boundary_field = jnp.zeros((Ny, Nx))
-boundary_field = boundary_field.at[solver_dst._j_b, solver_dst._i_b].set(
-    psi_at_boundary
-)
+<div class="clipboard-copy-txt" id="cell-8">from scipy.ndimage import binary_dilation
+from spectraldiffx import solve_poisson_dst
 
-fig, ax = plt.subplots(figsize=(5, 5))
-im = ax.imshow(np.array(boundary_field), origin="lower", cmap="RdBu_r")
-ax.set_title("psi at inner-boundary points")
-ax.set_xlabel("i")
-ax.set_ylabel("j")
-plt.colorbar(im, ax=ax, shrink=0.8)
-plt.tight_layout()
-plt.show()</div>
+# Uncorrected: solve on full rectangle, ignoring the mask
+psi_rect = solve_poisson_dst(rhs, dx, dy)
+
+# Detect inner boundary for visualization
+exterior = ~mask
+struct = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+dilated = binary_dilation(exterior, structure=struct)
+inner_boundary = mask &amp; dilated
+j_b_vis, i_b_vis = np.where(inner_boundary)
+
+print(f"psi_rect shape:    {psi_rect.shape}")
+print(f"Max |psi| at boundary (uncorrected): {float(jnp.abs(psi_rect[j_b_vis, i_b_vis]).max()):.4f}")
+print(f"Max |psi| at boundary (capacitance): {float(jnp.abs(psi[j_b_vis, i_b_vis]).max()):.2e}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=537f3e75">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-5-compare-dst-vs-fft-base-solver">Section 5: Compare DST vs FFT Base Solver<a class="anchor-link" href="#section-5-compare-dst-vs-fft-base-solver">¶</a></h2><p>The capacitance method can use different rectangular base solvers.
-Inside the masked domain, the solutions should agree (they solve the
-same PDE with the same mask-boundary conditions).</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=76cf5f37">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=47c984d4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3008,32 +3416,84 @@ same PDE with the same mask-boundary conditions).</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_fft</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"fft"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="n">psi_from_dst</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
-<span class="n">psi_from_fft</span> <span class="o">=</span> <span class="n">solver_fft</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<span class="c1"># Uncorrected</span>
+<span class="n">psi_rect_masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_rect</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">psi_rect_masked</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">i_b_vis</span><span class="p">,</span> <span class="n">j_b_vis</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Boundary pts"</span><span class="p">)</span>
+<span class="n">bnd_max_rect</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_rect</span><span class="p">[</span><span class="n">j_b_vis</span><span class="p">,</span> <span class="n">i_b_vis</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rectangular solve (no correction)</span><span class="se">\n</span><span class="s2">max |ψ| at boundary = </span><span class="si">{</span><span class="n">bnd_max_rect</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper right"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 
-<span class="c1"># Difference inside the mask</span>
-<span class="n">diff_inside</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_from_dst</span> <span class="o">-</span> <span class="n">psi_from_fft</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="c1"># Corrected</span>
+<span class="n">psi_masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span>
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">psi_masked</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">i_b_vis</span><span class="p">,</span> <span class="n">j_b_vis</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Boundary pts"</span><span class="p">)</span>
+<span class="n">bnd_max_cap</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">[</span><span class="n">j_b_vis</span><span class="p">,</span> <span class="n">i_b_vis</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Capacitance solve (corrected)</span><span class="se">\n</span><span class="s2">max |ψ| at boundary = </span><span class="si">{</span><span class="n">bnd_max_cap</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper right"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |DST - FFT| inside mask: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">diff_inside</span><span class="p">)</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Boundary Enforcement: Before vs After Capacitance Correction"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"boundary_before_after.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">solver_fft = build_capacitance_solver(mask, dx, dy, lambda_=0.0, base_bc="fft")
+<div class="clipboard-copy-txt" id="cell-9">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
-psi_from_dst = solver_dst(rhs)
-psi_from_fft = solver_fft(rhs)
+# Uncorrected
+psi_rect_masked = np.array(psi_rect) * mask
+im0 = axes[0].imshow(psi_rect_masked, origin="lower", cmap="RdBu_r")
+axes[0].scatter(i_b_vis, j_b_vis, c="red", s=12, zorder=5, label="Boundary pts")
+bnd_max_rect = float(jnp.abs(psi_rect[j_b_vis, i_b_vis]).max())
+axes[0].set_title(f"Rectangular solve (no correction)\nmax |ψ| at boundary = {bnd_max_rect:.3f}")
+axes[0].legend(fontsize=8, loc="upper right")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
 
-# Difference inside the mask
-diff_inside = jnp.where(jnp.array(mask), jnp.abs(psi_from_dst - psi_from_fft), 0.0)
+# Corrected
+psi_masked = np.array(psi) * mask
+im1 = axes[1].imshow(psi_masked, origin="lower", cmap="RdBu_r")
+axes[1].scatter(i_b_vis, j_b_vis, c="red", s=12, zorder=5, label="Boundary pts")
+bnd_max_cap = float(jnp.abs(psi[j_b_vis, i_b_vis]).max())
+axes[1].set_title(f"Capacitance solve (corrected)\nmax |ψ| at boundary = {bnd_max_cap:.1e}")
+axes[1].legend(fontsize=8, loc="upper right")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
 
-print(f"Max |DST - FFT| inside mask: {jnp.max(diff_inside):.2e}")</div>
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle("Boundary Enforcement: Before vs After Capacitance Correction", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "boundary_before_after.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f722ea88">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Boundary before vs after correction" src="../images/demo_capacitance/boundary_before_after.png"/></p>
+<p>The uncorrected rectangular solve has significant nonzero values at the
+boundary points (red dots). The capacitance correction drives these to
+machine precision.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e0d7c8ba">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ceb26463">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3051,68 +3511,28 @@ print(f"Max |DST - FFT| inside mask: {jnp.max(diff_inside):.2e}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Extract solution values at inner-boundary points</span>
+<span class="n">psi_at_boundary</span> <span class="o">=</span> <span class="n">psi</span><span class="p">[</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">,</span> <span class="n">solver_dst</span><span class="o">.</span><span class="n">_i_b</span><span class="p">]</span>
 
-<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_from_dst</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"DST base"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_from_fft</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"FFT base"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="n">im2</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">diff_inside</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"hot"</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"|DST - FFT| inside mask"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of boundary points:  </span><span class="si">{</span><span class="n">n_boundary</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max  |psi| at boundary:     </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_at_boundary</span><span class="p">)))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean |psi| at boundary:     </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_at_boundary</span><span class="p">)))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"psi_at_boundary shape:      </span><span class="si">{</span><span class="n">psi_at_boundary</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+<div class="clipboard-copy-txt" id="cell-10"># Extract solution values at inner-boundary points
+psi_at_boundary = psi[solver_dst._j_b, solver_dst._i_b]
 
-im0 = axes[0].imshow(np.array(psi_from_dst), origin="lower", cmap="RdBu_r")
-axes[0].set_title("DST base")
-plt.colorbar(im0, ax=axes[0], shrink=0.8)
-
-im1 = axes[1].imshow(np.array(psi_from_fft), origin="lower", cmap="RdBu_r")
-axes[1].set_title("FFT base")
-plt.colorbar(im1, ax=axes[1], shrink=0.8)
-
-im2 = axes[2].imshow(np.array(diff_inside), origin="lower", cmap="hot")
-axes[2].set_title("|DST - FFT| inside mask")
-plt.colorbar(im2, ax=axes[2], shrink=0.8)
-
-for ax in axes:
-    ax.set_xlabel("i")
-    ax.set_ylabel("j")
-
-plt.tight_layout()
-plt.show()</div>
+print(f"Number of boundary points:  {n_boundary}")
+print(f"Max  |psi| at boundary:     {float(jnp.max(jnp.abs(psi_at_boundary))):.2e}")
+print(f"Mean |psi| at boundary:     {float(jnp.mean(jnp.abs(psi_at_boundary))):.2e}")
+print(f"psi_at_boundary shape:      {psi_at_boundary.shape}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=71a92c78">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-6-helmholtz-with-nonzero-lambda">Section 6: Helmholtz with Nonzero Lambda<a class="anchor-link" href="#section-6-helmholtz-with-nonzero-lambda">¶</a></h2><p>Setting <code>lambda_ &gt; 0</code> solves the Helmholtz equation
-$(\nabla^2 - \lambda)\psi = f$ instead of pure Poisson.
-The solution is more localized because the $-\lambda\psi$ term
-acts as a damping/screening term.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ec6b970f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0d4b0b52">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3130,26 +3550,86 @@ acts as a damping/screening term.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_helmholtz</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span>
-    <span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"dst"</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Visualize: place boundary-point psi values on a field</span>
+<span class="n">boundary_field</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Ny</span><span class="p">,</span> <span class="n">Nx</span><span class="p">))</span>
+<span class="n">boundary_field</span> <span class="o">=</span> <span class="n">boundary_field</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">solver_dst</span><span class="o">.</span><span class="n">_j_b</span><span class="p">,</span> <span class="n">solver_dst</span><span class="o">.</span><span class="n">_i_b</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">psi_at_boundary</span>
 <span class="p">)</span>
 
-<span class="n">psi_poisson</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
-<span class="n">psi_helmholtz</span> <span class="o">=</span> <span class="n">solver_helmholtz</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">boundary_field</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"$\psi$ at inner-boundary points (should be $\approx 0$)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"boundary_enforcement.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-11">solver_helmholtz = build_capacitance_solver(
-    mask, dx, dy, lambda_=1.0, base_bc="dst"
+<div class="clipboard-copy-txt" id="cell-11"># Visualize: place boundary-point psi values on a field
+boundary_field = jnp.zeros((Ny, Nx))
+boundary_field = boundary_field.at[solver_dst._j_b, solver_dst._i_b].set(
+    psi_at_boundary
 )
 
-psi_poisson = solver_dst(rhs)
-psi_helmholtz = solver_helmholtz(rhs)</div>
+fig, ax = plt.subplots(figsize=(5, 5))
+im = ax.imshow(np.array(boundary_field), origin="lower", cmap="RdBu_r")
+ax.set_title(r"$\psi$ at inner-boundary points (should be $\approx 0$)")
+ax.set_xlabel("i")
+ax.set_ylabel("j")
+plt.colorbar(im, ax=ax, shrink=0.8)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "boundary_enforcement.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d9f92a99">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Psi at inner-boundary points" src="../images/demo_capacitance/boundary_enforcement.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3d83917d">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>The boundary values are at machine precision ($\sim 10^{-14}$),
+confirming that the capacitance correction works as expected.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d3de9e82">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="6-dst-vs-fft-base-solver">6. DST vs FFT Base Solver<a class="anchor-link" href="#6-dst-vs-fft-base-solver">¶</a></h2><p>The capacitance method works with <strong>any</strong> fast rectangular solver as
+the base. Two natural choices are:</p>
+<ul>
+<li><code>base_bc="dst"</code> — Discrete Sine Transform (Dirichlet on rectangle)</li>
+<li><code>base_bc="fft"</code> — FFT (periodic on rectangle)</li>
+</ul>
+<p>Inside the masked domain, both should produce the same solution because
+the capacitance correction enforces $\psi = 0$ at the mask boundary
+regardless of the rectangular boundary conditions.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4b31382c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=75f8b7ca">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3167,60 +3647,40 @@ psi_helmholtz = solver_helmholtz(rhs)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver_fft</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"fft"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"FFT-based solver boundary points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">solver_fft</span><span class="o">.</span><span class="n">_j_b</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">))),</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">))))</span>
+<span class="c1"># Solve with both bases</span>
+<span class="n">psi_from_dst</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+<span class="n">psi_from_fft</span> <span class="o">=</span> <span class="n">solver_fft</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
 
-<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span>
-<span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Poisson (lambda=0)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="c1"># Difference inside the mask only</span>
+<span class="n">diff_inside</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_from_dst</span> <span class="o">-</span> <span class="n">psi_from_fft</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
 
-<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span>
-<span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Helmholtz (lambda=1)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Capacitance solver: Poisson vs Helmholtz"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">psi_from_dst shape: </span><span class="si">{</span><span class="n">psi_from_dst</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"psi_from_fft shape: </span><span class="si">{</span><span class="n">psi_from_fft</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |DST - FFT| inside mask: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">diff_inside</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+<div class="clipboard-copy-txt" id="cell-12">solver_fft = build_capacitance_solver(mask, dx, dy, lambda_=0.0, base_bc="fft")
+print(f"FFT-based solver boundary points: {len(solver_fft._j_b)}")
 
-vmax = max(float(jnp.max(jnp.abs(psi_poisson))), float(jnp.max(jnp.abs(psi_helmholtz))))
+# Solve with both bases
+psi_from_dst = solver_dst(rhs)
+psi_from_fft = solver_fft(rhs)
 
-im0 = axes[0].imshow(
-    np.array(psi_poisson), origin="lower", cmap="RdBu_r", vmin=-vmax, vmax=vmax
-)
-axes[0].set_title("Poisson (lambda=0)")
-plt.colorbar(im0, ax=axes[0], shrink=0.8)
+# Difference inside the mask only
+diff_inside = jnp.where(jnp.array(mask), jnp.abs(psi_from_dst - psi_from_fft), 0.0)
 
-im1 = axes[1].imshow(
-    np.array(psi_helmholtz), origin="lower", cmap="RdBu_r", vmin=-vmax, vmax=vmax
-)
-axes[1].set_title("Helmholtz (lambda=1)")
-plt.colorbar(im1, ax=axes[1], shrink=0.8)
-
-for ax in axes:
-    ax.set_xlabel("i")
-    ax.set_ylabel("j")
-
-plt.suptitle("Capacitance solver: Poisson vs Helmholtz", fontsize=14)
-plt.tight_layout()
-plt.show()</div>
+print(f"\npsi_from_dst shape: {psi_from_dst.shape}")
+print(f"psi_from_fft shape: {psi_from_fft.shape}")
+print(f"Max |DST - FFT| inside mask: {float(jnp.max(diff_inside)):.2e}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f2892576">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=93a761ba">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3238,15 +3698,297 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Poisson max |psi|: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz max |psi|: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"The Helmholtz solution is smaller due to the screening term."</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_from_dst</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"DST base solver"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_from_fft</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"FFT base solver"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im2</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">diff_inside</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"hot"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"|DST - FFT| inside mask"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Capacitance solver: DST vs FFT base comparison"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"dst_vs_fft_comparison.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13">print(f"Poisson max |psi|: {jnp.max(jnp.abs(psi_poisson)):.4f}")
-print(f"Helmholtz max |psi|: {jnp.max(jnp.abs(psi_helmholtz)):.4f}")
-print("The Helmholtz solution is smaller due to the screening term.")</div>
+<div class="clipboard-copy-txt" id="cell-13">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+im0 = axes[0].imshow(np.array(psi_from_dst), origin="lower", cmap="RdBu_r")
+axes[0].set_title("DST base solver")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(np.array(psi_from_fft), origin="lower", cmap="RdBu_r")
+axes[1].set_title("FFT base solver")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+im2 = axes[2].imshow(np.array(diff_inside), origin="lower", cmap="hot")
+axes[2].set_title("|DST - FFT| inside mask")
+plt.colorbar(im2, ax=axes[2], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle("Capacitance solver: DST vs FFT base comparison", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "dst_vs_fft_comparison.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02fca825">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="DST vs FFT base solver comparison" src="../images/demo_capacitance/dst_vs_fft_comparison.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e0aee212">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>The two solutions agree to near machine precision inside the mask.
+The choice of base solver is a matter of convenience — both give the
+same physical answer.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4c0ce75c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="7-helmholtz-screening-lambda-0">7. Helmholtz Screening ($\lambda &gt; 0$)<a class="anchor-link" href="#7-helmholtz-screening-lambda-0">¶</a></h2><p>Setting $\lambda &gt; 0$ solves the Helmholtz equation</p>
+<p>$$(\nabla^2 - \lambda)\,\psi = f$$</p>
+<p>instead of pure Poisson. The $-\lambda\,\psi$ term acts as <strong>exponential
+screening</strong>: it penalizes large $|\psi|$ and localizes the response
+near the source. The characteristic decay length is
+$\ell \sim 1/\sqrt{\lambda}$.</p>
+<p><strong>Physical interpretation</strong>: In geophysical fluid dynamics, the screened
+Poisson equation arises in quasi-geostrophic potential vorticity
+inversion, where $\lambda$ is related to the Rossby deformation radius.
+Larger $\lambda$ means stronger stratification and more localized
+response to forcing.</p>
+<p><strong>Important</strong>: We use <strong>independent color scales</strong> for the two panels
+because the Helmholtz solution can be $\sim 30\times$ smaller than the
+Poisson solution. A shared color scale would make the Helmholtz panel
+appear blank.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e9ccf6fb">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Build a Helmholtz solver with lambda = 1.0</span>
+<span class="n">lambda_helm</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">solver_helmholtz</span> <span class="o">=</span> <span class="n">build_capacitance_solver</span><span class="p">(</span>
+    <span class="n">mask</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_helm</span><span class="p">,</span> <span class="n">base_bc</span><span class="o">=</span><span class="s2">"dst"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz solver: lambda = </span><span class="si">{</span><span class="n">solver_helmholtz</span><span class="o">.</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Solve both Poisson and Helmholtz with the same RHS</span>
+<span class="n">psi_poisson</span> <span class="o">=</span> <span class="n">solver_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>       <span class="c1"># lambda = 0</span>
+<span class="n">psi_helmholtz</span> <span class="o">=</span> <span class="n">solver_helmholtz</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>  <span class="c1"># lambda = 1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Poisson   max |psi|: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">)))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz max |psi|: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">)))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">))</span> <span class="o">/</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ratio (Poisson / Helmholtz): </span><span class="si">{</span><span class="n">ratio</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Screening localizes the response: the Helmholtz solution is ~</span><span class="si">{</span><span class="n">ratio</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">x smaller."</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-14"># Build a Helmholtz solver with lambda = 1.0
+lambda_helm = 1.0
+solver_helmholtz = build_capacitance_solver(
+    mask, dx, dy, lambda_=lambda_helm, base_bc="dst"
+)
+print(f"Helmholtz solver: lambda = {solver_helmholtz.lambda_}")
+
+# Solve both Poisson and Helmholtz with the same RHS
+psi_poisson = solver_dst(rhs)       # lambda = 0
+psi_helmholtz = solver_helmholtz(rhs)  # lambda = 1
+
+print(f"\nPoisson   max |psi|: {float(jnp.max(jnp.abs(psi_poisson))):.6f}")
+print(f"Helmholtz max |psi|: {float(jnp.max(jnp.abs(psi_helmholtz))):.6f}")
+ratio = float(jnp.max(jnp.abs(psi_poisson)) / jnp.max(jnp.abs(psi_helmholtz)))
+print(f"Ratio (Poisson / Helmholtz): {ratio:.1f}x")
+print(f"\nScreening localizes the response: the Helmholtz solution is ~{ratio:.0f}x smaller.")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=28214a08">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># INDEPENDENT color scales — critical for visual comparison</span>
+<span class="n">vmax_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">)))</span>
+<span class="n">vmax_h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">)))</span>
+
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span>
+    <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax_p</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax_p</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Poisson ($\lambda = 0$)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_helmholtz</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span>
+    <span class="n">vmin</span><span class="o">=-</span><span class="n">vmax_h</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax_h</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">rf</span><span class="s2">"Helmholtz ($\lambda = </span><span class="si">{</span><span class="n">lambda_helm</span><span class="si">}</span><span class="s2">$)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Capacitance solver: Poisson vs Helmholtz (independent color scales)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"poisson_vs_helmholtz.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-15">fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+
+# INDEPENDENT color scales — critical for visual comparison
+vmax_p = float(jnp.max(jnp.abs(psi_poisson)))
+vmax_h = float(jnp.max(jnp.abs(psi_helmholtz)))
+
+im0 = axes[0].imshow(
+    np.array(psi_poisson), origin="lower", cmap="RdBu_r",
+    vmin=-vmax_p, vmax=vmax_p,
+)
+axes[0].set_title(r"Poisson ($\lambda = 0$)")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(
+    np.array(psi_helmholtz), origin="lower", cmap="RdBu_r",
+    vmin=-vmax_h, vmax=vmax_h,
+)
+axes[1].set_title(rf"Helmholtz ($\lambda = {lambda_helm}$)")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+fig.suptitle("Capacitance solver: Poisson vs Helmholtz (independent color scales)", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "poisson_vs_helmholtz.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f13062e7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Poisson vs Helmholtz comparison" src="../images/demo_capacitance/poisson_vs_helmholtz.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c75c6427">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Observations</strong>:</p>
+<ul>
+<li>The <strong>Poisson solution</strong> ($\lambda = 0$) spreads broadly across the
+entire basin, with values that decay slowly from the source.</li>
+<li>The <strong>Helmholtz solution</strong> ($\lambda = 1$) is concentrated near the
+Gaussian source and decays exponentially away from it.</li>
+<li>The amplitude ratio confirms the screening: the Helmholtz peak is
+much smaller than the Poisson peak.</li>
+<li>Both solutions satisfy $\psi = 0$ at the basin boundary (enforced by
+the capacitance correction).</li>
+</ul>
+<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What happens</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Offline</strong></td>
+<td>Detect boundary, build Green's functions, invert $C$</td>
+<td>$O(N_b \cdot N \log N + N_b^3)$</td>
+</tr>
+<tr>
+<td><strong>Online</strong></td>
+<td>Full-domain spectral solve + capacitance correction</td>
+<td>$O(N \log N + N_b^2)$</td>
+</tr>
+</tbody>
+</table>
+<p>The capacitance matrix method turns an irregular-domain PDE into a
+sequence of rectangular spectral solves plus a small dense linear
+system, combining the speed of FFT-based methods with the flexibility
+of arbitrary domain shapes.</p>
 </div>
 </div>
 </div>

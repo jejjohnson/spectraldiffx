@@ -1345,7 +1345,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -1373,7 +1373,119 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1401,7 +1513,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1429,7 +1541,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1457,7 +1569,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1514,62 +1626,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -2696,7 +2752,7 @@
 <p class="admonition-title">Choosing the right transform</p>
 <p>If your field is zero on the boundary, use DST-I. If the <em>gradient</em> of your field is zero on the boundary, use DCT-II. If the domain wraps around, use the FFT. Mixing these up produces the wrong eigenvalues and incorrect solutions.</p>
 </div>
-<p><img alt="DST-I (sine) and DCT-II (cosine) basis functions for N=8. DST-I modes vanish at the boundaries (Dirichlet), while DCT-II modes have zero slope (Neumann)." src="../../images/basis_functions.png" /></p>
+<p><img alt="DST-I (sine) and DCT-II (cosine) basis functions for N=8. DST-I modes vanish at the boundaries (Dirichlet), while DCT-II modes have zero slope (Neumann)." src="../../images/eigenfunction_gallery/basis_functions_stem.png" /></p>
 <hr />
 <h2 id="2-discrete-cosine-transform-dct">2. Discrete Cosine Transform (DCT)<a class="headerlink" href="#2-discrete-cosine-transform-dct" title="Permanent link">&para;</a></h2>
 <p>The DCT family has four standard types. We follow the <strong>unnormalized SciPy convention</strong> (<code>norm=None</code>), where the forward transform carries a factor of 2 and the inverse absorbs the full normalisation scale.</p>
@@ -2983,7 +3039,7 @@
 <p><strong>Layer 1 FFT solver classes</strong> (<code>SpectralHelmholtzSolver1D</code>, <code>SpectralHelmholtzSolver2D</code>, <code>SpectralHelmholtzSolver3D</code>) use continuous wavenumbers from the <code>FourierGrid</code>. This is correct for pseudospectral methods where derivatives are computed exactly in Fourier space.</p>
 <p>Mixing discrete eigenvalues with continuous transforms (or vice versa) produces incorrect solutions.</p>
 </div>
-<p><img alt="Discrete finite-difference eigenvalues (blue circles) vs continuous eigenvalues (red squares) for N=32. The two agree for low wavenumbers but diverge near the Nyquist frequency." src="../../images/eigenvalues_comparison.png" /></p>
+<p><img alt="Discrete finite-difference eigenvalues (blue circles) vs continuous eigenvalues (red squares) for N=32. The two agree for low wavenumbers but diverge near the Nyquist frequency." src="../../images/solver_comparison/discrete_vs_continuous_eigenvalues.png" /></p>
 <hr />
 <h2 id="7-references">7. References<a class="headerlink" href="#7-references" title="Permanent link">&para;</a></h2>
 <ul>

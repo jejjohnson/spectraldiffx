@@ -1555,7 +1555,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -1583,7 +1583,119 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1611,7 +1723,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1639,7 +1751,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1667,7 +1779,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1724,62 +1836,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -3199,7 +3255,7 @@ a pointwise division instead of a matrix solve.</p>
 <li><strong>No null mode:</strong> the denominator <span class="arithmatex">\(\Lambda_{j,i}\)</span> is always nonzero for <span class="arithmatex">\(\lambda \geq 0\)</span>, so no special treatment is needed.</li>
 <li>The input <code>rhs</code> lives on the <span class="arithmatex">\(N_y \times N_x\)</span> interior grid; boundary values are implicit zeros.</li>
 </ul>
-<p><img alt="Eigenfunction recovery test: the DST-I Poisson solver recovers the exact eigenfunction to machine precision." src="../../images/eigenfunction_recovery.png" /></p>
+<p><img alt="Eigenfunction recovery test: the DST-I Poisson solver recovers the exact eigenfunction to machine precision." src="../../images/demo_elliptic_solvers/eigenfunction_recovery.png" /></p>
 <h3 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Layer 0 — pure functions</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
@@ -3514,7 +3570,7 @@ exact and has no tunable parameter.</p>
 <code>solve_helmholtz_dst</code> = <code>solve_helmholtz_dst1</code> (Dirichlet, regular) and
 <code>solve_helmholtz_dct</code> = <code>solve_helmholtz_dct2</code> (Neumann, staggered).</p>
 </div>
-<p><img alt="Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around." src="../../images/solver_comparison.png" /></p>
+<p><img alt="Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around." src="../../images/demo_elliptic_solvers/poisson_comparison_three_bcs.png" /></p>
 <hr />
 <h2 id="10-references">10. References<a class="headerlink" href="#10-references" title="Permanent link">&para;</a></h2>
 <ul>

@@ -13,7 +13,7 @@
       
       
       
-        <link rel="prev" href="../qg_model/">
+        <link rel="prev" href="../solver_comparison/">
       
       
         <link rel="next" href="../demo_capacitance/">
@@ -27,7 +27,7 @@
     
     
       
-        <title>Spectral Elliptic Solvers Demo - SpectralDiffX</title>
+        <title>Spectral Elliptic PDE Solvers: Poisson & Helmholtz Equations - SpectralDiffX</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#spectral-elliptic-solvers-demo" class="md-skip">
+        <a href="#spectral-elliptic-pde-solvers-poisson-helmholtz-equations" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Spectral Elliptic Solvers Demo
+              Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
             
           </span>
         </div>
@@ -965,7 +965,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -993,7 +993,321 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-tutorial-covers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this tutorial covers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-spectral-solution-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The Spectral Solution Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Spectral Solution Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#continuous-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discrete-spectral-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discrete spectral approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-dirichlet-bcs-dst-i-eigenfunction-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Dirichlet BCs (DST-I): Eigenfunction Recovery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-neumann-bcs-dct-ii-eigenfunction-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Neumann BCs (DCT-II): Eigenfunction Recovery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-periodic-bcs-fft-eigenfunction-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Periodic BCs (FFT): Eigenfunction Recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Periodic BCs (FFT): Eigenfunction Recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary-of-eigenfunction-recovery-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary of eigenfunction recovery tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-helmholtz-equation-lambda-neq-0-screening-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Helmholtz Equation ($\lambda \neq 0$): Screening Effect
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-visual-comparison-gaussian-bump-with-three-bc-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Visual Comparison: Gaussian Bump with Three BC Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-module-classes-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Module Classes: and
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-batched-solves-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Batched Solves with
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1021,7 +1335,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1049,7 +1363,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1077,7 +1391,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1134,175 +1448,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#section-1-poisson-with-dirichlet-bcs-dst-i" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 1: Poisson with Dirichlet BCs (DST-I)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-2-helmholtz-with-neumann-bcs-dct-ii" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 2: Helmholtz with Neumann BCs (DCT-II)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-3-poisson-with-periodic-bcs-fft" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 3: Poisson with Periodic BCs (FFT)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-4-comparison-of-all-three-solvers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 4: Comparison of All Three Solvers
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-5-using-layer-1-classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 5: Using Layer 1 Classes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#section-6-batched-solve-with-vmap" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Section 6: Batched Solve with vmap
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -2037,10 +2182,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#section-1-poisson-with-dirichlet-bcs-dst-i" class="md-nav__link">
+  <a href="#what-this-tutorial-covers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 1: Poisson with Dirichlet BCs (DST-I)
+        What this tutorial covers
       
     </span>
   </a>
@@ -2048,10 +2193,49 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-2-helmholtz-with-neumann-bcs-dct-ii" class="md-nav__link">
+  <a href="#1-the-spectral-solution-method" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 2: Helmholtz with Neumann BCs (DCT-II)
+        1. The Spectral Solution Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. The Spectral Solution Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#continuous-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Continuous problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discrete-spectral-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discrete spectral approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-dirichlet-bcs-dst-i-eigenfunction-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Dirichlet BCs (DST-I): Eigenfunction Recovery
       
     </span>
   </a>
@@ -2059,10 +2243,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-3-poisson-with-periodic-bcs-fft" class="md-nav__link">
+  <a href="#3-neumann-bcs-dct-ii-eigenfunction-recovery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 3: Poisson with Periodic BCs (FFT)
+        3. Neumann BCs (DCT-II): Eigenfunction Recovery
       
     </span>
   </a>
@@ -2070,10 +2254,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-4-comparison-of-all-three-solvers" class="md-nav__link">
+  <a href="#4-periodic-bcs-fft-eigenfunction-recovery" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 4: Comparison of All Three Solvers
+        4. Periodic BCs (FFT): Eigenfunction Recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Periodic BCs (FFT): Eigenfunction Recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary-of-eigenfunction-recovery-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary of eigenfunction recovery tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-helmholtz-equation-lambda-neq-0-screening-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Helmholtz Equation ($\lambda \neq 0$): Screening Effect
       
     </span>
   </a>
@@ -2081,10 +2293,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-5-using-layer-1-classes" class="md-nav__link">
+  <a href="#6-visual-comparison-gaussian-bump-with-three-bc-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 5: Using Layer 1 Classes
+        6. Visual Comparison: Gaussian Bump with Three BC Types
       
     </span>
   </a>
@@ -2092,10 +2304,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#section-6-batched-solve-with-vmap" class="md-nav__link">
+  <a href="#7-module-classes-and" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Section 6: Batched Solve with vmap
+        7. Module Classes: and
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-batched-solves-with" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Batched Solves with
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
       
     </span>
   </a>
@@ -2558,47 +2792,65 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4dd026e2">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1b8038b9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="spectral-elliptic-solvers-demo">Spectral Elliptic Solvers Demo<a class="anchor-link" href="#spectral-elliptic-solvers-demo">¶</a></h1><p>This notebook demonstrates how to solve the Helmholtz equation</p>
-<p>$$(\nabla^2 - \lambda)\psi = f$$</p>
-<p>using three spectral methods, each corresponding to a different boundary condition:</p>
+<h1 id="spectral-elliptic-pde-solvers-poisson-helmholtz-equations">Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations<a class="anchor-link" href="#spectral-elliptic-pde-solvers-poisson-helmholtz-equations">¶</a></h1><h2 id="what-this-tutorial-covers">What this tutorial covers<a class="anchor-link" href="#what-this-tutorial-covers">¶</a></h2><p>Many problems in physics and engineering reduce to solving an elliptic PDE
+of the form</p>
+<p>$$(\nabla^2 - \lambda)\,\psi = f,$$</p>
+<p>known as the <strong>Helmholtz equation</strong>. Setting $\lambda = 0$ gives the
+<strong>Poisson equation</strong> $\nabla^2 \psi = f$.</p>
+<p>These equations appear everywhere:</p>
+<ul>
+<li><strong>Pressure projection</strong> in incompressible Navier--Stokes solvers</li>
+<li><strong>Geostrophic balance</strong> and quasi-geostrophic streamfunction inversion</li>
+<li><strong>Electrostatics</strong> (Coulomb potential from a charge distribution)</li>
+<li><strong>Quantum mechanics</strong> (time-independent Schrodinger equation)</li>
+<li><strong>Screened Poisson</strong> problems in plasma physics ($\lambda &gt; 0$)</li>
+</ul>
+<p>This notebook demonstrates how <code>spectraldiffx</code> solves these equations
+on a 2-D rectangular grid using three spectral methods, each corresponding
+to a different boundary condition:</p>
 <table>
 <thead>
 <tr>
 <th>BC type</th>
 <th>Transform</th>
-<th>Solver function</th>
+<th>Eigenfunctions</th>
+<th>Solver</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Dirichlet</strong> ($\psi = 0$ on boundary)</td>
+<td><strong>Dirichlet</strong> $\psi = 0$ on boundary</td>
 <td>DST-I</td>
+<td>$\sin$</td>
 <td><code>solve_poisson_dst</code> / <code>solve_helmholtz_dst</code></td>
 </tr>
 <tr>
-<td><strong>Neumann</strong> ($\partial\psi/\partial n = 0$ on boundary)</td>
+<td><strong>Neumann</strong> $\partial_n \psi = 0$ on boundary</td>
 <td>DCT-II</td>
+<td>$\cos$</td>
 <td><code>solve_poisson_dct</code> / <code>solve_helmholtz_dct</code></td>
 </tr>
 <tr>
-<td><strong>Periodic</strong> ($\psi(0) = \psi(L)$)</td>
+<td><strong>Periodic</strong> $\psi(0) = \psi(L)$</td>
 <td>FFT</td>
+<td>$e^{ikx}$</td>
 <td><code>solve_poisson_fft</code> / <code>solve_helmholtz_fft</code></td>
 </tr>
 </tbody>
 </table>
-<p>Setting $\lambda = 0$ reduces the Helmholtz equation to the <strong>Poisson equation</strong> $\nabla^2\psi = f$.</p>
+<p>We also show how to use the <code>eqx.Module</code> class wrappers and <code>jax.vmap</code>
+for batched solves.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=472bc5bc">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=262e3bff">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2616,41 +2868,63 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">equinox</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">eqx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"Agg"</span><span class="p">)</span>
+
 <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">"jax_enable_x64"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">IMG_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"demo_elliptic_solvers"</span>
+<span class="n">IMG_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">DirichletHelmholtzSolver2D</span><span class="p">,</span>
-    <span class="n">dst1_eigenvalues</span><span class="p">,</span>
+    <span class="n">NeumannHelmholtzSolver2D</span><span class="p">,</span>
     <span class="n">dct2_eigenvalues</span><span class="p">,</span>
+    <span class="n">dst1_eigenvalues</span><span class="p">,</span>
     <span class="n">fft_eigenvalues</span><span class="p">,</span>
     <span class="n">solve_helmholtz_dct</span><span class="p">,</span>
     <span class="n">solve_helmholtz_dst</span><span class="p">,</span>
-    <span class="n">solve_poisson_dst</span><span class="p">,</span>
+    <span class="n">solve_helmholtz_fft</span><span class="p">,</span>
     <span class="n">solve_poisson_dct</span><span class="p">,</span>
+    <span class="n">solve_poisson_dst</span><span class="p">,</span>
     <span class="n">solve_poisson_fft</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">import jax
+<div class="clipboard-copy-txt" id="cell-1">from pathlib import Path
+
+import equinox as eqx
+import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_elliptic_solvers"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 from spectraldiffx import (
     DirichletHelmholtzSolver2D,
-    dst1_eigenvalues,
+    NeumannHelmholtzSolver2D,
     dct2_eigenvalues,
+    dst1_eigenvalues,
     fft_eigenvalues,
     solve_helmholtz_dct,
     solve_helmholtz_dst,
-    solve_poisson_dst,
+    solve_helmholtz_fft,
     solve_poisson_dct,
+    solve_poisson_dst,
     solve_poisson_fft,
 )</div>
 </div>
@@ -2659,21 +2933,41 @@ from spectraldiffx import (
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ad08d836">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=38074b86">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-1-poisson-with-dirichlet-bcs-dst-i">Section 1: Poisson with Dirichlet BCs (DST-I)<a class="anchor-link" href="#section-1-poisson-with-dirichlet-bcs-dst-i">¶</a></h2><p>We solve $\nabla^2 \psi = f$ on an interior grid where $\psi = 0$ on all four edges.</p>
-<p><strong>Strategy</strong>: pick a known eigenfunction of the discrete Laplacian, compute
-its Laplacian analytically using the DST-I eigenvalues, then verify the solver
-recovers the original field.</p>
+<h2 id="1-the-spectral-solution-method">1. The Spectral Solution Method<a class="anchor-link" href="#1-the-spectral-solution-method">¶</a></h2><h3 id="continuous-problem">Continuous problem<a class="anchor-link" href="#continuous-problem">¶</a></h3><p>Given a source $f(x, y)$, find $\psi(x, y)$ satisfying</p>
+<p>$$\nabla^2 \psi - \lambda\,\psi = f, \qquad \nabla^2 = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}.$$</p>
+<h3 id="discrete-spectral-approach">Discrete spectral approach<a class="anchor-link" href="#discrete-spectral-approach">¶</a></h3><p>On an $N_y \times N_x$ grid with spacing $(\Delta x, \Delta y)$, the
+second-order finite-difference Laplacian has known eigenvectors
+for DST, DCT, and FFT bases. The algorithm is:</p>
+<pre><code>Algorithm: Spectral Helmholtz Solve
+────────────────────────────────────
+1. f_hat = Transform(f)               ← forward DST / DCT / FFT
+2. psi_hat[p,q] = f_hat[p,q]          ← spectral division
+                   ─────────────────
+                   lambda_x[p] + lambda_y[q] - alpha
+3. psi = InverseTransform(psi_hat)     ← backward transform
+</code></pre>
+<p>Each transform type has its own eigenvalue formula:</p>
+<ul>
+<li><strong>DST-I</strong> (Dirichlet): $\lambda^x_p = \frac{2}{\Delta x^2}\left[\cos\!\left(\frac{\pi\,p}{N_x+1}\right) - 1\right], \quad p = 1, \dots, N_x$</li>
+<li><strong>DCT-II</strong> (Neumann): $\lambda^x_p = \frac{2}{\Delta x^2}\left[\cos\!\left(\frac{\pi\,p}{N_x}\right) - 1\right], \quad p = 0, \dots, N_x-1$</li>
+<li><strong>FFT</strong> (Periodic): $\lambda^x_p = \frac{2}{\Delta x^2}\left[\cos\!\left(\frac{2\pi\,p}{N_x}\right) - 1\right], \quad p = 0, \dots, N_x-1$</li>
+</ul>
+<p>The $y$-direction eigenvalues follow the same pattern with $N_y$ and $\Delta y$.</p>
+<p><strong>Null-mode caveat</strong>: For Neumann and periodic BCs, the $(0, 0)$ eigenvalue
+is zero, making the Poisson equation singular. The solution is determined
+only up to an additive constant. The solver handles this by projecting
+out the zero mode (enforcing zero-mean $\psi$).</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d7be3be8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=307532ca">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2691,58 +2985,58 @@ recovers the original field.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Grid parameters</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># ─── Grid parameters ───</span>
+<span class="c1"># 64x64 is large enough to see smooth fields, small enough to run instantly.</span>
+<span class="c1"># dx = dy = 1.0 gives eigenvalues in simple units.</span>
 <span class="n">Nx</span><span class="p">,</span> <span class="n">Ny</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span>
 <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
 
-<span class="c1"># Known eigenfunction: sin(pi*p*(i+1)/(Nx+1)) * sin(pi*q*(j+1)/(Ny+1))</span>
-<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+<span class="c1"># Index arrays for building eigenfunctions</span>
 <span class="n">i_idx</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Nx</span><span class="p">)</span>
 <span class="n">j_idx</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Ny</span><span class="p">)</span>
-<span class="n">II</span><span class="p">,</span> <span class="n">JJ</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">i_idx</span><span class="p">,</span> <span class="n">j_idx</span><span class="p">)</span>
+<span class="n">II</span><span class="p">,</span> <span class="n">JJ</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">i_idx</span><span class="p">,</span> <span class="n">j_idx</span><span class="p">)</span>  <span class="c1"># shape: (Ny, Nx)</span>
 
-<span class="n">psi_exact</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="n">II</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Ny</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-<span class="p">)</span>
-
-<span class="c1"># The Laplacian of this eigenfunction equals (eigx[p-1] + eigy[q-1]) * psi_exact</span>
-<span class="n">eigx</span> <span class="o">=</span> <span class="n">dst1_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
-<span class="n">eigy</span> <span class="o">=</span> <span class="n">dst1_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">eigenvalue</span> <span class="o">=</span> <span class="n">eigx</span><span class="p">[</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy</span><span class="p">[</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Combined eigenvalue (p=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">eigenvalue</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-
-<span class="n">rhs_dst</span> <span class="o">=</span> <span class="n">eigenvalue</span> <span class="o">*</span> <span class="n">psi_exact</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid shape: (</span><span class="si">{</span><span class="n">Ny</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">Nx</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid spacing: dx=</span><span class="si">{</span><span class="n">dx</span><span class="si">}</span><span class="s2">, dy=</span><span class="si">{</span><span class="n">dy</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Index arrays II, JJ shape: </span><span class="si">{</span><span class="n">II</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2"># Grid parameters
+<div class="clipboard-copy-txt" id="cell-2"># ─── Grid parameters ───
+# 64x64 is large enough to see smooth fields, small enough to run instantly.
+# dx = dy = 1.0 gives eigenvalues in simple units.
 Nx, Ny = 64, 64
 dx, dy = 1.0, 1.0
 
-# Known eigenfunction: sin(pi*p*(i+1)/(Nx+1)) * sin(pi*q*(j+1)/(Ny+1))
-p, q = 2, 3
+# Index arrays for building eigenfunctions
 i_idx = jnp.arange(Nx)
 j_idx = jnp.arange(Ny)
-II, JJ = jnp.meshgrid(i_idx, j_idx)
+II, JJ = jnp.meshgrid(i_idx, j_idx)  # shape: (Ny, Nx)
 
-psi_exact = (
-    jnp.sin(jnp.pi * p * (II + 1) / (Nx + 1))
-    * jnp.sin(jnp.pi * q * (JJ + 1) / (Ny + 1))
-)
-
-# The Laplacian of this eigenfunction equals (eigx[p-1] + eigy[q-1]) * psi_exact
-eigx = dst1_eigenvalues(Nx, dx)
-eigy = dst1_eigenvalues(Ny, dy)
-eigenvalue = eigx[p - 1] + eigy[q - 1]
-print(f"Combined eigenvalue (p={p}, q={q}): {eigenvalue:.6f}")
-
-rhs_dst = eigenvalue * psi_exact</div>
+print(f"Grid shape: ({Ny}, {Nx})")
+print(f"Grid spacing: dx={dx}, dy={dy}")
+print(f"Index arrays II, JJ shape: {II.shape}")</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cadedca0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="2-dirichlet-bcs-dst-i-eigenfunction-recovery">2. Dirichlet BCs (DST-I): Eigenfunction Recovery<a class="anchor-link" href="#2-dirichlet-bcs-dst-i-eigenfunction-recovery">¶</a></h2><p>The DST-I eigenfunctions on an $N$-point interior grid are</p>
+<p>$$\phi_{p,q}(i, j) = \sin\!\left(\frac{\pi\,p\,(i+1)}{N_x+1}\right)\sin\!\left(\frac{\pi\,q\,(j+1)}{N_y+1}\right), \quad p \in [1, N_x],\; q \in [1, N_y].$$</p>
+<p>These satisfy homogeneous Dirichlet conditions: $\phi = 0$ at $i = -1$
+and $i = N_x$ (the ghost boundary points).</p>
+<p><strong>Test</strong>: Build an eigenfunction, compute its Laplacian analytically
+using the eigenvalue, then verify the solver recovers $\phi$ exactly.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fd75a37f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3d7d709d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2760,35 +3054,52 @@ rhs_dst = eigenvalue * psi_exact</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Solve and check error</span>
-<span class="n">psi_dst</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs_dst</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">error_dst</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_dst</span> <span class="o">-</span> <span class="n">psi_exact</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Poisson DST): </span><span class="si">{</span><span class="n">error_dst</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Mode indices (low modes for a smooth field)</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+<span class="c1"># Eigenfunction</span>
+<span class="n">psi_exact</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="n">II</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Ny</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"psi_exact shape: </span><span class="si">{</span><span class="n">psi_exact</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Eigenvalues from the DST-I formula</span>
+<span class="n">eigx</span> <span class="o">=</span> <span class="n">dst1_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+<span class="n">eigy</span> <span class="o">=</span> <span class="n">dst1_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">eigenvalue</span> <span class="o">=</span> <span class="n">eigx</span><span class="p">[</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy</span><span class="p">[</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># 1-indexed: mode p uses eigx[p-1]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DST-I eigenvalue for (p=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">eigenvalue</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># The Laplacian of the eigenfunction is eigenvalue * psi_exact</span>
+<span class="n">rhs_dst</span> <span class="o">=</span> <span class="n">eigenvalue</span> <span class="o">*</span> <span class="n">psi_exact</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RHS shape: </span><span class="si">{</span><span class="n">rhs_dst</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3"># Solve and check error
-psi_dst = solve_poisson_dst(rhs_dst, dx, dy)
-error_dst = jnp.max(jnp.abs(psi_dst - psi_exact))
-print(f"Max error (Poisson DST): {error_dst:.2e}")</div>
+<div class="clipboard-copy-txt" id="cell-3"># Mode indices (low modes for a smooth field)
+p, q = 2, 3
+
+# Eigenfunction
+psi_exact = (
+    jnp.sin(jnp.pi * p * (II + 1) / (Nx + 1))
+    * jnp.sin(jnp.pi * q * (JJ + 1) / (Ny + 1))
+)
+print(f"psi_exact shape: {psi_exact.shape}")
+
+# Eigenvalues from the DST-I formula
+eigx = dst1_eigenvalues(Nx, dx)
+eigy = dst1_eigenvalues(Ny, dy)
+eigenvalue = eigx[p - 1] + eigy[q - 1]  # 1-indexed: mode p uses eigx[p-1]
+print(f"DST-I eigenvalue for (p={p}, q={q}): {eigenvalue:.6f}")
+
+# The Laplacian of the eigenfunction is eigenvalue * psi_exact
+rhs_dst = eigenvalue * psi_exact
+print(f"RHS shape: {rhs_dst.shape}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=94f80c95">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-2-helmholtz-with-neumann-bcs-dct-ii">Section 2: Helmholtz with Neumann BCs (DCT-II)<a class="anchor-link" href="#section-2-helmholtz-with-neumann-bcs-dct-ii">¶</a></h2><p>We solve $(\nabla^2 - \lambda)\psi = f$ with homogeneous Neumann BCs
-($\partial\psi/\partial n = 0$) using the DCT-II.</p>
-<p>The eigenfunctions are cosines: $\cos(\pi p \, i / N_x) \cos(\pi q \, j / N_y)$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=277b992a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=38cc7e36">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2806,46 +3117,24 @@ print(f"Max error (Poisson DST): {error_dst:.2e}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">lambda_</span> <span class="o">=</span> <span class="mf">1.0</span>
-
-<span class="c1"># Known eigenfunction using cosines (Neumann basis)</span>
-<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
-<span class="n">psi_exact_dct</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="n">II</span> <span class="o">/</span> <span class="n">Nx</span><span class="p">)</span>
-    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">JJ</span> <span class="o">/</span> <span class="n">Ny</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="c1"># Eigenvalues for the DCT-II basis</span>
-<span class="n">eigx_dct</span> <span class="o">=</span> <span class="n">dct2_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
-<span class="n">eigy_dct</span> <span class="o">=</span> <span class="n">dct2_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">eigenvalue_dct</span> <span class="o">=</span> <span class="n">eigx_dct</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy_dct</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
-
-<span class="c1"># RHS = (eigenvalue - lambda) * psi_exact</span>
-<span class="n">rhs_dct</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigenvalue_dct</span> <span class="o">-</span> <span class="n">lambda_</span><span class="p">)</span> <span class="o">*</span> <span class="n">psi_exact_dct</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Solve and measure error</span>
+<span class="n">psi_dst</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs_dst</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">error_dst</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_dst</span> <span class="o">-</span> <span class="n">psi_exact</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Poisson DST): </span><span class="si">{</span><span class="n">error_dst</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Solution shape: </span><span class="si">{</span><span class="n">psi_dst</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">lambda_ = 1.0
-
-# Known eigenfunction using cosines (Neumann basis)
-p, q = 2, 3
-psi_exact_dct = (
-    jnp.cos(jnp.pi * p * II / Nx)
-    * jnp.cos(jnp.pi * q * JJ / Ny)
-)
-
-# Eigenvalues for the DCT-II basis
-eigx_dct = dct2_eigenvalues(Nx, dx)
-eigy_dct = dct2_eigenvalues(Ny, dy)
-eigenvalue_dct = eigx_dct[p] + eigy_dct[q]
-
-# RHS = (eigenvalue - lambda) * psi_exact
-rhs_dct = (eigenvalue_dct - lambda_) * psi_exact_dct</div>
+<div class="clipboard-copy-txt" id="cell-4"># Solve and measure error
+psi_dst = solve_poisson_dst(rhs_dst, dx, dy)
+error_dst = float(jnp.max(jnp.abs(psi_dst - psi_exact)))
+print(f"Max error (Poisson DST): {error_dst:.2e}")
+print(f"Solution shape: {psi_dst.shape}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1f68ca3f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=edb55af4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2863,33 +3152,88 @@ rhs_dct = (eigenvalue_dct - lambda_) * psi_exact_dct</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi_dct</span> <span class="o">=</span> <span class="n">solve_helmholtz_dct</span><span class="p">(</span><span class="n">rhs_dct</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_</span><span class="p">)</span>
-<span class="n">error_dct</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_dct</span> <span class="o">-</span> <span class="n">psi_exact_dct</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Helmholtz DCT, lambda=</span><span class="si">{</span><span class="n">lambda_</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">error_dct</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+
+<span class="n">im0</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_exact</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Exact $\psi$ (eigenfunction)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi_dst</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Computed $\psi$ (DST-I)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">im2</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_dst</span> <span class="o">-</span> <span class="n">psi_exact</span><span class="p">)),</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"hot_r"</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error (max = </span><span class="si">{</span><span class="n">error_dst</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im2</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"</span><span class="si">%.0e</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Eigenfunction Recovery: DST-I Poisson ($p=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">$)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"eigenfunction_recovery.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">psi_dct = solve_helmholtz_dct(rhs_dct, dx, dy, lambda_=lambda_)
-error_dct = jnp.max(jnp.abs(psi_dct - psi_exact_dct))
-print(f"Max error (Helmholtz DCT, lambda={lambda_}): {error_dct:.2e}")</div>
+<div class="clipboard-copy-txt" id="cell-5">fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
+
+im0 = axes[0].imshow(np.array(psi_exact), cmap="RdBu_r", origin="lower")
+axes[0].set_title(r"Exact $\psi$ (eigenfunction)")
+plt.colorbar(im0, ax=axes[0], shrink=0.8)
+
+im1 = axes[1].imshow(np.array(psi_dst), cmap="RdBu_r", origin="lower")
+axes[1].set_title(r"Computed $\psi$ (DST-I)")
+plt.colorbar(im1, ax=axes[1], shrink=0.8)
+
+im2 = axes[2].imshow(np.array(jnp.abs(psi_dst - psi_exact)), cmap="hot_r", origin="lower")
+axes[2].set_title(f"Error (max = {error_dst:.1e})")
+plt.colorbar(im2, ax=axes[2], shrink=0.8, format="%.0e")
+
+for ax in axes:
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+
+plt.suptitle(f"Eigenfunction Recovery: DST-I Poisson ($p={p}, q={q}$)", fontsize=13)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "eigenfunction_recovery.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=59fdff09">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5f1fb8e9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-3-poisson-with-periodic-bcs-fft">Section 3: Poisson with Periodic BCs (FFT)<a class="anchor-link" href="#section-3-poisson-with-periodic-bcs-fft">¶</a></h2><p>We solve $\nabla^2 \psi = f$ with periodic BCs using the 2-D FFT.</p>
-<p>The eigenfunctions are complex exponentials, but for a real test we use
-$\cos(2\pi p \, i / N_x) \cos(2\pi q \, j / N_y)$.</p>
+<p><img alt="Eigenfunction recovery" src="../images/demo_elliptic_solvers/eigenfunction_recovery.png"/></p>
+<p>The error is at machine precision ($\sim 10^{-14}$) because the solver
+uses the exact same eigenvector basis as the test function.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fa0860e4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="3-neumann-bcs-dct-ii-eigenfunction-recovery">3. Neumann BCs (DCT-II): Eigenfunction Recovery<a class="anchor-link" href="#3-neumann-bcs-dct-ii-eigenfunction-recovery">¶</a></h2><p>The DCT-II eigenfunctions are cosines defined on cell centers:</p>
+<p>$$\phi_{p,q}(i, j) = \cos\!\left(\frac{\pi\,p\,i}{N_x}\right)\cos\!\left(\frac{\pi\,q\,j}{N_y}\right), \quad p \in [0, N_x-1],\; q \in [0, N_y-1].$$</p>
+<p>These satisfy homogeneous Neumann conditions ($\partial_n \phi = 0$) at
+the half-grid boundaries.</p>
+<p><strong>Zero-mean gauge</strong>: When $\lambda = 0$, the $(0,0)$ mode is in the
+null space of the Laplacian. The solver projects it out, yielding the
+unique zero-mean solution. We choose $p, q &gt; 0$ to avoid the null mode.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=226670fd">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=72a323c0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2907,36 +3251,48 @@ $\cos(2\pi p \, i / N_x) \cos(2\pi q \, j / N_y)$.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
-<span class="n">psi_exact_fft</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="n">II</span> <span class="o">/</span> <span class="n">Nx</span><span class="p">)</span>
-    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">JJ</span> <span class="o">/</span> <span class="n">Ny</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">lambda_neu</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
+
+<span class="c1"># Cosine eigenfunction</span>
+<span class="n">psi_exact_dct</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="n">II</span> <span class="o">/</span> <span class="n">Nx</span><span class="p">)</span>
+    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">JJ</span> <span class="o">/</span> <span class="n">Ny</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">eigx_fft</span> <span class="o">=</span> <span class="n">fft_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
-<span class="n">eigy_fft</span> <span class="o">=</span> <span class="n">fft_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">eigenvalue_fft</span> <span class="o">=</span> <span class="n">eigx_fft</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy_fft</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
+<span class="c1"># DCT-II eigenvalues (0-indexed)</span>
+<span class="n">eigx_dct</span> <span class="o">=</span> <span class="n">dct2_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+<span class="n">eigy_dct</span> <span class="o">=</span> <span class="n">dct2_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">eigenvalue_dct</span> <span class="o">=</span> <span class="n">eigx_dct</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy_dct</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DCT-II eigenvalue for (p=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">eigenvalue_dct</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="n">rhs_fft</span> <span class="o">=</span> <span class="n">eigenvalue_fft</span> <span class="o">*</span> <span class="n">psi_exact_fft</span>
+<span class="c1"># RHS = eigenvalue * psi_exact  (Poisson: lambda=0)</span>
+<span class="n">rhs_dct</span> <span class="o">=</span> <span class="n">eigenvalue_dct</span> <span class="o">*</span> <span class="n">psi_exact_dct</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">p, q = 2, 3
-psi_exact_fft = (
-    jnp.cos(2 * jnp.pi * p * II / Nx)
-    * jnp.cos(2 * jnp.pi * q * JJ / Ny)
+<div class="clipboard-copy-txt" id="cell-6">lambda_neu = 0.0
+p, q = 2, 3
+
+# Cosine eigenfunction
+psi_exact_dct = (
+    jnp.cos(jnp.pi * p * II / Nx)
+    * jnp.cos(jnp.pi * q * JJ / Ny)
 )
 
-eigx_fft = fft_eigenvalues(Nx, dx)
-eigy_fft = fft_eigenvalues(Ny, dy)
-eigenvalue_fft = eigx_fft[p] + eigy_fft[q]
+# DCT-II eigenvalues (0-indexed)
+eigx_dct = dct2_eigenvalues(Nx, dx)
+eigy_dct = dct2_eigenvalues(Ny, dy)
+eigenvalue_dct = eigx_dct[p] + eigy_dct[q]
+print(f"DCT-II eigenvalue for (p={p}, q={q}): {eigenvalue_dct:.6f}")
 
-rhs_fft = eigenvalue_fft * psi_exact_fft</div>
+# RHS = eigenvalue * psi_exact  (Poisson: lambda=0)
+rhs_dct = eigenvalue_dct * psi_exact_dct</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9ba168e1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6b920d6c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2954,32 +3310,36 @@ rhs_fft = eigenvalue_fft * psi_exact_fft</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi_fft</span> <span class="o">=</span> <span class="n">solve_poisson_fft</span><span class="p">(</span><span class="n">rhs_fft</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">error_fft</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_fft</span> <span class="o">-</span> <span class="n">psi_exact_fft</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Poisson FFT): </span><span class="si">{</span><span class="n">error_fft</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi_dct</span> <span class="o">=</span> <span class="n">solve_poisson_dct</span><span class="p">(</span><span class="n">rhs_dct</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">error_dct</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_dct</span> <span class="o">-</span> <span class="n">psi_exact_dct</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Poisson DCT): </span><span class="si">{</span><span class="n">error_dct</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Solution shape: </span><span class="si">{</span><span class="n">psi_dct</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">psi_fft = solve_poisson_fft(rhs_fft, dx, dy)
-error_fft = jnp.max(jnp.abs(psi_fft - psi_exact_fft))
-print(f"Max error (Poisson FFT): {error_fft:.2e}")</div>
+<div class="clipboard-copy-txt" id="cell-7">psi_dct = solve_poisson_dct(rhs_dct, dx, dy)
+error_dct = float(jnp.max(jnp.abs(psi_dct - psi_exact_dct)))
+print(f"Max error (Poisson DCT): {error_dct:.2e}")
+print(f"Solution shape: {psi_dct.shape}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=25cc9359">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=41ec3a3f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-4-comparison-of-all-three-solvers">Section 4: Comparison of All Three Solvers<a class="anchor-link" href="#section-4-comparison-of-all-three-solvers">¶</a></h2><p>We define a Gaussian-bump RHS and solve with all three BC types,
-then plot the solutions side by side.</p>
+<h2 id="4-periodic-bcs-fft-eigenfunction-recovery">4. Periodic BCs (FFT): Eigenfunction Recovery<a class="anchor-link" href="#4-periodic-bcs-fft-eigenfunction-recovery">¶</a></h2><p>The FFT eigenfunctions are complex exponentials $e^{2\pi i\,p\,k/N}$.
+For a real-valued test we use the cosine:</p>
+<p>$$\phi_{p,q}(i, j) = \cos\!\left(\frac{2\pi\,p\,i}{N_x}\right)\cos\!\left(\frac{2\pi\,q\,j}{N_y}\right).$$</p>
+<p>Periodic BCs wrap the domain: $\psi(0) = \psi(N)$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cfee279e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=536f714c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2997,32 +3357,40 @@ then plot the solutions side by side.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Gaussian bump RHS centered at the middle of the domain</span>
-<span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">=</span> <span class="n">Nx</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Ny</span> <span class="o">/</span> <span class="mi">2</span>
-<span class="n">sigma</span> <span class="o">=</span> <span class="n">Nx</span> <span class="o">/</span> <span class="mi">8</span>
-<span class="n">rhs_gauss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">II</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">-</span> <span class="n">cy</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
 
-<span class="c1"># Solve with all three methods</span>
-<span class="n">psi_dir</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">psi_neu</span> <span class="o">=</span> <span class="n">solve_poisson_dct</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
-<span class="n">psi_per</span> <span class="o">=</span> <span class="n">solve_poisson_fft</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">psi_exact_fft</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="n">II</span> <span class="o">/</span> <span class="n">Nx</span><span class="p">)</span>
+    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">JJ</span> <span class="o">/</span> <span class="n">Ny</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">eigx_fft</span> <span class="o">=</span> <span class="n">fft_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+<span class="n">eigy_fft</span> <span class="o">=</span> <span class="n">fft_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">eigenvalue_fft</span> <span class="o">=</span> <span class="n">eigx_fft</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy_fft</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"FFT eigenvalue for (p=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, q=</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">eigenvalue_fft</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">rhs_fft</span> <span class="o">=</span> <span class="n">eigenvalue_fft</span> <span class="o">*</span> <span class="n">psi_exact_fft</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8"># Gaussian bump RHS centered at the middle of the domain
-cx, cy = Nx / 2, Ny / 2
-sigma = Nx / 8
-rhs_gauss = jnp.exp(-((II - cx) ** 2 + (JJ - cy) ** 2) / (2 * sigma**2))
+<div class="clipboard-copy-txt" id="cell-8">p, q = 2, 3
 
-# Solve with all three methods
-psi_dir = solve_poisson_dst(rhs_gauss, dx, dy)
-psi_neu = solve_poisson_dct(rhs_gauss, dx, dy)
-psi_per = solve_poisson_fft(rhs_gauss, dx, dy)</div>
+psi_exact_fft = (
+    jnp.cos(2 * jnp.pi * p * II / Nx)
+    * jnp.cos(2 * jnp.pi * q * JJ / Ny)
+)
+
+eigx_fft = fft_eigenvalues(Nx, dx)
+eigy_fft = fft_eigenvalues(Ny, dy)
+eigenvalue_fft = eigx_fft[p] + eigy_fft[q]
+print(f"FFT eigenvalue for (p={p}, q={q}): {eigenvalue_fft:.6f}")
+
+rhs_fft = eigenvalue_fft * psi_exact_fft</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=34c2fc60">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=030abe0b">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3040,54 +3408,53 @@ psi_per = solve_poisson_fft(rhs_gauss, dx, dy)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-
-<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Dirichlet (DST)"</span><span class="p">,</span> <span class="s2">"Neumann (DCT)"</span><span class="p">,</span> <span class="s2">"Periodic (FFT)"</span><span class="p">]</span>
-<span class="n">solutions</span> <span class="o">=</span> <span class="p">[</span><span class="n">psi_dir</span><span class="p">,</span> <span class="n">psi_neu</span><span class="p">,</span> <span class="n">psi_per</span><span class="p">]</span>
-
-<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">psi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">titles</span><span class="p">,</span> <span class="n">solutions</span><span class="p">):</span>
-    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Poisson solutions for a Gaussian bump RHS"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi_fft</span> <span class="o">=</span> <span class="n">solve_poisson_fft</span><span class="p">(</span><span class="n">rhs_fft</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">error_fft</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_fft</span> <span class="o">-</span> <span class="n">psi_exact_fft</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Poisson FFT): </span><span class="si">{</span><span class="n">error_fft</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Solution shape: </span><span class="si">{</span><span class="n">psi_fft</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-
-titles = ["Dirichlet (DST)", "Neumann (DCT)", "Periodic (FFT)"]
-solutions = [psi_dir, psi_neu, psi_per]
-
-for ax, title, psi in zip(axes, titles, solutions):
-    im = ax.contourf(np.array(psi), levels=32, cmap="RdBu_r")
-    ax.set_title(title)
-    ax.set_aspect("equal")
-    plt.colorbar(im, ax=ax, shrink=0.8)
-
-plt.suptitle("Poisson solutions for a Gaussian bump RHS", fontsize=14)
-plt.tight_layout()
-plt.show()</div>
+<div class="clipboard-copy-txt" id="cell-9">psi_fft = solve_poisson_fft(rhs_fft, dx, dy)
+error_fft = float(jnp.max(jnp.abs(psi_fft - psi_exact_fft)))
+print(f"Max error (Poisson FFT): {error_fft:.2e}")
+print(f"Solution shape: {psi_fft.shape}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ea772624">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c1970742">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-5-using-layer-1-classes">Section 5: Using Layer 1 Classes<a class="anchor-link" href="#section-5-using-layer-1-classes">¶</a></h2><p>The <code>DirichletHelmholtzSolver2D</code> class wraps <code>solve_helmholtz_dst</code> in an
-<code>eqx.Module</code> that stores grid parameters and is callable.</p>
+<h3 id="summary-of-eigenfunction-recovery-tests">Summary of eigenfunction recovery tests<a class="anchor-link" href="#summary-of-eigenfunction-recovery-tests">¶</a></h3><p>All three solvers recover the exact eigenfunction to machine precision,
+confirming that the eigenvalue formulas and transform implementations
+are consistent.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=faba7db0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="5-helmholtz-equation-lambda-neq-0-screening-effect">5. Helmholtz Equation ($\lambda \neq 0$): Screening Effect<a class="anchor-link" href="#5-helmholtz-equation-lambda-neq-0-screening-effect">¶</a></h2><p>When $\lambda &gt; 0$, the equation becomes</p>
+<p>$$(\nabla^2 - \lambda)\,\psi = f.$$</p>
+<p>The $-\lambda\,\psi$ term acts as a <strong>screening</strong> (or damping) term:
+it penalizes large values of $\psi$, pulling the solution toward zero
+and localizing the response near the source. The effective length scale
+is $\ell \sim 1/\sqrt{\lambda}$.</p>
+<p>We demonstrate this with the DST (Dirichlet) eigenfunction test,
+adding a nonzero $\lambda$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=656794a5">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c1173b02">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3105,44 +3472,44 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">lambda_helm</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span>
 
-<span class="c1"># Solve the same Gaussian problem</span>
-<span class="n">psi_class</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">)</span>
+<span class="c1"># Reuse the DST eigenfunction from Section 2</span>
+<span class="n">eigx</span> <span class="o">=</span> <span class="n">dst1_eigenvalues</span><span class="p">(</span><span class="n">Nx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+<span class="n">eigy</span> <span class="o">=</span> <span class="n">dst1_eigenvalues</span><span class="p">(</span><span class="n">Ny</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">eigenvalue</span> <span class="o">=</span> <span class="n">eigx</span><span class="p">[</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">eigy</span><span class="p">[</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># Verify it matches the functional API</span>
-<span class="n">diff</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_class</span> <span class="o">-</span> <span class="n">psi_dir</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max difference (class vs function): </span><span class="si">{</span><span class="n">diff</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Solver is callable: </span><span class="si">{</span><span class="nb">callable</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">psi_exact_helm</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="n">II</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Ny</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c1"># RHS = (eigenvalue - lambda) * psi_exact  for Helmholtz</span>
+<span class="n">rhs_helm</span> <span class="o">=</span> <span class="p">(</span><span class="n">eigenvalue</span> <span class="o">-</span> <span class="n">lambda_helm</span><span class="p">)</span> <span class="o">*</span> <span class="n">psi_exact_helm</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10">solver = DirichletHelmholtzSolver2D(dx=dx, dy=dy, alpha=0.0)
+<div class="clipboard-copy-txt" id="cell-10">lambda_helm = 1.0
+p, q = 2, 3
 
-# Solve the same Gaussian problem
-psi_class = solver(rhs_gauss)
+# Reuse the DST eigenfunction from Section 2
+eigx = dst1_eigenvalues(Nx, dx)
+eigy = dst1_eigenvalues(Ny, dy)
+eigenvalue = eigx[p - 1] + eigy[q - 1]
 
-# Verify it matches the functional API
-diff = jnp.max(jnp.abs(psi_class - psi_dir))
-print(f"Max difference (class vs function): {diff:.2e}")
-print(f"Solver is callable: {callable(solver)}")</div>
+psi_exact_helm = (
+    jnp.sin(jnp.pi * p * (II + 1) / (Nx + 1))
+    * jnp.sin(jnp.pi * q * (JJ + 1) / (Ny + 1))
+)
+
+# RHS = (eigenvalue - lambda) * psi_exact  for Helmholtz
+rhs_helm = (eigenvalue - lambda_helm) * psi_exact_helm</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3948a650">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="section-6-batched-solve-with-vmap">Section 6: Batched Solve with vmap<a class="anchor-link" href="#section-6-batched-solve-with-vmap">¶</a></h2><p>We can use <code>jax.vmap</code> to solve multiple RHS in parallel. Here we
-create a batch of 5 Gaussian bumps with different centers.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c0508313">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a26c14a0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3160,36 +3527,20 @@ create a batch of 5 Gaussian bumps with different centers.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create 5 different RHS by shifting the Gaussian center</span>
-<span class="n">centers_x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">,</span> <span class="mf">48.0</span><span class="p">])</span>
-<span class="n">centers_y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">])</span>
-
-<span class="n">rhs_batch</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">II</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">-</span> <span class="n">cy</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">centers_x</span><span class="p">,</span> <span class="n">centers_y</span><span class="p">)</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batched RHS shape: </span><span class="si">{</span><span class="n">rhs_batch</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">psi_helm</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs_helm</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_helm</span><span class="p">)</span>
+<span class="n">error_helm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_helm</span> <span class="o">-</span> <span class="n">psi_exact_helm</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error (Helmholtz DST, lambda=</span><span class="si">{</span><span class="n">lambda_helm</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">error_helm</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-11"># Create 5 different RHS by shifting the Gaussian center
-centers_x = jnp.array([16.0, 24.0, 32.0, 40.0, 48.0])
-centers_y = jnp.array([32.0, 32.0, 32.0, 32.0, 32.0])
-
-rhs_batch = jnp.stack(
-    [
-        jnp.exp(-((II - cx) ** 2 + (JJ - cy) ** 2) / (2 * sigma**2))
-        for cx, cy in zip(centers_x, centers_y)
-    ]
-)
-print(f"Batched RHS shape: {rhs_batch.shape}")</div>
+<div class="clipboard-copy-txt" id="cell-11">psi_helm = solve_helmholtz_dst(rhs_helm, dx, dy, lambda_=lambda_helm)
+error_helm = float(jnp.max(jnp.abs(psi_helm - psi_exact_helm)))
+print(f"Max error (Helmholtz DST, lambda={lambda_helm}): {error_helm:.2e}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=57f95466">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=af1ef075">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3207,29 +3558,555 @@ print(f"Batched RHS shape: {rhs_batch.shape}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># vmap over the batch dimension</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Compare solution magnitudes: Helmholtz screening reduces amplitude</span>
+<span class="c1"># Solve same RHS with Poisson (lambda=0) and Helmholtz (lambda=1)</span>
+<span class="n">rhs_compare</span> <span class="o">=</span> <span class="n">eigenvalue</span> <span class="o">*</span> <span class="n">psi_exact_helm</span>  <span class="c1"># true Laplacian</span>
+<span class="n">psi_poisson</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs_compare</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">psi_screened</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs_compare</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="o">=</span><span class="n">lambda_helm</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Poisson max |psi|:   </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">)))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Helmholtz max |psi|: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_screened</span><span class="p">)))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ratio (Helmholtz/Poisson): </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_screened</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_poisson</span><span class="p">)))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-12"># Compare solution magnitudes: Helmholtz screening reduces amplitude
+# Solve same RHS with Poisson (lambda=0) and Helmholtz (lambda=1)
+rhs_compare = eigenvalue * psi_exact_helm  # true Laplacian
+psi_poisson = solve_poisson_dst(rhs_compare, dx, dy)
+psi_screened = solve_helmholtz_dst(rhs_compare, dx, dy, lambda_=lambda_helm)
+
+print(f"Poisson max |psi|:   {float(jnp.max(jnp.abs(psi_poisson))):.6f}")
+print(f"Helmholtz max |psi|: {float(jnp.max(jnp.abs(psi_screened))):.6f}")
+print(f"Ratio (Helmholtz/Poisson): {float(jnp.max(jnp.abs(psi_screened)) / jnp.max(jnp.abs(psi_poisson))):.4f}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ee35edda">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>The Helmholtz solution is smaller because the spectral denominator
+changes from $\lambda_k$ to $\lambda_k - \alpha$, increasing the
+magnitude of the divisor and shrinking $\hat\psi_k$.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=091ae724">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="6-visual-comparison-gaussian-bump-with-three-bc-types">6. Visual Comparison: Gaussian Bump with Three BC Types<a class="anchor-link" href="#6-visual-comparison-gaussian-bump-with-three-bc-types">¶</a></h2><p>This is the key figure. We define a Gaussian bump RHS and solve with
+all three boundary condition types. The same source produces noticeably
+different solutions because the BCs determine how the field "sees" the
+domain boundaries.</p>
+<pre><code>Dirichlet:  psi pinned to 0 at edges  →  solution pulled toward zero near walls
+Neumann:    no flux at edges           →  solution "pools" at boundaries
+Periodic:   wraps around               →  no boundary effect, but translational symmetry
+</code></pre>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a611f5c9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-13">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Gaussian bump centered in the domain</span>
+<span class="c1"># sigma = Nx/8 gives a bump that is well-resolved but doesn't touch the edges</span>
+<span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">=</span> <span class="n">Nx</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Ny</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">Nx</span> <span class="o">/</span> <span class="mi">8</span>
+<span class="n">rhs_gauss</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">II</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">-</span> <span class="n">cy</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Gaussian center: (</span><span class="si">{</span><span class="n">cx</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">cy</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Gaussian sigma: </span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RHS shape: </span><span class="si">{</span><span class="n">rhs_gauss</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RHS range: [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+
+<span class="c1"># Solve with all three methods</span>
+<span class="n">psi_dir</span> <span class="o">=</span> <span class="n">solve_poisson_dst</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">psi_neu</span> <span class="o">=</span> <span class="n">solve_poisson_dct</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<span class="n">psi_per</span> <span class="o">=</span> <span class="n">solve_poisson_fft</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Solution ranges:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Dirichlet: [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">psi_dir</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">psi_dir</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Neumann:   [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">psi_neu</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">psi_neu</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Periodic:  [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">psi_per</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">psi_per</span><span class="p">))</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-13"># Gaussian bump centered in the domain
+# sigma = Nx/8 gives a bump that is well-resolved but doesn't touch the edges
+cx, cy = Nx / 2, Ny / 2
+sigma = Nx / 8
+rhs_gauss = jnp.exp(-((II - cx) ** 2 + (JJ - cy) ** 2) / (2 * sigma**2))
+
+print(f"Gaussian center: ({cx}, {cy})")
+print(f"Gaussian sigma: {sigma}")
+print(f"RHS shape: {rhs_gauss.shape}")
+print(f"RHS range: [{float(jnp.min(rhs_gauss)):.4f}, {float(jnp.max(rhs_gauss)):.4f}]")
+
+# Solve with all three methods
+psi_dir = solve_poisson_dst(rhs_gauss, dx, dy)
+psi_neu = solve_poisson_dct(rhs_gauss, dx, dy)
+psi_per = solve_poisson_fft(rhs_gauss, dx, dy)
+
+print(f"\nSolution ranges:")
+print(f"  Dirichlet: [{float(jnp.min(psi_dir)):.4f}, {float(jnp.max(psi_dir)):.4f}]")
+print(f"  Neumann:   [{float(jnp.min(psi_neu)):.4f}, {float(jnp.max(psi_neu)):.4f}]")
+print(f"  Periodic:  [{float(jnp.min(psi_per)):.4f}, {float(jnp.max(psi_per)):.4f}]")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ba8db492">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-14">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Dirichlet (DST-I)"</span><span class="p">,</span> <span class="s2">"Neumann (DCT-II)"</span><span class="p">,</span> <span class="s2">"Periodic (FFT)"</span><span class="p">]</span>
+<span class="n">solutions</span> <span class="o">=</span> <span class="p">[</span><span class="n">psi_dir</span><span class="p">,</span> <span class="n">psi_neu</span><span class="p">,</span> <span class="n">psi_per</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">psi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">titles</span><span class="p">,</span> <span class="n">solutions</span><span class="p">):</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psi</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"i"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"j"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">r</span><span class="s2">"Poisson $\nabla^2\psi = f$ with Gaussian bump RHS"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"poisson_comparison_three_bcs.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-14">fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+titles = ["Dirichlet (DST-I)", "Neumann (DCT-II)", "Periodic (FFT)"]
+solutions = [psi_dir, psi_neu, psi_per]
+
+for ax, title, psi in zip(axes, titles, solutions):
+    im = ax.contourf(np.array(psi), levels=32, cmap="RdBu_r")
+    ax.set_title(title, fontsize=12)
+    ax.set_aspect("equal")
+    ax.set_xlabel("i")
+    ax.set_ylabel("j")
+    plt.colorbar(im, ax=ax, shrink=0.8)
+
+fig.suptitle(r"Poisson $\nabla^2\psi = f$ with Gaussian bump RHS", fontsize=14)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "poisson_comparison_three_bcs.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=38487951">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Poisson solutions for three BC types" src="../images/demo_elliptic_solvers/poisson_comparison_three_bcs.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=aecd5a89">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Observations</strong>:</p>
+<ul>
+<li><strong>Dirichlet</strong>: The solution is forced to zero at all four edges, creating
+a bowl shape.</li>
+<li><strong>Neumann</strong>: No-flux boundaries allow the solution to accumulate near
+the walls. The zero-mean constraint shifts the baseline.</li>
+<li><strong>Periodic</strong>: The solution wraps smoothly from one edge to the opposite
+edge, with no boundary artifacts.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fd79e8d7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="7-module-classes-dirichlethelmholtzsolver2d-and-neumannhelmholtzsolver2d">7. Module Classes: <code>DirichletHelmholtzSolver2D</code> and <code>NeumannHelmholtzSolver2D</code><a class="anchor-link" href="#7-module-classes-dirichlethelmholtzsolver2d-and-neumannhelmholtzsolver2d">¶</a></h2><p>The functional API (<code>solve_poisson_dst</code>, etc.) is convenient for one-off
+solves. For repeated solves with the same grid parameters, the
+<code>eqx.Module</code> class wrappers store the configuration and provide a
+clean callable interface.</p>
+<pre><code>┌─────────────────────────────────────┐
+│  DirichletHelmholtzSolver2D         │
+│  ─────────────────────────────────  │
+│  Fields:  dx, dy, alpha             │
+│  __call__(rhs) → psi               │
+│  Compatible with eqx.filter_jit    │
+└─────────────────────────────────────┘
+</code></pre>
+<p>Since these are <code>equinox.Module</code> instances (frozen dataclasses), they
+are valid JAX pytrees and can be passed through <code>jax.jit</code>, <code>jax.vmap</code>,
+and <code>jax.grad</code> without special handling.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3a47da87">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-15">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Dirichlet solver (alpha=0 → Poisson)</span>
+<span class="n">solver_dir</span> <span class="o">=</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dirichlet solver: </span><span class="si">{</span><span class="n">solver_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  dx=</span><span class="si">{</span><span class="n">solver_dir</span><span class="o">.</span><span class="n">dx</span><span class="si">}</span><span class="s2">, dy=</span><span class="si">{</span><span class="n">solver_dir</span><span class="o">.</span><span class="n">dy</span><span class="si">}</span><span class="s2">, alpha=</span><span class="si">{</span><span class="n">solver_dir</span><span class="o">.</span><span class="n">alpha</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Neumann solver</span>
+<span class="n">solver_neu</span> <span class="o">=</span> <span class="n">NeumannHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Neumann solver: </span><span class="si">{</span><span class="n">solver_neu</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-15"># Dirichlet solver (alpha=0 → Poisson)
+solver_dir = DirichletHelmholtzSolver2D(dx=dx, dy=dy, alpha=0.0)
+print(f"Dirichlet solver: {solver_dir}")
+print(f"  dx={solver_dir.dx}, dy={solver_dir.dy}, alpha={solver_dir.alpha}")
+
+# Neumann solver
+solver_neu = NeumannHelmholtzSolver2D(dx=dx, dy=dy, alpha=0.0)
+print(f"Neumann solver: {solver_neu}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=20eefd8b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-16">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Solve with the class API</span>
+<span class="n">psi_class_dir</span> <span class="o">=</span> <span class="n">solver_dir</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">)</span>
+<span class="n">psi_class_neu</span> <span class="o">=</span> <span class="n">solver_neu</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">)</span>
+
+<span class="c1"># Verify they match the functional API</span>
+<span class="n">diff_dir</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_class_dir</span> <span class="o">-</span> <span class="n">psi_dir</span><span class="p">)))</span>
+<span class="n">diff_neu</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_class_neu</span> <span class="o">-</span> <span class="n">psi_neu</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dirichlet: class vs function max diff = </span><span class="si">{</span><span class="n">diff_dir</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Neumann:   class vs function max diff = </span><span class="si">{</span><span class="n">diff_neu</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-16"># Solve with the class API
+psi_class_dir = solver_dir(rhs_gauss)
+psi_class_neu = solver_neu(rhs_gauss)
+
+# Verify they match the functional API
+diff_dir = float(jnp.max(jnp.abs(psi_class_dir - psi_dir)))
+diff_neu = float(jnp.max(jnp.abs(psi_class_neu - psi_neu)))
+print(f"Dirichlet: class vs function max diff = {diff_dir:.2e}")
+print(f"Neumann:   class vs function max diff = {diff_neu:.2e}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=49befbb8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-17">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># eqx.filter_jit compiles the solver, tracing only the dynamic leaves</span>
+<span class="n">jit_solver</span> <span class="o">=</span> <span class="n">eqx</span><span class="o">.</span><span class="n">filter_jit</span><span class="p">(</span><span class="n">solver_dir</span><span class="p">)</span>
+<span class="n">psi_jit</span> <span class="o">=</span> <span class="n">jit_solver</span><span class="p">(</span><span class="n">rhs_gauss</span><span class="p">)</span>
+<span class="n">diff_jit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_jit</span> <span class="o">-</span> <span class="n">psi_dir</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"JIT'd solver vs functional: </span><span class="si">{</span><span class="n">diff_jit</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-17"># eqx.filter_jit compiles the solver, tracing only the dynamic leaves
+jit_solver = eqx.filter_jit(solver_dir)
+psi_jit = jit_solver(rhs_gauss)
+diff_jit = float(jnp.max(jnp.abs(psi_jit - psi_dir)))
+print(f"JIT'd solver vs functional: {diff_jit:.2e}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b900d62e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="8-batched-solves-with-jaxvmap">8. Batched Solves with <code>jax.vmap</code><a class="anchor-link" href="#8-batched-solves-with-jaxvmap">¶</a></h2><p>A powerful feature of JAX is <code>vmap</code> — vectorized map. Instead of
+looping over multiple RHS arrays, we solve them all in parallel with
+a single call. This is especially useful for:</p>
+<ul>
+<li>Ensemble simulations (different initial conditions)</li>
+<li>Multi-layer ocean models (solve each layer independently)</li>
+<li>Sensitivity analysis (perturbed forcings)</li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14dde4a1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-18">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create a batch of 5 Gaussian bumps with different centers</span>
+<span class="n">centers_x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">24.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">40.0</span><span class="p">,</span> <span class="mf">48.0</span><span class="p">])</span>
+<span class="n">centers_y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">])</span>
+
+<span class="n">rhs_batch</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">II</span> <span class="o">-</span> <span class="n">cx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">JJ</span> <span class="o">-</span> <span class="n">cy</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">centers_x</span><span class="p">,</span> <span class="n">centers_y</span><span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batched RHS shape: </span><span class="si">{</span><span class="n">rhs_batch</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># (5, 64, 64)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-18"># Create a batch of 5 Gaussian bumps with different centers
+centers_x = jnp.array([16.0, 24.0, 32.0, 40.0, 48.0])
+centers_y = jnp.array([32.0, 32.0, 32.0, 32.0, 32.0])
+
+rhs_batch = jnp.stack(
+    [
+        jnp.exp(-((II - cx) ** 2 + (JJ - cy) ** 2) / (2 * sigma**2))
+        for cx, cy in zip(centers_x, centers_y)
+    ]
+)
+print(f"Batched RHS shape: {rhs_batch.shape}")  # (5, 64, 64)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=db577618">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-19">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># vmap over the leading (batch) dimension</span>
+<span class="c1"># in_axes=(0, None, None, None) means: batch axis 0 for rhs, broadcast dx, dy, lambda_</span>
 <span class="n">batched_solve</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">solve_helmholtz_dst</span><span class="p">,</span> <span class="n">in_axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 <span class="n">psi_batch</span> <span class="o">=</span> <span class="n">batched_solve</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batched solution shape: </span><span class="si">{</span><span class="n">psi_batch</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-
-<span class="c1"># Verify each slice matches the individual solve</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="n">psi_k</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-    <span class="n">err</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_batch</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">psi_k</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Batch element </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: max error vs individual solve = </span><span class="si">{</span><span class="n">err</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Batched solution shape: </span><span class="si">{</span><span class="n">psi_batch</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># (5, 64, 64)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12"># vmap over the batch dimension
+<div class="clipboard-copy-txt" id="cell-19"># vmap over the leading (batch) dimension
+# in_axes=(0, None, None, None) means: batch axis 0 for rhs, broadcast dx, dy, lambda_
 batched_solve = jax.vmap(solve_helmholtz_dst, in_axes=(0, None, None, None))
 psi_batch = batched_solve(rhs_batch, dx, dy, 0.0)
-print(f"Batched solution shape: {psi_batch.shape}")
-
-# Verify each slice matches the individual solve
+print(f"Batched solution shape: {psi_batch.shape}")  # (5, 64, 64)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=43b0f119">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-20">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Verify each batch element matches the individual solve</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Verification (batch vs individual):"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">psi_k</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi_batch</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">psi_k</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Batch element </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> (cx=</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">centers_x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">): max error = </span><span class="si">{</span><span class="n">err</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-20"># Verify each batch element matches the individual solve
+print("Verification (batch vs individual):")
 for k in range(5):
     psi_k = solve_helmholtz_dst(rhs_batch[k], dx, dy, 0.0)
-    err = jnp.max(jnp.abs(psi_batch[k] - psi_k))
-    print(f"  Batch element {k}: max error vs individual solve = {err:.2e}")</div>
+    err = float(jnp.max(jnp.abs(psi_batch[k] - psi_k)))
+    print(f"  Batch element {k} (cx={float(centers_x[k]):.0f}): max error = {err:.2e}")</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=33944b99">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>All errors are zero (or machine epsilon), confirming that <code>vmap</code>
+produces identical results to sequential solves, but executes them
+as a single vectorized operation on the accelerator.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5aff5f27">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Function</th>
+<th>Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirichlet (DST-I)</td>
+<td><code>solve_poisson_dst</code> / <code>solve_helmholtz_dst</code></td>
+<td><code>DirichletHelmholtzSolver2D</code></td>
+</tr>
+<tr>
+<td>Neumann (DCT-II)</td>
+<td><code>solve_poisson_dct</code> / <code>solve_helmholtz_dct</code></td>
+<td><code>NeumannHelmholtzSolver2D</code></td>
+</tr>
+<tr>
+<td>Periodic (FFT)</td>
+<td><code>solve_poisson_fft</code> / <code>solve_helmholtz_fft</code></td>
+<td><code>SpectralHelmholtzSolver2D</code></td>
+</tr>
+</tbody>
+</table>
+<p>Key takeaways:</p>
+<ol>
+<li><strong>Spectral methods</strong> solve elliptic PDEs in $O(N \log N)$ time via
+fast transforms.</li>
+<li><strong>Boundary conditions</strong> are encoded in the choice of transform
+(DST / DCT / FFT) and the corresponding eigenvalue formula.</li>
+<li><strong>Helmholtz screening</strong> ($\lambda &gt; 0$) reduces solution magnitude
+and localizes the response.</li>
+<li><strong>Module wrappers</strong> provide a clean OOP interface compatible with
+<code>eqx.filter_jit</code>.</li>
+<li><strong><code>jax.vmap</code></strong> enables embarrassingly parallel batch solves with
+no code changes.</li>
+</ol>
 </div>
 </div>
 </div>

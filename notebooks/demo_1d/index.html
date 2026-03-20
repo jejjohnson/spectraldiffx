@@ -27,7 +27,7 @@
     
     
       
-        <title>Pseudospectral Differentiation - 1D - SpectralDiffX</title>
+        <title>1D Fourier Pseudospectral Differentiation - SpectralDiffX</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pseudospectral-differentiation-1d" class="md-skip">
+        <a href="#1d-fourier-pseudospectral-differentiation" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Pseudospectral Differentiation - 1D
+              1D Fourier Pseudospectral Differentiation
             
           </span>
         </div>
@@ -974,7 +974,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -992,7 +992,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -1018,10 +1018,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#define-test-function" class="md-nav__link">
+  <a href="#what-is-pseudospectral-differentiation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Define Test Function
+        What is pseudospectral differentiation?
       
     </span>
   </a>
@@ -1029,10 +1029,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup-grid-using-new-api" class="md-nav__link">
+  <a href="#1-grid-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup Grid Using New API
+        1. Grid Setup
       
     </span>
   </a>
@@ -1040,49 +1040,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#first-derivative" class="md-nav__link">
+  <a href="#2-test-function" class="md-nav__link">
     <span class="md-ellipsis">
       
-        First Derivative
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="First Derivative">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#manual-computation-for-understanding" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Manual Computation (For Understanding)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-spectralderivative1d-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using SpectralDerivative1D Operator
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#second-derivative" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Second Derivative
+        2. Test Function
       
     </span>
   </a>
@@ -1090,10 +1051,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dealiasing" class="md-nav__link">
+  <a href="#3-first-derivative" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dealiasing
+        3. First Derivative
       
     </span>
   </a>
@@ -1101,10 +1062,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-in-spectral-space" class="md-nav__link">
+  <a href="#4-second-derivative" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working in Spectral Space
+        4. Second Derivative
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-convergence-with-mode-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Convergence with Mode Number
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dealiasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Dealiasing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-spectral-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Spectral Filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-working-in-spectral-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Working in Spectral Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-parsevals-theorem-and-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Parseval's Theorem and Normalization
       
     </span>
   </a>
@@ -1145,7 +1161,119 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1173,7 +1301,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1201,7 +1329,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1229,7 +1357,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1286,62 +1414,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -2076,10 +2148,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#define-test-function" class="md-nav__link">
+  <a href="#what-is-pseudospectral-differentiation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Define Test Function
+        What is pseudospectral differentiation?
       
     </span>
   </a>
@@ -2087,10 +2159,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup-grid-using-new-api" class="md-nav__link">
+  <a href="#1-grid-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup Grid Using New API
+        1. Grid Setup
       
     </span>
   </a>
@@ -2098,49 +2170,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#first-derivative" class="md-nav__link">
+  <a href="#2-test-function" class="md-nav__link">
     <span class="md-ellipsis">
       
-        First Derivative
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="First Derivative">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#manual-computation-for-understanding" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Manual Computation (For Understanding)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-spectralderivative1d-operator" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using SpectralDerivative1D Operator
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#second-derivative" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Second Derivative
+        2. Test Function
       
     </span>
   </a>
@@ -2148,10 +2181,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dealiasing" class="md-nav__link">
+  <a href="#3-first-derivative" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dealiasing
+        3. First Derivative
       
     </span>
   </a>
@@ -2159,10 +2192,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-in-spectral-space" class="md-nav__link">
+  <a href="#4-second-derivative" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working in Spectral Space
+        4. Second Derivative
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-convergence-with-mode-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Convergence with Mode Number
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dealiasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Dealiasing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-spectral-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Spectral Filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-working-in-spectral-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Working in Spectral Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-parsevals-theorem-and-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Parseval's Theorem and Normalization
       
     </span>
   </a>
@@ -2636,19 +2724,39 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0816bf4a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fba69826">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="pseudospectral-differentiation-1d">Pseudospectral Differentiation - 1D<a class="anchor-link" href="#pseudospectral-differentiation-1d">¶</a></h1><p>This notebook demonstrates how to use the <code>spectraldiffx</code> library for
-computing derivatives using the pseudospectral (Fourier) method in 1D.</p>
+<h1 id="1d-fourier-pseudospectral-differentiation">1D Fourier Pseudospectral Differentiation<a class="anchor-link" href="#1d-fourier-pseudospectral-differentiation">¶</a></h1><h2 id="what-is-pseudospectral-differentiation">What is pseudospectral differentiation?<a class="anchor-link" href="#what-is-pseudospectral-differentiation">¶</a></h2><p>The pseudospectral method computes derivatives of periodic functions with
+<strong>spectral accuracy</strong> -- errors decrease exponentially with resolution for
+smooth functions, rather than algebraically as with finite-difference methods.</p>
+<p>The key idea is remarkably simple: differentiation in physical space becomes
+<strong>multiplication by <code>ik</code></strong> in Fourier space. Given a periodic function
+$u(x)$ expanded as:</p>
+<p>$$
+u(x) = \sum_k \hat{u}_k \, e^{ikx}
+$$</p>
+<p>its derivative is:</p>
+<p>$$
+\frac{du}{dx} = \sum_k (ik) \, \hat{u}_k \, e^{ikx}
+$$</p>
+<p>The algorithm is:</p>
+<ol>
+<li><strong>FFT</strong>: Transform $u$ to spectral space to get $\hat{u}_k$</li>
+<li><strong>Multiply</strong>: $\widehat{du/dx}_k = ik \cdot \hat{u}_k$</li>
+<li><strong>IFFT</strong>: Transform back to physical space</li>
+</ol>
+<p>This notebook demonstrates 1D pseudospectral differentiation using the
+<code>spectraldiffx</code> library, covering grid setup, derivative computation,
+convergence properties, dealiasing, and spectral filtering.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=05cf017f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a4cdbfc6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2667,56 +2775,81 @@ computing derivatives using the pseudospectral (Fourier) method in 1D.</p>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid1D</span><span class="p">,</span> <span class="n">SpectralDerivative1D</span><span class="p">,</span> <span class="n">SpectralFilter1D</span>
+
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"Agg"</span><span class="p">)</span>
+
 <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">"jax_enable_x64"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">reset_defaults</span><span class="p">()</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s2">"talk"</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+
+<span class="n">IMG_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"demo_1d"</span>
+<span class="n">IMG_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-1">import math
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
+from spectraldiffx import FourierGrid1D, SpectralDerivative1D, SpectralFilter1D
+
+matplotlib.use("Agg")
+
 jax.config.update("jax_enable_x64", True)
 sns.reset_defaults()
-sns.set_context(context="talk", font_scale=0.7)</div>
+sns.set_context(context="talk", font_scale=0.7)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "demo_1d"
+IMG_DIR.mkdir(parents=True, exist_ok=True)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=de54c9f2">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8d15b5b2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="define-test-function">Define Test Function<a class="anchor-link" href="#define-test-function">¶</a></h2><p>We use a simple periodic function:
-$$
-u(x) = \sin(2x) + \frac{1}{2}\cos(5x)
+<h2 id="1-grid-setup">1. Grid Setup<a class="anchor-link" href="#1-grid-setup">¶</a></h2><p>We create a <code>FourierGrid1D</code> with $N$ uniformly-spaced points on the periodic
+domain $[0, L)$. The grid does <strong>not</strong> include the right endpoint because the
+function is periodic -- the value at $x = L$ equals the value at $x = 0$.</p>
+<pre><code>Periodic grid (N=8 points on [0, L)):
+
+x:  |--o--o--o--o--o--o--o--o--|
+    0  dx 2dx              L-dx  L
+                                 ^
+                           (not included, wraps to x=0)
+
+dx = L / N
+</code></pre>
+<p>The discrete wavenumbers are:</p>
+<p>$$
+k_n = \frac{2\pi n}{L}, \quad n = -N/2, \ldots, N/2 - 1
 $$</p>
-<p>With analytical derivatives:
-$$
-\frac{du}{dx} = 2\cos(2x) - \frac{5}{2}\sin(5x)
-$$
-$$
-\frac{d^2u}{dx^2} = -4\sin(2x) - \frac{25}{2}\cos(5x)
-$$</p>
+<p>The maximum resolvable wavenumber (the <strong>Nyquist frequency</strong>) is
+$k_{\max} = \pi N / L = \pi / dx$.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=adc65f8c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e1ee7253">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2734,33 +2867,76 @@ $$</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Define the function and its analytical derivatives</span>
-<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mf">2.5</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">5.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">d2f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mf">12.5</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">5.0</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Grid parameters</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">64</span>   <span class="c1"># Number of grid points (power of 2 for efficient FFT)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mf">4.0</span>  <span class="c1"># Domain length [0, L)</span>
+
+<span class="c1"># Create the Fourier grid with 2/3-rule dealiasing</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">FourierGrid1D</span><span class="o">.</span><span class="n">from_N_L</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">dealias</span><span class="o">=</span><span class="s2">"2/3"</span><span class="p">)</span>
+
+<span class="c1"># Physical grid points</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span>  <span class="c1"># x: [N] -- uniformly spaced points on [0, L)</span>
+
+<span class="c1"># Wavenumber array</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">k</span>  <span class="c1"># k: [N] -- discrete wavenumbers (FFT-ordered)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"N = </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2"> grid points"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"L = </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">L</span><span class="si">}</span><span class="s2"> domain length"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"dx = </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> grid spacing"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"x shape: </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"k shape: </span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Nyquist wavenumber: k_max = pi/dx = </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2"># Define the function and its analytical derivatives
-f = lambda x: jnp.sin(2 * x) + 0.5 * jnp.cos(5 * x)
-df = lambda x: 2.0 * jnp.cos(2.0 * x) - 2.5 * jnp.sin(5.0 * x)
-d2f = lambda x: -4.0 * jnp.sin(2.0 * x) - 12.5 * jnp.cos(5.0 * x)</div>
+<div class="clipboard-copy-txt" id="cell-2"># Grid parameters
+N = 64   # Number of grid points (power of 2 for efficient FFT)
+L = 4.0  # Domain length [0, L)
+
+# Create the Fourier grid with 2/3-rule dealiasing
+grid = FourierGrid1D.from_N_L(N=N, L=L, dealias="2/3")
+
+# Physical grid points
+x = grid.x  # x: [N] -- uniformly spaced points on [0, L)
+
+# Wavenumber array
+k = grid.k  # k: [N] -- discrete wavenumbers (FFT-ordered)
+
+print(f"N = {grid.N} grid points")
+print(f"L = {grid.L} domain length")
+print(f"dx = {grid.dx:.6f} grid spacing")
+print(f"x shape: {x.shape}")
+print(f"k shape: {k.shape}")
+print(f"Nyquist wavenumber: k_max = pi/dx = {jnp.pi / grid.dx:.4f}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d1c73bce">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0e514249">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="setup-grid-using-new-api">Setup Grid Using New API<a class="anchor-link" href="#setup-grid-using-new-api">¶</a></h2><p>We use <code>FourierGrid1D</code> to define the computational domain.</p>
+<h2 id="2-test-function">2. Test Function<a class="anchor-link" href="#2-test-function">¶</a></h2><p>We use a single Fourier mode as our test function:</p>
+<p>$$
+u(x) = \cos\!\left(m \cdot \frac{2\pi}{L} x\right)
+$$</p>
+<p>where $m$ is the mode number. This is an <strong>exact eigenfunction</strong> of the
+derivative operator, which makes it an ideal test case: the analytical
+derivatives are known exactly.</p>
+<p><strong>Analytical derivatives:</strong></p>
+<p>$$
+\frac{du}{dx} = -m \frac{2\pi}{L} \sin\!\left(m \frac{2\pi}{L} x\right)
+$$</p>
+<p>$$
+\frac{d^2u}{dx^2} = -\left(m \frac{2\pi}{L}\right)^2 \cos\!\left(m \frac{2\pi}{L} x\right)
+$$</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0a706653">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=539cdfa9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2778,48 +2954,32 @@ d2f = lambda x: -4.0 * jnp.sin(2.0 * x) - 12.5 * jnp.cos(5.0 * x)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid1D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralDerivative1D</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Mode number -- must satisfy m &lt; N/2 to be resolved on the grid</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># A low mode that is well-resolved by our N=64 grid</span>
 
-<span class="c1"># Grid parameters</span>
-<span class="n">Nx</span> <span class="o">=</span> <span class="mi">32</span>
-<span class="n">Lx</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-
-<span class="c1"># Create grid using the new API</span>
-<span class="n">grid</span> <span class="o">=</span> <span class="n">FourierGrid1D</span><span class="o">.</span><span class="n">from_N_L</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">Nx</span><span class="p">,</span> <span class="n">L</span><span class="o">=</span><span class="n">Lx</span><span class="p">,</span> <span class="n">dealias</span><span class="o">=</span><span class="s2">"2/3"</span><span class="p">)</span>
-
-<span class="c1"># Get grid points</span>
-<span class="n">x_coords</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span>
-<span class="n">x_plot_coords</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Lx</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># Initialize fields</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_coords</span><span class="p">)</span>
-<span class="n">u_plot</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_plot_coords</span><span class="p">)</span>
+<span class="c1"># Effective wavenumber for this mode</span>
+<span class="n">km</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">L</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mode number m = </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Effective wavenumber km = m * 2pi/L = </span><span class="si">{</span><span class="n">km</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Nyquist wavenumber = </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ratio km / k_nyquist = </span><span class="si">{</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (must be &lt; 1)"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">from spectraldiffx._src.grid import FourierGrid1D
-from spectraldiffx._src.operators import SpectralDerivative1D
+<div class="clipboard-copy-txt" id="cell-3"># Mode number -- must satisfy m &lt; N/2 to be resolved on the grid
+m = 3  # A low mode that is well-resolved by our N=64 grid
 
-# Grid parameters
-Nx = 32
-Lx = 2 * math.pi
-
-# Create grid using the new API
-grid = FourierGrid1D.from_N_L(N=Nx, L=Lx, dealias="2/3")
-
-# Get grid points
-x_coords = grid.x
-x_plot_coords = jnp.linspace(0, Lx, 256, endpoint=False)
-
-# Initialize fields
-u = f(x_coords)
-u_plot = f(x_plot_coords)</div>
+# Effective wavenumber for this mode
+km = m * 2 * jnp.pi / L
+print(f"Mode number m = {m}")
+print(f"Effective wavenumber km = m * 2pi/L = {km:.4f}")
+print(f"Nyquist wavenumber = {jnp.pi / grid.dx:.4f}")
+print(f"Ratio km / k_nyquist = {km / (jnp.pi / grid.dx):.4f} (must be &lt; 1)")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4808bb6e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=54fdd2d6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2837,22 +2997,44 @@ u_plot = f(x_plot_coords)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid points (N): </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">N</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Domain length (L): </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">L</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Grid spacing (dx): </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dealiasing method: </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">dealias</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Evaluate the test function on the grid</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">km</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>  <span class="c1"># u: [N] -- field values at grid points</span>
+
+<span class="c1"># Analytical derivatives (closed-form)</span>
+<span class="n">dudx_analytical</span> <span class="o">=</span> <span class="o">-</span><span class="n">km</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">km</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>        <span class="c1"># du/dx: [N]</span>
+<span class="n">d2udx2_analytical</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">km</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">km</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>  <span class="c1"># d2u/dx2: [N]</span>
+
+<span class="c1"># Dense grid for smooth plotting</span>
+<span class="n">x_plot</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">u_plot</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">km</span> <span class="o">*</span> <span class="n">x_plot</span><span class="p">)</span>
+<span class="n">dudx_plot</span> <span class="o">=</span> <span class="o">-</span><span class="n">km</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">km</span> <span class="o">*</span> <span class="n">x_plot</span><span class="p">)</span>
+<span class="n">d2udx2_plot</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">km</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">km</span> <span class="o">*</span> <span class="n">x_plot</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"u shape: </span><span class="si">{</span><span class="n">u</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"u range: [</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">print(f"Grid points (N): {grid.N}")
-print(f"Domain length (L): {grid.L}")
-print(f"Grid spacing (dx): {grid.dx}")
-print(f"Dealiasing method: {grid.dealias}")</div>
+<div class="clipboard-copy-txt" id="cell-4"># Evaluate the test function on the grid
+u = jnp.cos(km * x)  # u: [N] -- field values at grid points
+
+# Analytical derivatives (closed-form)
+dudx_analytical = -km * jnp.sin(km * x)        # du/dx: [N]
+d2udx2_analytical = -(km**2) * jnp.cos(km * x)  # d2u/dx2: [N]
+
+# Dense grid for smooth plotting
+x_plot = jnp.linspace(0, L, 512, endpoint=False)
+u_plot = jnp.cos(km * x_plot)
+dudx_plot = -km * jnp.sin(km * x_plot)
+d2udx2_plot = -(km**2) * jnp.cos(km * x_plot)
+
+print(f"u shape: {u.shape}")
+print(f"u range: [{float(u.min()):.4f}, {float(u.max()):.4f}]")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=eec57f49">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e00e88b6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2872,20 +3054,22 @@ print(f"Dealiasing method: {grid.dealias}")</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot_coords</span><span class="p">,</span> <span class="n">u_plot</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"-"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"$u(x)$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"r"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"$u_i$"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$u(x)$"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot</span><span class="p">,</span> <span class="n">u_plot</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$u(x) = \cos(k_m x)$"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"*"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Grid points (N=</span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$u(x)$"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Test Function: mode $m=</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">$ on $[0, </span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">)$"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"test_function.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">fig, ax = plt.subplots(figsize=(8, 3))
 
-ax.plot(x_plot_coords, u_plot, linestyle="-", color="black", label="$u(x)$")
-ax.scatter(x_coords, u, color="r", marker="*", label="$u_i$", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$u(x)$")
-plt.legend()
+ax.plot(x_plot, u_plot, "-", color="black", label=r"$u(x) = \cos(k_m x)$")
+ax.scatter(x, u, color="red", marker="*", s=30, label=f"Grid points (N={N})", zorder=3)
+ax.set(xlabel=r"$x$", ylabel=r"$u(x)$", title=f"Test Function: mode $m={m}$ on $[0, {L})$")
+ax.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "test_function.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
@@ -2893,23 +3077,39 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3fad97dc">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e4365a70">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="first-derivative">First Derivative<a class="anchor-link" href="#first-derivative">¶</a></h2><h3 id="manual-computation-for-understanding">Manual Computation (For Understanding)<a class="anchor-link" href="#manual-computation-for-understanding">¶</a></h3><p>The pseudospectral derivative works by:</p>
+<p><img alt="Test function and grid points" src="../images/demo_1d/test_function.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=241d73a6">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="3-first-derivative">3. First Derivative<a class="anchor-link" href="#3-first-derivative">¶</a></h2><p>The spectral differentiation formula for the first derivative is:</p>
+<p>$$
+\widehat{u'}_k = ik \cdot \hat{u}_k
+$$</p>
+<p>In code, this is a three-step process:</p>
 <ol>
-<li>Transform to Fourier space: $\hat{u}_k = \text{FFT}(u)$</li>
-<li>Multiply by $ik$: $\widehat{du/dx}_k = ik \cdot \hat{u}_k$</li>
-<li>Transform back: $du/dx = \text{IFFT}(\widehat{du/dx})$</li>
+<li><code>u_hat = FFT(u)</code> -- transform to spectral space</li>
+<li><code>du_hat = 1j * k * u_hat</code> -- multiply by $ik$</li>
+<li><code>du_dx = IFFT(du_hat).real</code> -- transform back</li>
 </ol>
+<p>The <code>SpectralDerivative1D</code> operator encapsulates this.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c5a9d00c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5f7698d2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2927,47 +3127,36 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Manual computation for educational purposes</span>
-<span class="n">k</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">k</span>  <span class="c1"># Wavenumbers from grid</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create the derivative operator</span>
+<span class="n">deriv</span> <span class="o">=</span> <span class="n">SpectralDerivative1D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
 
-<span class="c1"># Forward FFT</span>
-<span class="n">u_hat</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="c1"># Compute first derivative: du/dx</span>
+<span class="n">dudx_spectral</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># dudx_spectral: [N]</span>
 
-<span class="c1"># Multiply by ik for first derivative</span>
-<span class="n">du_hat</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">u_hat</span>
+<span class="c1"># Equivalently, using the .gradient() method:</span>
+<span class="n">dudx_grad</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>  <span class="c1"># dudx_grad: [N]</span>
 
-<span class="c1"># Inverse FFT</span>
-<span class="n">du_dx_manual</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">du_hat</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"dudx_spectral shape: </span><span class="si">{</span><span class="n">dudx_spectral</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"gradient() vs __call__(order=1) difference: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dudx_spectral</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">dudx_grad</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6"># Manual computation for educational purposes
-k = grid.k  # Wavenumbers from grid
+<div class="clipboard-copy-txt" id="cell-6"># Create the derivative operator
+deriv = SpectralDerivative1D(grid=grid)
 
-# Forward FFT
-u_hat = jnp.fft.fft(u)
+# Compute first derivative: du/dx
+dudx_spectral = deriv(u, order=1)  # dudx_spectral: [N]
 
-# Multiply by ik for first derivative
-du_hat = 1j * k * u_hat
+# Equivalently, using the .gradient() method:
+dudx_grad = deriv.gradient(u)  # dudx_grad: [N]
 
-# Inverse FFT
-du_dx_manual = jnp.fft.ifft(du_hat).real</div>
+print(f"dudx_spectral shape: {dudx_spectral.shape}")
+print(f"gradient() vs __call__(order=1) difference: {jnp.abs(dudx_spectral - dudx_grad).max():.2e}")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c7e897e4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="using-spectralderivative1d-operator">Using SpectralDerivative1D Operator<a class="anchor-link" href="#using-spectralderivative1d-operator">¶</a></h3><p>The <code>SpectralDerivative1D</code> class provides a clean API for computing derivatives.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fc8cad07">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4509eadb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2985,30 +3174,45 @@ du_dx_manual = jnp.fft.ifft(du_hat).real</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create the derivative operator</span>
-<span class="n">deriv</span> <span class="o">=</span> <span class="n">SpectralDerivative1D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="c1"># Compute first derivative</span>
-<span class="n">du_dx</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="c1"># Or use the gradient method</span>
-<span class="n">du_dx_grad</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot</span><span class="p">,</span> <span class="n">dudx_plot</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$du/dx$ (analytical)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dudx_spectral</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"SpectralDerivative1D"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dudx_analytical</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Closed-form on grid"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$du/dx$"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">"First Derivative Comparison"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"first_derivative.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7"># Create the derivative operator
-deriv = SpectralDerivative1D(grid=grid)
+<div class="clipboard-copy-txt" id="cell-7">fig, ax = plt.subplots(figsize=(8, 3))
 
-# Compute first derivative
-du_dx = deriv(u, order=1)
-
-# Or use the gradient method
-du_dx_grad = deriv.gradient(u)</div>
+ax.plot(x_plot, dudx_plot, "-", color="black", label=r"$du/dx$ (analytical)")
+ax.scatter(x, dudx_spectral, color="green", marker=".", s=40, label="SpectralDerivative1D", zorder=3)
+ax.scatter(x, dudx_analytical, color="red", marker="x", s=20, label="Closed-form on grid", zorder=3)
+ax.set(xlabel=r"$x$", ylabel=r"$du/dx$", title="First Derivative Comparison")
+ax.legend()
+plt.tight_layout()
+fig.savefig(IMG_DIR / "first_derivative.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3dd7d86c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="First derivative comparison" src="../images/demo_1d/first_derivative.png"/></p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=34338f92">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fc42a3f2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3026,20 +3230,24 @@ du_dx_grad = deriv.gradient(u)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Analytical solution for comparison</span>
-<span class="n">du_dx_analytical</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">df</span><span class="p">)(</span><span class="n">x_coords</span><span class="p">)</span>
-<span class="n">du_dx_plot</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">df</span><span class="p">)(</span><span class="n">x_plot_coords</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Pointwise error -- should be at machine precision (~1e-14 for float64)</span>
+<span class="n">error_1st</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dudx_spectral</span> <span class="o">-</span> <span class="n">dudx_analytical</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in first derivative: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">error_1st</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean error in first derivative: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">error_1st</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"(Machine epsilon for float64: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8"># Analytical solution for comparison
-du_dx_analytical = jax.vmap(df)(x_coords)
-du_dx_plot = jax.vmap(df)(x_plot_coords)</div>
+<div class="clipboard-copy-txt" id="cell-8"># Pointwise error -- should be at machine precision (~1e-14 for float64)
+error_1st = jnp.abs(dudx_spectral - dudx_analytical)
+print(f"Max error in first derivative: {float(error_1st.max()):.2e}")
+print(f"Mean error in first derivative: {float(error_1st.mean()):.2e}")
+print(f"(Machine epsilon for float64: {jnp.finfo(jnp.float64).eps:.2e})")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1cede131">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=eadfe866">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3059,30 +3267,63 @@ du_dx_plot = jax.vmap(df)(x_plot_coords)</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot_coords</span><span class="p">,</span> <span class="n">du_dx_plot</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"-"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$du/dx$ (analytical)"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">du_dx</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"SpectralDerivative1D"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">du_dx_analytical</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Analytical"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$du/dx$"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">error_1st</span><span class="p">,</span> <span class="s2">"g.-"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Pointwise error"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Machine epsilon"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|du/dx_{\mathrm</span><span class="si">{spectral}</span><span class="s2">} - du/dx_{\mathrm</span><span class="si">{exact}</span><span class="s2">}|$"</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">"First Derivative Error (Spectral Method)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"first_derivative_error.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-9">fig, ax = plt.subplots(figsize=(8, 3))
 
-ax.plot(x_plot_coords, du_dx_plot, linestyle="-", color="black", label=r"$du/dx$ (analytical)")
-ax.scatter(x_coords, du_dx, color="green", marker=".", label="SpectralDerivative1D", zorder=3)
-ax.scatter(x_coords, du_dx_analytical, color="red", marker="x", s=20, label="Analytical", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$du/dx$")
-plt.legend()
+ax.semilogy(x, error_1st, "g.-", label="Pointwise error")
+ax.axhline(jnp.finfo(jnp.float64).eps, color="gray", linestyle="--", label="Machine epsilon")
+ax.set(xlabel=r"$x$", ylabel=r"$|du/dx_{\mathrm{spectral}} - du/dx_{\mathrm{exact}}|$",
+       title="First Derivative Error (Spectral Method)")
+ax.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "first_derivative_error.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=16750554">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="First derivative error" src="../images/demo_1d/first_derivative_error.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=db7f2b5f">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="4-second-derivative">4. Second Derivative<a class="anchor-link" href="#4-second-derivative">¶</a></h2><p>For the $n$-th derivative, the spectral formula generalizes to:</p>
+<p>$$
+\widehat{u^{(n)}}_k = (ik)^n \cdot \hat{u}_k
+$$</p>
+<p>For the second derivative ($n=2$): $(ik)^2 = -k^2$, so:</p>
+<p>$$
+\widehat{u''}_k = -k^2 \cdot \hat{u}_k
+$$</p>
+<p>We can compute this with <code>deriv(u, order=2)</code> or equivalently <code>deriv.laplacian(u)</code>
+(since the Laplacian reduces to $d^2/dx^2$ in 1D).</p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f2c8f93e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d044c567">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3100,20 +3341,26 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Check error</span>
-<span class="n">error</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">du_dx</span> <span class="o">-</span> <span class="n">du_dx_analytical</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in first derivative: </span><span class="si">{</span><span class="n">error</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Compute second derivative -- two equivalent ways</span>
+<span class="n">d2udx2_spectral</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>     <span class="c1"># d2udx2_spectral: [N]</span>
+<span class="n">d2udx2_lap</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">laplacian</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>          <span class="c1"># d2udx2_lap: [N] -- via laplacian method</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"d2udx2_spectral shape: </span><span class="si">{</span><span class="n">d2udx2_spectral</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"laplacian() vs __call__(order=2) difference: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d2udx2_spectral</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">d2udx2_lap</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10"># Check error
-error = jnp.abs(du_dx - du_dx_analytical)
-print(f"Max error in first derivative: {error.max():.2e}")</div>
+<div class="clipboard-copy-txt" id="cell-10"># Compute second derivative -- two equivalent ways
+d2udx2_spectral = deriv(u, order=2)     # d2udx2_spectral: [N]
+d2udx2_lap = deriv.laplacian(u)          # d2udx2_lap: [N] -- via laplacian method
+
+print(f"d2udx2_spectral shape: {d2udx2_spectral.shape}")
+print(f"laplacian() vs __call__(order=2) difference: {jnp.abs(d2udx2_spectral - d2udx2_lap).max():.2e}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d402ab02">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b3b14561">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3133,20 +3380,24 @@ print(f"Max error in first derivative: {error.max():.2e}")</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Error"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|du/dx - du/dx_</span><span class="si">{analytical}</span><span class="s2">|$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"First Derivative Error (Spectral Method)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot</span><span class="p">,</span> <span class="n">d2udx2_plot</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$d^2u/dx^2$ (analytical)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d2udx2_spectral</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"SpectralDerivative1D"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d2udx2_analytical</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Closed-form on grid"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$d^2u/dx^2$"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">"Second Derivative Comparison"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"second_derivative.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-11">fig, ax = plt.subplots(figsize=(8, 3))
 
-ax.semilogy(x_coords, error, color="green", marker=".", label="Error")
-ax.set(xlabel=r"$x$", ylabel=r"$|du/dx - du/dx_{analytical}|$")
-ax.set_title("First Derivative Error (Spectral Method)")
-plt.legend()
+ax.plot(x_plot, d2udx2_plot, "-", color="black", label=r"$d^2u/dx^2$ (analytical)")
+ax.scatter(x, d2udx2_spectral, color="green", marker=".", s=40, label="SpectralDerivative1D", zorder=3)
+ax.scatter(x, d2udx2_analytical, color="red", marker="x", s=20, label="Closed-form on grid", zorder=3)
+ax.set(xlabel=r"$x$", ylabel=r"$d^2u/dx^2$", title="Second Derivative Comparison")
+ax.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "second_derivative.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
@@ -3154,19 +3405,18 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=62df4f8c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f6469bcb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="second-derivative">Second Derivative<a class="anchor-link" href="#second-derivative">¶</a></h2><p>We can compute higher-order derivatives by specifying the <code>order</code> parameter,
-or use the <code>laplacian</code> method for the second derivative.</p>
+<p><img alt="Second derivative comparison" src="../images/demo_1d/second_derivative.png"/></p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=79a7fe5d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=55e84dbe">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3184,32 +3434,20 @@ or use the <code>laplacian</code> method for the second derivative.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Compute second derivative using order parameter</span>
-<span class="n">d2u_dx2</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># Or use the laplacian method (equivalent for 1D)</span>
-<span class="n">d2u_dx2_lap</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">laplacian</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-
-<span class="c1"># Analytical solution</span>
-<span class="n">d2u_dx2_analytical</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">d2f</span><span class="p">)(</span><span class="n">x_coords</span><span class="p">)</span>
-<span class="n">d2u_dx2_plot</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">d2f</span><span class="p">)(</span><span class="n">x_plot_coords</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">error_2nd</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d2udx2_spectral</span> <span class="o">-</span> <span class="n">d2udx2_analytical</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in second derivative: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">error_2nd</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean error in second derivative: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">error_2nd</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12"># Compute second derivative using order parameter
-d2u_dx2 = deriv(u, order=2)
-
-# Or use the laplacian method (equivalent for 1D)
-d2u_dx2_lap = deriv.laplacian(u)
-
-# Analytical solution
-d2u_dx2_analytical = jax.vmap(d2f)(x_coords)
-d2u_dx2_plot = jax.vmap(d2f)(x_plot_coords)</div>
+<div class="clipboard-copy-txt" id="cell-12">error_2nd = jnp.abs(d2udx2_spectral - d2udx2_analytical)
+print(f"Max error in second derivative: {float(error_2nd.max()):.2e}")
+print(f"Mean error in second derivative: {float(error_2nd.mean()):.2e}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d6586c3c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d22cb526">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3229,30 +3467,66 @@ d2u_dx2_plot = jax.vmap(d2f)(x_plot_coords)</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot_coords</span><span class="p">,</span> <span class="n">d2u_dx2_plot</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"-"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$d^2u/dx^2$ (analytical)"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">d2u_dx2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"SpectralDerivative1D"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">d2u_dx2_analytical</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Analytical"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$d^2u/dx^2$"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">error_2nd</span><span class="p">,</span> <span class="s2">"g.-"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Pointwise error"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Machine epsilon"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|d^2u/dx^2_{\mathrm</span><span class="si">{spectral}</span><span class="s2">} - d^2u/dx^2_{\mathrm</span><span class="si">{exact}</span><span class="s2">}|$"</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">"Second Derivative Error (Spectral Method)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"second_derivative_error.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-13">fig, ax = plt.subplots(figsize=(8, 3))
 
-ax.plot(x_plot_coords, d2u_dx2_plot, linestyle="-", color="black", label=r"$d^2u/dx^2$ (analytical)")
-ax.scatter(x_coords, d2u_dx2, color="green", marker=".", label="SpectralDerivative1D", zorder=3)
-ax.scatter(x_coords, d2u_dx2_analytical, color="red", marker="x", s=20, label="Analytical", zorder=3)
-ax.set(xlabel=r"$x$", ylabel=r"$d^2u/dx^2$")
-plt.legend()
+ax.semilogy(x, error_2nd, "g.-", label="Pointwise error")
+ax.axhline(jnp.finfo(jnp.float64).eps, color="gray", linestyle="--", label="Machine epsilon")
+ax.set(xlabel=r"$x$", ylabel=r"$|d^2u/dx^2_{\mathrm{spectral}} - d^2u/dx^2_{\mathrm{exact}}|$",
+       title="Second Derivative Error (Spectral Method)")
+ax.legend()
 plt.tight_layout()
+fig.savefig(IMG_DIR / "second_derivative_error.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b7947908">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Second derivative error" src="../images/demo_1d/second_derivative_error.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7c67b48c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="5-convergence-with-mode-number">5. Convergence with Mode Number<a class="anchor-link" href="#5-convergence-with-mode-number">¶</a></h2><p>A key strength of spectral methods is that they differentiate <strong>all resolved
+modes</strong> with the same spectral accuracy. However, once the mode number $m$
+exceeds the <strong>aliasing limit</strong> at $N/3$ (when using the 2/3 dealiasing rule)
+or the Nyquist limit at $N/2$, the method breaks down.</p>
+<p>We sweep over mode numbers $m = 1, 2, \ldots, N/2 - 1$ and measure the
+maximum error in the first derivative for each mode.</p>
+<p>Expected behavior:</p>
+<ul>
+<li>$m &lt; N/3$: machine-precision errors (fully resolved and dealiased)</li>
+<li>$N/3 \leq m &lt; N/2$: errors grow because the dealiasing filter zeros
+these modes</li>
+<li>$m \geq N/2$: aliased (not representable on the grid)</li>
+</ul>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2a4a31ee">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0c6a52e1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3270,20 +3544,38 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Check error</span>
-<span class="n">error_2nd</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d2u_dx2</span> <span class="o">-</span> <span class="n">d2u_dx2_analytical</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max error in second derivative: </span><span class="si">{</span><span class="n">error_2nd</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">max_mode</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># Highest non-aliased mode</span>
+<span class="n">modes</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_mode</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_mode</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">kmi</span> <span class="o">=</span> <span class="n">mi</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">L</span>
+    <span class="n">u_test</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">kmi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">dudx_test</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u_test</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dudx_exact</span> <span class="o">=</span> <span class="o">-</span><span class="n">kmi</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">kmi</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dudx_test</span> <span class="o">-</span> <span class="n">dudx_exact</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+<span class="n">errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-14"># Check error
-error_2nd = jnp.abs(d2u_dx2 - d2u_dx2_analytical)
-print(f"Max error in second derivative: {error_2nd.max():.2e}")</div>
+<div class="clipboard-copy-txt" id="cell-14">max_mode = N // 2 - 1  # Highest non-aliased mode
+modes = jnp.arange(1, max_mode + 1)
+errors = []
+
+for mi in range(1, max_mode + 1):
+    kmi = mi * 2 * jnp.pi / L
+    u_test = jnp.cos(kmi * x)
+    dudx_test = deriv(u_test, order=1)
+    dudx_exact = -kmi * jnp.sin(kmi * x)
+    errors.append(float(jnp.abs(dudx_test - dudx_exact).max()))
+
+errors = np.array(errors)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=319d042e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=516ecaa9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3301,22 +3593,30 @@ print(f"Max error in second derivative: {error_2nd.max():.2e}")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">x_coords</span><span class="p">,</span> <span class="n">error_2nd</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"green"</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Error"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$|d^2u/dx^2 - d^2u/dx^2_</span><span class="si">{analytical}</span><span class="s2">|$"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Second Derivative Error (Spectral Method)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">modes</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="s2">"b.-"</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Max error per mode"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">N</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"$N/3 = </span><span class="si">{</span><span class="n">N</span><span class="o">/</span><span class="mi">3</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">$ (dealias cutoff)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">N</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"orange"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"$N/2 = </span><span class="si">{</span><span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">$ (Nyquist)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Machine epsilon"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">"Mode number $m$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Max error in $du/dx$"</span><span class="p">,</span>
+       <span class="n">title</span><span class="o">=</span><span class="s2">"Convergence: Error vs Mode Number"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"convergence_modes.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-15">fig, ax = plt.subplots(figsize=(8, 3))
+<div class="clipboard-copy-txt" id="cell-15">fig, ax = plt.subplots(figsize=(8, 4))
 
-ax.semilogy(x_coords, error_2nd, color="green", marker=".", label="Error")
-ax.set(xlabel=r"$x$", ylabel=r"$|d^2u/dx^2 - d^2u/dx^2_{analytical}|$")
-ax.set_title("Second Derivative Error (Spectral Method)")
-plt.legend()
+ax.semilogy(modes, errors, "b.-", markersize=4, label="Max error per mode")
+ax.axvline(N / 3, color="red", linestyle="--", label=f"$N/3 = {N/3:.0f}$ (dealias cutoff)")
+ax.axvline(N / 2, color="orange", linestyle="--", label=f"$N/2 = {N/2:.0f}$ (Nyquist)")
+ax.axhline(jnp.finfo(jnp.float64).eps, color="gray", linestyle=":", label="Machine epsilon")
+ax.set(xlabel="Mode number $m$", ylabel="Max error in $du/dx$",
+       title="Convergence: Error vs Mode Number")
+ax.legend(fontsize=9)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "convergence_modes.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
@@ -3324,19 +3624,46 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3a55e2e9">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0f5a07df">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="dealiasing">Dealiasing<a class="anchor-link" href="#dealiasing">¶</a></h2><p>The grid has built-in dealiasing support (2/3 rule by default).
-This is important for nonlinear terms to prevent aliasing errors.</p>
+<p><img alt="Convergence with mode number" src="../images/demo_1d/convergence_modes.png"/></p>
+<p>For modes below the $N/3$ dealiasing cutoff, the error is at machine
+precision. Above this cutoff, the dealiasing filter zeros out the mode,
+causing $O(1)$ errors. This is by design -- those modes would produce
+aliasing errors in nonlinear computations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fab3a4ed">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="6-dealiasing">6. Dealiasing<a class="anchor-link" href="#6-dealiasing">¶</a></h2><p>When computing nonlinear terms like $u \cdot du/dx$, the product of two
+fields with wavenumbers $k_1$ and $k_2$ generates a mode at $k_1 + k_2$.
+If $k_1 + k_2 &gt; k_{\max}$, this mode <strong>aliases</strong> back into the resolved
+spectrum, corrupting the solution.</p>
+<p>The <strong>2/3 rule</strong> prevents this by zeroing out the top 1/3 of the spectrum
+before computing products. The dealiasing filter is:</p>
+<p>$$
+D_k = \begin{cases} 1 &amp; \text{if } |k| \leq \frac{2}{3} k_{\max} \\
+0 &amp; \text{otherwise} \end{cases}
+$$</p>
+<p>This ensures that $k_1 + k_2 \leq \frac{2}{3}k_{\max} + \frac{2}{3}k_{\max}
+= \frac{4}{3}k_{\max}$, which after aliasing folds back to at most
+$\frac{4}{3}k_{\max} - k_{\max} = \frac{1}{3}k_{\max}$ -- safely within
+the zeroed-out region.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=011f5114">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b8bb727a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3354,32 +3681,26 @@ This is important for nonlinear terms to prevent aliasing errors.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># View the dealiasing filter</span>
-<span class="n">dealias_filter</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">dealias_filter</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># The dealias filter from the grid</span>
+<span class="n">dealias_mask</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">dealias_filter</span><span class="p">()</span>  <span class="c1"># dealias_mask: [N] -- binary mask in spectral space</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">dealias_filter</span><span class="p">,</span> <span class="s2">".-"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">"Wavenumber $k$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Filter value"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"2/3 Dealiasing Filter"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dealias filter shape: </span><span class="si">{</span><span class="n">dealias_mask</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of retained modes: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">dealias_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Fraction retained: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">dealias_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">N</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-16"># View the dealiasing filter
-dealias_filter = grid.dealias_filter()
+<div class="clipboard-copy-txt" id="cell-16"># The dealias filter from the grid
+dealias_mask = grid.dealias_filter()  # dealias_mask: [N] -- binary mask in spectral space
 
-fig, ax = plt.subplots(figsize=(8, 3))
-ax.plot(grid.k, dealias_filter, ".-")
-ax.set(xlabel="Wavenumber $k$", ylabel="Filter value")
-ax.set_title("2/3 Dealiasing Filter")
-plt.tight_layout()
-plt.show()</div>
+print(f"Dealias filter shape: {dealias_mask.shape}")
+print(f"Number of retained modes: {int(dealias_mask.sum())} / {N}")
+print(f"Fraction retained: {float(dealias_mask.sum()) / N:.4f}")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=763b8a75">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=609c5aa5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3398,35 +3719,27 @@ plt.show()</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Apply dealiasing to a field</span>
-<span class="n">u_dealiased</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">apply_dealias</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">u_dealiased</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">apply_dealias</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>  <span class="c1"># u_dealiased: [N]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Original field energy: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dealiased field energy: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u_dealiased</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Original field energy:   </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dealiased field energy:  </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u_dealiased</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Energy ratio: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u_dealiased</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"(Ratio ~ 1.0 because mode m=3 is well below the N/3 cutoff)"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-17"># Apply dealiasing to a field
-u_dealiased = deriv.apply_dealias(u)
+u_dealiased = deriv.apply_dealias(u)  # u_dealiased: [N]
 
-print(f"Original field energy: {jnp.sum(jnp.abs(u)**2):.6f}")
-print(f"Dealiased field energy: {jnp.sum(jnp.abs(u_dealiased)**2):.6f}")</div>
+print(f"Original field energy:   {float(jnp.sum(jnp.abs(u)**2)):.6f}")
+print(f"Dealiased field energy:  {float(jnp.sum(jnp.abs(u_dealiased)**2)):.6f}")
+print(f"Energy ratio: {float(jnp.sum(jnp.abs(u_dealiased)**2) / jnp.sum(jnp.abs(u)**2)):.6f}")
+print("(Ratio ~ 1.0 because mode m=3 is well below the N/3 cutoff)")</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f7d78cc2">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="working-in-spectral-space">Working in Spectral Space<a class="anchor-link" href="#working-in-spectral-space">¶</a></h2><p>If you're doing multiple operations in Fourier space, you can work directly
-with spectral coefficients using <code>spectral=True</code>.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4c36cb4d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2eda2f51">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3444,55 +3757,510 @@ with spectral coefficients using <code>spectral=True</code>.</p>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Transform to spectral space</span>
-<span class="n">u_hat</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
-<span class="c1"># Compute derivative in spectral space</span>
-<span class="n">du_dx_from_spectral</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u_hat</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">spectral</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Left: dealias filter in spectral space</span>
+<span class="n">k_sorted_idx</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="n">k_sorted_idx</span><span class="p">],</span> <span class="n">dealias_mask</span><span class="p">[</span><span class="n">k_sorted_idx</span><span class="p">],</span> <span class="s2">"b.-"</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$\pm \frac</span><span class="si">{2}{3}</span><span class="s2"> k_{\max}$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">"Wavenumber $k$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Filter value"</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">"2/3 Dealiasing Filter (Spectral Space)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
-<span class="c1"># Compare with physical space computation</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max difference: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">du_dx</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">du_dx_from_spectral</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="c1"># Right: effect on a high-mode signal</span>
+<span class="n">m_high</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span>  <span class="c1"># A mode above the dealias cutoff</span>
+<span class="n">km_high</span> <span class="o">=</span> <span class="n">m_high</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">L</span>
+<span class="n">u_high</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">km_high</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">u_high_dealiased</span> <span class="o">=</span> <span class="n">deriv</span><span class="o">.</span><span class="n">apply_dealias</span><span class="p">(</span><span class="n">u_high</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">u_high</span><span class="p">,</span> <span class="s2">"b-"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Original (m=</span><span class="si">{</span><span class="n">m_high</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">u_high_dealiased</span><span class="p">,</span> <span class="s2">"r--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"After dealiasing"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$x$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">"$u(x)$"</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Dealiasing Removes Mode m=</span><span class="si">{</span><span class="n">m_high</span><span class="si">}</span><span class="s2"> &gt; N/3=</span><span class="si">{</span><span class="n">N</span><span class="o">//</span><span class="mi">3</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"dealiasing.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-18"># Transform to spectral space
-u_hat = grid.transform(u)
+<div class="clipboard-copy-txt" id="cell-18">fig, axes = plt.subplots(1, 2, figsize=(10, 3))
 
-# Compute derivative in spectral space
-du_dx_from_spectral = deriv(u_hat, order=1, spectral=True)
+# Left: dealias filter in spectral space
+k_sorted_idx = jnp.argsort(k)
+axes[0].plot(k[k_sorted_idx], dealias_mask[k_sorted_idx], "b.-", markersize=3)
+axes[0].axvline(-2 / 3 * jnp.abs(k).max(), color="red", linestyle="--", alpha=0.7,
+                label=r"$\pm \frac{2}{3} k_{\max}$")
+axes[0].axvline(2 / 3 * jnp.abs(k).max(), color="red", linestyle="--", alpha=0.7)
+axes[0].set(xlabel="Wavenumber $k$", ylabel="Filter value",
+            title="2/3 Dealiasing Filter (Spectral Space)")
+axes[0].legend(fontsize=9)
 
-# Compare with physical space computation
-print(f"Max difference: {jnp.abs(du_dx - du_dx_from_spectral).max():.2e}")</div>
+# Right: effect on a high-mode signal
+m_high = N // 3 + 2  # A mode above the dealias cutoff
+km_high = m_high * 2 * jnp.pi / L
+u_high = jnp.cos(km_high * x)
+u_high_dealiased = deriv.apply_dealias(u_high)
+
+axes[1].plot(x, u_high, "b-", label=f"Original (m={m_high})")
+axes[1].plot(x, u_high_dealiased, "r--", label=f"After dealiasing")
+axes[1].set(xlabel=r"$x$", ylabel=r"$u(x)$",
+            title=f"Dealiasing Removes Mode m={m_high} &gt; N/3={N//3}")
+axes[1].legend(fontsize=9)
+
+plt.tight_layout()
+fig.savefig(IMG_DIR / "dealiasing.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=574cbde6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4977bdc1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><p>The new API provides:</p>
-<ol>
-<li><p><strong>FourierGrid1D</strong>: Grid setup with automatic wavenumber computation</p>
+<p><img alt="Dealiasing filter and effect" src="../images/demo_1d/dealiasing.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=42697caf">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="7-spectral-filter">7. Spectral Filter<a class="anchor-link" href="#7-spectral-filter">¶</a></h2><p>For time-stepping PDEs, we often need a smoother alternative to the sharp
+dealiasing cutoff. The <strong>exponential filter</strong> provides a smooth rolloff:</p>
+<p>$$
+F(k) = \exp\!\left(-\alpha \left(\frac{|k|}{k_{\max}}\right)^p\right)
+$$</p>
+<p>where:</p>
 <ul>
-<li><code>from_N_L()</code>: Create from number of points and domain length</li>
-<li><code>from_N_dx()</code>: Create from number of points and grid spacing</li>
-<li><code>from_L_dx()</code>: Create from domain length and grid spacing</li>
-<li>Properties: <code>x</code>, <code>k</code>, <code>k_dealias</code>, <code>dealias_filter()</code></li>
-<li>Methods: <code>transform()</code>, <code>check_consistency()</code></li>
+<li>$\alpha$ controls the damping strength at $k_{\max}$ ($F(k_{\max}) = e^{-\alpha}$)</li>
+<li>$p$ (the power/order) controls the sharpness of the transition</li>
 </ul>
-</li>
-<li><p><strong>SpectralDerivative1D</strong>: Derivative operator</p>
+<p>For large $p$, the filter is nearly 1 for low wavenumbers and drops sharply
+near $k_{\max}$ -- preserving resolved scales while damping grid-scale noise.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=eec2a0bb">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-19">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create the spectral filter</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">SpectralFilter1D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+
+<span class="c1"># Apply exponential filter with default parameters (alpha=36, power=16)</span>
+<span class="n">u_filtered</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">exponential_filter</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">36.0</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"u_filtered shape: </span><span class="si">{</span><span class="n">u_filtered</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max difference from original: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">u_filtered</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"(Small for low modes because the filter is near 1 for |k| &lt;&lt; k_max)"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-19"># Create the spectral filter
+filt = SpectralFilter1D(grid=grid)
+
+# Apply exponential filter with default parameters (alpha=36, power=16)
+u_filtered = filt.exponential_filter(u, alpha=36.0, power=16)
+
+print(f"u_filtered shape: {u_filtered.shape}")
+print(f"Max difference from original: {float(jnp.abs(u - u_filtered).max()):.2e}")
+print("(Small for low modes because the filter is near 1 for |k| &lt;&lt; k_max)")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f546b24b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-20">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Visualize the filter profile for different parameter choices</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+
+<span class="c1"># Left: vary the power parameter</span>
+<span class="n">k_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="n">k_normalized</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="n">k_sorted_idx</span><span class="p">])</span> <span class="o">/</span> <span class="n">k_max</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">]:</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">36.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">k_normalized</span><span class="p">)</span> <span class="o">**</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="n">k_sorted_idx</span><span class="p">],</span> <span class="n">F</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"power=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">"Wavenumber $k$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Filter $F(k)$"</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"Exponential Filter: $\exp(-36 (|k|/k_{\max})^p)$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Right: vary the alpha parameter (with power=16)</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">72</span><span class="p">]:</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">k_normalized</span><span class="p">)</span> <span class="o">**</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="n">k_sorted_idx</span><span class="p">],</span> <span class="n">F</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s2">"$\alpha$=</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">"Wavenumber $k$"</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Filter $F(k)$"</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">r</span><span class="s2">"Exponential Filter: $\exp(-\alpha (|k|/k_{\max})^</span><span class="si">{16}</span><span class="s2">)$"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"spectral_filter.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-20"># Visualize the filter profile for different parameter choices
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.5))
+
+# Left: vary the power parameter
+k_max = float(jnp.abs(k).max())
+k_normalized = jnp.abs(k[k_sorted_idx]) / k_max
+
+for p in [4, 8, 16, 32]:
+    F = jnp.exp(-36.0 * (k_normalized) ** p)
+    axes[0].plot(k[k_sorted_idx], F, label=f"power={p}")
+
+axes[0].set(xlabel="Wavenumber $k$", ylabel="Filter $F(k)$",
+            title=r"Exponential Filter: $\exp(-36 (|k|/k_{\max})^p)$")
+axes[0].legend(fontsize=8)
+
+# Right: vary the alpha parameter (with power=16)
+for a in [6, 18, 36, 72]:
+    F = jnp.exp(-a * (k_normalized) ** 16)
+    axes[1].plot(k[k_sorted_idx], F, label=fr"$\alpha$={a}")
+
+axes[1].set(xlabel="Wavenumber $k$", ylabel="Filter $F(k)$",
+            title=r"Exponential Filter: $\exp(-\alpha (|k|/k_{\max})^{16})$")
+axes[1].legend(fontsize=8)
+
+plt.tight_layout()
+fig.savefig(IMG_DIR / "spectral_filter.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=892c81bd">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Spectral filter profiles" src="../images/demo_1d/spectral_filter.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=39fc83a7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="8-working-in-spectral-space">8. Working in Spectral Space<a class="anchor-link" href="#8-working-in-spectral-space">¶</a></h2><p>When performing multiple operations in Fourier space (e.g., inside a
+time-stepping loop), it is more efficient to stay in spectral space and
+avoid redundant FFT/IFFT pairs. The <code>spectral=True</code> flag lets you pass
+Fourier coefficients directly.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=98b8358a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-21">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Transform to spectral space once</span>
+<span class="n">u_hat</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>  <span class="c1"># u_hat: [N] -- complex Fourier coefficients</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"u_hat shape: </span><span class="si">{</span><span class="n">u_hat</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"u_hat dtype: </span><span class="si">{</span><span class="n">u_hat</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Compute derivative from spectral coefficients</span>
+<span class="n">dudx_from_spectral</span> <span class="o">=</span> <span class="n">deriv</span><span class="p">(</span><span class="n">u_hat</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">spectral</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Verify it matches the physical-space computation</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max difference (spectral vs physical input): </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dudx_spectral</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">dudx_from_spectral</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-21"># Transform to spectral space once
+u_hat = grid.transform(u)  # u_hat: [N] -- complex Fourier coefficients
+print(f"u_hat shape: {u_hat.shape}")
+print(f"u_hat dtype: {u_hat.dtype}")
+
+# Compute derivative from spectral coefficients
+dudx_from_spectral = deriv(u_hat, order=1, spectral=True)
+
+# Verify it matches the physical-space computation
+print(f"Max difference (spectral vs physical input): {float(jnp.abs(dudx_spectral - dudx_from_spectral).max()):.2e}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ce1cb8f6">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9-parsevals-theorem-and-normalization">9. Parseval's Theorem and Normalization<a class="anchor-link" href="#9-parsevals-theorem-and-normalization">¶</a></h2><p>When using spectral transforms, a natural question is: does the transform
+preserve the "energy" (squared norm) of the signal?</p>
+<p><strong>Parseval's theorem</strong> states that for an orthonormal transform $T$:</p>
+<p>$$
+\|T(x)\|^2 = \|x\|^2
+$$</p>
+<p>The DCT-II with <code>norm='ortho'</code> is orthonormal, so Parseval holds exactly.
+With <code>norm=None</code> (the default unnormalized convention), the spectral
+coefficients are scaled by $2N$, so $\|Y\|^2 / \|x\|^2 \propto N$.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c9f48bfc">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-22">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">dct</span>
+
+<span class="n">Ns</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">]</span>
+<span class="n">ratios_none</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ratios_ortho</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">N_p</span> <span class="ow">in</span> <span class="n">Ns</span><span class="p">:</span>
+    <span class="n">x_p</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">N_p</span><span class="p">))</span> <span class="o">+</span> <span class="mf">0.5</span>
+    <span class="n">energy_x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x_p</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">y_none</span> <span class="o">=</span> <span class="n">dct</span><span class="p">(</span><span class="n">x_p</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">ratios_none</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y_none</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">energy_x</span><span class="p">)</span>
+
+    <span class="n">y_ortho</span> <span class="o">=</span> <span class="n">dct</span><span class="p">(</span><span class="n">x_p</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">"ortho"</span><span class="p">)</span>
+    <span class="n">ratios_ortho</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y_ortho</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">energy_x</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  N=</span><span class="si">{</span><span class="n">N_p</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2">:  ratio(None)=</span><span class="si">{</span><span class="n">ratios_none</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">8.2f</span><span class="si">}</span><span class="s2">,  ratio(ortho)=</span><span class="si">{</span><span class="n">ratios_ortho</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-22">from spectraldiffx import dct
+
+Ns = [8, 16, 32, 64, 128, 256]
+ratios_none = []
+ratios_ortho = []
+
+for N_p in Ns:
+    x_p = jnp.sin(jnp.linspace(0.1, 3.0, N_p)) + 0.5
+    energy_x = float(jnp.sum(x_p**2))
+
+    y_none = dct(x_p, type=2, norm=None)
+    ratios_none.append(float(jnp.sum(y_none**2)) / energy_x)
+
+    y_ortho = dct(x_p, type=2, norm="ortho")
+    ratios_ortho.append(float(jnp.sum(y_ortho**2)) / energy_x)
+
+    print(f"  N={N_p:4d}:  ratio(None)={ratios_none[-1]:8.2f},  ratio(ortho)={ratios_ortho[-1]:.6f}")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ca4b34db">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-23">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">ratios_none</span><span class="p">,</span> <span class="s2">"s-"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">"norm=None: $\|Y\|^2 / \|x\|^2$"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"C3"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">ratios_ortho</span><span class="p">,</span> <span class="s2">"o-"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">'norm="ortho": $\|Y\|^2 / \|x\|^2$'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"C0"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Parseval (ratio = 1)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"$N$ (vector length)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">"$\|DCT(x)\|^2 \,/\, \|x\|^2$"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"DCT-II Energy Ratio: effect of normalization"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">ratios_none</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.15</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"parseval_ortho.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-23">fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(Ns, ratios_none, "s-", label=r"norm=None: $\|Y\|^2 / \|x\|^2$", color="C3")
+ax.plot(Ns, ratios_ortho, "o-", label=r'norm="ortho": $\|Y\|^2 / \|x\|^2$', color="C0")
+ax.axhline(1.0, color="k", ls="--", lw=0.8, label="Parseval (ratio = 1)")
+ax.set_xlabel("$N$ (vector length)")
+ax.set_ylabel(r"$\|DCT(x)\|^2 \,/\, \|x\|^2$")
+ax.set_title("DCT-II Energy Ratio: effect of normalization")
+ax.legend(fontsize=9)
+ax.grid(True, alpha=0.3)
+ax.set_ylim(0, max(ratios_none) * 1.15)
+plt.tight_layout()
+fig.savefig(IMG_DIR / "parseval_ortho.png", dpi=150, bbox_inches="tight")
+plt.show()</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=67142fbe">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Parseval's theorem" src="../images/demo_1d/parseval_ortho.png"/></p>
+<p>With <code>norm='ortho'</code>, the energy ratio is exactly 1 for all $N$ — Parseval's
+theorem holds. With <code>norm=None</code>, the ratio grows linearly with $N$ because
+the unnormalized DCT-II scales coefficients by a factor related to $2N$.</p>
+<p><strong>Takeaway</strong>: Use <code>norm='ortho'</code> when energy conservation matters (e.g.,
+in Parseval-based spectral energy calculations). Use <code>norm=None</code> (the
+default) when you need the raw transform matching SciPy conventions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=becd8da2">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="summary">Summary<a class="anchor-link" href="#summary">¶</a></h2><p>This tutorial demonstrated the core features of the <code>spectraldiffx</code> 1D API:</p>
+<table>
+<thead>
+<tr>
+<th>Class / Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FourierGrid1D.from_N_L(N, L, dealias)</code></td>
+<td>Create periodic grid with wavenumbers</td>
+</tr>
+<tr>
+<td><code>grid.x</code>, <code>grid.k</code>, <code>grid.k_dealias</code></td>
+<td>Physical points, wavenumbers, dealiased wavenumbers</td>
+</tr>
+<tr>
+<td><code>grid.dealias_filter()</code></td>
+<td>Binary mask for 2/3-rule dealiasing</td>
+</tr>
+<tr>
+<td><code>grid.transform(u, inverse=False)</code></td>
+<td>FFT / IFFT</td>
+</tr>
+<tr>
+<td><code>SpectralDerivative1D(grid)</code></td>
+<td>Derivative operator</td>
+</tr>
+<tr>
+<td><code>deriv(u, order=n)</code></td>
+<td>$n$-th derivative</td>
+</tr>
+<tr>
+<td><code>deriv.gradient(u)</code></td>
+<td>First derivative (alias for <code>order=1</code>)</td>
+</tr>
+<tr>
+<td><code>deriv.laplacian(u)</code></td>
+<td>Second derivative ($-k^2 \hat{u}$)</td>
+</tr>
+<tr>
+<td><code>deriv.apply_dealias(u)</code></td>
+<td>Apply 2/3-rule dealiasing</td>
+</tr>
+<tr>
+<td><code>SpectralFilter1D(grid)</code></td>
+<td>Smoothing filters</td>
+</tr>
+<tr>
+<td><code>filt.exponential_filter(u, alpha, power)</code></td>
+<td>Exponential spectral filter</td>
+</tr>
+<tr>
+<td><code>filt.hyperviscosity(u, nu_hyper, dt, power)</code></td>
+<td>Hyperviscous damping</td>
+</tr>
+</tbody>
+</table>
+<p>Key takeaways:</p>
 <ul>
-<li><code>__call__(u, order, spectral)</code>: Compute n-th derivative</li>
-<li><code>gradient(u)</code>: First derivative</li>
-<li><code>laplacian(u)</code>: Second derivative</li>
-<li><code>apply_dealias(u)</code>: Apply dealiasing filter</li>
+<li>Spectral derivatives achieve <strong>machine-precision</strong> accuracy for resolved modes.</li>
+<li>The 2/3 dealiasing rule prevents aliasing in nonlinear computations by zeroing the top 1/3 of the spectrum.</li>
+<li>Exponential filters provide smooth spectral damping for time-stepping stability.</li>
+<li>The <code>spectral=True</code> flag avoids redundant FFT/IFFT pairs when working in Fourier space.</li>
 </ul>
-</li>
-</ol>
 </div>
 </div>
 </div>

@@ -965,7 +965,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -993,7 +993,119 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1021,7 +1133,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1049,7 +1161,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1077,7 +1189,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1291,62 +1403,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -2646,7 +2702,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=afcfdda4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ea7a3fbc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2677,7 +2733,7 @@ The nonlinear advection $J(\psi, \omega)$ is explicit; the stiff diffusion is im
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=31809edb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=830ccced">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2697,6 +2753,7 @@ The nonlinear advection $J(\psi, \omega)$ is explicit; the stiff diffusion is im
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">cyclopts</span>
@@ -2705,23 +2762,30 @@ The nonlinear advection $J(\psi, \omega)$ is explicit; the stiff diffusion is im
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jax.random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jrandom</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">jaxtyping</span><span class="w"> </span><span class="kn">import</span> <span class="n">Array</span><span class="p">,</span> <span class="n">Float</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralDerivative2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx._src.solvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralHelmholtzSolver2D</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"Agg"</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid2D</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralDerivative2D</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralHelmholtzSolver2D</span>
 
 <span class="c1"># JAX configuration</span>
 <span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">"jax_enable_x64"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">IMG_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"docs"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"navier_stokes_2d"</span>
+<span class="n">IMG_DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">App</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-1">import math
 import pathlib
+from pathlib import Path
 from typing import Annotated
 
 import cyclopts
@@ -2730,18 +2794,24 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 import jax.random as jrandom
+import matplotlib
 import matplotlib.pyplot as plt
 import xarray as xr
 from jaxtyping import Array, Float
 from loguru import logger
 from tqdm import tqdm
 
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+matplotlib.use("Agg")
+
+from spectraldiffx import FourierGrid2D
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "navier_stokes_2d"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 app = cyclopts.App()</div>
 </div>
@@ -2750,7 +2820,7 @@ app = cyclopts.App()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0a1d32bc">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=355f5002">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2761,7 +2831,7 @@ app = cyclopts.App()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e724786e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2fea3f81">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2818,7 +2888,7 @@ class State(eqx.Module):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=24ac717b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=659ae097">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2829,7 +2899,7 @@ class State(eqx.Module):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d76d6c7d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=80a1b774">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2878,7 +2948,7 @@ def get_psi_and_uv(omega: Float[Array, "Ny Nx"], p: Params):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6ec766d8">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bc662812">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2889,7 +2959,7 @@ def get_psi_and_uv(omega: Float[Array, "Ny Nx"], p: Params):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=125471ea">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0550f470">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2990,7 +3060,7 @@ def implicit_term(t: float, y: State, args: Params) -&gt; State:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7b40992a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6455a2fc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3001,7 +3071,7 @@ def implicit_term(t: float, y: State, args: Params) -&gt; State:
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=264241ea">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d47dd4ff">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3076,7 +3146,7 @@ def create_forcing(grid: FourierGrid2D, k_force: float) -&gt; jnp.ndarray:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=05c23697">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5dc9c68c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3087,7 +3157,7 @@ def create_forcing(grid: FourierGrid2D, k_force: float) -&gt; jnp.ndarray:
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e5ab646f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2cb1b71b">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3108,43 +3178,43 @@ def create_forcing(grid: FourierGrid2D, k_force: float) -&gt; jnp.ndarray:
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">default</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">run_navier_stokes</span><span class="p">(</span>
     <span class="n">nx</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">int</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--nx"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Number of grid points in x-direction."</span><span class="p">)</span>
+        <span class="nb">int</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--nx"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Number of grid points in x-direction."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
     <span class="n">ny</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">int</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--ny"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Number of grid points in y-direction."</span><span class="p">)</span>
+        <span class="nb">int</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--ny"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Number of grid points in y-direction."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
     <span class="n">domain_length</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--length"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Length of the square periodic domain."</span><span class="p">)</span>
+        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--length"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Length of the square periodic domain."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
     <span class="n">viscosity</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--viscosity"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Kinematic viscosity (nu)."</span><span class="p">)</span>
+        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--viscosity"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Kinematic viscosity (nu)."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
     <span class="n">hyperviscosity_order</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
         <span class="nb">int</span><span class="p">,</span>
-        <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
             <span class="s2">"--hyperviscosity-order"</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">"Order of hyperviscosity (n in laplacian^n). n=1 is standard viscosity."</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
     <span class="n">forcing_wavenumber</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
         <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
             <span class="s2">"--k-force"</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">"Wavenumber of the sinusoidal forcing. If not set, no forcing."</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mf">4.0</span><span class="p">,</span>
     <span class="n">t_end</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--t-end"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Final simulation time."</span><span class="p">)</span>
+        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--t-end"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Final simulation time."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">,</span>
     <span class="n">dt0</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--dt0"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Initial time step for adaptive solver."</span><span class="p">)</span>
+        <span class="nb">float</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--dt0"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Initial time step for adaptive solver."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
     <span class="n">n_saves</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">int</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--n-saves"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Number of time points to save."</span><span class="p">)</span>
+        <span class="nb">int</span><span class="p">,</span> <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--n-saves"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Number of time points to save."</span><span class="p">)</span>
     <span class="p">]</span> <span class="o">=</span> <span class="mi">101</span><span class="p">,</span>
     <span class="n">output_dir</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
         <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">cyclopts</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="s2">"--output-dir"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Directory to save the output NetCDF."</span><span class="p">),</span>
+        <span class="n">cyclopts</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"--output-dir"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Directory to save the output NetCDF."</span><span class="p">),</span>
     <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
@@ -3232,7 +3302,8 @@ def create_forcing(grid: FourierGrid2D, k_force: float) -&gt; jnp.ndarray:
     <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Output saved to: </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Generating plots..."</span><span class="p">)</span>
-    <span class="n">plot_results</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plot_results</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"vorticity_evolution.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">"Plots generated successfully!"</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
@@ -3243,43 +3314,43 @@ def create_forcing(grid: FourierGrid2D, k_force: float) -&gt; jnp.ndarray:
 @app.default
 def run_navier_stokes(
     nx: Annotated[
-        int, cyclopts.Option("--nx", help="Number of grid points in x-direction.")
+        int, cyclopts.Parameter("--nx", help="Number of grid points in x-direction.")
     ] = 256,
     ny: Annotated[
-        int, cyclopts.Option("--ny", help="Number of grid points in y-direction.")
+        int, cyclopts.Parameter("--ny", help="Number of grid points in y-direction.")
     ] = 256,
     domain_length: Annotated[
-        float, cyclopts.Option("--length", help="Length of the square periodic domain.")
+        float, cyclopts.Parameter("--length", help="Length of the square periodic domain.")
     ] = 2.0 * math.pi,
     viscosity: Annotated[
-        float, cyclopts.Option("--viscosity", help="Kinematic viscosity (nu).")
+        float, cyclopts.Parameter("--viscosity", help="Kinematic viscosity (nu).")
     ] = 1e-6,
     hyperviscosity_order: Annotated[
         int,
-        cyclopts.Option(
+        cyclopts.Parameter(
             "--hyperviscosity-order",
             help="Order of hyperviscosity (n in laplacian^n). n=1 is standard viscosity.",
         ),
     ] = 2,
     forcing_wavenumber: Annotated[
         float | None,
-        cyclopts.Option(
+        cyclopts.Parameter(
             "--k-force",
             help="Wavenumber of the sinusoidal forcing. If not set, no forcing.",
         ),
     ] = 4.0,
     t_end: Annotated[
-        float, cyclopts.Option("--t-end", help="Final simulation time.")
+        float, cyclopts.Parameter("--t-end", help="Final simulation time.")
     ] = 50.0,
     dt0: Annotated[
-        float, cyclopts.Option("--dt0", help="Initial time step for adaptive solver.")
+        float, cyclopts.Parameter("--dt0", help="Initial time step for adaptive solver.")
     ] = 1e-3,
     n_saves: Annotated[
-        int, cyclopts.Option("--n-saves", help="Number of time points to save.")
+        int, cyclopts.Parameter("--n-saves", help="Number of time points to save.")
     ] = 101,
     output_dir: Annotated[
         pathlib.Path | None,
-        cyclopts.Option("--output-dir", help="Directory to save the output NetCDF."),
+        cyclopts.Parameter("--output-dir", help="Directory to save the output NetCDF."),
     ] = None,
 ):
     """
@@ -3367,7 +3438,8 @@ def run_navier_stokes(
     logger.success(f"Output saved to: {output_path}")
 
     logger.info("Generating plots...")
-    plot_results(ds)
+    fig = plot_results(ds)
+    fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
     logger.success("Plots generated successfully!")
     plt.show()
 
@@ -3378,7 +3450,7 @@ def run_navier_stokes(
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d3ad3f05">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8bf1c486">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3389,7 +3461,7 @@ def run_navier_stokes(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2bc4f6cb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=62a0f846">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3470,7 +3542,7 @@ def build_dataset(sol, params: Params, grid: FourierGrid2D) -&gt; xr.Dataset:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7ea76241">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=48ba3466">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3481,7 +3553,7 @@ def build_dataset(sol, params: Params, grid: FourierGrid2D) -&gt; xr.Dataset:
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c52d1a88">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5a5acf84">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3570,7 +3642,7 @@ def plot_results(ds: xr.Dataset):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7ce79e7c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f29e92b6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3582,7 +3654,7 @@ def plot_results(ds: xr.Dataset):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6ee3837e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d047be3e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3630,7 +3702,7 @@ OUTPUT_DIR = pathlib.Path("./output/navier_stokes_2d")</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a5a29a43">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7cfd37f8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3734,7 +3806,7 @@ logger.success(f"Simulation complete! Steps taken: {sol.stats['num_steps']}")</d
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=48cb40b0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=18d5a432">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3760,6 +3832,7 @@ logger.success(f"Simulation complete! Steps taken: {sol.stats['num_steps']}")</d
 <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Output saved to: </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plot_results</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">IMG_DIR</span> <span class="o">/</span> <span class="s2">"vorticity_evolution.png"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-11">
@@ -3771,14 +3844,26 @@ ds.to_netcdf(output_path)
 logger.success(f"Output saved to: {output_path}")
 
 fig = plot_results(ds)
+fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=890ce624">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="Vorticity evolution in 2D turbulence" src="../images/navier_stokes_2d/vorticity_evolution.png"/></p>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=19d1c9e7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=27977d49">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

@@ -1122,7 +1122,7 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 1D
+    1D Fourier Pseudospectral Differentiation
   
 
     
@@ -1150,7 +1150,119 @@
   <span class="md-ellipsis">
     
   
-    Pseudospectral Differentiation - 2D
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
   
 
     
@@ -1178,7 +1290,7 @@
   <span class="md-ellipsis">
     
   
-    Quasi-Geostrophic (QG) Turbulence Simulation
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
   
 
     
@@ -1206,7 +1318,7 @@
   <span class="md-ellipsis">
     
   
-    QG Simulation with Diffrax Integration
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
   
 
     
@@ -1234,7 +1346,7 @@
   <span class="md-ellipsis">
     
   
-    Korteweg-de Vries (KdV) Equation Simulation
+    The Korteweg-de Vries Equation: Soliton Interactions
   
 
     
@@ -1291,62 +1403,6 @@
     
   
     1.5-Layer Quasigeostrophic (QG) Model
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Spectral Elliptic Solvers Demo
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Capacitance Matrix Solver Demo
   
 
     
@@ -2265,7 +2321,7 @@ NumPy/SciPy operation. This is performed <strong>once</strong> during the offlin
 is <strong>not</strong> JIT-traced by JAX. The result is a set of index pairs <span class="arithmatex">\((j_b, i_b)\)</span> for
 <span class="arithmatex">\(b = 1, \ldots, N_b\)</span>.</p>
 </div>
-<p><img alt="Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi." src="../../images/capacitance_mask_solution.png" /></p>
+<p><img alt="Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi." src="../../images/demo_capacitance/rhs_and_solution.png" /></p>
 <hr />
 <h2 id="4-greens-functions">4. Green's Functions<a class="headerlink" href="#4-greens-functions" title="Permanent link">&para;</a></h2>
 <p>For each boundary point <span class="arithmatex">\(b_k = (j_k, i_k)\)</span>, we solve:</p>
@@ -2339,7 +2395,7 @@ The pre-computed arrays (<span class="arithmatex">\(C^{-1}\)</span>, <span class
 fields of an <code>equinox.Module</code>, so the solver can be JIT-compiled, vmapped, and
 differentiated.</p>
 </div>
-<p><img alt="Boundary enforcement. Left: rectangular DST solve without correction -- nonzero psi at boundary points. Right: capacitance-corrected solution -- psi approx 0 at all boundary points." src="../../images/capacitance_boundary.png" /></p>
+<p><img alt="Boundary enforcement. Left: rectangular DST solve without correction -- nonzero psi at boundary points. Right: capacitance-corrected solution -- psi approx 0 at all boundary points." src="../../images/demo_capacitance/boundary_before_after.png" /></p>
 <hr />
 <h2 id="7-complexity-analysis">7. Complexity Analysis<a class="headerlink" href="#7-complexity-analysis" title="Permanent link">&para;</a></h2>
 <table>
