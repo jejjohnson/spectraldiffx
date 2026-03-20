@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.7](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.6...v0.0.7) (2026-03-20)
+
+
+### Bug Fixes
+
+* address PR [#48](https://github.com/jejjohnson/spectraldiffx/issues/48) review comments (7 items) ([7a487c5](https://github.com/jejjohnson/spectraldiffx/commit/7a487c57198522fb65d73be459a6e79092d69628))
+* correct axis mismatch in demo_2d analytical derivatives ([85118fb](https://github.com/jejjohnson/spectraldiffx/commit/85118fbb47a654f0799088464a2ca296cc55f856))
+* correct hyperviscosity sign and tune parameters in pseudospectral_part2 ([1f8ed19](https://github.com/jejjohnson/spectraldiffx/commit/1f8ed1967b63af776ba5e6f1ea2b01691b2c725e))
+* improve orthogonality Gram matrix figure layout ([6ae1f3a](https://github.com/jejjohnson/spectraldiffx/commit/6ae1f3a545efec812ac09ab5d069d5db1d52052f))
+* resolve cyclopts.Option → cyclopts.Parameter in CLI notebooks ([f6387b8](https://github.com/jejjohnson/spectraldiffx/commit/f6387b8b0e2b29204da9bf7e711db22159556b1c))
+* stabilize demo_qg simulation and fix hyperviscosity sign ([6367c17](https://github.com/jejjohnson/spectraldiffx/commit/6367c17c4dc9e28d883f7d8f93c789e41fab8195))
+* use independent colour scales for Poisson vs Helmholtz comparison ([81cefe0](https://github.com/jejjohnson/spectraldiffx/commit/81cefe00f0a6c17b251710134fe6418a187591db))
+
 ## [0.0.6](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.5...v0.0.6) (2026-03-19)
 
 
