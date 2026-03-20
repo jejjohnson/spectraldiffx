@@ -36,11 +36,15 @@
 # | FFT | Periodic | Periodic | — | $-\frac{4}{dx^2}\sin^2\!\frac{\pi k}{N}$ |
 
 # %%
+from pathlib import Path
+
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
 jax.config.update("jax_enable_x64", True)
 
 from spectraldiffx import (
@@ -58,6 +62,9 @@ from spectraldiffx import (
     idct,
     idst,
 )
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "eigenfunction_gallery"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 # %% [markdown]
 # ## 1. Same-BC Eigenfunctions
@@ -149,9 +156,12 @@ for ax, phi, x, title, marker in configs:
 
 plt.suptitle(f"Same-BC Eigenfunctions ($N={N}$)", fontsize=14, y=1.01)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "same_bc_eigenfunctions.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Same-BC Eigenfunctions](../images/eigenfunction_gallery/same_bc_eigenfunctions.png)
+#
 # **Key differences to notice:**
 #
 # - **DST-I** eigenfunctions vanish exactly at $x=0$ and $x=1$ (grid points on boundary).
@@ -237,9 +247,12 @@ for ax, phi, x, title, marker in mixed_configs:
 
 plt.suptitle(f"Mixed-BC Eigenfunctions ($N={N}$)", fontsize=14, y=1.01)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "mixed_bc_eigenfunctions.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Mixed-BC Eigenfunctions](../images/eigenfunction_gallery/mixed_bc_eigenfunctions.png)
+#
 # **Key observations:**
 #
 # - **DST-III/IV** (Dirichlet left): eigenfunctions vanish at $x=0$ and have
@@ -302,9 +315,12 @@ ax.axhline(0, color="k", ls=":", lw=0.5)
 ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
+fig.savefig(IMG_DIR / "eigenvalue_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Eigenvalue Comparison](../images/eigenfunction_gallery/eigenvalue_comparison.png)
+#
 # **Key insight:** The mixed-BC eigenvalues (DST-III, DCT-III, DST-IV,
 # DCT-IV) all collapse onto a single curve.  This is because they share
 # the formula $\lambda_k = -\frac{4}{dx^2}\sin^2(\pi(2k+1)/(4N))$,
@@ -347,9 +363,12 @@ for idx, (name, phi) in enumerate(phi_sets.items()):
 fig.colorbar(im, ax=axes_flat, shrink=0.6, label=r"$|G_{jk}| / \sqrt{G_{jj} G_{kk}}$")
 plt.suptitle(f"Normalised Gram Matrices ($N={N_orth}$)", fontsize=14, y=1.01)
 fig.subplots_adjust(wspace=0.3, hspace=0.3)
+fig.savefig(IMG_DIR / "orthogonality.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Orthogonality](../images/eigenfunction_gallery/orthogonality.png)
+#
 # All six Gram matrices show **diagonal-dominant** structure — the off-diagonal
 # entries are at machine precision, confirming orthogonality.
 
@@ -387,11 +406,8 @@ def tridiag_laplacian_dirichlet_staggered(N, dx):
             L[i, i - 1] = 1.0
         if i < N - 1:
             L[i, i + 1] = 1.0
-    # BCs: ghost points are ψ_{-1} = -ψ_0 and ψ_N = -ψ_{N-1}
-    # → L[0,0] gets -2 (already) and the -1 ghost contributes -ψ_0 → -2 stays
-    # Actually for staggered Dirichlet: ψ(-dx/2) = 0 → ψ_{-1} = -ψ_0
-    # so the [1, -2, 1] stencil at i=0 gives: (ψ_{-1} - 2ψ_0 + ψ_1)/dx²
-    #   = (-ψ_0 - 2ψ_0 + ψ_1)/dx² = (-3ψ_0 + ψ_1)/dx²
+    # Staggered Dirichlet: ψ(-dx/2) = 0 → ghost ψ_{-1} = -ψ_0
+    # Stencil at i=0: (ψ_{-1} - 2ψ_0 + ψ_1)/dx² = (-3ψ_0 + ψ_1)/dx²
     L[0, 0] = -3.0
     L[N - 1, N - 1] = -3.0
     return L / dx**2
@@ -406,8 +422,8 @@ def tridiag_laplacian_neumann_regular(N, dx):
             L[i, i - 1] = 1.0
         if i < N - 1:
             L[i, i + 1] = 1.0
-    # Neumann: ψ_{-1} = ψ_0 and ψ_N = ψ_{N-1}
-    L[0, 0] = -1.0  # (-2 + 1 from ghost = ψ_0)
+    # Neumann: ghost ψ_{-1} = ψ_0 → stencil gives (-1)*ψ_0 + ψ_1
+    L[0, 0] = -1.0
     L[N - 1, N - 1] = -1.0
     return L / dx**2
 
@@ -421,7 +437,7 @@ def tridiag_laplacian_neumann_staggered(N, dx):
             L[i, i - 1] = 1.0
         if i < N - 1:
             L[i, i + 1] = 1.0
-    # Neumann at half-spacing: ψ_{-1} = ψ_0, ψ_N = ψ_{N-1}
+    # Neumann at half-spacing: ghost ψ_{-1} = ψ_0
     L[0, 0] = -1.0
     L[N - 1, N - 1] = -1.0
     return L / dx**2
@@ -472,9 +488,12 @@ plt.suptitle(
     fontsize=14, y=1.01,
 )
 plt.tight_layout()
+fig.savefig(IMG_DIR / "stencil_verification.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Stencil Verification](../images/eigenfunction_gallery/stencil_verification.png)
+#
 # All residuals are at or below $10^{-14}$ — the eigenvalue formulas are
 # **exact** for the discrete Laplacian, not approximations.  This is why
 # the spectral solvers are exact inverses of the finite-difference operator.

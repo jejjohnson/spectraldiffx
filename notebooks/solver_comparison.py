@@ -33,11 +33,15 @@
 # half a grid spacing outside the first/last point.
 
 # %%
+from pathlib import Path
+
 import jax
 import jax.numpy as jnp
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+matplotlib.use("Agg")
 jax.config.update("jax_enable_x64", True)
 
 from spectraldiffx import (
@@ -52,6 +56,9 @@ from spectraldiffx import (
     solve_poisson_dst2,
     solve_poisson_fft,
 )
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "solver_comparison"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 # %% [markdown]
 # ## 1. Grid Geometry
@@ -128,7 +135,11 @@ ax.legend(loc="upper right", fontsize=9)
 
 plt.suptitle("Grid Geometry: Regular vs Staggered", fontsize=14, y=1.02)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "grid_geometry.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Grid Geometry](../images/solver_comparison/grid_geometry.png)
 
 # %% [markdown]
 # ## 2. Eigenvalue Spectra
@@ -171,9 +182,12 @@ ax.legend(fontsize=10)
 ax.axhline(0, color="k", ls=":", lw=0.5)
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "eigenvalue_spectra.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Eigenvalue Spectra](../images/solver_comparison/eigenvalue_spectra.png)
+#
 # **Observations:**
 #
 # - **DST-I and DST-II** (Dirichlet) are all strictly negative — no null mode.
@@ -281,9 +295,12 @@ ax.set_title("Convergence: Manufactured Solution on Unit Square", fontsize=13)
 ax.legend(fontsize=9)
 ax.grid(True, which="both", alpha=0.3)
 plt.tight_layout()
+fig.savefig(IMG_DIR / "convergence.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Convergence](../images/solver_comparison/convergence.png)
+#
 # **Observations:**
 #
 # - **FFT** achieves spectral (exponential) convergence because $\sin(2\pi x)$
@@ -359,9 +376,12 @@ plt.suptitle(
     fontsize=14, y=1.01,
 )
 plt.tight_layout()
+fig.savefig(IMG_DIR / "solutions.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
+# ![Solutions](../images/solver_comparison/solutions.png)
+#
 # **Observations:**
 #
 # - **Dirichlet** solutions (DST-I, DST-II) are pulled to zero at the boundary,
@@ -425,7 +445,11 @@ plt.suptitle(
     fontsize=13, y=1.02,
 )
 plt.tight_layout()
+fig.savefig(IMG_DIR / "error_maps.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![Error Maps](../images/solver_comparison/error_maps.png)
 
 # %% [markdown]
 # ## 6. Summary
