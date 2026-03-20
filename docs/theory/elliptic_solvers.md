@@ -101,7 +101,7 @@ $$\Lambda_{j,i} = \lambda_j^y + \lambda_i^x - \lambda$$
 - **No null mode:** the denominator $\Lambda_{j,i}$ is always nonzero for $\lambda \geq 0$, so no special treatment is needed.
 - The input `rhs` lives on the $N_y \times N_x$ interior grid; boundary values are implicit zeros.
 
-![Eigenfunction recovery test: the DST-I Poisson solver recovers the exact eigenfunction to machine precision.](../images/eigenfunction_recovery.png)
+![Eigenfunction recovery test: the DST-I Poisson solver recovers the exact eigenfunction to machine precision.](../images/demo_elliptic_solvers/eigenfunction_recovery.png)
 
 ### API
 
@@ -424,7 +424,7 @@ All five BC types (periodic, Dirichlet regular, Dirichlet staggered, Neumann reg
     `solve_helmholtz_dst` = `solve_helmholtz_dst1` (Dirichlet, regular) and
     `solve_helmholtz_dct` = `solve_helmholtz_dct2` (Neumann, staggered).
 
-![Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around.](../images/solver_comparison.png)
+![Poisson solve with a Gaussian bump RHS using three boundary condition types. Dirichlet enforces psi=0 at edges, Neumann allows nonzero psi at edges, and periodic wraps around.](../images/demo_elliptic_solvers/poisson_comparison_three_bcs.png)
 
 ---
 

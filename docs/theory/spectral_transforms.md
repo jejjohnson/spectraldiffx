@@ -19,7 +19,7 @@ The choice of spectral transform is dictated by the boundary conditions of the p
 !!! tip "Choosing the right transform"
     If your field is zero on the boundary, use DST-I. If the *gradient* of your field is zero on the boundary, use DCT-II. If the domain wraps around, use the FFT. Mixing these up produces the wrong eigenvalues and incorrect solutions.
 
-![DST-I (sine) and DCT-II (cosine) basis functions for N=8. DST-I modes vanish at the boundaries (Dirichlet), while DCT-II modes have zero slope (Neumann).](../images/basis_functions.png)
+![DST-I (sine) and DCT-II (cosine) basis functions for N=8. DST-I modes vanish at the boundaries (Dirichlet), while DCT-II modes have zero slope (Neumann).](../images/eigenfunction_gallery/basis_functions_stem.png)
 
 ---
 
@@ -248,7 +248,7 @@ For **high wavenumbers** near Nyquist ($k \approx N/2$), the discrete eigenvalue
 
     Mixing discrete eigenvalues with continuous transforms (or vice versa) produces incorrect solutions.
 
-![Discrete finite-difference eigenvalues (blue circles) vs continuous eigenvalues (red squares) for N=32. The two agree for low wavenumbers but diverge near the Nyquist frequency.](../images/eigenvalues_comparison.png)
+![Discrete finite-difference eigenvalues (blue circles) vs continuous eigenvalues (red squares) for N=32. The two agree for low wavenumbers but diverge near the Nyquist frequency.](../images/solver_comparison/discrete_vs_continuous_eigenvalues.png)
 
 ---
 

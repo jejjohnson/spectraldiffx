@@ -51,6 +51,7 @@
 # %%
 import math
 import pathlib
+from pathlib import Path
 from typing import Annotated
 
 import cyclopts
@@ -59,18 +60,24 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 import jax.random as jrandom
+import matplotlib
 import matplotlib.pyplot as plt
 import xarray as xr
 from jaxtyping import Array, Float
 from loguru import logger
 from tqdm import tqdm
 
-from spectraldiffx._src.grid import FourierGrid2D
-from spectraldiffx._src.operators import SpectralDerivative2D
-from spectraldiffx._src.solvers import SpectralHelmholtzSolver2D
+matplotlib.use("Agg")
+
+from spectraldiffx import FourierGrid2D
+from spectraldiffx import SpectralDerivative2D
+from spectraldiffx import SpectralHelmholtzSolver2D
 
 # JAX configuration
 jax.config.update("jax_enable_x64", True)
+
+IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "images" / "qg_model"
+IMG_DIR.mkdir(parents=True, exist_ok=True)
 
 app = cyclopts.App()
 
@@ -210,42 +217,42 @@ def generate_initial_pv(grid: FourierGrid2D, seed: int = 42) -> jnp.ndarray:
 @app.default
 def run_qg_model(
     nx: Annotated[
-        int, cyclopts.Option("--nx", help="Number of grid points in x-direction.")
+        int, cyclopts.Parameter("--nx", help="Number of grid points in x-direction.")
     ] = 128,
     ny: Annotated[
-        int, cyclopts.Option("--ny", help="Number of grid points in y-direction.")
+        int, cyclopts.Parameter("--ny", help="Number of grid points in y-direction.")
     ] = 128,
     domain_length: Annotated[
-        float, cyclopts.Option("--length", help="Length of the square periodic domain.")
+        float, cyclopts.Parameter("--length", help="Length of the square periodic domain.")
     ] = 1.0,
     viscosity: Annotated[
-        float, cyclopts.Option("--viscosity", help="Kinematic viscosity (nu).")
+        float, cyclopts.Parameter("--viscosity", help="Kinematic viscosity (nu).")
     ] = 2e-12,
     hyperviscosity_order: Annotated[
         int,
-        cyclopts.Option(
+        cyclopts.Parameter(
             "--hyperviscosity-order", help="Order of hyperviscosity (n in laplacian^n)."
         ),
     ] = 4,
     beta: Annotated[
-        float, cyclopts.Option("--beta", help="Planetary vorticity gradient (beta).")
+        float, cyclopts.Parameter("--beta", help="Planetary vorticity gradient (beta).")
     ] = 10.0,
     rossby_radius: Annotated[
         float,
-        cyclopts.Option("--rossby-radius", help="Rossby radius of deformation (R)."),
+        cyclopts.Parameter("--rossby-radius", help="Rossby radius of deformation (R)."),
     ] = 0.1,
     t_end: Annotated[
-        float, cyclopts.Option("--t-end", help="Final simulation time.")
+        float, cyclopts.Parameter("--t-end", help="Final simulation time.")
     ] = 50.0,
     dt0: Annotated[
-        float, cyclopts.Option("--dt0", help="Initial time step for adaptive solver.")
+        float, cyclopts.Parameter("--dt0", help="Initial time step for adaptive solver.")
     ] = 1e-2,
     n_saves: Annotated[
-        int, cyclopts.Option("--n-saves", help="Number of time points to save.")
+        int, cyclopts.Parameter("--n-saves", help="Number of time points to save.")
     ] = 101,
     output_dir: Annotated[
         pathlib.Path | None,
-        cyclopts.Option("--output-dir", help="Directory to save the output NetCDF."),
+        cyclopts.Parameter("--output-dir", help="Directory to save the output NetCDF."),
     ] = None,
 ):
     """Main function to run the 1.5-Layer QG simulation."""
@@ -330,7 +337,8 @@ def run_qg_model(
     logger.success(f"Output saved to: {output_path}")
 
     logger.info("Generating plots...")
-    plot_results(ds)
+    fig = plot_results(ds)
+    fig.savefig(IMG_DIR / "pv_and_vorticity_evolution.png", dpi=150, bbox_inches="tight")
     logger.success("Plots generated successfully!")
     plt.show()
 
@@ -498,7 +506,11 @@ ds.to_netcdf(output_path)
 logger.success(f"Output saved to: {output_path}")
 
 fig = plot_results(ds)
+fig.savefig(IMG_DIR / "pv_and_vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
+
+# %% [markdown]
+# ![PV and vorticity evolution](../images/qg_model/pv_and_vorticity_evolution.png)
 
 # %%
 

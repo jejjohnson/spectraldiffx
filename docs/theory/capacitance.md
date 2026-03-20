@@ -76,7 +76,7 @@ $$K = \begin{pmatrix} 0 & 1 & 0 \\ 1 & 1 & 1 \\ 0 & 1 & 0 \end{pmatrix}$$
     is **not** JIT-traced by JAX. The result is a set of index pairs $(j_b, i_b)$ for
     $b = 1, \ldots, N_b$.
 
-![Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi.](../images/capacitance_mask_solution.png)
+![Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi.](../images/demo_capacitance/rhs_and_solution.png)
 
 ---
 
@@ -145,7 +145,7 @@ The final result is then masked: $\psi \leftarrow \psi \odot M$ to ensure the so
     fields of an `equinox.Module`, so the solver can be JIT-compiled, vmapped, and
     differentiated.
 
-![Boundary enforcement. Left: rectangular DST solve without correction -- nonzero psi at boundary points. Right: capacitance-corrected solution -- psi approx 0 at all boundary points.](../images/capacitance_boundary.png)
+![Boundary enforcement. Left: rectangular DST solve without correction -- nonzero psi at boundary points. Right: capacitance-corrected solution -- psi approx 0 at all boundary points.](../images/demo_capacitance/boundary_before_after.png)
 
 ---
 

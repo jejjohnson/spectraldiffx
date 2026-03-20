@@ -66,13 +66,15 @@ nav:
   - Examples:
     - 1D Differentiation: notebooks/demo_1d.py
     - 2D Differentiation: notebooks/demo_2d.py
+    - Eigenfunction Gallery: notebooks/eigenfunction_gallery.py
+    - Solver Comparison: notebooks/solver_comparison.py
+    - Elliptic Solvers: notebooks/demo_elliptic_solvers.py
+    - Capacitance: notebooks/demo_capacitance.py
     - QG Turbulence: notebooks/demo_qg.py
     - QG with Diffrax: notebooks/pseudospectral_part2.py
     - KdV Equation: notebooks/kdv.py
     - Navier-Stokes 2D: notebooks/navier_stokes_2d.py
     - QG Model: notebooks/qg_model.py
-    - Elliptic Solvers: notebooks/demo_elliptic_solvers.py
-    - Capacitance: notebooks/demo_capacitance.py
   - API Reference:
     - Fourier:
       - Transforms: api/fourier/transforms.md
