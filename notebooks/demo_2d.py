@@ -90,25 +90,18 @@ print(f"Dealiasing: {grid.dealias}")
 # ## Compute Fields and Analytical Derivatives
 
 # %%
-# Helper to compute field values on grid
-kernel = lambda x, y: f(x, y, Lx, Ly, mx, my)
-kernel_grad_x = lambda x, y: df_dx(x, y, Lx, Ly, mx, my)
-kernel_grad_y = lambda x, y: df_dy(x, y, Lx, Ly, mx, my)
-kernel_grad2_x2 = lambda x, y: d2f_dx2(x, y, Lx, Ly, mx, my)
-kernel_grad2_y2 = lambda x, y: d2f_dy2(x, y, Lx, Ly, mx, my)
+# Evaluate field and analytical derivatives on the meshgrid.
+# We use the meshgrid coordinates (X, Y) directly so that the array
+# layout matches what SpectralDerivative2D.gradient() expects.
+u = f(X, Y, Lx, Ly, mx, my)
 
-
-def compute_on_grid(func, x, y):
-    """Evaluate function on meshgrid."""
-    return jax.vmap(lambda xi: jax.vmap(lambda yi: func(xi, yi))(y))(x)
-
-
-# Note: grid.x and grid.y are 1D arrays
-u = compute_on_grid(kernel, grid.x, grid.y)
-dudx_analytical = compute_on_grid(kernel_grad_x, grid.x, grid.y)
-dudy_analytical = compute_on_grid(kernel_grad_y, grid.x, grid.y)
-d2udx2_analytical = compute_on_grid(kernel_grad2_x2, grid.x, grid.y)
-d2udy2_analytical = compute_on_grid(kernel_grad2_y2, grid.x, grid.y)
+# Analytical derivatives (closed-form)
+kx = mx * 2 * jnp.pi / Lx
+ky = my * 2 * jnp.pi / Ly
+dudx_analytical = -kx * jnp.sin(kx * X) * jnp.sin(ky * Y)
+dudy_analytical = ky * jnp.cos(kx * X) * jnp.cos(ky * Y)
+d2udx2_analytical = -kx**2 * jnp.cos(kx * X) * jnp.sin(ky * Y)
+d2udy2_analytical = -ky**2 * jnp.cos(kx * X) * jnp.sin(ky * Y)
 
 # %%
 fig, ax = plt.subplots(ncols=3, figsize=(10, 3))
