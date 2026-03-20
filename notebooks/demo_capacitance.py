@@ -227,16 +227,19 @@ psi_helmholtz = solver_helmholtz(rhs)
 # %%
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
-vmax = max(float(jnp.max(jnp.abs(psi_poisson))), float(jnp.max(jnp.abs(psi_helmholtz))))
+# Use independent colour scales — Helmholtz solution is much smaller
+# due to screening, so a shared scale makes it look blank.
+vmax_p = float(jnp.max(jnp.abs(psi_poisson)))
+vmax_h = float(jnp.max(jnp.abs(psi_helmholtz)))
 
 im0 = axes[0].imshow(
-    np.array(psi_poisson), origin="lower", cmap="RdBu_r", vmin=-vmax, vmax=vmax
+    np.array(psi_poisson), origin="lower", cmap="RdBu_r", vmin=-vmax_p, vmax=vmax_p
 )
 axes[0].set_title("Poisson (lambda=0)")
 plt.colorbar(im0, ax=axes[0], shrink=0.8)
 
 im1 = axes[1].imshow(
-    np.array(psi_helmholtz), origin="lower", cmap="RdBu_r", vmin=-vmax, vmax=vmax
+    np.array(psi_helmholtz), origin="lower", cmap="RdBu_r", vmin=-vmax_h, vmax=vmax_h
 )
 axes[1].set_title("Helmholtz (lambda=1)")
 plt.colorbar(im1, ax=axes[1], shrink=0.8)
