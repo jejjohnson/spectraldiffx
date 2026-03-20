@@ -197,7 +197,7 @@ fig.savefig(IMG_DIR / "eigenfunction_recovery.png", dpi=150, bbox_inches="tight"
 plt.show()
 
 # %% [markdown]
-# ![Eigenfunction recovery](../images/demo_elliptic_solvers/eigenfunction_recovery.png)
+# ![Eigenfunction recovery](../../images/demo_elliptic_solvers/eigenfunction_recovery.png)
 #
 # The error is at machine precision ($\sim 10^{-14}$) because the solver
 # uses the exact same eigenvector basis as the test function.
@@ -388,7 +388,7 @@ fig.savefig(IMG_DIR / "poisson_comparison_three_bcs.png", dpi=150, bbox_inches="
 plt.show()
 
 # %% [markdown]
-# ![Poisson solutions for three BC types](../images/demo_elliptic_solvers/poisson_comparison_three_bcs.png)
+# ![Poisson solutions for three BC types](../../images/demo_elliptic_solvers/poisson_comparison_three_bcs.png)
 
 # %% [markdown]
 # **Observations**:

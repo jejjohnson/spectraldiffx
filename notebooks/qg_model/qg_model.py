@@ -510,7 +510,7 @@ fig.savefig(IMG_DIR / "pv_and_vorticity_evolution.png", dpi=150, bbox_inches="ti
 plt.show()
 
 # %% [markdown]
-# ![PV and vorticity evolution](../images/qg_model/pv_and_vorticity_evolution.png)
+# ![PV and vorticity evolution](../../images/qg_model/pv_and_vorticity_evolution.png)
 
 # %%
 

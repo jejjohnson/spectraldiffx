@@ -335,7 +335,7 @@ fig.savefig(IMG_DIR / "initial_state.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Initial state: vorticity, stream function, and speed](../images/pseudospectral_part2/initial_state.png)
+# ![Initial state: vorticity, stream function, and speed](../../images/pseudospectral_part2/initial_state.png)
 
 # %% [markdown]
 # ## RHS Implementation with Hyperviscosity
@@ -589,7 +589,7 @@ fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Vorticity evolution at four time snapshots](../images/pseudospectral_part2/vorticity_evolution.png)
+# ![Vorticity evolution at four time snapshots](../../images/pseudospectral_part2/vorticity_evolution.png)
 
 # %% [markdown]
 # ## Final State with Velocity Vectors
@@ -639,7 +639,7 @@ fig.savefig(IMG_DIR / "final_state.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Final state: vorticity and stream function with velocity vectors](../images/pseudospectral_part2/final_state.png)
+# ![Final state: vorticity and stream function with velocity vectors](../../images/pseudospectral_part2/final_state.png)
 
 # %% [markdown]
 # ## Conservation Diagnostics
@@ -692,7 +692,7 @@ fig.savefig(IMG_DIR / "diagnostics.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Energy and enstrophy diagnostics](../images/pseudospectral_part2/diagnostics.png)
+# ![Energy and enstrophy diagnostics](../../images/pseudospectral_part2/diagnostics.png)
 
 # %%
 energy_change = 100 * (E_final / E0 - 1)

@@ -524,7 +524,7 @@ print(f"Figure saved to: {IMG_DIR / 'two_soliton_interaction.png'}")
 plt.show()
 
 # %% [markdown]
-# ![KdV two-soliton interaction](../images/kdv/two_soliton_interaction.png)
+# ![KdV two-soliton interaction](../../images/kdv/two_soliton_interaction.png)
 
 # %% [markdown]
 # ## Key Physics: Soliton Phase Shift

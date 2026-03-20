@@ -197,7 +197,7 @@ fig.savefig(IMG_DIR / "field_and_gradients.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Field and analytical gradients](../images/demo_2d/field_and_gradients.png)
+# ![Field and analytical gradients](../../images/demo_2d/field_and_gradients.png)
 
 # %% [markdown]
 # ## 3. Gradient
@@ -255,7 +255,7 @@ fig.savefig(IMG_DIR / "gradient_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Gradient comparison: analytical vs spectral](../images/demo_2d/gradient_comparison.png)
+# ![Gradient comparison: analytical vs spectral](../../images/demo_2d/gradient_comparison.png)
 
 # %%
 print(f"Max error in du/dx: {float(err_x.max()):.2e}")
@@ -303,7 +303,7 @@ fig.savefig(IMG_DIR / "laplacian_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Laplacian comparison](../images/demo_2d/laplacian_comparison.png)
+# ![Laplacian comparison](../../images/demo_2d/laplacian_comparison.png)
 
 # %%
 print(f"Max error in Laplacian: {float(err_lap.max()):.2e}")
@@ -362,7 +362,7 @@ fig.savefig(IMG_DIR / "divergence_curl.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Divergence and curl](../images/demo_2d/divergence_curl.png)
+# ![Divergence and curl](../../images/demo_2d/divergence_curl.png)
 #
 # The divergence is at machine precision ($\sim 10^{-14}$), confirming both the
 # vector identity and the accuracy of the spectral operators.
@@ -428,7 +428,7 @@ fig.savefig(IMG_DIR / "poisson_solver.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Poisson solver results](../images/demo_2d/poisson_solver.png)
+# ![Poisson solver results](../../images/demo_2d/poisson_solver.png)
 
 # %%
 err_poisson = np.abs(psi_zero_mean - u_zero_mean)
@@ -486,7 +486,7 @@ fig.savefig(IMG_DIR / "advection.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Advection term](../images/demo_2d/advection.png)
+# ![Advection term](../../images/demo_2d/advection.png)
 
 # %% [markdown]
 # ## 8. Dealiasing
@@ -523,7 +523,7 @@ fig.savefig(IMG_DIR / "dealiasing_filter.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![2D dealiasing filter](../images/demo_2d/dealiasing_filter.png)
+# ![2D dealiasing filter](../../images/demo_2d/dealiasing_filter.png)
 #
 # The rectangular region in the center represents the retained modes. The
 # zeroed-out modes along the edges would otherwise cause aliasing errors

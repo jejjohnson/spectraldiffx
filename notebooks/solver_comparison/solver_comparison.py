@@ -139,7 +139,7 @@ fig.savefig(IMG_DIR / "grid_geometry.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Grid Geometry](../images/solver_comparison/grid_geometry.png)
+# ![Grid Geometry](../../images/solver_comparison/grid_geometry.png)
 
 # %% [markdown]
 # ## 2. Eigenvalue Spectra
@@ -186,7 +186,7 @@ fig.savefig(IMG_DIR / "eigenvalue_spectra.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Eigenvalue Spectra](../images/solver_comparison/eigenvalue_spectra.png)
+# ![Eigenvalue Spectra](../../images/solver_comparison/eigenvalue_spectra.png)
 #
 # **Observations:**
 #
@@ -251,7 +251,7 @@ fig.savefig(IMG_DIR / "discrete_vs_continuous_eigenvalues.png", dpi=150, bbox_in
 plt.show()
 
 # %% [markdown]
-# ![Discrete vs continuous eigenvalues](../images/solver_comparison/discrete_vs_continuous_eigenvalues.png)
+# ![Discrete vs continuous eigenvalues](../../images/solver_comparison/discrete_vs_continuous_eigenvalues.png)
 #
 # At low $k$, the discrete and continuous eigenvalues overlap. Near the
 # Nyquist frequency, the discrete eigenvalues saturate at $-4/dx^2$ while
@@ -375,7 +375,7 @@ fig.savefig(IMG_DIR / "convergence.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Convergence](../images/solver_comparison/convergence.png)
+# ![Convergence](../../images/solver_comparison/convergence.png)
 #
 # **Observations:**
 #
@@ -469,7 +469,7 @@ fig.savefig(IMG_DIR / "solutions.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Solutions](../images/solver_comparison/solutions.png)
+# ![Solutions](../../images/solver_comparison/solutions.png)
 #
 # **Observations:**
 #
@@ -538,7 +538,7 @@ fig.savefig(IMG_DIR / "error_maps.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Error Maps](../images/solver_comparison/error_maps.png)
+# ![Error Maps](../../images/solver_comparison/error_maps.png)
 
 # %% [markdown]
 # ## 6. Summary

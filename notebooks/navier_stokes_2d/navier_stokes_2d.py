@@ -483,7 +483,7 @@ fig.savefig(IMG_DIR / "vorticity_evolution.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Vorticity evolution in 2D turbulence](../images/navier_stokes_2d/vorticity_evolution.png)
+# ![Vorticity evolution in 2D turbulence](../../images/navier_stokes_2d/vorticity_evolution.png)
 
 # %%
 

@@ -158,7 +158,7 @@ fig.savefig(IMG_DIR / "ocean_basin_mask.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Ocean basin mask](../images/demo_capacitance/ocean_basin_mask.png)
+# ![Ocean basin mask](../../images/demo_capacitance/ocean_basin_mask.png)
 
 # %% [markdown]
 # ## 3. Build the Capacitance Solver
@@ -234,7 +234,7 @@ fig.savefig(IMG_DIR / "rhs_and_solution.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![RHS and Poisson solution](../images/demo_capacitance/rhs_and_solution.png)
+# ![RHS and Poisson solution](../../images/demo_capacitance/rhs_and_solution.png)
 
 # %% [markdown]
 # The solution is smooth inside the basin and drops to zero at the
@@ -302,7 +302,7 @@ fig.savefig(IMG_DIR / "boundary_before_after.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Boundary before vs after correction](../images/demo_capacitance/boundary_before_after.png)
+# ![Boundary before vs after correction](../../images/demo_capacitance/boundary_before_after.png)
 #
 # The uncorrected rectangular solve has significant nonzero values at the
 # boundary points (red dots). The capacitance correction drives these to
@@ -335,7 +335,7 @@ fig.savefig(IMG_DIR / "boundary_enforcement.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Psi at inner-boundary points](../images/demo_capacitance/boundary_enforcement.png)
+# ![Psi at inner-boundary points](../../images/demo_capacitance/boundary_enforcement.png)
 
 # %% [markdown]
 # The boundary values are at machine precision ($\sim 10^{-14}$),
@@ -394,7 +394,7 @@ fig.savefig(IMG_DIR / "dst_vs_fft_comparison.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![DST vs FFT base solver comparison](../images/demo_capacitance/dst_vs_fft_comparison.png)
+# ![DST vs FFT base solver comparison](../../images/demo_capacitance/dst_vs_fft_comparison.png)
 
 # %% [markdown]
 # The two solutions agree to near machine precision inside the mask.
@@ -473,7 +473,7 @@ fig.savefig(IMG_DIR / "poisson_vs_helmholtz.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 # %% [markdown]
-# ![Poisson vs Helmholtz comparison](../images/demo_capacitance/poisson_vs_helmholtz.png)
+# ![Poisson vs Helmholtz comparison](../../images/demo_capacitance/poisson_vs_helmholtz.png)
 
 # %% [markdown]
 # **Observations**:
