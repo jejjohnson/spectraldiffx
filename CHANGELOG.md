@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.9](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.8...v0.0.9) (2026-03-22)
+
+
+### Features
+
+* add pseudo-spectral eigenvalues and `approximation` parameter to solvers ([61f3846](https://github.com/jejjohnson/spectraldiffx/commit/61f3846e6924ddf94455421dd5de8c11bbbc075f)), closes [#40](https://github.com/jejjohnson/spectraldiffx/issues/40)
+* add pseudo-spectral eigenvalues and approximation parameter ([b2e57a4](https://github.com/jejjohnson/spectraldiffx/commit/b2e57a406539817799347f26a78e4fa3532fe683))
+* **solvers:** add mixed per-axis boundary condition solver (2D) ([0ebaa25](https://github.com/jejjohnson/spectraldiffx/commit/0ebaa25b870bfaaff56833a2db142ecf6a6b6cf7))
+* **solvers:** add mixed per-axis boundary condition solver for 2D ([c4a08be](https://github.com/jejjohnson/spectraldiffx/commit/c4a08bec1f2b94adf64d7b3313cf9a8db1448e9a)), closes [#39](https://github.com/jejjohnson/spectraldiffx/issues/39)
+
+
+### Bug Fixes
+
+* address PR [#52](https://github.com/jejjohnson/spectraldiffx/issues/52) review comments ([6224e74](https://github.com/jejjohnson/spectraldiffx/commit/6224e745531c58ba1b550bd8b9f15127af7cc08a))
+* address PR [#53](https://github.com/jejjohnson/spectraldiffx/issues/53) review comments ([0b37d66](https://github.com/jejjohnson/spectraldiffx/commit/0b37d6663da6633fbbd16b57f260f610f545cd57))
+
 ## [0.0.8](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.7...v0.0.8) (2026-03-20)
 
 
