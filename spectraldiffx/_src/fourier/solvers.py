@@ -69,10 +69,13 @@ SameBC = Literal[
 ]
 
 #: Mixed-BC type: different conditions on left/right of one axis.
-MixedBC = tuple[
-    Literal["dirichlet", "dirichlet_stag", "neumann", "neumann_stag"],
-    Literal["dirichlet", "dirichlet_stag", "neumann", "neumann_stag"],
-]
+#: Only specific combinations are supported (see ``_BC_DISPATCH``).
+MixedBC = (
+    tuple[Literal["dirichlet_stag"], Literal["neumann_stag"]]
+    | tuple[Literal["neumann_stag"], Literal["dirichlet_stag"]]
+    | tuple[Literal["dirichlet"], Literal["neumann"]]
+    | tuple[Literal["neumann"], Literal["dirichlet"]]
+)
 
 #: Per-axis boundary condition specification.
 BoundaryCondition = SameBC | MixedBC
@@ -178,11 +181,10 @@ def solve_helmholtz_2d(
     * ``("dirichlet", "neumann")`` — Dirichlet left + Neumann right, regular (DST-III)
     * ``("neumann", "dirichlet")`` — Neumann left + Dirichlet right, regular (DCT-III)
 
-    When both axes use the same transform family and type, a single 2-D
-    transform call is used (fast path).  Otherwise, sequential 1-D transforms
-    are applied along each axis.  When mixing FFT (complex) with DST/DCT
-    (real), the real and imaginary parts are transformed separately along the
-    non-periodic axis (PoisFFT approach).
+    Transforms are applied as sequential 1-D transforms along each axis.
+    When mixing FFT (complex) with DST/DCT (real), the real and imaginary
+    parts are transformed separately along the non-periodic axis (PoisFFT
+    approach).
 
     Parameters
     ----------
@@ -203,6 +205,13 @@ def solve_helmholtz_2d(
     -------
     Float[Array, "Ny Nx"]
         Solution psi, same shape as *rhs*.
+
+    Notes
+    -----
+    When using ``jax.jit``, ``bc_x`` and ``bc_y`` must be marked as static
+    since they are Python objects used for dispatch::
+
+        solve_jit = jax.jit(solve_helmholtz_2d, static_argnames=("bc_x", "bc_y"))
     """
     Ny, Nx = rhs.shape
     fam_x, type_x, eig_fn_x, null_x = _lookup_bc(bc_x)
@@ -212,10 +221,12 @@ def solve_helmholtz_2d(
     eigy = eig_fn_y(Ny, dy)  # [Ny]
     eig2d = eigy[:, None] + eigx[None, :] - lambda_  # [Ny, Nx]
 
-    # Null-mode handling: zero eigenvalue at (0,0) for Neumann/periodic
-    has_null = null_x and null_y and lambda_ == 0.0
-    if has_null:
-        eig2d_safe = eig2d.at[0, 0].set(1.0)
+    # Null-mode handling: zero eigenvalue at (0,0) for Neumann/periodic.
+    # Use jnp.where to remain JIT-compatible when lambda_ is traced.
+    _has_null_mode = null_x and null_y  # Python bool (static from BC dispatch)
+    if _has_null_mode:
+        is_null = eig2d[0, 0] == 0.0
+        eig2d_safe = eig2d.at[0, 0].set(jnp.where(is_null, 1.0, eig2d[0, 0]))
     else:
         eig2d_safe = eig2d
 
@@ -243,8 +254,10 @@ def solve_helmholtz_2d(
 
     # --- Spectral division ---
     psi_hat = rhs_hat / eig2d_safe
-    if has_null:
-        psi_hat = psi_hat.at[0, 0].set(0.0)
+    if _has_null_mode:
+        psi_hat = psi_hat.at[0, 0].set(
+            jnp.where(is_null, jnp.zeros_like(psi_hat[0, 0]), psi_hat[0, 0])
+        )
 
     # --- Inverse transform (reverse order) ---
     if x_periodic and y_periodic:
