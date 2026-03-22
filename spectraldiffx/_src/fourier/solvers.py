@@ -34,6 +34,9 @@ Layer 1 — Module classes
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from typing import Literal
+
 import equinox as eqx
 import jax.numpy as jnp
 from jaxtyping import Array, Float
@@ -41,12 +44,272 @@ from jaxtyping import Array, Float
 from .eigenvalues import (
     dct1_eigenvalues,
     dct2_eigenvalues,
+    dct3_eigenvalues,
+    dct4_eigenvalues,
     dst1_eigenvalues,
     dst2_eigenvalues,
+    dst3_eigenvalues,
+    dst4_eigenvalues,
     fft_eigenvalues,
 )
 from .grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 from .transforms import dctn, dstn, idctn, idstn
+
+# ---------------------------------------------------------------------------
+# Boundary condition types for mixed per-axis solvers
+# ---------------------------------------------------------------------------
+
+#: Same-BC type: identical condition on both sides of one axis.
+SameBC = Literal[
+    "periodic",
+    "dirichlet",
+    "dirichlet_stag",
+    "neumann",
+    "neumann_stag",
+]
+
+#: Mixed-BC type: different conditions on left/right of one axis.
+#: Only specific combinations are supported (see ``_BC_DISPATCH``).
+MixedBC = (
+    tuple[Literal["dirichlet_stag"], Literal["neumann_stag"]]
+    | tuple[Literal["neumann_stag"], Literal["dirichlet_stag"]]
+    | tuple[Literal["dirichlet"], Literal["neumann"]]
+    | tuple[Literal["neumann"], Literal["dirichlet"]]
+)
+
+#: Per-axis boundary condition specification.
+BoundaryCondition = SameBC | MixedBC
+
+# ===========================================================================
+# Internal dispatch for per-axis boundary conditions
+# ===========================================================================
+
+# Mapping from BC spec → (forward DST/DCT type, eigenvalue function, has_null_mode)
+# For DST/DCT, the inverse type is handled automatically by idstn/idctn (SciPy convention).
+# For FFT ("periodic"), we use jnp.fft directly (not DST/DCT), so type is None.
+
+_EigFn = Callable[[int, float], Float[Array, " N"]]
+_DSTDCTType = Literal[1, 2, 3, 4]
+
+_BC_DISPATCH: dict[
+    str | tuple[str, str],
+    tuple[str, _DSTDCTType | None, _EigFn, bool],
+] = {
+    # (transform_family, type, eigenvalue_fn, has_null_mode)
+    "periodic": ("fft", None, fft_eigenvalues, True),
+    "dirichlet": ("dst", 1, dst1_eigenvalues, False),
+    "dirichlet_stag": ("dst", 2, dst2_eigenvalues, False),
+    "neumann": ("dct", 1, dct1_eigenvalues, True),
+    "neumann_stag": ("dct", 2, dct2_eigenvalues, True),
+    # Mixed left/right BCs on same axis
+    ("dirichlet_stag", "neumann_stag"): ("dst", 4, dst4_eigenvalues, False),
+    ("neumann_stag", "dirichlet_stag"): ("dct", 4, dct4_eigenvalues, False),
+    ("dirichlet", "neumann"): ("dst", 3, dst3_eigenvalues, False),
+    ("neumann", "dirichlet"): ("dct", 3, dct3_eigenvalues, False),
+}
+
+
+def _lookup_bc(
+    bc: BoundaryCondition,
+) -> tuple[str, _DSTDCTType | None, _EigFn, bool]:
+    """Look up transform config for a boundary condition spec.
+
+    Returns
+    -------
+    family : str
+        ``"fft"``, ``"dst"``, or ``"dct"``.
+    type_ : int | None
+        DST/DCT type (1–4), or ``None`` for FFT.
+    eig_fn : callable
+        ``(N, dx) -> Array[N]`` eigenvalue function.
+    has_null : bool
+        Whether the k=0 eigenvalue is zero (Neumann/periodic).
+    """
+    key = bc if isinstance(bc, str) else tuple(bc)
+    if key not in _BC_DISPATCH:
+        raise ValueError(
+            f"Unsupported boundary condition: {bc!r}. "
+            f"Supported: {list(_BC_DISPATCH.keys())}"
+        )
+    return _BC_DISPATCH[key]
+
+
+def _forward_1d(x: Array, family: str, type_: _DSTDCTType | None, axis: int) -> Array:
+    """Apply forward 1-D transform along *axis*."""
+    if family == "fft":
+        return jnp.fft.fft(x, axis=axis)
+    assert type_ is not None  # guaranteed for dst/dct families
+    if family == "dst":
+        return dstn(x, type=type_, axes=[axis])
+    return dctn(x, type=type_, axes=[axis])
+
+
+def _inverse_1d(x: Array, family: str, type_: _DSTDCTType | None, axis: int) -> Array:
+    """Apply inverse 1-D transform along *axis*."""
+    if family == "fft":
+        return jnp.fft.ifft(x, axis=axis)
+    assert type_ is not None  # guaranteed for dst/dct families
+    if family == "dst":
+        return idstn(x, type=type_, axes=[axis])
+    return idctn(x, type=type_, axes=[axis])
+
+
+# ===========================================================================
+# Mixed per-axis boundary condition solver — 2D
+# ===========================================================================
+
+
+def solve_helmholtz_2d(
+    rhs: Float[Array, "Ny Nx"],
+    dx: float,
+    dy: float,
+    bc_x: BoundaryCondition = "periodic",
+    bc_y: BoundaryCondition = "periodic",
+    lambda_: float = 0.0,
+) -> Float[Array, "Ny Nx"]:
+    """Solve (nabla^2 - lambda)psi = f in 2-D with per-axis boundary conditions.
+
+    Supports any combination of boundary conditions on each axis:
+
+    * ``"periodic"`` — periodic (FFT)
+    * ``"dirichlet"`` — homogeneous Dirichlet on regular (vertex) grid (DST-I)
+    * ``"dirichlet_stag"`` — homogeneous Dirichlet on staggered (cell) grid (DST-II)
+    * ``"neumann"`` — homogeneous Neumann on regular grid (DCT-I)
+    * ``"neumann_stag"`` — homogeneous Neumann on staggered grid (DCT-II)
+    * ``("dirichlet_stag", "neumann_stag")`` — Dirichlet left + Neumann right, staggered (DST-IV)
+    * ``("neumann_stag", "dirichlet_stag")`` — Neumann left + Dirichlet right, staggered (DCT-IV)
+    * ``("dirichlet", "neumann")`` — Dirichlet left + Neumann right, regular (DST-III)
+    * ``("neumann", "dirichlet")`` — Neumann left + Dirichlet right, regular (DCT-III)
+
+    Transforms are applied as sequential 1-D transforms along each axis.
+    When mixing FFT (complex) with DST/DCT (real), the real and imaginary
+    parts are transformed separately along the non-periodic axis (PoisFFT
+    approach).
+
+    Parameters
+    ----------
+    rhs : Float[Array, "Ny Nx"]
+        Right-hand side.
+    dx : float
+        Grid spacing in x.
+    dy : float
+        Grid spacing in y.
+    bc_x : BoundaryCondition
+        Boundary condition along the x-axis (columns).
+    bc_y : BoundaryCondition
+        Boundary condition along the y-axis (rows).
+    lambda_ : float
+        Helmholtz parameter.  Default: 0.0 (Poisson).
+
+    Returns
+    -------
+    Float[Array, "Ny Nx"]
+        Solution psi, same shape as *rhs*.
+
+    Notes
+    -----
+    When using ``jax.jit``, ``bc_x`` and ``bc_y`` must be marked as static
+    since they are Python objects used for dispatch::
+
+        solve_jit = jax.jit(solve_helmholtz_2d, static_argnames=("bc_x", "bc_y"))
+    """
+    Ny, Nx = rhs.shape
+    fam_x, type_x, eig_fn_x, null_x = _lookup_bc(bc_x)
+    fam_y, type_y, eig_fn_y, null_y = _lookup_bc(bc_y)
+
+    eigx = eig_fn_x(Nx, dx)  # [Nx]
+    eigy = eig_fn_y(Ny, dy)  # [Ny]
+    eig2d = eigy[:, None] + eigx[None, :] - lambda_  # [Ny, Nx]
+
+    # Null-mode handling: zero eigenvalue at (0,0) for Neumann/periodic.
+    # Use jnp.where to remain JIT-compatible when lambda_ is traced.
+    _has_null_mode = null_x and null_y  # Python bool (static from BC dispatch)
+    if _has_null_mode:
+        is_null = eig2d[0, 0] == 0.0
+        eig2d_safe = eig2d.at[0, 0].set(jnp.where(is_null, 1.0, eig2d[0, 0]))
+    else:
+        eig2d_safe = eig2d
+
+    # --- Forward transform ---
+    x_periodic = fam_x == "fft"
+    y_periodic = fam_y == "fft"
+
+    if x_periodic and y_periodic:
+        # Both periodic → 2-D FFT
+        rhs_hat = jnp.fft.fft2(rhs)
+    elif not x_periodic and not y_periodic:
+        # Both real-to-real → sequential DST/DCT
+        temp = _forward_1d(rhs, fam_x, type_x, axis=1)
+        rhs_hat = _forward_1d(temp, fam_y, type_y, axis=0)
+    elif x_periodic:
+        # FFT in x (complex), then DST/DCT in y on real+imag parts
+        temp = jnp.fft.fft(rhs, axis=1)  # [Ny, Nx] complex
+        rhs_hat = _forward_1d(temp.real, fam_y, type_y, axis=0) + 1j * _forward_1d(
+            temp.imag, fam_y, type_y, axis=0
+        )
+    else:
+        # DST/DCT in x (real), then FFT in y (complex)
+        temp = _forward_1d(rhs, fam_x, type_x, axis=1)  # [Ny, Nx] real
+        rhs_hat = jnp.fft.fft(temp, axis=0)  # [Ny, Nx] complex
+
+    # --- Spectral division ---
+    psi_hat = rhs_hat / eig2d_safe
+    if _has_null_mode:
+        psi_hat = psi_hat.at[0, 0].set(
+            jnp.where(is_null, jnp.zeros_like(psi_hat[0, 0]), psi_hat[0, 0])
+        )
+
+    # --- Inverse transform (reverse order) ---
+    if x_periodic and y_periodic:
+        psi = jnp.real(jnp.fft.ifft2(psi_hat))
+    elif not x_periodic and not y_periodic:
+        temp = _inverse_1d(psi_hat, fam_y, type_y, axis=0)
+        psi = _inverse_1d(temp, fam_x, type_x, axis=1)
+    elif x_periodic:
+        # Inverse DST/DCT in y on real+imag, then IFFT in x
+        temp = _inverse_1d(psi_hat.real, fam_y, type_y, axis=0) + 1j * _inverse_1d(
+            psi_hat.imag, fam_y, type_y, axis=0
+        )
+        psi = jnp.real(jnp.fft.ifft(temp, axis=1))
+    else:
+        # IFFT in y, then inverse DST/DCT in x
+        temp = jnp.fft.ifft(psi_hat, axis=0)  # [Ny, Nx] complex
+        psi = _inverse_1d(temp.real, fam_x, type_x, axis=1)
+
+    return psi
+
+
+def solve_poisson_2d(
+    rhs: Float[Array, "Ny Nx"],
+    dx: float,
+    dy: float,
+    bc_x: BoundaryCondition = "periodic",
+    bc_y: BoundaryCondition = "periodic",
+) -> Float[Array, "Ny Nx"]:
+    """Solve nabla^2 psi = f in 2-D with per-axis boundary conditions.
+
+    Convenience wrapper around :func:`solve_helmholtz_2d` with ``lambda_=0``.
+
+    Parameters
+    ----------
+    rhs : Float[Array, "Ny Nx"]
+        Right-hand side.
+    dx : float
+        Grid spacing in x.
+    dy : float
+        Grid spacing in y.
+    bc_x : BoundaryCondition
+        Boundary condition along the x-axis.
+    bc_y : BoundaryCondition
+        Boundary condition along the y-axis.
+
+    Returns
+    -------
+    Float[Array, "Ny Nx"]
+        Solution psi, same shape as *rhs*.
+    """
+    return solve_helmholtz_2d(rhs, dx, dy, bc_x=bc_x, bc_y=bc_y, lambda_=0.0)
+
 
 # ===========================================================================
 # Layer 0 — Pure functional solvers
@@ -1457,3 +1720,69 @@ class RegularNeumannHelmholtzSolver2D(eqx.Module):
             Solution ψ (zero-mean gauge when α = 0).
         """
         return solve_helmholtz_dct1(rhs, self.dx, self.dy, self.alpha)
+
+
+# ---------------------------------------------------------------------------
+# Mixed per-axis BCs — new
+# ---------------------------------------------------------------------------
+
+
+class MixedBCHelmholtzSolver2D(eqx.Module):
+    """2D Helmholtz/Poisson solver with per-axis boundary conditions.
+
+    Solves ``(nabla^2 - alpha)psi = f`` where each axis can have a different
+    boundary condition type (see :func:`solve_helmholtz_2d`).
+
+    Examples
+    --------
+    Channel flow (periodic in x, Dirichlet walls in y)::
+
+        solver = MixedBCHelmholtzSolver2D(
+            dx=0.1,
+            dy=0.1,
+            bc_x="periodic",
+            bc_y="dirichlet",
+        )
+        psi = solver(rhs)
+
+    Attributes
+    ----------
+    dx : float
+        Grid spacing in x.
+    dy : float
+        Grid spacing in y.
+    bc_x : BoundaryCondition
+        Boundary condition along the x-axis.
+    bc_y : BoundaryCondition
+        Boundary condition along the y-axis.
+    alpha : float
+        Helmholtz parameter.  Default: 0.0 (Poisson).
+    """
+
+    dx: float
+    dy: float
+    bc_x: BoundaryCondition = eqx.field(static=True, default="periodic")
+    bc_y: BoundaryCondition = eqx.field(static=True, default="periodic")
+    alpha: float = 0.0
+
+    def __call__(self, rhs: Float[Array, "Ny Nx"]) -> Float[Array, "Ny Nx"]:
+        """Solve (nabla^2 - alpha)psi = rhs.
+
+        Parameters
+        ----------
+        rhs : Float[Array, "Ny Nx"]
+            Right-hand side.
+
+        Returns
+        -------
+        Float[Array, "Ny Nx"]
+            Solution psi.
+        """
+        return solve_helmholtz_2d(
+            rhs,
+            self.dx,
+            self.dy,
+            bc_x=self.bc_x,
+            bc_y=self.bc_y,
+            lambda_=self.alpha,
+        )
