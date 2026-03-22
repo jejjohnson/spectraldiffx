@@ -69,6 +69,7 @@ nav:
     - Eigenfunction Gallery: notebooks/eigenfunction_gallery.py
     - Solver Comparison: notebooks/solver_comparison.py
     - Mixed Boundary Conditions: notebooks/mixed_bc_solvers.py
+    - PS vs FD2 Eigenvalues: notebooks/ps_vs_fd2_eigenvalues.py
     - Elliptic Solvers: notebooks/demo_elliptic_solvers.py
     - Capacitance: notebooks/demo_capacitance.py
     - QG Turbulence: notebooks/demo_qg.py
