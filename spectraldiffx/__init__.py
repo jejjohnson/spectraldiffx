@@ -8,11 +8,13 @@ from spectraldiffx._src.chebyshev import (
     ChebyshevHelmholtzSolver1D,
 )
 from spectraldiffx._src.fourier import (
+    BoundaryCondition,
     CapacitanceSolver,
     DirichletHelmholtzSolver2D,
     FourierGrid1D,
     FourierGrid2D,
     FourierGrid3D,
+    MixedBCHelmholtzSolver2D,
     NeumannHelmholtzSolver2D,
     RegularNeumannHelmholtzSolver2D,
     SpectralDerivative1D,
@@ -43,6 +45,7 @@ from spectraldiffx._src.fourier import (
     idctn,
     idst,
     idstn,
+    solve_helmholtz_2d,
     solve_helmholtz_dct,
     solve_helmholtz_dct1,
     solve_helmholtz_dct1_1d,
@@ -60,6 +63,7 @@ from spectraldiffx._src.fourier import (
     solve_helmholtz_fft,
     solve_helmholtz_fft_1d,
     solve_helmholtz_fft_3d,
+    solve_poisson_2d,
     solve_poisson_dct,
     solve_poisson_dct1,
     solve_poisson_dct1_1d,
@@ -91,6 +95,7 @@ from spectraldiffx._src.spherical import (
 )
 
 __all__ = [
+    "BoundaryCondition",
     "CapacitanceSolver",
     "ChebyshevDerivative1D",
     "ChebyshevDerivative2D",
@@ -103,6 +108,7 @@ __all__ = [
     "FourierGrid1D",
     "FourierGrid2D",
     "FourierGrid3D",
+    "MixedBCHelmholtzSolver2D",
     "NeumannHelmholtzSolver2D",
     "RegularNeumannHelmholtzSolver2D",
     "SpectralDerivative1D",
@@ -142,6 +148,7 @@ __all__ = [
     "idctn",
     "idst",
     "idstn",
+    "solve_helmholtz_2d",
     "solve_helmholtz_dct",
     "solve_helmholtz_dct1",
     "solve_helmholtz_dct1_1d",
@@ -159,6 +166,7 @@ __all__ = [
     "solve_helmholtz_fft",
     "solve_helmholtz_fft_1d",
     "solve_helmholtz_fft_3d",
+    "solve_poisson_2d",
     "solve_poisson_dct",
     "solve_poisson_dct1",
     "solve_poisson_dct1_1d",
