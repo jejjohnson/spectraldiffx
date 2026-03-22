@@ -992,6 +992,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pseudo-spectral-eigenvalue-formulas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pseudo-spectral eigenvalue formulas
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1458,6 +1469,34 @@
     
   
     Mixed Per-Axis Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/ps_vs_fd2_eigenvalues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudo-Spectral vs Finite-Difference Eigenvalues
   
 
     
@@ -2704,6 +2743,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pseudo-spectral-eigenvalue-formulas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pseudo-spectral eigenvalue formulas
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3061,11 +3111,65 @@
 <div class="arithmatex">\[\sin^2\!\left(\frac{\pi k}{N}\right) \approx \left(\frac{\pi k}{N}\right)^2\]</div>
 <p>so <span class="arithmatex">\(\lambda_k^{\text{disc}} \approx -4/\Delta x^2 \cdot (\pi k / N)^2 = -(2\pi k / L)^2 = \lambda_k^{\text{cont}}\)</span>. The two agree for smooth, well-resolved solutions.</p>
 <p>For <strong>high wavenumbers</strong> near Nyquist (<span class="arithmatex">\(k \approx N/2\)</span>), the discrete eigenvalues plateau at <span class="arithmatex">\(4/\Delta x^2\)</span> while the continuous eigenvalues keep growing. This discrepancy is not a bug — it reflects the fact that the finite-difference stencil cannot resolve arbitrarily fine scales.</p>
+<h3 id="pseudo-spectral-eigenvalue-formulas">Pseudo-spectral eigenvalue formulas<a class="headerlink" href="#pseudo-spectral-eigenvalue-formulas" title="Permanent link">&para;</a></h3>
+<p>The continuous Laplacian eigenvalues for each BC/grid combination are:</p>
+<table>
+<thead>
+<tr>
+<th>BC</th>
+<th>Grid</th>
+<th>PS Eigenvalue</th>
+<th>Domain length <span class="arithmatex">\(L\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirichlet</td>
+<td>Regular (DST-I)</td>
+<td><span class="arithmatex">\(-(\pi(k{+}1)/L)^2\)</span></td>
+<td><span class="arithmatex">\((N{+}1)\Delta x\)</span></td>
+</tr>
+<tr>
+<td>Dirichlet</td>
+<td>Staggered (DST-II)</td>
+<td><span class="arithmatex">\(-(\pi(k{+}1)/L)^2\)</span></td>
+<td><span class="arithmatex">\(N \Delta x\)</span></td>
+</tr>
+<tr>
+<td>Neumann</td>
+<td>Regular (DCT-I)</td>
+<td><span class="arithmatex">\(-(\pi k/L)^2\)</span></td>
+<td><span class="arithmatex">\((N{-}1)\Delta x\)</span></td>
+</tr>
+<tr>
+<td>Neumann</td>
+<td>Staggered (DCT-II)</td>
+<td><span class="arithmatex">\(-(\pi k/L)^2\)</span></td>
+<td><span class="arithmatex">\(N \Delta x\)</span></td>
+</tr>
+<tr>
+<td>Periodic</td>
+<td>Either (FFT)</td>
+<td><span class="arithmatex">\(-(2\pi \tilde{k}/L)^2\)</span></td>
+<td><span class="arithmatex">\(N \Delta x\)</span></td>
+</tr>
+<tr>
+<td>Mixed (all 4)</td>
+<td>Either (III/IV)</td>
+<td><span class="arithmatex">\(-(\pi(2k{+}1)/(2L))^2\)</span></td>
+<td>varies</td>
+</tr>
+</tbody>
+</table>
+<p>where <span class="arithmatex">\(\tilde{k} = \min(k, N - k)\)</span>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Which eigenvalues to use in SpectralDiffX</p>
-<p><strong>Layer 0 functions</strong> (<code>solve_helmholtz_dst</code>, <code>solve_poisson_dst</code>, etc.) use the discrete finite-difference eigenvalues. This is correct when inverting the 5-point stencil Laplacian — the transform and eigenvalues are matched to the same discrete operator.</p>
-<p><strong>Layer 1 FFT solver classes</strong> (<code>SpectralHelmholtzSolver1D</code>, <code>SpectralHelmholtzSolver2D</code>, <code>SpectralHelmholtzSolver3D</code>) use continuous wavenumbers from the <code>FourierGrid</code>. This is correct for pseudospectral methods where derivatives are computed exactly in Fourier space.</p>
-<p>Mixing discrete eigenvalues with continuous transforms (or vice versa) produces incorrect solutions.</p>
+<p>All <strong>Layer 0 functions</strong> (<code>solve_helmholtz_dst</code>, <code>solve_poisson_dst</code>, etc.) accept an <code>approximation</code> keyword argument:</p>
+<ul>
+<li><code>approximation="fd2"</code> (default): Uses discrete finite-difference eigenvalues. Correct when inverting the 5-point stencil Laplacian — the transform and eigenvalues are matched to the same discrete operator. Convergence is <span class="arithmatex">\(O(h^2)\)</span>.</li>
+<li><code>approximation="spectral"</code>: Uses continuous (pseudo-spectral) eigenvalues. Gives spectral accuracy for smooth solutions but is <em>not</em> the exact inverse of the FD stencil.</li>
+</ul>
+<p><strong>Layer 1 FFT solver classes</strong> (<code>SpectralHelmholtzSolver1D</code>, <code>SpectralHelmholtzSolver2D</code>, <code>SpectralHelmholtzSolver3D</code>) always use continuous wavenumbers from the <code>FourierGrid</code>.</p>
 </div>
 <p><img alt="Discrete finite-difference eigenvalues (blue circles) vs continuous eigenvalues (red squares) for N=32. The two agree for low wavenumbers but diverge near the Nyquist frequency." src="../../images/solver_comparison/discrete_vs_continuous_eigenvalues.png" /></p>
 <hr />

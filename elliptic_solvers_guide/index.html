@@ -1416,6 +1416,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../notebooks/ps_vs_fd2_eigenvalues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudo-Spectral vs Finite-Difference Eigenvalues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../notebooks/demo_elliptic_solvers/" class="md-nav__link">
         
   
@@ -2852,38 +2880,47 @@ finite-difference eigenvalues).  They require a <code>FourierGrid2D</code> objec
 <a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zero_mean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition note">
-<p class="admonition-title">Layer 0 vs Layer 1 periodic solvers</p>
-<p>The Layer 0 functions (<code>solve_helmholtz_fft</code>) use <strong>discrete
-finite-difference eigenvalues</strong> and are exact inverses of the 5-point
-stencil Laplacian.  The Layer 1 classes (<code>SpectralHelmholtzSolver2D</code>)
-use <strong>continuous Fourier wavenumbers</strong> (<code>-k^2</code>).  For most applications
-the difference is small, but it matters for convergence studies.</p>
+<p class="admonition-title">FD2 vs spectral eigenvalues</p>
+<p>All Layer 0 functions accept <code>approximation="fd2"</code> (default) or
+<code>approximation="spectral"</code>:</p>
+<ul>
+<li><strong><code>"fd2"</code></strong>: Discrete finite-difference eigenvalues — exact inverse of the 5-point stencil. <span class="arithmatex">\(O(h^2)\)</span> convergence.</li>
+<li><strong><code>"spectral"</code></strong>: Continuous Laplacian eigenvalues — spectral accuracy for smooth solutions.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># FD2 (default) — correct for finite-difference codes</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Spectral — best for smooth solutions</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">approximation</span><span class="o">=</span><span class="s2">&quot;spectral&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>The Layer 1 classes (<code>SpectralHelmholtzSolver2D</code>) always use
+continuous Fourier wavenumbers (<code>-k^2</code>), equivalent to <code>"spectral"</code>.</p>
 </div>
 <hr />
 <h2 id="batched-solves-with-vmap">Batched Solves with vmap<a class="headerlink" href="#batched-solves-with-vmap" title="Permanent link">&para;</a></h2>
 <p>All Layer 0 solvers are pure functions, so they work with <code>jax.vmap</code> for
 batched solves:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_helmholtz_dst</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">lambda_</span> <span class="o">=</span> <span class="mf">0.0</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># Batch of 10 right-hand sides: shape [10, Ny, Nx]</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">rhs_batch</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">))</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
-<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="c1"># vmap over the batch dimension</span>
-<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="n">solve_batch</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">))</span>
-<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">psi_batch</span> <span class="o">=</span> <span class="n">solve_batch</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">)</span>  <span class="c1"># [10, 64, 64]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_helmholtz_dst</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">lambda_</span> <span class="o">=</span> <span class="mf">0.0</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Batch of 10 right-hand sides: shape [10, Ny, Nx]</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">rhs_batch</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">))</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1"># vmap over the batch dimension</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="n">solve_batch</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">solve_helmholtz_dst</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">))</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="n">psi_batch</span> <span class="o">=</span> <span class="n">solve_batch</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">)</span>  <span class="c1"># [10, 64, 64]</span>
 </code></pre></div>
 <p>This compiles to a single fused kernel -- much faster than a Python loop.</p>
 <p>The Layer 1 module classes also work with vmap since they are equinox Modules
 (pure pytrees):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirichletHelmholtzSolver2D</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">solve_batch</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">psi_batch</span> <span class="o">=</span> <span class="n">solve_batch</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">)</span>  <span class="c1"># [10, 64, 64]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirichletHelmholtzSolver2D</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">solver</span> <span class="o">=</span> <span class="n">DirichletHelmholtzSolver2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="n">solve_batch</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">(</span><span class="n">solver</span><span class="p">)</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">psi_batch</span> <span class="o">=</span> <span class="n">solve_batch</span><span class="p">(</span><span class="n">rhs_batch</span><span class="p">)</span>  <span class="c1"># [10, 64, 64]</span>
 </code></pre></div>
 <hr />
 <h2 id="solver-comparison-table">Solver Comparison Table<a class="headerlink" href="#solver-comparison-table" title="Permanent link">&para;</a></h2>
