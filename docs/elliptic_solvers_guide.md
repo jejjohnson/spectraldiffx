@@ -274,12 +274,23 @@ solver = SpectralHelmholtzSolver2D(grid=grid)
 psi = solver.solve(rhs, alpha=0.0, zero_mean=True)
 ```
 
-!!! note "Layer 0 vs Layer 1 periodic solvers"
-    The Layer 0 functions (`solve_helmholtz_fft`) use **discrete
-    finite-difference eigenvalues** and are exact inverses of the 5-point
-    stencil Laplacian.  The Layer 1 classes (`SpectralHelmholtzSolver2D`)
-    use **continuous Fourier wavenumbers** (`-k^2`).  For most applications
-    the difference is small, but it matters for convergence studies.
+!!! note "FD2 vs spectral eigenvalues"
+    All Layer 0 functions accept `approximation="fd2"` (default) or
+    `approximation="spectral"`:
+
+    - **`"fd2"`**: Discrete finite-difference eigenvalues — exact inverse of the 5-point stencil. $O(h^2)$ convergence.
+    - **`"spectral"`**: Continuous Laplacian eigenvalues — spectral accuracy for smooth solutions.
+
+    ```python
+    # FD2 (default) — correct for finite-difference codes
+    psi = solve_helmholtz_dst(rhs, dx, dy)
+
+    # Spectral — best for smooth solutions
+    psi = solve_helmholtz_dst(rhs, dx, dy, approximation="spectral")
+    ```
+
+    The Layer 1 classes (`SpectralHelmholtzSolver2D`) always use
+    continuous Fourier wavenumbers (`-k^2`), equivalent to `"spectral"`.
 
 ---
 

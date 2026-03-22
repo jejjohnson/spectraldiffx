@@ -1,10 +1,15 @@
 """1-D Laplacian eigenvalues for spectral elliptic solvers.
 
-Each helper returns the eigenvalues of the second-order finite-difference
-Laplacian discretised on *N* points with grid spacing *dx*, diagonalised by
-the corresponding spectral transform.
+Two families of eigenvalues are provided:
 
-Same-BC eigenvalues (both boundaries identical):
+**Finite-difference (FD2)** — exact inverse of the 3-point FD Laplacian.
+Takes grid spacing *dx* as parameter.
+
+**Pseudo-spectral (PS)** — continuous Laplacian eigenvalues.
+Takes domain length *L* as parameter.  Gives spectral accuracy for smooth
+solutions but is *not* the exact inverse of the FD stencil.
+
+FD2 same-BC eigenvalues (both boundaries identical):
 
 * DST-I   (Dirichlet, regular grid):
     λ_k = −4/dx² · sin²(π(k+1) / (2(N+1)))    k = 0, …, N−1
@@ -21,7 +26,7 @@ Same-BC eigenvalues (both boundaries identical):
 * FFT     (Periodic):
     λ_k = −4/dx² · sin²(πk / N)                 k = 0, …, N−1
 
-Mixed-BC eigenvalues (different BCs on left/right):
+FD2 mixed-BC eigenvalues (different BCs on left/right):
 
 * DST-III (Dirichlet left + Neumann right, regular grid):
     λ_k = −4/dx² · sin²(π(2k+1) / (4N))        k = 0, …, N−1
@@ -34,6 +39,25 @@ Mixed-BC eigenvalues (different BCs on left/right):
 
 * DCT-IV  (Neumann left + Dirichlet right, staggered grid):
     λ_k = −4/dx² · sin²(π(2k+1) / (4N))        k = 0, …, N−1
+
+PS same-BC eigenvalues:
+
+* DST-I / DST-II  (Dirichlet):
+    λ_k = −(π(k+1)/L)²                          k = 0, …, N−1
+
+* DCT-I / DCT-II  (Neumann):
+    λ_k = −(πk/L)²                               k = 0, …, N−1
+
+* FFT (Periodic):
+    λ_k = −(2πk̃/L)²   k̃ = k if k < N/2 else N−k
+
+PS mixed-BC eigenvalues:
+
+* DST-III / DST-IV (Dirichlet left + Neumann right):
+    λ_k = −(π(2k+1)/(2L))²                      k = 0, …, N−1
+
+* DCT-III / DCT-IV (Neumann left + Dirichlet right):
+    λ_k = −(π(2k+1)/(2L))²                      k = 0, …, N−1
 """
 
 from __future__ import annotations
@@ -312,3 +336,229 @@ def fft_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
     """
     k = jnp.arange(N)
     return -4.0 / dx**2 * jnp.sin(jnp.pi * k / N) ** 2
+
+
+# ===========================================================================
+# Pseudo-spectral (PS) eigenvalues — continuous Laplacian
+# ===========================================================================
+
+
+def dst1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for DST-I (Dirichlet BCs, regular grid).
+
+    Eigenvalues of the continuous Laplacian d²/dx² on [0, L] with
+    homogeneous Dirichlet BCs, projected onto the DST-I basis:
+
+        λ_k = −(π(k+1)/L)²,   k = 0, …, N−1
+
+    These agree with the FD2 eigenvalues for low wavenumbers (k << N)
+    but diverge near Nyquist.
+
+    Parameters
+    ----------
+    N : int
+        Number of interior grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    k = jnp.arange(N)
+    return -((jnp.pi * (k + 1) / L) ** 2)
+
+
+def dst2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for DST-II (Dirichlet BCs, staggered grid).
+
+    Same formula as DST-I PS (the continuous eigenvalues depend only on BC
+    type, not grid placement):
+
+        λ_k = −(π(k+1)/L)²,   k = 0, …, N−1
+
+    Parameters
+    ----------
+    N : int
+        Number of cell-centred grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
+    """
+    k = jnp.arange(N)
+    return -((jnp.pi * (k + 1) / L) ** 2)
+
+
+def dct1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for DCT-I (Neumann BCs, regular grid).
+
+    Eigenvalues of the continuous Laplacian d²/dx² on [0, L] with
+    homogeneous Neumann BCs, projected onto the DCT-I basis:
+
+        λ_k = −(πk/L)²,   k = 0, …, N−1
+
+    The k=0 eigenvalue is exactly zero (constant mode).
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points (including both boundary points).
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues.  λ_0 = 0; all others < 0.
+    """
+    k = jnp.arange(N)
+    return -((jnp.pi * k / L) ** 2)
+
+
+def dct2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for DCT-II (Neumann BCs, staggered grid).
+
+    Same formula as DCT-I PS:
+
+        λ_k = −(πk/L)²,   k = 0, …, N−1
+
+    The k=0 eigenvalue is exactly zero (constant mode).
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues.  λ_0 = 0; all others < 0.
+    """
+    k = jnp.arange(N)
+    return -((jnp.pi * k / L) ** 2)
+
+
+def _mixed_bc_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """Shared PS eigenvalue formula for all mixed-BC transforms (DST-III/IV, DCT-III/IV).
+
+        λ_k = −(π(2k+1) / (2L))²,   k = 0, …, N−1
+
+    All eigenvalues are strictly negative (no null mode).
+    """
+    k = jnp.arange(N)
+    return -((jnp.pi * (2 * k + 1) / (2 * L)) ** 2)
+
+
+def dst3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for Dirichlet-left + Neumann-right on a regular grid.
+
+        λ_k = −(π(2k+1) / (2L))²,   k = 0, …, N−1
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues.  All < 0.
+    """
+    return _mixed_bc_eigenvalues_ps(N, L)
+
+
+def dct3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for Neumann-left + Dirichlet-right on a regular grid.
+
+        λ_k = −(π(2k+1) / (2L))²,   k = 0, …, N−1
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues.  All < 0.
+    """
+    return _mixed_bc_eigenvalues_ps(N, L)
+
+
+def dst4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for Dirichlet-left + Neumann-right on a staggered grid.
+
+        λ_k = −(π(2k+1) / (2L))²,   k = 0, …, N−1
+
+    Parameters
+    ----------
+    N : int
+        Number of cell-centred grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues.  All < 0.
+    """
+    return _mixed_bc_eigenvalues_ps(N, L)
+
+
+def dct4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for Neumann-left + Dirichlet-right on a staggered grid.
+
+        λ_k = −(π(2k+1) / (2L))²,   k = 0, …, N−1
+
+    Parameters
+    ----------
+    N : int
+        Number of cell-centred grid points.
+    L : float
+        Domain length.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues.  All < 0.
+    """
+    return _mixed_bc_eigenvalues_ps(N, L)
+
+
+def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+    """PS eigenvalues for the FFT basis (periodic BCs).
+
+    Eigenvalues of the continuous Laplacian d²/dx² on a periodic domain
+    of length L:
+
+        λ_k = −(2πk̃/L)²,   k̃ = k for k < N/2,  k̃ = N−k for k ≥ N/2
+
+    The k=0 eigenvalue is exactly zero (constant mode).
+
+    Parameters
+    ----------
+    N : int
+        Number of grid points in one period.
+    L : float
+        Domain length (period).
+
+    Returns
+    -------
+    Float[Array, " N"]
+        1-D array of *N* eigenvalues in FFT order.
+        λ_0 = 0; all others ≤ 0.
+    """
+    k = jnp.arange(N)
+    k_phys = jnp.where(k < N // 2, k, N - k)
+    return -((2 * jnp.pi * k_phys / L) ** 2)

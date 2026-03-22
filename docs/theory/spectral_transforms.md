@@ -241,12 +241,28 @@ so $\lambda_k^{\text{disc}} \approx -4/\Delta x^2 \cdot (\pi k / N)^2 = -(2\pi k
 
 For **high wavenumbers** near Nyquist ($k \approx N/2$), the discrete eigenvalues plateau at $4/\Delta x^2$ while the continuous eigenvalues keep growing. This discrepancy is not a bug — it reflects the fact that the finite-difference stencil cannot resolve arbitrarily fine scales.
 
+### Pseudo-spectral eigenvalue formulas
+
+The continuous Laplacian eigenvalues for each BC/grid combination are:
+
+| BC | Grid | PS Eigenvalue | Domain length $L$ |
+|----|------|---------------|--------------------|
+| Dirichlet | Regular (DST-I) | $-(\pi(k{+}1)/L)^2$ | $(N{+}1)\Delta x$ |
+| Dirichlet | Staggered (DST-II) | $-(\pi(k{+}1)/L)^2$ | $N \Delta x$ |
+| Neumann | Regular (DCT-I) | $-(\pi k/L)^2$ | $(N{-}1)\Delta x$ |
+| Neumann | Staggered (DCT-II) | $-(\pi k/L)^2$ | $N \Delta x$ |
+| Periodic | Either (FFT) | $-(2\pi \tilde{k}/L)^2$ | $N \Delta x$ |
+| Mixed (all 4) | Either (III/IV) | $-(\pi(2k{+}1)/(2L))^2$ | varies |
+
+where $\tilde{k} = k$ for $k < N/2$ and $\tilde{k} = N - k$ for $k \geq N/2$.
+
 !!! tip "Which eigenvalues to use in SpectralDiffX"
-    **Layer 0 functions** (`solve_helmholtz_dst`, `solve_poisson_dst`, etc.) use the discrete finite-difference eigenvalues. This is correct when inverting the 5-point stencil Laplacian — the transform and eigenvalues are matched to the same discrete operator.
+    All **Layer 0 functions** (`solve_helmholtz_dst`, `solve_poisson_dst`, etc.) accept an `approximation` keyword argument:
 
-    **Layer 1 FFT solver classes** (`SpectralHelmholtzSolver1D`, `SpectralHelmholtzSolver2D`, `SpectralHelmholtzSolver3D`) use continuous wavenumbers from the `FourierGrid`. This is correct for pseudospectral methods where derivatives are computed exactly in Fourier space.
+    - `approximation="fd2"` (default): Uses discrete finite-difference eigenvalues. Correct when inverting the 5-point stencil Laplacian — the transform and eigenvalues are matched to the same discrete operator. Convergence is $O(h^2)$.
+    - `approximation="spectral"`: Uses continuous (pseudo-spectral) eigenvalues. Gives spectral accuracy for smooth solutions but is *not* the exact inverse of the FD stencil.
 
-    Mixing discrete eigenvalues with continuous transforms (or vice versa) produces incorrect solutions.
+    **Layer 1 FFT solver classes** (`SpectralHelmholtzSolver1D`, `SpectralHelmholtzSolver2D`, `SpectralHelmholtzSolver3D`) always use continuous wavenumbers from the `FourierGrid`.
 
 ![Discrete finite-difference eigenvalues (blue circles) vs continuous eigenvalues (red squares) for N=32. The two agree for low wavenumbers but diverge near the Nyquist frequency.](../images/solver_comparison/discrete_vs_continuous_eigenvalues.png)
 
