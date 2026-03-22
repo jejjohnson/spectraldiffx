@@ -254,7 +254,7 @@ The continuous Laplacian eigenvalues for each BC/grid combination are:
 | Periodic | Either (FFT) | $-(2\pi \tilde{k}/L)^2$ | $N \Delta x$ |
 | Mixed (all 4) | Either (III/IV) | $-(\pi(2k{+}1)/(2L))^2$ | varies |
 
-where $\tilde{k} = k$ for $k < N/2$ and $\tilde{k} = N - k$ for $k \geq N/2$.
+where $\tilde{k} = \min(k, N - k)$.
 
 !!! tip "Which eigenvalues to use in SpectralDiffX"
     All **Layer 0 functions** (`solve_helmholtz_dst`, `solve_poisson_dst`, etc.) accept an `approximation` keyword argument:

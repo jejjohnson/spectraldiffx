@@ -22,6 +22,8 @@ from spectraldiffx._src.fourier.eigenvalues import (
 from spectraldiffx._src.fourier.solvers import (
     solve_helmholtz_dct,
     solve_helmholtz_dct1,
+    solve_helmholtz_dct1_1d,
+    solve_helmholtz_dct2_1d,
     solve_helmholtz_dst,
     solve_helmholtz_dst1_1d,
     solve_helmholtz_dst2_1d,
@@ -139,6 +141,22 @@ class TestFFTEigenvaluesPS:
         eigs = fft_eigenvalues_ps(N, L=1.0)
         # k=1 and k=N-1 should give the same eigenvalue
         assert jnp.allclose(eigs[1], eigs[N - 1], atol=1e-10)
+
+    @pytest.mark.parametrize("N", [5, 7, 9])
+    def test_odd_N_symmetry(self, N):
+        """FFT PS eigenvalues are symmetric for odd N too."""
+        eigs = fft_eigenvalues_ps(N, L=1.0)
+        for k in range(1, N):
+            assert jnp.allclose(eigs[k], eigs[N - k], atol=1e-10)
+
+    def test_odd_N_middle_mode(self):
+        """For odd N=5, k=2 should map to physical wavenumber 2."""
+        N = 5
+        L = 1.0
+        eigs = fft_eigenvalues_ps(N, L)
+        # k=2: k_phys = min(2, 5-2) = 2, so lambda = -(2*pi*2/L)^2
+        expected = -((2 * jnp.pi * 2 / L) ** 2)
+        assert jnp.allclose(eigs[2], expected, atol=1e-10)
 
 
 # ===========================================================================
@@ -299,3 +317,81 @@ class TestBackwardsCompatibility:
         result_default = solve_helmholtz_dct1(rhs, dx, dx, lambda_=1.0)
         result_fd2 = solve_helmholtz_dct1(rhs, dx, dx, lambda_=1.0, approximation="fd2")
         assert jnp.allclose(result_default, result_fd2, atol=1e-12)
+
+
+# ===========================================================================
+# Input validation
+# ===========================================================================
+
+
+class TestPSValidation:
+    """PS eigenvalue functions validate their inputs."""
+
+    @pytest.mark.parametrize(
+        "fn",
+        [
+            dst1_eigenvalues_ps,
+            dst2_eigenvalues_ps,
+            dct1_eigenvalues_ps,
+            dct2_eigenvalues_ps,
+            dst3_eigenvalues_ps,
+            dct3_eigenvalues_ps,
+            dst4_eigenvalues_ps,
+            dct4_eigenvalues_ps,
+            fft_eigenvalues_ps,
+        ],
+    )
+    def test_rejects_nonpositive_L(self, fn):
+        with pytest.raises(ValueError, match="L > 0"):
+            fn(8, L=0.0)
+        with pytest.raises(ValueError, match="L > 0"):
+            fn(8, L=-1.0)
+
+    def test_dct1_ps_rejects_n_less_than_2(self):
+        with pytest.raises(ValueError, match="N >= 2"):
+            dct1_eigenvalues_ps(1, L=1.0)
+
+    def test_invalid_approximation_raises(self):
+        rhs = jnp.ones(16)
+        with pytest.raises(ValueError, match="Unknown approximation"):
+            solve_helmholtz_dst1_1d(rhs, dx=0.1, approximation="spec")
+
+
+# ===========================================================================
+# DCT spectral convergence (Neumann solvers)
+# ===========================================================================
+
+
+class TestDCTSpectralConvergence:
+    """Neumann solvers with PS eigenvalues converge spectrally."""
+
+    def test_dct1_spectral_convergence(self):
+        """Neumann (regular / DCT-I): spectral convergence for cos(2*pi*x)."""
+        errors = []
+        for N in [8, 16, 32, 64]:
+            dx = 1.0 / (N - 1)
+            x = jnp.linspace(0, 1, N)
+            psi_exact = jnp.cos(2 * jnp.pi * x)
+            rhs = -((2 * jnp.pi) ** 2) * psi_exact
+            psi_got = solve_helmholtz_dct1_1d(rhs, dx, approximation="spectral")
+            # Remove mean (null mode)
+            psi_got = psi_got - jnp.mean(psi_got)
+            psi_exact = psi_exact - jnp.mean(psi_exact)
+            errors.append(float(jnp.max(jnp.abs(psi_got - psi_exact))))
+
+        assert errors[-1] < 1e-8
+
+    def test_dct2_spectral_convergence(self):
+        """Neumann (staggered / DCT-II): spectral convergence for cos(2*pi*x)."""
+        errors = []
+        for N in [8, 16, 32, 64]:
+            dx = 1.0 / N
+            x = (jnp.arange(N) + 0.5) * dx
+            psi_exact = jnp.cos(2 * jnp.pi * x)
+            rhs = -((2 * jnp.pi) ** 2) * psi_exact
+            psi_got = solve_helmholtz_dct2_1d(rhs, dx, approximation="spectral")
+            psi_got = psi_got - jnp.mean(psi_got)
+            psi_exact = psi_exact - jnp.mean(psi_exact)
+            errors.append(float(jnp.max(jnp.abs(psi_got - psi_exact))))
+
+        assert errors[-1] < 1e-8

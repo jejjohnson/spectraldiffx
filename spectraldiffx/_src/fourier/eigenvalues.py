@@ -343,6 +343,12 @@ def fft_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
 # ===========================================================================
 
 
+def _validate_L(L: float, name: str) -> None:
+    """Raise ValueError if L is not positive."""
+    if L <= 0:
+        raise ValueError(f"{name} requires L > 0, got L={L}.")
+
+
 def dst1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     """PS eigenvalues for DST-I (Dirichlet BCs, regular grid).
 
@@ -359,13 +365,14 @@ def dst1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of interior grid points.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
     """
+    _validate_L(L, "dst1_eigenvalues_ps")
     k = jnp.arange(N)
     return -((jnp.pi * (k + 1) / L) ** 2)
 
@@ -383,13 +390,14 @@ def dst2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of cell-centred grid points.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
     """
+    _validate_L(L, "dst2_eigenvalues_ps")
     k = jnp.arange(N)
     return -((jnp.pi * (k + 1) / L) ** 2)
 
@@ -407,15 +415,18 @@ def dct1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     Parameters
     ----------
     N : int
-        Number of grid points (including both boundary points).
+        Number of grid points (including both boundary points).  Must be >= 2.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  λ_0 = 0; all others < 0.
     """
+    if N < 2:
+        raise ValueError(f"dct1_eigenvalues_ps requires N >= 2, got N={N}.")
+    _validate_L(L, "dct1_eigenvalues_ps")
     k = jnp.arange(N)
     return -((jnp.pi * k / L) ** 2)
 
@@ -434,24 +445,26 @@ def dct2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  λ_0 = 0; all others < 0.
     """
+    _validate_L(L, "dct2_eigenvalues_ps")
     k = jnp.arange(N)
     return -((jnp.pi * k / L) ** 2)
 
 
-def _mixed_bc_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
+def _mixed_bc_eigenvalues_ps(N: int, L: float, name: str) -> Float[Array, " N"]:
     """Shared PS eigenvalue formula for all mixed-BC transforms (DST-III/IV, DCT-III/IV).
 
         λ_k = −(π(2k+1) / (2L))²,   k = 0, …, N−1
 
     All eigenvalues are strictly negative (no null mode).
     """
+    _validate_L(L, name)
     k = jnp.arange(N)
     return -((jnp.pi * (2 * k + 1) / (2 * L)) ** 2)
 
@@ -473,7 +486,7 @@ def dst3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  All < 0.
     """
-    return _mixed_bc_eigenvalues_ps(N, L)
+    return _mixed_bc_eigenvalues_ps(N, L, "dst3_eigenvalues_ps")
 
 
 def dct3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -486,14 +499,14 @@ def dct3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  All < 0.
     """
-    return _mixed_bc_eigenvalues_ps(N, L)
+    return _mixed_bc_eigenvalues_ps(N, L, "dct3_eigenvalues_ps")
 
 
 def dst4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -506,14 +519,14 @@ def dst4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of cell-centred grid points.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  All < 0.
     """
-    return _mixed_bc_eigenvalues_ps(N, L)
+    return _mixed_bc_eigenvalues_ps(N, L, "dst4_eigenvalues_ps")
 
 
 def dct4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -526,14 +539,14 @@ def dct4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of cell-centred grid points.
     L : float
-        Domain length.
+        Domain length.  Must be positive.
 
     Returns
     -------
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  All < 0.
     """
-    return _mixed_bc_eigenvalues_ps(N, L)
+    return _mixed_bc_eigenvalues_ps(N, L, "dct4_eigenvalues_ps")
 
 
 def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -542,7 +555,7 @@ def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     Eigenvalues of the continuous Laplacian d²/dx² on a periodic domain
     of length L:
 
-        λ_k = −(2πk̃/L)²,   k̃ = k for k < N/2,  k̃ = N−k for k ≥ N/2
+        λ_k = −(2πk̃/L)²,   k̃ = min(k, N−k)
 
     The k=0 eigenvalue is exactly zero (constant mode).
 
@@ -551,7 +564,7 @@ def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points in one period.
     L : float
-        Domain length (period).
+        Domain length (period).  Must be positive.
 
     Returns
     -------
@@ -559,6 +572,7 @@ def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
         1-D array of *N* eigenvalues in FFT order.
         λ_0 = 0; all others ≤ 0.
     """
+    _validate_L(L, "fft_eigenvalues_ps")
     k = jnp.arange(N)
-    k_phys = jnp.where(k < N // 2, k, N - k)
+    k_phys = jnp.minimum(k, N - k)
     return -((2 * jnp.pi * k_phys / L) ** 2)
