@@ -94,6 +94,58 @@ class SpectralDerivative1D(eqx.Module):
         lap_hat = -(k**2) * u_hat * dealias
         return self.grid.transform(lap_hat, inverse=True).real
 
+    def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "N"]:
+        """Compute the biharmonic operator: d^4u/dx^4.
+
+        In Fourier space: k^4 * u_hat.
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        k = self.grid.k
+        dealias = self.grid.dealias_filter()
+        bih_hat = k**4 * u_hat * dealias
+        return self.grid.transform(bih_hat, inverse=True).real
+
+    def hyperviscosity(
+        self, u: Array, nu: float, order: int = 2, spectral: bool = False
+    ) -> Float[Array, "N"]:
+        """Compute the hyperviscosity term: (-1)^{n+1} * nu * d^{2n}u/dx^{2n}.
+
+        This is always dissipative: the spectral multiplier is
+        ``-nu * |k|^{2n}``, regardless of *order*.
+
+        Parameters
+        ----------
+        u : Array [N]
+            Input field.
+        nu : float
+            Hyperviscosity coefficient.
+        order : int
+            Order n of the hyperviscosity (n=1 is regular diffusion,
+            n=2 is biharmonic diffusion). Default: 2.
+        spectral : bool
+            Whether u is in Fourier space.
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        k = self.grid.k
+        dealias = self.grid.dealias_filter()
+        # (-1)^{n+1} * (-k^2)^n = -k^{2n} for all n
+        hyp_hat = -nu * k ** (2 * order) * u_hat * dealias
+        return self.grid.transform(hyp_hat, inverse=True).real
+
+    def inverse_laplacian(self, u: Array, spectral: bool = False) -> Float[Array, "N"]:
+        """Compute the inverse Laplacian: nabla^{-2} u (1D Poisson solve).
+
+        Solves d^2 psi / dx^2 = u for psi in spectral space.
+        The k=0 mode is set to zero (zero-mean gauge).
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        k = self.grid.k
+        k2 = k**2
+        k2_safe = jnp.where(k2 == 0, 1.0, k2)
+        psi_hat = -u_hat / k2_safe
+        psi_hat = jnp.where(k2 == 0, 0.0, psi_hat)
+        return self.grid.transform(psi_hat, inverse=True).real
+
     def apply_dealias(self, u: Array, spectral: bool = False) -> Array:
         """
         Apply the 2/3 dealiasing rule mask to a field.
@@ -175,6 +227,86 @@ class SpectralDerivative2D(eqx.Module):
         dealias = self.grid.dealias_filter()
         lap_hat = -K2 * u_hat * dealias
         return self.grid.transform(lap_hat, inverse=True).real
+
+    def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "Ny Nx"]:
+        """Compute the 2D biharmonic: nabla^4 u = (kx^2 + ky^2)^2 * u_hat."""
+        u_hat = u if spectral else self.grid.transform(u)
+        K2 = self.grid.K2
+        dealias = self.grid.dealias_filter()
+        bih_hat = K2**2 * u_hat * dealias
+        return self.grid.transform(bih_hat, inverse=True).real
+
+    def hyperviscosity(
+        self, u: Array, nu: float, order: int = 2, spectral: bool = False
+    ) -> Float[Array, "Ny Nx"]:
+        """Compute the 2D hyperviscosity: (-1)^{n+1} * nu * nabla^{2n} u.
+
+        This is always dissipative: the spectral multiplier is
+        ``-nu * |k|^{2n}``, regardless of *order*.
+
+        Parameters
+        ----------
+        u : Array [Ny, Nx]
+            Input field.
+        nu : float
+            Hyperviscosity coefficient.
+        order : int
+            Order n (n=1 is diffusion, n=2 is biharmonic). Default: 2.
+        spectral : bool
+            Whether u is in Fourier space.
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        K2 = self.grid.K2
+        dealias = self.grid.dealias_filter()
+        # (-1)^{n+1} * (-K2)^n = -K2^n for all n
+        hyp_hat = -nu * K2**order * u_hat * dealias
+        return self.grid.transform(hyp_hat, inverse=True).real
+
+    def inverse_laplacian(
+        self, u: Array, spectral: bool = False
+    ) -> Float[Array, "Ny Nx"]:
+        """Compute the 2D inverse Laplacian: nabla^{-2} u (Poisson solve).
+
+        Solves nabla^2 psi = u for psi in spectral space.
+        The (0,0) mode is set to zero (zero-mean gauge).
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        K2 = self.grid.K2
+        K2_safe = jnp.where(K2 == 0, 1.0, K2)
+        psi_hat = -u_hat / K2_safe
+        psi_hat = jnp.where(K2 == 0, 0.0, psi_hat)
+        return self.grid.transform(psi_hat, inverse=True).real
+
+    def velocity_from_streamfunction(
+        self, psi: Array, spectral: bool = False
+    ) -> tuple[Float[Array, "Ny Nx"], Float[Array, "Ny Nx"]]:
+        """Compute velocity from a streamfunction: u = -dpsi/dy, v = dpsi/dx."""
+        psi_hat = psi if spectral else self.grid.transform(psi)
+        KX, KY = self.grid.KX
+        dealias = self.grid.dealias_filter()
+        u = self.grid.transform(-1j * KY * psi_hat * dealias, inverse=True).real
+        v = self.grid.transform(1j * KX * psi_hat * dealias, inverse=True).real
+        return u, v
+
+    def jacobian(
+        self, f: Array, g: Array, spectral: bool = False
+    ) -> Float[Array, "Ny Nx"]:
+        """Compute the Jacobian: J(f,g) = df/dx * dg/dy - df/dy * dg/dx.
+
+        Uses the pseudo-spectral method: derivatives in Fourier space,
+        products in physical space, with dealiasing.
+        """
+        f_hat = f if spectral else self.grid.transform(f)
+        g_hat = g if spectral else self.grid.transform(g)
+        KX, KY = self.grid.KX
+        dealias = self.grid.dealias_filter()
+
+        df_dx = self.grid.transform(1j * KX * f_hat * dealias, inverse=True).real
+        df_dy = self.grid.transform(1j * KY * f_hat * dealias, inverse=True).real
+        dg_dx = self.grid.transform(1j * KX * g_hat * dealias, inverse=True).real
+        dg_dy = self.grid.transform(1j * KY * g_hat * dealias, inverse=True).real
+
+        return df_dx * dg_dy - df_dy * dg_dx
 
     def apply_dealias(self, u: Array, spectral: bool = False) -> Array:
         """Apply the 2D spectral dealiasing filter mask [Ny, Nx]."""
@@ -312,6 +444,69 @@ class SpectralDerivative3D(eqx.Module):
         dealias = self.grid.dealias_filter()
         lap_hat = -K2 * u_hat * dealias
         return self.grid.transform(lap_hat, inverse=True).real
+
+    def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "Nz Ny Nx"]:
+        """Compute the 3D biharmonic: nabla^4 u."""
+        u_hat = u if spectral else self.grid.transform(u)
+        K2 = self.grid.K2
+        dealias = self.grid.dealias_filter()
+        bih_hat = K2**2 * u_hat * dealias
+        return self.grid.transform(bih_hat, inverse=True).real
+
+    def hyperviscosity(
+        self, u: Array, nu: float, order: int = 2, spectral: bool = False
+    ) -> Float[Array, "Nz Ny Nx"]:
+        """Compute the 3D hyperviscosity: (-1)^{n+1} * nu * nabla^{2n} u."""
+        u_hat = u if spectral else self.grid.transform(u)
+        K2 = self.grid.K2
+        dealias = self.grid.dealias_filter()
+        hyp_hat = -nu * K2**order * u_hat * dealias
+        return self.grid.transform(hyp_hat, inverse=True).real
+
+    def inverse_laplacian(
+        self, u: Array, spectral: bool = False
+    ) -> Float[Array, "Nz Ny Nx"]:
+        """Compute the 3D inverse Laplacian: nabla^{-2} u (Poisson solve)."""
+        u_hat = u if spectral else self.grid.transform(u)
+        K2 = self.grid.K2
+        K2_safe = jnp.where(K2 == 0, 1.0, K2)
+        psi_hat = -u_hat / K2_safe
+        psi_hat = jnp.where(K2 == 0, 0.0, psi_hat)
+        return self.grid.transform(psi_hat, inverse=True).real
+
+    def velocity_from_streamfunction(
+        self, psi: Array, spectral: bool = False
+    ) -> tuple[Float[Array, "Nz Ny Nx"], Float[Array, "Nz Ny Nx"]]:
+        """Compute horizontal velocity from a streamfunction.
+
+        Returns (u, v) where u = -dpsi/dy, v = dpsi/dx (horizontal components).
+        """
+        psi_hat = psi if spectral else self.grid.transform(psi)
+        _KZ, KY, KX = self.grid.KX
+        dealias = self.grid.dealias_filter()
+        u = self.grid.transform(-1j * KY * psi_hat * dealias, inverse=True).real
+        v = self.grid.transform(1j * KX * psi_hat * dealias, inverse=True).real
+        return u, v
+
+    def jacobian(
+        self, f: Array, g: Array, spectral: bool = False
+    ) -> Float[Array, "Nz Ny Nx"]:
+        """Compute the horizontal Jacobian: J(f,g) = df/dx * dg/dy - df/dy * dg/dx.
+
+        Operates on the horizontal (x, y) components only — the z direction
+        is treated as a batch dimension.
+        """
+        f_hat = f if spectral else self.grid.transform(f)
+        g_hat = g if spectral else self.grid.transform(g)
+        _KZ, KY, KX = self.grid.KX
+        dealias = self.grid.dealias_filter()
+
+        df_dx = self.grid.transform(1j * KX * f_hat * dealias, inverse=True).real
+        df_dy = self.grid.transform(1j * KY * f_hat * dealias, inverse=True).real
+        dg_dx = self.grid.transform(1j * KX * g_hat * dealias, inverse=True).real
+        dg_dy = self.grid.transform(1j * KY * g_hat * dealias, inverse=True).real
+
+        return df_dx * dg_dy - df_dy * dg_dx
 
     def apply_dealias(self, u: Array, spectral: bool = False) -> Array:
         """Apply the 3D periodic dealiasing filter mask [Nz, Ny, Nx]."""
