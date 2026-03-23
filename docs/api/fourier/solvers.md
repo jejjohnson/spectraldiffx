@@ -105,6 +105,28 @@ See the [theory page](../../theory/elliptic_solvers.md) for the mathematical bac
 
 ::: spectraldiffx.solve_poisson_dct2_3d
 
+### Mixed Per-Axis BCs (2D/3D)
+
+#### 2D
+
+::: spectraldiffx.solve_helmholtz_2d
+
+::: spectraldiffx.solve_poisson_2d
+
+#### 3D
+
+::: spectraldiffx.solve_helmholtz_3d
+
+::: spectraldiffx.solve_poisson_3d
+
+### Inhomogeneous BC Helpers
+
+::: spectraldiffx.modify_rhs_1d
+
+::: spectraldiffx.modify_rhs_2d
+
+::: spectraldiffx.modify_rhs_3d
+
 ## Layer 1 — Module Classes
 
 ### Periodic (FFT)
@@ -130,3 +152,9 @@ See the [theory page](../../theory/elliptic_solvers.md) for the mathematical bac
 ### Neumann, Regular Grid (DCT-I)
 
 ::: spectraldiffx.RegularNeumannHelmholtzSolver2D
+
+### Mixed Per-Axis BCs
+
+::: spectraldiffx.MixedBCHelmholtzSolver2D
+
+::: spectraldiffx.MixedBCHelmholtzSolver3D
