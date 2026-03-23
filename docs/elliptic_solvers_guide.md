@@ -59,7 +59,10 @@ Do you have a rectangular domain (no mask)?
 |   |       (e.g., periodic x + Dirichlet y)
 |   |
 |   +-- Non-zero boundary values (inhomogeneous)?
-|       --> Pass bc_x_values / bc_y_values to any of the above
+|       --> For mixed/axis-specific BCs, pass bc_x_values / bc_y_values to
+|           solve_helmholtz_2d / solve_helmholtz_3d. For same BCs on all
+|           axes, use modify_rhs_* to incorporate BCs, then call the matching
+|           homogeneous spectral solver above.
 |
 +-- NO: You have a mask (irregular domain)
     |

@@ -34,10 +34,10 @@ from pathlib import Path
 import jax
 import jax.numpy as jnp
 import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
 
 matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 jax.config.update("jax_enable_x64", True)
 
 IMGDIR = Path("docs/images/inhomogeneous_bcs")
