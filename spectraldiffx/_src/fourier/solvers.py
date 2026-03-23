@@ -243,6 +243,22 @@ def modify_rhs_1d(
     return rhs
 
 
+def _validate_no_periodic_inhomogeneous(
+    bc: BoundaryCondition,
+    values: tuple,
+    axis_name: str,
+) -> None:
+    """Raise ValueError if inhomogeneous values are given for a periodic axis."""
+    has_periodic = bc == "periodic" or (isinstance(bc, tuple) and "periodic" in bc)
+    has_values = any(v is not None for v in values)
+    if has_periodic and has_values:
+        msg = (
+            f"Periodic BCs on {axis_name}-axis cannot have inhomogeneous "
+            f"boundary values, got bc_{axis_name}={bc!r} with non-None values."
+        )
+        raise ValueError(msg)
+
+
 def modify_rhs_2d(
     rhs: Float[Array, "Ny Nx"],
     bc_x: BoundaryCondition,
@@ -279,7 +295,15 @@ def modify_rhs_2d(
     -------
     Float[Array, "Ny Nx"]
         Modified RHS.
+
+    Raises
+    ------
+    ValueError
+        If non-None boundary values are provided for a periodic axis.
     """
+    _validate_no_periodic_inhomogeneous(bc_x, bc_x_values, "x")
+    _validate_no_periodic_inhomogeneous(bc_y, bc_y_values, "y")
+
     xl, xr = bc_x_values
     yb, yt = bc_y_values
 
@@ -348,7 +372,16 @@ def modify_rhs_3d(
     -------
     Float[Array, "Nz Ny Nx"]
         Modified RHS.
+
+    Raises
+    ------
+    ValueError
+        If non-None boundary values are provided for a periodic axis.
     """
+    _validate_no_periodic_inhomogeneous(bc_x, bc_x_values, "x")
+    _validate_no_periodic_inhomogeneous(bc_y, bc_y_values, "y")
+    _validate_no_periodic_inhomogeneous(bc_z, bc_z_values, "z")
+
     xl, xr = bc_x_values
     yb, yt = bc_y_values
     zb, zf = bc_z_values

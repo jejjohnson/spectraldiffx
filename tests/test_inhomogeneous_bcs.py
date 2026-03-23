@@ -533,8 +533,7 @@ class TestErrorHandling:
     def test_modify_rhs_2d_with_periodic_and_values(self):
         """Cannot pass non-None values for periodic axis."""
         rhs = jnp.zeros((10, 10))
-        with pytest.raises(KeyError):
-            # periodic is not in _BC_RHS_FORMULAS
+        with pytest.raises(ValueError, match="Periodic BCs on x-axis"):
             modify_rhs_2d(
                 rhs,
                 "periodic",
