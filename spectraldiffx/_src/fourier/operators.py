@@ -10,6 +10,16 @@ from jaxtyping import Array, Float
 from .grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 
 
+def _validate_hyperviscosity(nu: float, order: int) -> None:
+    """Validate hyperviscosity parameters."""
+    if order < 1:
+        msg = f"Hyperviscosity order must be >= 1, got {order}."
+        raise ValueError(msg)
+    if nu < 0:
+        msg = f"Hyperviscosity coefficient nu must be >= 0, got {nu}."
+        raise ValueError(msg)
+
+
 class SpectralDerivative1D(eqx.Module):
     """
     1D Spectral derivative operator using the Fast Fourier Transform (FFT).
@@ -124,19 +134,26 @@ class SpectralDerivative1D(eqx.Module):
             n=2 is biharmonic diffusion). Default: 2.
         spectral : bool
             Whether u is in Fourier space.
+
+        Raises
+        ------
+        ValueError
+            If ``order < 1`` or ``nu < 0``.
         """
+        _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(u)
         k = self.grid.k
         dealias = self.grid.dealias_filter()
-        # (-1)^{n+1} * (-k^2)^n = -k^{2n} for all n
         hyp_hat = -nu * k ** (2 * order) * u_hat * dealias
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(self, u: Array, spectral: bool = False) -> Float[Array, "N"]:
         """Compute the inverse Laplacian: nabla^{-2} u (1D Poisson solve).
 
-        Solves d^2 psi / dx^2 = u for psi in spectral space.
-        The k=0 mode is set to zero (zero-mean gauge).
+        On a periodic domain, d^2 psi / dx^2 = u has a solution only if u
+        has zero spatial mean.  This implementation removes the k=0 component
+        of u and returns the unique zero-mean solution psi, i.e. it solves
+        d^2 psi / dx^2 = u - mean(u) with psi_hat[k=0] = 0.
         """
         u_hat = u if spectral else self.grid.transform(u)
         k = self.grid.k
@@ -254,11 +271,16 @@ class SpectralDerivative2D(eqx.Module):
             Order n (n=1 is diffusion, n=2 is biharmonic). Default: 2.
         spectral : bool
             Whether u is in Fourier space.
+
+        Raises
+        ------
+        ValueError
+            If ``order < 1`` or ``nu < 0``.
         """
+        _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
         dealias = self.grid.dealias_filter()
-        # (-1)^{n+1} * (-K2)^n = -K2^n for all n
         hyp_hat = -nu * K2**order * u_hat * dealias
         return self.grid.transform(hyp_hat, inverse=True).real
 
@@ -267,8 +289,9 @@ class SpectralDerivative2D(eqx.Module):
     ) -> Float[Array, "Ny Nx"]:
         """Compute the 2D inverse Laplacian: nabla^{-2} u (Poisson solve).
 
-        Solves nabla^2 psi = u for psi in spectral space.
-        The (0,0) mode is set to zero (zero-mean gauge).
+        On a periodic domain, nabla^2 psi = u is solvable only if u has zero
+        spatial mean.  This implementation removes the (0,0) Fourier mode
+        of u and returns the unique zero-mean solution psi.
         """
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
@@ -306,7 +329,8 @@ class SpectralDerivative2D(eqx.Module):
         dg_dx = self.grid.transform(1j * KX * g_hat * dealias, inverse=True).real
         dg_dy = self.grid.transform(1j * KY * g_hat * dealias, inverse=True).real
 
-        return df_dx * dg_dy - df_dy * dg_dx
+        jac = df_dx * dg_dy - df_dy * dg_dx
+        return self.apply_dealias(jac)
 
     def apply_dealias(self, u: Array, spectral: bool = False) -> Array:
         """Apply the 2D spectral dealiasing filter mask [Ny, Nx]."""
@@ -456,7 +480,14 @@ class SpectralDerivative3D(eqx.Module):
     def hyperviscosity(
         self, u: Array, nu: float, order: int = 2, spectral: bool = False
     ) -> Float[Array, "Nz Ny Nx"]:
-        """Compute the 3D hyperviscosity: (-1)^{n+1} * nu * nabla^{2n} u."""
+        """Compute the 3D hyperviscosity: (-1)^{n+1} * nu * nabla^{2n} u.
+
+        Raises
+        ------
+        ValueError
+            If ``order < 1`` or ``nu < 0``.
+        """
+        _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
         dealias = self.grid.dealias_filter()
@@ -466,7 +497,12 @@ class SpectralDerivative3D(eqx.Module):
     def inverse_laplacian(
         self, u: Array, spectral: bool = False
     ) -> Float[Array, "Nz Ny Nx"]:
-        """Compute the 3D inverse Laplacian: nabla^{-2} u (Poisson solve)."""
+        """Compute the 3D inverse Laplacian: nabla^{-2} u (Poisson solve).
+
+        On a periodic domain, nabla^2 psi = u is solvable only if u has zero
+        spatial mean.  This implementation removes the (0,0,0) Fourier mode
+        of u and returns the unique zero-mean solution psi.
+        """
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
         K2_safe = jnp.where(K2 == 0, 1.0, K2)
@@ -506,7 +542,8 @@ class SpectralDerivative3D(eqx.Module):
         dg_dx = self.grid.transform(1j * KX * g_hat * dealias, inverse=True).real
         dg_dy = self.grid.transform(1j * KY * g_hat * dealias, inverse=True).real
 
-        return df_dx * dg_dy - df_dy * dg_dx
+        jac = df_dx * dg_dy - df_dy * dg_dx
+        return self.apply_dealias(jac)
 
     def apply_dealias(self, u: Array, spectral: bool = False) -> Array:
         """Apply the 3D periodic dealiasing filter mask [Nz, Ny, Nx]."""

@@ -258,3 +258,54 @@ def test_3d_hyperviscosity_order1():
     hyp = deriv.hyperviscosity(u, nu=nu, order=1)
     lap = deriv.laplacian(u)
     assert jnp.allclose(hyp, nu * lap, atol=1e-3)
+
+
+# ---------------------------------------------------------------------------
+# Hyperviscosity validation
+# ---------------------------------------------------------------------------
+
+
+def test_hyperviscosity_invalid_order():
+    """order < 1 raises ValueError."""
+    grid = FourierGrid1D.from_N_L(64, TWO_PI, dealias=None)
+    deriv = SpectralDerivative1D(grid)
+    u = jnp.sin(grid.x)
+    import pytest
+
+    with pytest.raises(ValueError, match="order must be >= 1"):
+        deriv.hyperviscosity(u, nu=1.0, order=0)
+
+
+def test_hyperviscosity_negative_nu():
+    """nu < 0 raises ValueError."""
+    grid = FourierGrid2D.from_N_L(16, 16, TWO_PI, TWO_PI, dealias=None)
+    deriv = SpectralDerivative2D(grid)
+    X, Y = grid.X
+    u = jnp.sin(X) * jnp.sin(Y)
+    import pytest
+
+    with pytest.raises(ValueError, match="nu must be >= 0"):
+        deriv.hyperviscosity(u, nu=-0.1, order=2)
+
+
+# ---------------------------------------------------------------------------
+# Jacobian dealiasing
+# ---------------------------------------------------------------------------
+
+
+def test_2d_jacobian_dealiased():
+    """Jacobian with dealias='2/3' should have zero energy above cutoff."""
+    N = 32
+    grid = FourierGrid2D.from_N_L(N, N, TWO_PI, TWO_PI, dealias="2/3")
+    deriv = SpectralDerivative2D(grid)
+    X, Y = grid.X
+    # High-frequency functions that produce aliased products
+    f = jnp.sin(8 * X) * jnp.cos(6 * Y)
+    g = jnp.cos(7 * X) * jnp.sin(9 * Y)
+    jac = deriv.jacobian(f, g)
+    # Check that the result is dealiased: FFT should have zero above cutoff
+    jac_hat = grid.transform(jac)
+    mask = grid.dealias_filter()
+    # Energy outside the dealias mask should be zero
+    energy_outside = jnp.sum(jnp.abs(jac_hat * (1 - mask)) ** 2)
+    assert energy_outside < 1e-20
