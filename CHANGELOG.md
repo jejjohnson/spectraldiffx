@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.10](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.9...v0.0.10) (2026-03-23)
+
+
+### Features
+
+* **solvers:** add inhomogeneous boundary condition support ([31b5569](https://github.com/jejjohnson/spectraldiffx/commit/31b5569391018034429f9036a39f895fb8f8667d))
+* **solvers:** add inhomogeneous boundary condition support ([038580b](https://github.com/jejjohnson/spectraldiffx/commit/038580b799a958bd866ebdf747e8f5ae36fe0e88)), closes [#56](https://github.com/jejjohnson/spectraldiffx/issues/56)
+* **solvers:** add mixed per-axis BC solver for 3D ([eabbc46](https://github.com/jejjohnson/spectraldiffx/commit/eabbc464d9acd676f964fb660895835502bbf37f))
+* **solvers:** add mixed per-axis boundary condition solver for 3D ([f102410](https://github.com/jejjohnson/spectraldiffx/commit/f10241097ce5fbcef83c6b8d1a09a440fcae4055)), closes [#55](https://github.com/jejjohnson/spectraldiffx/issues/55)
+
+
+### Bug Fixes
+
+* **docs:** clarify inhomogeneous BC flowchart and fix matplotlib backend order ([3f48ed2](https://github.com/jejjohnson/spectraldiffx/commit/3f48ed2b2c813a76106e60d9331b69f85fc3c416))
+* raise ValueError for periodic + inhomogeneous BC values ([f8fe687](https://github.com/jejjohnson/spectraldiffx/commit/f8fe68738db292f9e68695b7d88a1f979f081b84))
+
 ## [0.0.9](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.8...v0.0.9) (2026-03-22)
 
 
