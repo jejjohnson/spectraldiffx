@@ -52,7 +52,17 @@ Do you have a rectangular domain (no mask)?
 |   |       --> solve_helmholtz_dct1 / solve_poisson_dct1 (DCT-I)
 |   |
 |   +-- Periodic (domain wraps)
-|       --> solve_helmholtz_fft / solve_poisson_fft
+|   |   --> solve_helmholtz_fft / solve_poisson_fft
+|   |
+|   +-- Different BCs on different axes?
+|   |   --> solve_helmholtz_2d / solve_helmholtz_3d
+|   |       (e.g., periodic x + Dirichlet y)
+|   |
+|   +-- Non-zero boundary values (inhomogeneous)?
+|       --> For mixed/axis-specific BCs, pass bc_x_values / bc_y_values to
+|           solve_helmholtz_2d / solve_helmholtz_3d. For same BCs on all
+|           axes, use modify_rhs_* to incorporate BCs, then call the matching
+|           homogeneous spectral solver above.
 |
 +-- NO: You have a mask (irregular domain)
     |
@@ -211,6 +221,95 @@ x = jnp.sin(jnp.linspace(0, 2 * jnp.pi, 64, endpoint=False))
 psi_1d = solve_poisson_fft_1d(x, dx=2 * jnp.pi / 64)
 ```
 
+### Mixed Per-Axis BCs (2D/3D)
+
+When different axes need different boundary conditions, use `solve_helmholtz_2d`
+or `solve_helmholtz_3d`.  These accept any combination of BC types per axis:
+
+```python
+from spectraldiffx import solve_helmholtz_2d, solve_helmholtz_3d
+
+# Channel flow: periodic in x, Dirichlet walls in y
+psi = solve_helmholtz_2d(rhs, dx, dy, bc_x="periodic", bc_y="dirichlet")
+
+# Atmospheric BL: periodic x/y, Neumann staggered z
+psi_3d = solve_helmholtz_3d(
+    rhs_3d, dx, dy, dz,
+    bc_x="periodic", bc_y="periodic", bc_z="neumann_stag",
+)
+```
+
+Supported BC types per axis: `"periodic"`, `"dirichlet"`, `"dirichlet_stag"`,
+`"neumann"`, `"neumann_stag"`, and mixed left/right tuples like
+`("dirichlet_stag", "neumann_stag")`.
+
+!!! tip "JIT with mixed BCs"
+    BC arguments are Python objects used for dispatch, so mark them static:
+
+    ```python
+    solve_jit = jax.jit(solve_helmholtz_3d, static_argnames=("bc_x", "bc_y", "bc_z"))
+    ```
+
+### Inhomogeneous Boundary Conditions
+
+By default, all solvers enforce **homogeneous** BCs (zero Dirichlet values,
+zero Neumann flux).  For non-zero boundary values, pass `bc_x_values` and/or
+`bc_y_values`:
+
+```python
+from spectraldiffx import solve_helmholtz_2d
+
+Ny, Nx = 64, 64
+dx, dy = 1.0 / (Nx + 1), 1.0 / (Ny + 1)
+
+# Non-zero Dirichlet: psi = sin(pi*y) on left wall, psi = 0 elsewhere
+y_arr = jnp.arange(1, Ny + 1) * dy
+left_wall = jnp.sin(jnp.pi * y_arr)
+
+psi = solve_helmholtz_2d(
+    rhs, dx, dy,
+    bc_x="dirichlet", bc_y="dirichlet",
+    bc_x_values=(left_wall, None),  # (left, right); None = zero
+    bc_y_values=(None, None),
+)
+```
+
+For Neumann BCs, the values are the outward normal derivative $\partial\psi/\partial n$:
+
+```python
+# Non-zero Neumann flux on the right wall
+right_flux = 2.0 * jnp.ones(Ny)  # dpsi/dn = 2 at x = Lx
+
+psi = solve_helmholtz_2d(
+    rhs, dx, dy,
+    bc_x="neumann_stag", bc_y="neumann_stag",
+    lambda_=1.0,  # Helmholtz to avoid null mode
+    bc_x_values=(None, right_flux),
+    bc_y_values=(None, None),
+)
+```
+
+The 3D solver supports face arrays for each axis:
+
+```python
+# 3D with non-zero Dirichlet on the z-faces
+bottom_face = jnp.ones((Ny, Nx))  # shape (Ny, Nx)
+psi_3d = solve_helmholtz_3d(
+    rhs_3d, dx, dy, dz,
+    bc_x="periodic", bc_y="periodic", bc_z="dirichlet",
+    bc_z_values=(bottom_face, None),
+)
+```
+
+!!! warning "FD2 eigenvalues only"
+    Inhomogeneous BC support exploits the finite-difference stencil structure,
+    so it only works with FD2 eigenvalues (the default `approximation="fd2"`).
+    It does not work with `approximation="spectral"`.
+
+For advanced usage, the Layer 0 helpers `modify_rhs_1d`, `modify_rhs_2d`, and
+`modify_rhs_3d` let you apply the RHS modification manually before calling
+the homogeneous solver.
+
 ---
 
 ## Layer 1: Module Classes
@@ -256,6 +355,31 @@ from spectraldiffx import RegularNeumannHelmholtzSolver2D
 
 solver = RegularNeumannHelmholtzSolver2D(dx=1.0, dy=1.0, alpha=0.0)
 psi = solver(rhs)  # Neumann BCs on regular grid (DCT-I)
+```
+
+### MixedBCHelmholtzSolver2D / 3D
+
+For mixed per-axis BCs, the module classes accept BC types at construction
+time and boundary values at call time:
+
+```python
+from spectraldiffx import MixedBCHelmholtzSolver2D, MixedBCHelmholtzSolver3D
+
+# 2D: channel flow (periodic x, Dirichlet y)
+solver_2d = MixedBCHelmholtzSolver2D(
+    dx=0.1, dy=0.1, bc_x="periodic", bc_y="dirichlet",
+)
+psi = solver_2d(rhs)
+
+# With inhomogeneous BCs (values passed at call time):
+psi = solver_2d(rhs, bc_y_values=(bottom_vals, top_vals))
+
+# 3D: atmospheric BL (periodic x/y, Neumann z)
+solver_3d = MixedBCHelmholtzSolver3D(
+    dx=1000.0, dy=1000.0, dz=50.0,
+    bc_x="periodic", bc_y="periodic", bc_z="neumann_stag",
+)
+psi_3d = solver_3d(rhs_3d)
 ```
 
 ### SpectralHelmholtzSolver2D (Periodic)
@@ -340,16 +464,7 @@ psi_batch = solve_batch(rhs_batch)  # [10, 64, 64]
 | `solve_helmholtz_dct1` | Neumann    | Regular | Yes (k=0) | Vertex-centred Neumann problems       |
 | `solve_helmholtz_dct`  | Neumann    | Staggered | Yes (k=0) | Free-surface, no-flux boundaries |
 | `solve_helmholtz_fft`  | Periodic   | Either | Yes (k=0) | Doubly-periodic domains               |
-
-### 1-D Solvers
-
-| Function | BC type | Grid |
-|----------|---------|------|
-| `solve_helmholtz_dst1_1d` | Dirichlet | Regular |
-| `solve_helmholtz_dst2_1d` | Dirichlet | Staggered |
-| `solve_helmholtz_dct1_1d` | Neumann | Regular |
-| `solve_helmholtz_dct2_1d` | Neumann | Staggered |
-| `solve_helmholtz_fft_1d` | Periodic | Either |
+| `solve_helmholtz_2d`  | Mixed/axis | Any    | Depends    | Channel flow, mixed physics           |
 
 ### 3-D Solvers
 
@@ -360,6 +475,17 @@ psi_batch = solve_batch(rhs_batch)  # [10, 64, 64]
 | `solve_helmholtz_dct1_3d` | Neumann | Regular |
 | `solve_helmholtz_dct2_3d` | Neumann | Staggered |
 | `solve_helmholtz_fft_3d` | Periodic | Either |
+| `solve_helmholtz_3d` | Mixed/axis | Any |
+
+### 1-D Solvers
+
+| Function | BC type | Grid |
+|----------|---------|------|
+| `solve_helmholtz_dst1_1d` | Dirichlet | Regular |
+| `solve_helmholtz_dst2_1d` | Dirichlet | Staggered |
+| `solve_helmholtz_dct1_1d` | Neumann | Regular |
+| `solve_helmholtz_dct2_1d` | Neumann | Staggered |
+| `solve_helmholtz_fft_1d` | Periodic | Either |
 
 !!! note "Naming convention"
     The original names (`solve_helmholtz_dst`, `solve_helmholtz_dct`) are preserved

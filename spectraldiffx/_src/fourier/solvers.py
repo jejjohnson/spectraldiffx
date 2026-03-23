@@ -142,6 +142,284 @@ def _inverse_1d(x: Array, family: str, type_: _DSTDCTType | None, axis: int) -> 
 
 
 # ===========================================================================
+# Inhomogeneous BC — RHS modification helpers (Layer 0)
+# ===========================================================================
+
+# Correction formulas per BC type.  Each returns (left_correction, right_correction)
+# to be *added* to rhs[0] and rhs[-1] respectively along the relevant axis.
+#
+# Sign convention for Neumann: values are dpsi/dn (outward normal derivative).
+#   left boundary:  outward normal points left  => g_L = -dpsi/dx
+#   right boundary: outward normal points right => g_R =  dpsi/dx
+
+_BC_RHS_FORMULAS: dict[str, Callable[[float, float, float], tuple[float, float]]] = {
+    # Dirichlet regular (DST-I): ghost at x=-dx, boundary at x=0
+    "dirichlet": lambda a, b, dx: (-a / dx**2, -b / dx**2),
+    # Dirichlet staggered (DST-II): ghost at x=-dx/2, boundary at x=0
+    "dirichlet_stag": lambda a, b, dx: (-2 * a / dx**2, -2 * b / dx**2),
+    # Neumann regular (DCT-I): boundary point is part of grid
+    "neumann": lambda gL, gR, dx: (-2 * gL / dx, -2 * gR / dx),
+    # Neumann staggered (DCT-II): ghost at x=-dx/2
+    "neumann_stag": lambda gL, gR, dx: (-gL / dx, -gR / dx),
+}
+
+
+def _bc_type_for_side(bc: BoundaryCondition, side: str) -> str:
+    """Extract the BC type for 'left' or 'right' side of an axis.
+
+    For same-BC strings, returns that string.  For mixed-BC tuples like
+    ``("dirichlet", "neumann")``, returns the left or right element.
+    """
+    if isinstance(bc, str):
+        return bc
+    return bc[0] if side == "left" else bc[1]
+
+
+def _rhs_correction_1d(
+    bc: BoundaryCondition,
+    dx: float,
+    left_val: float,
+    right_val: float,
+) -> tuple[float, float]:
+    """Compute RHS corrections at boundary-adjacent points for one axis.
+
+    Returns
+    -------
+    left_corr, right_corr : float
+        Values to add to ``rhs[0]`` and ``rhs[-1]``.
+    """
+    bc_left = _bc_type_for_side(bc, "left")
+    bc_right = _bc_type_for_side(bc, "right")
+
+    if bc_left == "periodic" or bc_right == "periodic":
+        if left_val != 0.0 or right_val != 0.0:
+            msg = "Periodic BCs cannot have inhomogeneous values."
+            raise ValueError(msg)
+        return 0.0, 0.0
+
+    # Left correction: use left BC formula with (left_val, 0)
+    left_corr = _BC_RHS_FORMULAS[bc_left](left_val, 0.0, dx)[0]
+    # Right correction: use right BC formula with (0, right_val)
+    right_corr = _BC_RHS_FORMULAS[bc_right](0.0, right_val, dx)[1]
+    return left_corr, right_corr
+
+
+def modify_rhs_1d(
+    rhs: Float[Array, " N"],
+    bc: BoundaryCondition,
+    dx: float,
+    bc_values: tuple[float, float] = (0.0, 0.0),
+) -> Float[Array, " N"]:
+    """Apply boundary source terms for inhomogeneous BCs to a 1-D RHS.
+
+    Modifies the right-hand side at boundary-adjacent grid points to
+    account for non-zero boundary values.  This exploits the FD2 stencil
+    structure and must only be used with FD2 eigenvalues.
+
+    Parameters
+    ----------
+    rhs : Float[Array, " N"]
+        Original right-hand side.
+    bc : BoundaryCondition
+        Boundary condition type.
+    dx : float
+        Grid spacing.
+    bc_values : tuple[float, float]
+        ``(left_value, right_value)``.  For Dirichlet BCs these are the
+        prescribed psi values; for Neumann BCs these are the prescribed
+        dpsi/dn (outward normal derivative) values.
+
+    Returns
+    -------
+    Float[Array, " N"]
+        Modified RHS with boundary source terms incorporated.
+    """
+    left_val, right_val = bc_values
+    if left_val == 0.0 and right_val == 0.0:
+        return rhs
+    left_corr, right_corr = _rhs_correction_1d(bc, dx, left_val, right_val)
+    rhs = rhs.at[0].add(left_corr)
+    rhs = rhs.at[-1].add(right_corr)
+    return rhs
+
+
+def _validate_no_periodic_inhomogeneous(
+    bc: BoundaryCondition,
+    values: tuple,
+    axis_name: str,
+) -> None:
+    """Raise ValueError if inhomogeneous values are given for a periodic axis."""
+    has_periodic = bc == "periodic" or (isinstance(bc, tuple) and "periodic" in bc)
+    has_values = any(v is not None for v in values)
+    if has_periodic and has_values:
+        msg = (
+            f"Periodic BCs on {axis_name}-axis cannot have inhomogeneous "
+            f"boundary values, got bc_{axis_name}={bc!r} with non-None values."
+        )
+        raise ValueError(msg)
+
+
+def modify_rhs_2d(
+    rhs: Float[Array, "Ny Nx"],
+    bc_x: BoundaryCondition,
+    bc_y: BoundaryCondition,
+    dx: float,
+    dy: float,
+    bc_x_values: tuple[Float[Array, " Ny"] | None, Float[Array, " Ny"] | None] = (
+        None,
+        None,
+    ),
+    bc_y_values: tuple[Float[Array, " Nx"] | None, Float[Array, " Nx"] | None] = (
+        None,
+        None,
+    ),
+) -> Float[Array, "Ny Nx"]:
+    """Apply boundary source terms for inhomogeneous BCs to a 2-D RHS.
+
+    Parameters
+    ----------
+    rhs : Float[Array, "Ny Nx"]
+        Original right-hand side.
+    bc_x, bc_y : BoundaryCondition
+        Boundary condition types for x and y axes.
+    dx, dy : float
+        Grid spacings.
+    bc_x_values : tuple[Array | None, Array | None]
+        ``(left, right)`` boundary values for the x-axis.
+        Each is an array of shape ``(Ny,)`` or ``None`` (homogeneous).
+    bc_y_values : tuple[Array | None, Array | None]
+        ``(bottom, top)`` boundary values for the y-axis.
+        Each is an array of shape ``(Nx,)`` or ``None`` (homogeneous).
+
+    Returns
+    -------
+    Float[Array, "Ny Nx"]
+        Modified RHS.
+
+    Raises
+    ------
+    ValueError
+        If non-None boundary values are provided for a periodic axis.
+    """
+    _validate_no_periodic_inhomogeneous(bc_x, bc_x_values, "x")
+    _validate_no_periodic_inhomogeneous(bc_y, bc_y_values, "y")
+
+    xl, xr = bc_x_values
+    yb, yt = bc_y_values
+
+    # x-axis: modify columns 0 and -1
+    if xl is not None:
+        bc_left_type = _bc_type_for_side(bc_x, "left")
+        left_corr = _BC_RHS_FORMULAS[bc_left_type](1.0, 0.0, dx)[0]
+        rhs = rhs.at[:, 0].add(left_corr * xl)
+    if xr is not None:
+        bc_right_type = _bc_type_for_side(bc_x, "right")
+        right_corr = _BC_RHS_FORMULAS[bc_right_type](0.0, 1.0, dx)[1]
+        rhs = rhs.at[:, -1].add(right_corr * xr)
+
+    # y-axis: modify rows 0 and -1
+    if yb is not None:
+        bc_bottom_type = _bc_type_for_side(bc_y, "left")
+        bottom_corr = _BC_RHS_FORMULAS[bc_bottom_type](1.0, 0.0, dy)[0]
+        rhs = rhs.at[0, :].add(bottom_corr * yb)
+    if yt is not None:
+        bc_top_type = _bc_type_for_side(bc_y, "right")
+        top_corr = _BC_RHS_FORMULAS[bc_top_type](0.0, 1.0, dy)[1]
+        rhs = rhs.at[-1, :].add(top_corr * yt)
+
+    return rhs
+
+
+def modify_rhs_3d(
+    rhs: Float[Array, "Nz Ny Nx"],
+    bc_x: BoundaryCondition,
+    bc_y: BoundaryCondition,
+    bc_z: BoundaryCondition,
+    dx: float,
+    dy: float,
+    dz: float,
+    bc_x_values: tuple[Float[Array, "Nz Ny"] | None, Float[Array, "Nz Ny"] | None] = (
+        None,
+        None,
+    ),
+    bc_y_values: tuple[Float[Array, "Nz Nx"] | None, Float[Array, "Nz Nx"] | None] = (
+        None,
+        None,
+    ),
+    bc_z_values: tuple[Float[Array, "Ny Nx"] | None, Float[Array, "Ny Nx"] | None] = (
+        None,
+        None,
+    ),
+) -> Float[Array, "Nz Ny Nx"]:
+    """Apply boundary source terms for inhomogeneous BCs to a 3-D RHS.
+
+    Parameters
+    ----------
+    rhs : Float[Array, "Nz Ny Nx"]
+        Original right-hand side.
+    bc_x, bc_y, bc_z : BoundaryCondition
+        Boundary condition types for each axis.
+    dx, dy, dz : float
+        Grid spacings.
+    bc_x_values : tuple[Array | None, Array | None]
+        ``(left, right)`` face arrays of shape ``(Nz, Ny)``.
+    bc_y_values : tuple[Array | None, Array | None]
+        ``(bottom, top)`` face arrays of shape ``(Nz, Nx)``.
+    bc_z_values : tuple[Array | None, Array | None]
+        ``(back, front)`` face arrays of shape ``(Ny, Nx)``.
+
+    Returns
+    -------
+    Float[Array, "Nz Ny Nx"]
+        Modified RHS.
+
+    Raises
+    ------
+    ValueError
+        If non-None boundary values are provided for a periodic axis.
+    """
+    _validate_no_periodic_inhomogeneous(bc_x, bc_x_values, "x")
+    _validate_no_periodic_inhomogeneous(bc_y, bc_y_values, "y")
+    _validate_no_periodic_inhomogeneous(bc_z, bc_z_values, "z")
+
+    xl, xr = bc_x_values
+    yb, yt = bc_y_values
+    zb, zf = bc_z_values
+
+    # x-axis faces: [:, :, 0] and [:, :, -1]
+    if xl is not None:
+        bc_left_type = _bc_type_for_side(bc_x, "left")
+        corr = _BC_RHS_FORMULAS[bc_left_type](1.0, 0.0, dx)[0]
+        rhs = rhs.at[:, :, 0].add(corr * xl)
+    if xr is not None:
+        bc_right_type = _bc_type_for_side(bc_x, "right")
+        corr = _BC_RHS_FORMULAS[bc_right_type](0.0, 1.0, dx)[1]
+        rhs = rhs.at[:, :, -1].add(corr * xr)
+
+    # y-axis faces: [:, 0, :] and [:, -1, :]
+    if yb is not None:
+        bc_bottom_type = _bc_type_for_side(bc_y, "left")
+        corr = _BC_RHS_FORMULAS[bc_bottom_type](1.0, 0.0, dy)[0]
+        rhs = rhs.at[:, 0, :].add(corr * yb)
+    if yt is not None:
+        bc_top_type = _bc_type_for_side(bc_y, "right")
+        corr = _BC_RHS_FORMULAS[bc_top_type](0.0, 1.0, dy)[1]
+        rhs = rhs.at[:, -1, :].add(corr * yt)
+
+    # z-axis faces: [0, :, :] and [-1, :, :]
+    if zb is not None:
+        bc_back_type = _bc_type_for_side(bc_z, "left")
+        corr = _BC_RHS_FORMULAS[bc_back_type](1.0, 0.0, dz)[0]
+        rhs = rhs.at[0, :, :].add(corr * zb)
+    if zf is not None:
+        bc_front_type = _bc_type_for_side(bc_z, "right")
+        corr = _BC_RHS_FORMULAS[bc_front_type](0.0, 1.0, dz)[1]
+        rhs = rhs.at[-1, :, :].add(corr * zf)
+
+    return rhs
+
+
+# ===========================================================================
 # Mixed per-axis boundary condition solver — 2D
 # ===========================================================================
 
@@ -153,6 +431,15 @@ def solve_helmholtz_2d(
     bc_x: BoundaryCondition = "periodic",
     bc_y: BoundaryCondition = "periodic",
     lambda_: float = 0.0,
+    *,
+    bc_x_values: tuple[Float[Array, " Ny"] | None, Float[Array, " Ny"] | None] = (
+        None,
+        None,
+    ),
+    bc_y_values: tuple[Float[Array, " Nx"] | None, Float[Array, " Nx"] | None] = (
+        None,
+        None,
+    ),
 ) -> Float[Array, "Ny Nx"]:
     """Solve (nabla^2 - lambda)psi = f in 2-D with per-axis boundary conditions.
 
@@ -187,6 +474,14 @@ def solve_helmholtz_2d(
         Boundary condition along the y-axis (rows).
     lambda_ : float
         Helmholtz parameter.  Default: 0.0 (Poisson).
+    bc_x_values : tuple[Array | None, Array | None], keyword-only
+        ``(left, right)`` inhomogeneous boundary values for x-axis.
+        Each is an array of shape ``(Ny,)`` or ``None`` (homogeneous).
+        For Dirichlet: prescribed psi values.
+        For Neumann: prescribed dpsi/dn (outward normal).
+    bc_y_values : tuple[Array | None, Array | None], keyword-only
+        ``(bottom, top)`` inhomogeneous boundary values for y-axis.
+        Each is an array of shape ``(Nx,)`` or ``None`` (homogeneous).
 
     Returns
     -------
@@ -199,7 +494,14 @@ def solve_helmholtz_2d(
     since they are Python objects used for dispatch::
 
         solve_jit = jax.jit(solve_helmholtz_2d, static_argnames=("bc_x", "bc_y"))
+
+    Inhomogeneous BC support uses FD2 eigenvalues only (the default).
     """
+    # Apply inhomogeneous BC RHS modification if any values are non-None.
+    _has_inhomogeneous = any(v is not None for v in (*bc_x_values, *bc_y_values))
+    if _has_inhomogeneous:
+        rhs = modify_rhs_2d(rhs, bc_x, bc_y, dx, dy, bc_x_values, bc_y_values)
+
     Ny, Nx = rhs.shape
     fam_x, type_x, eig_fn_x, null_x = _lookup_bc(bc_x)
     fam_y, type_y, eig_fn_y, null_y = _lookup_bc(bc_y)
@@ -261,12 +563,30 @@ def solve_poisson_2d(
     dy: float,
     bc_x: BoundaryCondition = "periodic",
     bc_y: BoundaryCondition = "periodic",
+    *,
+    bc_x_values: tuple[Float[Array, " Ny"] | None, Float[Array, " Ny"] | None] = (
+        None,
+        None,
+    ),
+    bc_y_values: tuple[Float[Array, " Nx"] | None, Float[Array, " Nx"] | None] = (
+        None,
+        None,
+    ),
 ) -> Float[Array, "Ny Nx"]:
     """Solve nabla^2 psi = f in 2-D with per-axis boundary conditions.
 
     Convenience wrapper around :func:`solve_helmholtz_2d` with ``lambda_=0``.
     """
-    return solve_helmholtz_2d(rhs, dx, dy, bc_x=bc_x, bc_y=bc_y, lambda_=0.0)
+    return solve_helmholtz_2d(
+        rhs,
+        dx,
+        dy,
+        bc_x=bc_x,
+        bc_y=bc_y,
+        lambda_=0.0,
+        bc_x_values=bc_x_values,
+        bc_y_values=bc_y_values,
+    )
 
 
 # ===========================================================================
@@ -283,6 +603,19 @@ def solve_helmholtz_3d(
     bc_y: BoundaryCondition = "periodic",
     bc_z: BoundaryCondition = "periodic",
     lambda_: float = 0.0,
+    *,
+    bc_x_values: tuple[Float[Array, "Nz Ny"] | None, Float[Array, "Nz Ny"] | None] = (
+        None,
+        None,
+    ),
+    bc_y_values: tuple[Float[Array, "Nz Nx"] | None, Float[Array, "Nz Nx"] | None] = (
+        None,
+        None,
+    ),
+    bc_z_values: tuple[Float[Array, "Ny Nx"] | None, Float[Array, "Ny Nx"] | None] = (
+        None,
+        None,
+    ),
 ) -> Float[Array, "Nz Ny Nx"]:
     """Solve (nabla^2 - lambda)psi = f in 3-D with per-axis boundary conditions.
 
@@ -321,6 +654,12 @@ def solve_helmholtz_3d(
         Boundary condition along the z-axis (depth).
     lambda_ : float
         Helmholtz parameter.  Default: 0.0 (Poisson).
+    bc_x_values : tuple[Array | None, Array | None], keyword-only
+        ``(left, right)`` face arrays of shape ``(Nz, Ny)`` or ``None``.
+    bc_y_values : tuple[Array | None, Array | None], keyword-only
+        ``(bottom, top)`` face arrays of shape ``(Nz, Nx)`` or ``None``.
+    bc_z_values : tuple[Array | None, Array | None], keyword-only
+        ``(back, front)`` face arrays of shape ``(Ny, Nx)`` or ``None``.
 
     Returns
     -------
@@ -335,7 +674,27 @@ def solve_helmholtz_3d(
         solve_jit = jax.jit(
             solve_helmholtz_3d, static_argnames=("bc_x", "bc_y", "bc_z")
         )
+
+    Inhomogeneous BC support uses FD2 eigenvalues only (the default).
     """
+    # Apply inhomogeneous BC RHS modification if any values are non-None.
+    _has_inhomogeneous = any(
+        v is not None for v in (*bc_x_values, *bc_y_values, *bc_z_values)
+    )
+    if _has_inhomogeneous:
+        rhs = modify_rhs_3d(
+            rhs,
+            bc_x,
+            bc_y,
+            bc_z,
+            dx,
+            dy,
+            dz,
+            bc_x_values,
+            bc_y_values,
+            bc_z_values,
+        )
+
     Nz, Ny, Nx = rhs.shape
     fam_x, type_x, eig_fn_x, null_x = _lookup_bc(bc_x)
     fam_y, type_y, eig_fn_y, null_y = _lookup_bc(bc_y)
@@ -396,13 +755,36 @@ def solve_poisson_3d(
     bc_x: BoundaryCondition = "periodic",
     bc_y: BoundaryCondition = "periodic",
     bc_z: BoundaryCondition = "periodic",
+    *,
+    bc_x_values: tuple[Float[Array, "Nz Ny"] | None, Float[Array, "Nz Ny"] | None] = (
+        None,
+        None,
+    ),
+    bc_y_values: tuple[Float[Array, "Nz Nx"] | None, Float[Array, "Nz Nx"] | None] = (
+        None,
+        None,
+    ),
+    bc_z_values: tuple[Float[Array, "Ny Nx"] | None, Float[Array, "Ny Nx"] | None] = (
+        None,
+        None,
+    ),
 ) -> Float[Array, "Nz Ny Nx"]:
     """Solve nabla^2 psi = f in 3-D with per-axis boundary conditions.
 
     Convenience wrapper around :func:`solve_helmholtz_3d` with ``lambda_=0``.
     """
     return solve_helmholtz_3d(
-        rhs, dx, dy, dz, bc_x=bc_x, bc_y=bc_y, bc_z=bc_z, lambda_=0.0
+        rhs,
+        dx,
+        dy,
+        dz,
+        bc_x=bc_x,
+        bc_y=bc_y,
+        bc_z=bc_z,
+        lambda_=0.0,
+        bc_x_values=bc_x_values,
+        bc_y_values=bc_y_values,
+        bc_z_values=bc_z_values,
     )
 
 
@@ -2007,13 +2389,29 @@ class MixedBCHelmholtzSolver2D(eqx.Module):
     bc_y: BoundaryCondition = eqx.field(static=True, default="periodic")
     alpha: float = 0.0
 
-    def __call__(self, rhs: Float[Array, "Ny Nx"]) -> Float[Array, "Ny Nx"]:
+    def __call__(
+        self,
+        rhs: Float[Array, "Ny Nx"],
+        *,
+        bc_x_values: tuple[Float[Array, " Ny"] | None, Float[Array, " Ny"] | None] = (
+            None,
+            None,
+        ),
+        bc_y_values: tuple[Float[Array, " Nx"] | None, Float[Array, " Nx"] | None] = (
+            None,
+            None,
+        ),
+    ) -> Float[Array, "Ny Nx"]:
         """Solve (nabla^2 - alpha)psi = rhs.
 
         Parameters
         ----------
         rhs : Float[Array, "Ny Nx"]
             Right-hand side.
+        bc_x_values : tuple[Array | None, Array | None], keyword-only
+            ``(left, right)`` inhomogeneous boundary values for x-axis.
+        bc_y_values : tuple[Array | None, Array | None], keyword-only
+            ``(bottom, top)`` inhomogeneous boundary values for y-axis.
 
         Returns
         -------
@@ -2027,6 +2425,8 @@ class MixedBCHelmholtzSolver2D(eqx.Module):
             bc_x=self.bc_x,
             bc_y=self.bc_y,
             lambda_=self.alpha,
+            bc_x_values=bc_x_values,
+            bc_y_values=bc_y_values,
         )
 
 
@@ -2076,13 +2476,32 @@ class MixedBCHelmholtzSolver3D(eqx.Module):
     bc_z: BoundaryCondition = eqx.field(static=True, default="periodic")
     alpha: float = 0.0
 
-    def __call__(self, rhs: Float[Array, "Nz Ny Nx"]) -> Float[Array, "Nz Ny Nx"]:
+    def __call__(
+        self,
+        rhs: Float[Array, "Nz Ny Nx"],
+        *,
+        bc_x_values: tuple[
+            Float[Array, "Nz Ny"] | None, Float[Array, "Nz Ny"] | None
+        ] = (None, None),
+        bc_y_values: tuple[
+            Float[Array, "Nz Nx"] | None, Float[Array, "Nz Nx"] | None
+        ] = (None, None),
+        bc_z_values: tuple[
+            Float[Array, "Ny Nx"] | None, Float[Array, "Ny Nx"] | None
+        ] = (None, None),
+    ) -> Float[Array, "Nz Ny Nx"]:
         """Solve (nabla^2 - alpha)psi = rhs.
 
         Parameters
         ----------
         rhs : Float[Array, "Nz Ny Nx"]
             Right-hand side.
+        bc_x_values : tuple[Array | None, Array | None], keyword-only
+            ``(left, right)`` face arrays of shape ``(Nz, Ny)``.
+        bc_y_values : tuple[Array | None, Array | None], keyword-only
+            ``(bottom, top)`` face arrays of shape ``(Nz, Nx)``.
+        bc_z_values : tuple[Array | None, Array | None], keyword-only
+            ``(back, front)`` face arrays of shape ``(Ny, Nx)``.
 
         Returns
         -------
@@ -2098,4 +2517,7 @@ class MixedBCHelmholtzSolver3D(eqx.Module):
             bc_y=self.bc_y,
             bc_z=self.bc_z,
             lambda_=self.alpha,
+            bc_x_values=bc_x_values,
+            bc_y_values=bc_y_values,
+            bc_z_values=bc_z_values,
         )
