@@ -269,6 +269,143 @@ def solve_poisson_2d(
     return solve_helmholtz_2d(rhs, dx, dy, bc_x=bc_x, bc_y=bc_y, lambda_=0.0)
 
 
+# ===========================================================================
+# Mixed per-axis boundary condition solver — 3D
+# ===========================================================================
+
+
+def solve_helmholtz_3d(
+    rhs: Float[Array, "Nz Ny Nx"],
+    dx: float,
+    dy: float,
+    dz: float,
+    bc_x: BoundaryCondition = "periodic",
+    bc_y: BoundaryCondition = "periodic",
+    bc_z: BoundaryCondition = "periodic",
+    lambda_: float = 0.0,
+) -> Float[Array, "Nz Ny Nx"]:
+    """Solve (nabla^2 - lambda)psi = f in 3-D with per-axis boundary conditions.
+
+    Supports any combination of boundary conditions on each axis:
+
+    * ``"periodic"`` — periodic (FFT)
+    * ``"dirichlet"`` — homogeneous Dirichlet on regular grid (DST-I)
+    * ``"dirichlet_stag"`` — homogeneous Dirichlet on staggered grid (DST-II)
+    * ``"neumann"`` — homogeneous Neumann on regular grid (DCT-I)
+    * ``"neumann_stag"`` — homogeneous Neumann on staggered grid (DCT-II)
+    * ``("dirichlet_stag", "neumann_stag")`` — Dirichlet left + Neumann right, staggered (DST-IV)
+    * ``("neumann_stag", "dirichlet_stag")`` — Neumann left + Dirichlet right, staggered (DCT-IV)
+    * ``("dirichlet", "neumann")`` — Dirichlet left + Neumann right, regular (DST-III)
+    * ``("neumann", "dirichlet")`` — Neumann left + Dirichlet right, regular (DCT-III)
+
+    Transforms are applied as sequential 1-D transforms along each axis.
+    Real (DST/DCT) axes are transformed first, periodic (FFT) axes last.
+    This avoids complex intermediate handling — the IFFT on the inverse pass
+    recovers real data before the real inverse transforms are applied.
+
+    Parameters
+    ----------
+    rhs : Float[Array, "Nz Ny Nx"]
+        Right-hand side.
+    dx : float
+        Grid spacing in x.
+    dy : float
+        Grid spacing in y.
+    dz : float
+        Grid spacing in z.
+    bc_x : BoundaryCondition
+        Boundary condition along the x-axis (columns).
+    bc_y : BoundaryCondition
+        Boundary condition along the y-axis (rows).
+    bc_z : BoundaryCondition
+        Boundary condition along the z-axis (depth).
+    lambda_ : float
+        Helmholtz parameter.  Default: 0.0 (Poisson).
+
+    Returns
+    -------
+    Float[Array, "Nz Ny Nx"]
+        Solution psi, same shape as *rhs*.
+
+    Notes
+    -----
+    When using ``jax.jit``, ``bc_x``, ``bc_y``, and ``bc_z`` must be marked
+    as static since they are Python objects used for dispatch::
+
+        solve_jit = jax.jit(
+            solve_helmholtz_3d, static_argnames=("bc_x", "bc_y", "bc_z")
+        )
+    """
+    Nz, Ny, Nx = rhs.shape
+    fam_x, type_x, eig_fn_x, null_x = _lookup_bc(bc_x)
+    fam_y, type_y, eig_fn_y, null_y = _lookup_bc(bc_y)
+    fam_z, type_z, eig_fn_z, null_z = _lookup_bc(bc_z)
+
+    # 1-D eigenvalues → 3-D broadcast
+    eigx = eig_fn_x(Nx, dx)  # [Nx]
+    eigy = eig_fn_y(Ny, dy)  # [Ny]
+    eigz = eig_fn_z(Nz, dz)  # [Nz]
+    eig3d = eigz[:, None, None] + eigy[None, :, None] + eigx[None, None, :] - lambda_
+
+    # Null-mode handling: only when ALL axes have a null mode.
+    _has_null = null_x and null_y and null_z
+    if _has_null:
+        is_null = eig3d[0, 0, 0] == 0.0
+        eig3d_safe = eig3d.at[0, 0, 0].set(jnp.where(is_null, 1.0, eig3d[0, 0, 0]))
+    else:
+        eig3d_safe = eig3d
+
+    # Classify axes: real (DST/DCT) first, periodic (FFT) last.
+    all_axes = [
+        (2, fam_x, type_x),  # x = axis 2
+        (1, fam_y, type_y),  # y = axis 1
+        (0, fam_z, type_z),  # z = axis 0
+    ]
+    real_axes = [(a, f, t) for a, f, t in all_axes if f != "fft"]
+    periodic_axes = [(a, f, t) for a, f, t in all_axes if f == "fft"]
+
+    # --- Forward transform: real axes first, then periodic ---
+    data = rhs
+    for axis, family, type_ in real_axes + periodic_axes:
+        data = _forward_1d(data, family, type_, axis)
+
+    # --- Spectral division ---
+    psi_hat = data / eig3d_safe
+    if _has_null:
+        psi_hat = psi_hat.at[0, 0, 0].set(
+            jnp.where(is_null, jnp.zeros_like(psi_hat[0, 0, 0]), psi_hat[0, 0, 0])
+        )
+
+    # --- Inverse transform: periodic first, .real, then real axes ---
+    data = psi_hat
+    for axis, family, type_ in periodic_axes:
+        data = _inverse_1d(data, family, type_, axis)
+    if periodic_axes:
+        data = data.real
+    for axis, family, type_ in real_axes:
+        data = _inverse_1d(data, family, type_, axis)
+
+    return data
+
+
+def solve_poisson_3d(
+    rhs: Float[Array, "Nz Ny Nx"],
+    dx: float,
+    dy: float,
+    dz: float,
+    bc_x: BoundaryCondition = "periodic",
+    bc_y: BoundaryCondition = "periodic",
+    bc_z: BoundaryCondition = "periodic",
+) -> Float[Array, "Nz Ny Nx"]:
+    """Solve nabla^2 psi = f in 3-D with per-axis boundary conditions.
+
+    Convenience wrapper around :func:`solve_helmholtz_3d` with ``lambda_=0``.
+    """
+    return solve_helmholtz_3d(
+        rhs, dx, dy, dz, bc_x=bc_x, bc_y=bc_y, bc_z=bc_z, lambda_=0.0
+    )
+
+
 #: Approximation type for eigenvalue selection.
 Approximation = Literal["fd2", "spectral"]
 
@@ -1889,5 +2026,76 @@ class MixedBCHelmholtzSolver2D(eqx.Module):
             self.dy,
             bc_x=self.bc_x,
             bc_y=self.bc_y,
+            lambda_=self.alpha,
+        )
+
+
+class MixedBCHelmholtzSolver3D(eqx.Module):
+    """3D Helmholtz/Poisson solver with per-axis boundary conditions.
+
+    Solves ``(nabla^2 - alpha)psi = f`` where each axis can have a different
+    boundary condition type (see :func:`solve_helmholtz_3d`).
+
+    Examples
+    --------
+    Atmospheric boundary layer (periodic x/y, Neumann z)::
+
+        solver = MixedBCHelmholtzSolver3D(
+            dx=1000.0,
+            dy=1000.0,
+            dz=50.0,
+            bc_x="periodic",
+            bc_y="periodic",
+            bc_z="neumann_stag",
+        )
+        psi = solver(rhs)
+
+    Attributes
+    ----------
+    dx : float
+        Grid spacing in x.
+    dy : float
+        Grid spacing in y.
+    dz : float
+        Grid spacing in z.
+    bc_x : BoundaryCondition
+        Boundary condition along the x-axis.
+    bc_y : BoundaryCondition
+        Boundary condition along the y-axis.
+    bc_z : BoundaryCondition
+        Boundary condition along the z-axis.
+    alpha : float
+        Helmholtz parameter.  Default: 0.0 (Poisson).
+    """
+
+    dx: float
+    dy: float
+    dz: float
+    bc_x: BoundaryCondition = eqx.field(static=True, default="periodic")
+    bc_y: BoundaryCondition = eqx.field(static=True, default="periodic")
+    bc_z: BoundaryCondition = eqx.field(static=True, default="periodic")
+    alpha: float = 0.0
+
+    def __call__(self, rhs: Float[Array, "Nz Ny Nx"]) -> Float[Array, "Nz Ny Nx"]:
+        """Solve (nabla^2 - alpha)psi = rhs.
+
+        Parameters
+        ----------
+        rhs : Float[Array, "Nz Ny Nx"]
+            Right-hand side.
+
+        Returns
+        -------
+        Float[Array, "Nz Ny Nx"]
+            Solution psi.
+        """
+        return solve_helmholtz_3d(
+            rhs,
+            self.dx,
+            self.dy,
+            self.dz,
+            bc_x=self.bc_x,
+            bc_y=self.bc_y,
+            bc_z=self.bc_z,
             lambda_=self.alpha,
         )
