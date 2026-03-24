@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.11](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.10...v0.0.11) (2026-03-23)
+
+
+### Features
+
+* **operators:** add fourier physics operators ([3eb4138](https://github.com/jejjohnson/spectraldiffx/commit/3eb41382642c7a90f2c1590c144387af677f284e))
+* **operators:** add Fourier physics operators ([381c4c2](https://github.com/jejjohnson/spectraldiffx/commit/381c4c2418e998b2a155e34011bf53860d5ae26b)), closes [#25](https://github.com/jejjohnson/spectraldiffx/issues/25)
+
+
+### Bug Fixes
+
+* address PR [#60](https://github.com/jejjohnson/spectraldiffx/issues/60) review comments ([2a37f07](https://github.com/jejjohnson/spectraldiffx/commit/2a37f07b6e8ed0b7998c680f72ed51f686214f1f))
+
 ## [0.0.10](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.9...v0.0.10) (2026-03-23)
 
 
