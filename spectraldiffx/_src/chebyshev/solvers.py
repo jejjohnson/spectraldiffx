@@ -54,18 +54,7 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
     _pivots: Array | None = eqx.field(default=None, repr=False)
 
     def __post_init__(self) -> None:
-        size = self.grid.D.shape[0]
-        dtype = self.grid.D.dtype
-
         if self.grid.node_type != "gauss-lobatto":
-            object.__setattr__(
-                self, "_base_operator", jnp.zeros((size, size), dtype=dtype)
-            )
-            object.__setattr__(
-                self, "_interior_identity", jnp.zeros((size, size), dtype=dtype)
-            )
-            object.__setattr__(self, "_lu", jnp.zeros((size, size), dtype=dtype))
-            object.__setattr__(self, "_pivots", jnp.zeros(size, dtype=jnp.int32))
             return
 
         base_operator = self._build_base_operator()
@@ -97,11 +86,8 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         return interior_identity
 
     def _factor_operator(self, alpha: float) -> tuple[Array, Array]:
-        if self._base_operator is None or self._interior_identity is None:
-            raise ValueError(
-                "ChebyshevHelmholtzSolver1D is not initialized for solving."
-            )
-
+        assert self._base_operator is not None
+        assert self._interior_identity is not None
         return jsp_linalg.lu_factor(
             self._base_operator - alpha * self._interior_identity
         )
@@ -174,10 +160,8 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         b = b.at[N].set(bc_left)
 
         if alpha is None:
-            if self._lu is None or self._pivots is None:
-                raise ValueError(
-                    "ChebyshevHelmholtzSolver1D is not initialized for solving."
-                )
+            assert self._lu is not None
+            assert self._pivots is not None
             return jsp_linalg.lu_solve((self._lu, self._pivots), b)
 
         lu, pivots = self._factor_operator(alpha)
