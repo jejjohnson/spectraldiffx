@@ -89,12 +89,12 @@ def test_cheb_helmholtz_1d_prefactors_default_alpha(monkeypatch):
     u_exact = jnp.sin(jnp.pi * x)
 
     call_count = 0
-    lu_factor = cheb_solvers.jsp_linalg.lu_factor
+    original_lu_factor = cheb_solvers.jsp_linalg.lu_factor
 
     def counting_lu_factor(*args, **kwargs):
         nonlocal call_count
         call_count += 1
-        return lu_factor(*args, **kwargs)
+        return original_lu_factor(*args, **kwargs)
 
     monkeypatch.setattr(cheb_solvers.jsp_linalg, "lu_factor", counting_lu_factor)
 

@@ -86,8 +86,11 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         return interior_identity
 
     def _factor_operator(self, alpha: float) -> tuple[Array, Array]:
-        assert self._base_operator is not None
-        assert self._interior_identity is not None
+        if self._base_operator is None or self._interior_identity is None:
+            raise ValueError(
+                "Solver was not properly initialized. Ensure grid uses "
+                "'gauss-lobatto' nodes."
+            )
         return jsp_linalg.lu_factor(
             self._base_operator - alpha * self._interior_identity
         )
@@ -160,8 +163,11 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         b = b.at[N].set(bc_left)
 
         if alpha is None:
-            assert self._lu is not None
-            assert self._pivots is not None
+            if self._lu is None or self._pivots is None:
+                raise ValueError(
+                    "Cached factorization is unavailable. Ensure the solver was "
+                    "initialized with 'gauss-lobatto' nodes."
+                )
             return jsp_linalg.lu_solve((self._lu, self._pivots), b)
 
         lu, pivots = self._factor_operator(alpha)
