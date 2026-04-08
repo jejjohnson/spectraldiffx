@@ -99,6 +99,8 @@ def test_cheb_helmholtz_1d_reuses_cached_factorization(monkeypatch):
     monkeypatch.setattr(cheb_solvers.jsp_linalg, "lu_factor", counting_lu_factor)
 
     solver = ChebyshevHelmholtzSolver1D(grid, alpha=alpha)
+    assert call_count == 1
+
     u_sol_1 = solver.solve(f, bc_left=0.0, bc_right=0.0)
     u_sol_2 = solver.solve(f, bc_left=0.0, bc_right=0.0)
 
