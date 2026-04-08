@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 # ============================================================================
 # Chebyshev Elliptic Solver (Helmholtz / Poisson)
 # ============================================================================
-
 import equinox as eqx
 import jax.numpy as jnp
+import jax.scipy.linalg as jsp_linalg
+from jax.typing import DTypeLike
 from jaxtyping import Array
 
 from .grid import ChebyshevGrid1D
@@ -38,14 +41,75 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
     -----------
         grid : ChebyshevGrid1D
             Must use 'gauss-lobatto' nodes (endpoints required for Dirichlet BCs).
+        alpha : float
+            Default Helmholtz parameter whose LU factorization is precomputed at
+            construction time for repeated solves.
     """
 
     grid: ChebyshevGrid1D
+    alpha: float = 0.0
+    _base_operator: Array | None = eqx.field(default=None, repr=False)
+    _interior_identity: Array | None = eqx.field(default=None, repr=False)
+    _lu: Array | None = eqx.field(default=None, repr=False)
+    _pivots: Array | None = eqx.field(default=None, repr=False)
+
+    def __post_init__(self) -> None:
+        size = self.grid.D.shape[0]
+        dtype = self.grid.D.dtype
+
+        if self.grid.node_type != "gauss-lobatto":
+            object.__setattr__(
+                self, "_base_operator", jnp.zeros((size, size), dtype=dtype)
+            )
+            object.__setattr__(
+                self, "_interior_identity", jnp.zeros((size, size), dtype=dtype)
+            )
+            object.__setattr__(self, "_lu", jnp.zeros((size, size), dtype=dtype))
+            object.__setattr__(self, "_pivots", jnp.zeros(size, dtype=jnp.int32))
+            return
+
+        base_operator = self._build_base_operator()
+        interior_identity = self._build_interior_identity(base_operator.dtype)
+        lu, pivots = jsp_linalg.lu_factor(
+            base_operator - self.alpha * interior_identity
+        )
+
+        object.__setattr__(self, "_base_operator", base_operator)
+        object.__setattr__(self, "_interior_identity", interior_identity)
+        object.__setattr__(self, "_lu", lu)
+        object.__setattr__(self, "_pivots", pivots)
+
+    def _build_base_operator(self) -> Array:
+        D = self.grid.D
+        N = self.grid.N
+
+        base_operator = D @ D
+        base_operator = base_operator.at[0, :].set(0.0).at[0, 0].set(1.0)
+        base_operator = base_operator.at[N, :].set(0.0).at[N, N].set(1.0)
+        return base_operator
+
+    def _build_interior_identity(self, dtype: DTypeLike) -> Array:
+        N = self.grid.N
+
+        interior_identity = jnp.eye(N + 1, dtype=dtype)
+        interior_identity = interior_identity.at[0, 0].set(0.0)
+        interior_identity = interior_identity.at[N, N].set(0.0)
+        return interior_identity
+
+    def _factor_operator(self, alpha: float) -> tuple[Array, Array]:
+        if self._base_operator is None or self._interior_identity is None:
+            raise ValueError(
+                "ChebyshevHelmholtzSolver1D is not initialized for solving."
+            )
+
+        return jsp_linalg.lu_factor(
+            self._base_operator - alpha * self._interior_identity
+        )
 
     def solve(
         self,
         f: Array,
-        alpha: float = 0.0,
+        alpha: float | None = None,
         bc_left: float = 0.0,
         bc_right: float = 0.0,
     ) -> Array:
@@ -65,8 +129,9 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         -----------
         f : Array [N+1]
             Right-hand side (source term) at all N+1 GL nodes.
-        alpha : float
-            Helmholtz parameter. Default 0.0 (Poisson equation).
+        alpha : float | None
+            Helmholtz parameter. If omitted, uses the factorization precomputed
+            from the solver's default ``alpha`` value.
         bc_left : float
             Dirichlet value at x = -L (node x[N]). Default 0.0.
         bc_right : float
@@ -83,10 +148,10 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
 
         >>> import jax.numpy as jnp
         >>> grid = ChebyshevGrid1D.from_N_L(N=32, L=1.0)
-        >>> solver = ChebyshevHelmholtzSolver1D(grid)
+        >>> solver = ChebyshevHelmholtzSolver1D(grid, alpha=0.0)
         >>> x = grid.x
         >>> f = -(jnp.pi**2) * jnp.sin(jnp.pi * x)
-        >>> u = solver.solve(f, alpha=0.0, bc_left=0.0, bc_right=0.0)
+        >>> u = solver.solve(f, bc_left=0.0, bc_right=0.0)
         """
         if self.grid.node_type != "gauss-lobatto":
             raise ValueError(
@@ -100,21 +165,20 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
                 f"got length {f.shape[0]}."
             )
 
-        D = self.grid.D
         N = self.grid.N
-
-        # Build operator: A = D @ D - alpha * I
-        A = D @ D - alpha * jnp.eye(N + 1)
-
-        # Right-hand side
         b = f
 
         # Enforce Dirichlet BCs by replacing boundary rows
         # x[0] = +L (right endpoint), x[N] = -L (left endpoint)
-        A = A.at[0, :].set(0.0).at[0, 0].set(1.0)
         b = b.at[0].set(bc_right)
-
-        A = A.at[N, :].set(0.0).at[N, N].set(1.0)
         b = b.at[N].set(bc_left)
 
-        return jnp.linalg.solve(A, b)
+        if alpha is None:
+            if self._lu is None or self._pivots is None:
+                raise ValueError(
+                    "ChebyshevHelmholtzSolver1D is not initialized for solving."
+                )
+            return jsp_linalg.lu_solve((self._lu, self._pivots), b)
+
+        lu, pivots = self._factor_operator(alpha)
+        return jsp_linalg.lu_solve((lu, pivots), b)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 Tests for ChebyshevHelmholtzSolver1D.
 """
@@ -6,6 +8,7 @@ import jax.numpy as jnp
 import pytest
 
 from spectraldiffx._src.chebyshev.grid import ChebyshevGrid1D
+import spectraldiffx._src.chebyshev.solvers as cheb_solvers
 from spectraldiffx._src.chebyshev.solvers import ChebyshevHelmholtzSolver1D
 
 # ============================================================================
@@ -71,6 +74,37 @@ def test_cheb_helmholtz_1d():
     assert jnp.allclose(u_sol, u_exact, atol=1e-8), (
         f"Helmholtz max error = {jnp.abs(u_sol - u_exact).max()}"
     )
+
+
+def test_cheb_helmholtz_1d_prefactors_default_alpha(monkeypatch):
+    """
+    Repeated solves with the constructor-configured alpha should reuse the
+    prefactored operator instead of refactoring on every solve call.
+    """
+    N = 32
+    alpha = 2.0
+    grid = ChebyshevGrid1D.from_N_L(N=N, L=1.0)
+    x = grid.x
+    f = -(jnp.pi**2 + alpha) * jnp.sin(jnp.pi * x)
+    u_exact = jnp.sin(jnp.pi * x)
+
+    call_count = 0
+    lu_factor = cheb_solvers.jsp_linalg.lu_factor
+
+    def counting_lu_factor(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        return lu_factor(*args, **kwargs)
+
+    monkeypatch.setattr(cheb_solvers.jsp_linalg, "lu_factor", counting_lu_factor)
+
+    solver = ChebyshevHelmholtzSolver1D(grid, alpha=alpha)
+    u_sol_1 = solver.solve(f, bc_left=0.0, bc_right=0.0)
+    u_sol_2 = solver.solve(f, bc_left=0.0, bc_right=0.0)
+
+    assert call_count == 1
+    assert jnp.allclose(u_sol_1, u_exact, atol=1e-8)
+    assert jnp.allclose(u_sol_2, u_exact, atol=1e-8)
 
 
 def test_cheb_helmholtz_1d_scaled_domain():
