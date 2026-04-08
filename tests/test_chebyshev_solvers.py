@@ -76,7 +76,7 @@ def test_cheb_helmholtz_1d():
     )
 
 
-def test_cheb_helmholtz_1d_prefactors_default_alpha(monkeypatch):
+def test_cheb_helmholtz_1d_reuses_cached_factorization(monkeypatch):
     """
     Repeated solves with the constructor-configured alpha should reuse the
     prefactored operator instead of refactoring on every solve call.

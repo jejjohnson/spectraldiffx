@@ -11,6 +11,10 @@ from jaxtyping import Array
 
 from .grid import ChebyshevGrid1D
 
+_CACHE_UNAVAILABLE_MESSAGE = (
+    "Cached factorization is unavailable. This solver requires 'gauss-lobatto' nodes."
+)
+
 
 class ChebyshevHelmholtzSolver1D(eqx.Module):
     """
@@ -87,10 +91,7 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
 
     def _factor_operator(self, alpha: float) -> tuple[Array, Array]:
         if self._base_operator is None or self._interior_identity is None:
-            raise ValueError(
-                "Solver was not properly initialized. Ensure grid uses "
-                "'gauss-lobatto' nodes."
-            )
+            raise ValueError(_CACHE_UNAVAILABLE_MESSAGE)
         return jsp_linalg.lu_factor(
             self._base_operator - alpha * self._interior_identity
         )
@@ -164,10 +165,7 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
 
         if alpha is None:
             if self._lu is None or self._pivots is None:
-                raise ValueError(
-                    "Cached factorization is unavailable. Ensure the solver was "
-                    "initialized with 'gauss-lobatto' nodes."
-                )
+                raise ValueError(_CACHE_UNAVAILABLE_MESSAGE)
             return jsp_linalg.lu_solve((self._lu, self._pivots), b)
 
         lu, pivots = self._factor_operator(alpha)
