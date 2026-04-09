@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.12](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.11...0.0.12) (2026-04-09)
+
+
+### Bug Fixes
+
+* disable v-prefixed release tags ([b08e0a9](https://github.com/jejjohnson/spectraldiffx/commit/b08e0a9fd7e8683698e79ffe403b48912038cfac))
+
 ## [0.0.11](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.10...v0.0.11) (2026-03-23)
 
 
