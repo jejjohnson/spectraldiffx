@@ -75,14 +75,14 @@ def test_spherical_helmholtz():
 
 def test_spherical_poisson_1d():
     """1D Poisson solver with P_2 eigenfunction."""
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 32
     g = SphericalGrid1D.from_N_L(N, np.pi)  # R=1
     solver = SphericalPoissonSolver(grid=g)
 
     mu = np.array(g.cos_theta)
-    psi = jnp.asarray(eval_legendre(2, mu))  # P_2(cos(theta)) — l=2 eigenvalue -6
+    psi = jnp.asarray(legvander(mu, 2)[:, 2])  # P_2(cos(theta)) — l=2 eigenvalue -6
     f = -6.0 * psi  # nabla^2 P_2 = -2*(2+1) * P_2 = -6 * P_2
 
     phi = solver.solve(f, zero_mean=True)
@@ -97,7 +97,7 @@ def test_spherical_helmholtz_1d_eigenfunction():
         f = (∇² - alpha) phi = -(6/R² + alpha) * P_2
     Solving should recover phi = P_2.
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 32
     g = SphericalGrid1D.from_N_L(N, np.pi)  # R = 1
@@ -105,7 +105,7 @@ def test_spherical_helmholtz_1d_eigenfunction():
     R = g.L / np.pi  # = 1
 
     mu = np.array(g.cos_theta)
-    P2 = jnp.asarray(eval_legendre(2, mu))  # P_2, l=2 → eigenvalue 6/R²
+    P2 = jnp.asarray(legvander(mu, 2)[:, 2])  # P_2, l=2 → eigenvalue 6/R²
 
     alpha = 1.0
     f = -(6.0 / R**2 + alpha) * P2  # (nabla^2 - alpha) P_2 = -(6/R^2 + alpha) * P_2
@@ -121,7 +121,7 @@ def test_spherical_helmholtz_1d_reduces_to_poisson():
     With alpha=0, SphericalHelmholtzSolver reduces to Poisson: ∇² phi = f.
     Solution of ∇² P_l = -l(l+1)/R² * P_l should give back P_l.
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 32
     g = SphericalGrid1D.from_N_L(N, np.pi)
@@ -130,7 +130,7 @@ def test_spherical_helmholtz_1d_reduces_to_poisson():
 
     mu = np.array(g.cos_theta)
     l = 3
-    Pl = jnp.asarray(eval_legendre(l, mu))
+    Pl = jnp.asarray(legvander(mu, l)[:, l])
     f = -(l * (l + 1)) / R**2 * Pl  # ∇² Pl = -l(l+1)/R² * Pl
 
     phi = solver.solve(f, alpha=0.0, zero_mean=True)

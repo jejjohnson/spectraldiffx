@@ -42,19 +42,20 @@ def test_spherical_grid_1d_quadrature_exact():
 
     Test orthogonality: integral_{-1}^{1} P_l(mu)*P_l'(mu) dmu = 2/(2l+1)*delta_{ll'}.
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 16
     g = SphericalGrid1D.from_N_L(N, np.pi)
     mu = np.array(g.cos_theta)
     w = np.array(g.weights)
+    V = np.array(legvander(mu, 4))  # V[j, l] = P_l(mu[j])
 
     # Check P_2 and P_4 orthogonality: sum w_j * P_2(mu_j) * P_4(mu_j) ≈ 0
-    inner = float(np.sum(w * eval_legendre(2, mu) * eval_legendre(4, mu)))
+    inner = float(np.sum(w * V[:, 2] * V[:, 4]))
     assert abs(inner) < 1e-12, f"Orthogonality failed: {inner}"
 
     # Check P_3 norm: sum w_j * P_3^2(mu_j) = 2/(2*3+1) = 2/7
-    norm_sq = float(np.sum(w * eval_legendre(3, mu) ** 2))
+    norm_sq = float(np.sum(w * V[:, 3] ** 2))
     assert abs(norm_sq - 2.0 / 7.0) < 1e-12
 
 

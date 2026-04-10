@@ -617,7 +617,7 @@ def test_spherical_legendre_parseval():
     and P_l are normalized Legendre polynomials. This is Parseval's theorem for
     the Discrete Legendre Transform.
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 32
     g = SphericalGrid1D.from_N_L(N, np.pi)  # unit sphere R=1
@@ -629,9 +629,10 @@ def test_spherical_legendre_parseval():
     # Build a function as a truncated Legendre series with known coefficients
     # u = sum_l c_l * P_l(cos(theta)), l = 0..4
     true_coeffs = {0: 1.0, 1: 0.5, 2: 0.25, 3: 0.1, 4: 0.05}
+    V = np.array(legvander(mu, 4))  # V[j, l] = P_l(mu[j])
     u = jnp.zeros(N)
     for l, c in true_coeffs.items():
-        u = u + c * jnp.asarray(eval_legendre(l, mu))
+        u = u + c * jnp.asarray(V[:, l])
 
     # Forward transform: compute spectral coefficients
     a = d.to_spectral(u)
@@ -655,18 +656,19 @@ def test_spherical_legendre_orthogonality():
 
     This validates that the quadrature weights correctly integrate Legendre products.
     """
-    from scipy.special import eval_legendre
+    from orthax.legendre import legvander
 
     N = 32
     g = SphericalGrid1D.from_N_L(N, np.pi)
     mu = np.array(g.cos_theta)
     weights = np.array(g.weights)
+    V = np.array(legvander(mu, 5))  # V[j, l] = P_l(mu[j])
 
     # Compute inner products <P_l, P_m>_GL for l, m in 0..5
     for l in range(6):
         for m in range(6):
-            Pl = eval_legendre(l, mu)
-            Pm = eval_legendre(m, mu)
+            Pl = V[:, l]
+            Pm = V[:, m]
             inner = float(np.sum(weights * Pl * Pm))
             expected = 2.0 / (2 * l + 1) if l == m else 0.0
             assert abs(inner - expected) < 1e-10, (

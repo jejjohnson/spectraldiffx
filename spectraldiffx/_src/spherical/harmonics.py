@@ -23,7 +23,7 @@ class SphericalHarmonicTransform(eqx.Module):
 
     This class wraps a SphericalGrid2D and provides forward/inverse SHT methods
     with a clean API.  The Associated Legendre Polynomial matrices are
-    precomputed at construction time (scipy call) and stored as JAX arrays.
+    precomputed at construction time (using orthax and numpy recurrences) and stored as JAX arrays.
 
     Mathematical Formulation:
     -------------------------
