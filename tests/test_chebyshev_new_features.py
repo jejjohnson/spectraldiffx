@@ -183,13 +183,17 @@ def test_cc_weights_sum_to_2L():
 
 
 def test_cc_integrate1d_polynomial_exact():
-    grid = ChebyshevGrid1D.from_N_L(N=16, L=1.0)
+    """CC with N+1 GL nodes is exact for polynomials of degree ≤ N (and
+    degree N+1 when N is even).  Use a non-odd polynomial so the test
+    exercises polynomial exactness, not symmetry cancellation.
+    """
+    grid = ChebyshevGrid1D.from_N_L(N=8, L=1.0)
     x = grid.x
-    # CC on N=16 GL nodes is exact for polynomials of degree ≤ 2N−1 = 31.
-    f = 3 * x**5 - 2 * x**3 + x
+    # degree-4 polynomial — well within the CC exactness range (deg ≤ 8).
+    f = x**4 + 2 * x**2 + 1
     I = clenshaw_curtis_integrate_1d(grid, f)
-    # ∫_{-1}^{1} (3x^5 - 2x^3 + x) dx = 0 (odd)
-    assert abs(float(I)) < 1e-13
+    # ∫_{-1}^{1} (x^4 + 2x^2 + 1) dx = 2/5 + 4/3 + 2 = 56/15
+    assert abs(float(I) - 56.0 / 15.0) < 1e-13
 
 
 def test_cc_integrate1d_smooth_function():

@@ -436,7 +436,7 @@ class SphericalDerivative2D(eqx.Module):
         self,
         u: Num[Array, "Nlat Nlon"],
         spectral: bool = False,
-    ) -> Float[Array, "Nlat Nlon"]:
+    ) -> Num[Array, "Nlat Nlon"]:
         """Scalar Laplace–Beltrami operator on the sphere.
 
         In spectral space:
@@ -452,8 +452,9 @@ class SphericalDerivative2D(eqx.Module):
 
         Returns
         -------
-        Float[Array, "Nlat Nlon"]
-            Laplacian in physical space (or spectral, mirroring the input).
+        Num[Array, "Nlat Nlon"]
+            Real (float) array in physical space when ``spectral=False``;
+            complex SHT coefficients when ``spectral=True``.
         """
         return self.iterated_laplacian(u, n=1, spectral=spectral)
 
@@ -462,7 +463,7 @@ class SphericalDerivative2D(eqx.Module):
         u: Num[Array, "Nlat Nlon"],
         n: int = 1,
         spectral: bool = False,
-    ) -> Float[Array, "Nlat Nlon"]:
+    ) -> Num[Array, "Nlat Nlon"]:
         """Iterated Laplacian ∇^(2n) — useful for hyperdiffusion.
 
         In spectral space:
@@ -483,8 +484,9 @@ class SphericalDerivative2D(eqx.Module):
 
         Returns
         -------
-        Float[Array, "Nlat Nlon"]
-            ∇^(2n) u.
+        Num[Array, "Nlat Nlon"]
+            ∇^(2n) u.  Real-valued (float) when ``spectral=False``; complex
+            SHT coefficients when ``spectral=True``.
 
         Examples
         --------
@@ -507,10 +509,13 @@ class SphericalDerivative2D(eqx.Module):
         self,
         u: Num[Array, "Nlat Nlon"],
         spectral: bool = False,
-    ) -> Float[Array, "Nlat Nlon"]:
+    ) -> Num[Array, "Nlat Nlon"]:
         """Biharmonic operator ∇⁴ u (alias for ``iterated_laplacian(u, n=2)``).
 
         ∇⁴ û(l, m) = [l(l+1)/R²]² · û(l, m)
+
+        Returns a real (float) array when ``spectral=False`` and complex
+        SHT coefficients when ``spectral=True``.
         """
         return self.iterated_laplacian(u, n=2, spectral=spectral)
 

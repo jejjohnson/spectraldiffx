@@ -42,7 +42,11 @@ def _cc_weights_numpy(N: int, L: float = 1.0) -> np.ndarray:
     """Compute Clenshaw–Curtis weights in NumPy (scale-free, multiplied by L).
 
     Uses the Waldvogel (2006) closed-form series.  Returns a length-(N+1)
-    vector that integrates polynomials of degree ≤ 2N−1 over [−L, L].
+    vector for the Clenshaw–Curtis rule on Chebyshev–Gauss–Lobatto nodes.
+    The rule is exact for polynomials of degree ≤ N (and also degree N+1
+    when N is even, by symmetry) — roughly half the degree of precision
+    of a Gauss rule on the same number of nodes, but asymptotically as
+    fast for analytic integrands.
     """
     if N <= 0:
         raise ValueError(f"N must be >= 1, got {N}")
@@ -79,18 +83,20 @@ def clenshaw_curtis_weights(N: int, L: float = 1.0) -> Float[Array, "Npts"]:
     Returns
     -------
     Float[Array, "Npts"]
-        Weights ``w`` such that ``∫_{−L}^{L} f(x) dx ≈ Σⱼ w[j] · f(xⱼ)`` for
-        any integrand, exact for polynomials of degree ≤ 2N−1 on smooth f.
+        Weights ``w`` such that ``∫_{−L}^{L} f(x) dx ≈ Σⱼ w[j] · f(xⱼ)``.
+        Exact for polynomials of degree ≤ N (and degree N+1 when N is
+        even).  For analytic integrands CC converges at the same
+        asymptotic rate as Gauss quadrature despite the smaller degree of
+        precision.
 
     Examples
     --------
-    Integrate cos(πx) on [−1, 1] (exact value 2 sin(π)/π ≈ 0):
+    Integrate exp(x) on [−1, 1] (exact value e − 1/e):
 
     >>> import jax.numpy as jnp
-    >>> from jax.scipy.special import ...  # doctest: +SKIP
     >>> w = clenshaw_curtis_weights(N=32, L=1.0)
-    >>> x = 1.0 * jnp.cos(jnp.pi * jnp.arange(33) / 32)
-    >>> float(jnp.sum(w * jnp.cos(jnp.pi * x)))  # doctest: +SKIP
+    >>> x = jnp.cos(jnp.pi * jnp.arange(33) / 32)
+    >>> float(jnp.sum(w * jnp.exp(x)))  # doctest: +SKIP
     """
     return jnp.asarray(_cc_weights_numpy(N, L))
 
