@@ -113,14 +113,14 @@ class SphericalHarmonicTransform(eqx.Module):
         """Inverse SHT: spectral û(l, m) → physical u(θ, φ)."""
         return self.grid.transform(u_hat, inverse=True)
 
-    def to_spectral_1d(self, u_col: Float[Array, Nlat]) -> Float[Array, Nl]:
+    def to_spectral_1d(self, u_col: Float[Array, "Nlat"]) -> Float[Array, "Nl"]:
         """1D forward Discrete Legendre Transform (zonal mean, m=0)."""
         # m=0 is at fft_idx=0
         P0 = self.grid._P_lm[0]  # (Nl, Nlat)
         w = self.grid._weights_y  # (Nlat,)
         return P0 @ (w * u_col)
 
-    def from_spectral_1d(self, c: Float[Array, Nl]) -> Float[Array, Nlat]:
+    def from_spectral_1d(self, c: Float[Array, "Nl"]) -> Float[Array, "Nlat"]:
         """1D inverse DLT (zonal mean, m=0)."""
         P0 = self.grid._P_lm[0]  # (Nl, Nlat)
         return P0.T @ c

@@ -66,7 +66,7 @@ def _cc_weights_numpy(N: int, L: float = 1.0) -> np.ndarray:
     return w
 
 
-def clenshaw_curtis_weights(N: int, L: float = 1.0) -> Float[Array, Npts]:
+def clenshaw_curtis_weights(N: int, L: float = 1.0) -> Float[Array, "Npts"]:
     """Clenshaw–Curtis quadrature weights on Gauss–Lobatto nodes of [−L, L].
 
     Parameters
@@ -97,7 +97,7 @@ def clenshaw_curtis_weights(N: int, L: float = 1.0) -> Float[Array, Npts]:
 
 def clenshaw_curtis_integrate_1d(
     grid: ChebyshevGrid1D,
-    f: Num[Array, Npts],
+    f: Num[Array, "Npts"],
 ) -> Float[Array, ""]:
     """Integrate a 1D nodal field over [−L, L] using Clenshaw–Curtis.
 

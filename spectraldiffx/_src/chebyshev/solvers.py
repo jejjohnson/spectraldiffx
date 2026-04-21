@@ -86,12 +86,12 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
 
     def solve(
         self,
-        f: Num[Array, Npts],
+        f: Num[Array, "Npts"],
         alpha: float = 0.0,
         bc_left: float = 0.0,
         bc_right: float = 0.0,
         bc_type: BCType = "dirichlet",
-    ) -> Float[Array, Npts]:
+    ) -> Float[Array, "Npts"]:
         """Solve (d²/dx² − α) u = f on [−L, L] with Dirichlet or Neumann BCs.
 
         Parameters
@@ -187,11 +187,11 @@ class ChebyshevPoissonSolver1D(eqx.Module):
 
     def solve(
         self,
-        f: Num[Array, Npts],
+        f: Num[Array, "Npts"],
         bc_left: float = 0.0,
         bc_right: float = 0.0,
         bc_type: BCType = "dirichlet",
-    ) -> Float[Array, Npts]:
+    ) -> Float[Array, "Npts"]:
         """Solve d²u/dx² = f with Dirichlet or Neumann BCs."""
         inner = ChebyshevHelmholtzSolver1D(grid=self.grid)
         return inner.solve(
@@ -262,10 +262,10 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
         self,
         f: Num[Array, "Nypts Nxpts"],
         alpha: float = 0.0,
-        bc_top: float | Num[Array, Nxpts] = 0.0,
-        bc_bottom: float | Num[Array, Nxpts] = 0.0,
-        bc_left: float | Num[Array, Nypts] = 0.0,
-        bc_right: float | Num[Array, Nypts] = 0.0,
+        bc_top: float | Num[Array, "Nxpts"] = 0.0,
+        bc_bottom: float | Num[Array, "Nxpts"] = 0.0,
+        bc_left: float | Num[Array, "Nypts"] = 0.0,
+        bc_right: float | Num[Array, "Nypts"] = 0.0,
     ) -> Float[Array, "Nypts Nxpts"]:
         """Solve (∇² − α) u = f with Dirichlet BCs on all four edges.
 
@@ -373,10 +373,10 @@ class ChebyshevPoissonSolver2D(eqx.Module):
     def solve(
         self,
         f: Num[Array, "Nypts Nxpts"],
-        bc_top: float | Num[Array, Nxpts] = 0.0,
-        bc_bottom: float | Num[Array, Nxpts] = 0.0,
-        bc_left: float | Num[Array, Nypts] = 0.0,
-        bc_right: float | Num[Array, Nypts] = 0.0,
+        bc_top: float | Num[Array, "Nxpts"] = 0.0,
+        bc_bottom: float | Num[Array, "Nxpts"] = 0.0,
+        bc_left: float | Num[Array, "Nypts"] = 0.0,
+        bc_right: float | Num[Array, "Nypts"] = 0.0,
     ) -> Float[Array, "Nypts Nxpts"]:
         """Solve ∇²u = f with Dirichlet BCs on all four edges."""
         inner = ChebyshevHelmholtzSolver2D(grid=self.grid)

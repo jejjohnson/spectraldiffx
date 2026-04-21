@@ -157,6 +157,8 @@ ignore = [
     "RUF059",   # unused unpacked variables (intentional in tests for clarity)
     "PLW1641",  # missing __hash__ (fine for test helpers)
     "PYI061",   # Literal[..., None] vs Literal[...] | None style preference
+    "UP037",    # quoted annotations — jaxtyping shape strings must stay quoted
+                # (type-checkers don't apply PEP 563 stringification)
 ]
 unfixable = ["ERA001", "F841", "T201", "T203"]
 

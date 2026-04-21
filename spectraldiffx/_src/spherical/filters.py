@@ -51,11 +51,11 @@ class SphericalFilter1D(eqx.Module):
 
     def exponential_filter(
         self,
-        u: Num[Array, N],
+        u: Num[Array, "N"],
         alpha: float = 36.0,
         power: int = 16,
         spectral: bool = False,
-    ) -> Num[Array, N]:
+    ) -> Num[Array, "N"]:
         """Exponential filter in Legendre coefficient space:
 
             F(l) = exp(−α · (l / lₘₐₓ)ᵖ)
@@ -91,12 +91,12 @@ class SphericalFilter1D(eqx.Module):
 
     def hyperviscosity(
         self,
-        u: Num[Array, N],
+        u: Num[Array, "N"],
         nu_hyper: float,
         dt: float,
         power: int = 4,
         spectral: bool = False,
-    ) -> Num[Array, N]:
+    ) -> Num[Array, "N"]:
         """Hyperviscous damping driven by the Laplace–Beltrami eigenvalue:
 
             F(l) = exp(−ν_h · [l(l+1)/R²]^(p/2) · Δt)

@@ -122,7 +122,7 @@ class SphericalDerivative1D(eqx.Module):
     # Precomputed m=1 ALP matrix for gradient reconstruction
     _P1_matrix: Float[Array, "N N"]
     # Precomputed gradient coefficients: sqrt(l*(l+1))
-    _grad_coeff: Float[Array, N]
+    _grad_coeff: Float[Array, "N"]
 
     def __init__(self, grid: SphericalGrid1D):
         self.grid = grid
@@ -133,7 +133,7 @@ class SphericalDerivative1D(eqx.Module):
         l = np.arange(N, dtype=np.float64)
         self._grad_coeff = jnp.asarray(np.sqrt(l * (l + 1)))
 
-    def to_spectral(self, u: Float[Array, N]) -> Float[Array, N]:
+    def to_spectral(self, u: Float[Array, "N"]) -> Float[Array, "N"]:
         """
         Forward Discrete Legendre Transform.
 
@@ -151,7 +151,7 @@ class SphericalDerivative1D(eqx.Module):
         """
         return self.grid.transform(u, inverse=False)
 
-    def from_spectral(self, c: Float[Array, N]) -> Float[Array, N]:
+    def from_spectral(self, c: Float[Array, "N"]) -> Float[Array, "N"]:
         """
         Inverse Discrete Legendre Transform.
 
@@ -169,7 +169,7 @@ class SphericalDerivative1D(eqx.Module):
         """
         return self.grid.transform(c, inverse=True)
 
-    def gradient(self, u: Float[Array, N], spectral: bool = False) -> Float[Array, N]:
+    def gradient(self, u: Float[Array, "N"], spectral: bool = False) -> Float[Array, "N"]:
         """
         Colatitude gradient: du/d_theta.
 
@@ -199,7 +199,7 @@ class SphericalDerivative1D(eqx.Module):
         c_grad = self._grad_coeff * c
         return self._P1_matrix.T @ c_grad
 
-    def laplacian(self, u: Float[Array, N], spectral: bool = False) -> Float[Array, N]:
+    def laplacian(self, u: Float[Array, "N"], spectral: bool = False) -> Float[Array, "N"]:
         """
         Spherical Laplacian: (1/sin(theta)) * d/d_theta [sin(theta) * du/d_theta]
         (zonal, m=0 case): nabla^2_sphere u = -l*(l+1)/R^2 * u in spectral space.
@@ -223,8 +223,8 @@ class SphericalDerivative1D(eqx.Module):
         return self.from_spectral(c_lap)
 
     def __call__(
-        self, u: Float[Array, N], order: int = 1, spectral: bool = False
-    ) -> Float[Array, N]:
+        self, u: Float[Array, "N"], order: int = 1, spectral: bool = False
+    ) -> Float[Array, "N"]:
         """
         Apply derivative operator.
 

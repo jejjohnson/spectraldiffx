@@ -264,7 +264,7 @@ class ChebyshevGrid1D(eqx.Module):
     # ------------------------------------------------------------------
 
     @property
-    def x(self) -> Float[Array, N1]:
+    def x(self) -> Float[Array, "N1"]:
         """
         Physical grid nodes on [-L, L].
 
@@ -396,7 +396,7 @@ class ChebyshevGrid1D(eqx.Module):
     # Dealiasing
     # ------------------------------------------------------------------
 
-    def dealias_filter(self) -> Float[Array, N1]:
+    def dealias_filter(self) -> Float[Array, "N1"]:
         """
         Dealiasing mask in Chebyshev mode space.
 
@@ -541,7 +541,7 @@ class ChebyshevGrid2D(eqx.Module):
         return cls(Nx=Nx, Ny=Ny, Lx=Lx, Ly=Ly, node_type=node_type, dealias=dealias)
 
     @property
-    def x(self) -> Float[Array, Nx1]:
+    def x(self) -> Float[Array, "Nx1"]:
         """Physical x-nodes on [-Lx, Lx]."""
         if self.node_type == "gauss-lobatto":
             return self.Lx * jnp.cos(jnp.pi * jnp.arange(self.Nx + 1) / self.Nx)
@@ -550,7 +550,7 @@ class ChebyshevGrid2D(eqx.Module):
             return self.Lx * jnp.cos(jnp.pi * (2 * j + 1) / (2 * self.Nx))
 
     @property
-    def y(self) -> Float[Array, Ny1]:
+    def y(self) -> Float[Array, "Ny1"]:
         """Physical y-nodes on [-Ly, Ly]."""
         if self.node_type == "gauss-lobatto":
             return self.Ly * jnp.cos(jnp.pi * jnp.arange(self.Ny + 1) / self.Ny)
@@ -590,7 +590,7 @@ class ChebyshevGrid2D(eqx.Module):
 
     def dealias_filter(
         self,
-    ) -> tuple[Float[Array, Nx1], Float[Array, Ny1]]:
+    ) -> tuple[Float[Array, "Nx1"], Float[Array, "Ny1"]]:
         """
         1D dealiasing masks for x and y mode spaces.
 

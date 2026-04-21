@@ -71,15 +71,15 @@ class ChebyshevTransform1D(eqx.Module):
 
     grid: ChebyshevGrid1D
 
-    def to_spectral(self, u: Num[Array, Npts]) -> Num[Array, Npts]:
+    def to_spectral(self, u: Num[Array, "Npts"]) -> Num[Array, "Npts"]:
         """Forward Chebyshev transform: nodal values → coefficients aₖ."""
         return self.grid.transform(u, inverse=False)
 
-    def from_spectral(self, a: Num[Array, Npts]) -> Num[Array, Npts]:
+    def from_spectral(self, a: Num[Array, "Npts"]) -> Num[Array, "Npts"]:
         """Inverse Chebyshev transform: coefficients aₖ → nodal values."""
         return self.grid.transform(a, inverse=True)
 
-    def __call__(self, u: Num[Array, Npts], inverse: bool = False) -> Num[Array, Npts]:
+    def __call__(self, u: Num[Array, "Npts"], inverse: bool = False) -> Num[Array, "Npts"]:
         """Alias for ``self.grid.transform(u, inverse=inverse)``."""
         return self.grid.transform(u, inverse=inverse)
 
@@ -128,8 +128,8 @@ class ChebyshevTransform2D(eqx.Module):
 
 
 def _apply_dealias_1d(
-    a: Num[Array, Npts], n_modes: int, cutoff: int
-) -> Num[Array, Npts]:
+    a: Num[Array, "Npts"], n_modes: int, cutoff: int
+) -> Num[Array, "Npts"]:
     """Zero out Chebyshev coefficients with index > cutoff."""
     k = jnp.arange(n_modes)
     mask = (k <= cutoff).astype(a.dtype)

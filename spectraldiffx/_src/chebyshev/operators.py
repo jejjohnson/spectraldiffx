@@ -48,7 +48,7 @@ class ChebyshevDerivative1D(eqx.Module):
 
     grid: ChebyshevGrid1D
 
-    def __call__(self, u: Num[Array, Npts], order: int = 1) -> Float[Array, Npts]:
+    def __call__(self, u: Num[Array, "Npts"], order: int = 1) -> Float[Array, "Npts"]:
         """Apply the n-th derivative Dⁿ to a nodal field.
 
         Parameters
@@ -71,11 +71,11 @@ class ChebyshevDerivative1D(eqx.Module):
             result = D @ result
         return result
 
-    def gradient(self, u: Num[Array, Npts]) -> Float[Array, Npts]:
+    def gradient(self, u: Num[Array, "Npts"]) -> Float[Array, "Npts"]:
         """First derivative ``du/dx`` at Chebyshev nodes."""
         return self(u, order=1)
 
-    def laplacian(self, u: Num[Array, Npts]) -> Float[Array, Npts]:
+    def laplacian(self, u: Num[Array, "Npts"]) -> Float[Array, "Npts"]:
         """Second derivative ``d²u/dx²`` at Chebyshev nodes."""
         return self(u, order=2)
 

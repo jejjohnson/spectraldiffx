@@ -62,11 +62,11 @@ class ChebyshevFilter1D(eqx.Module):
 
     def exponential_filter(
         self,
-        u: Num[Array, Npts],
+        u: Num[Array, "Npts"],
         alpha: float = 36.0,
         power: int = 16,
         spectral: bool = False,
-    ) -> Num[Array, Npts]:
+    ) -> Num[Array, "Npts"]:
         """Apply an exponential cut-off filter in Chebyshev mode space.
 
             F(k) = exp(−α (k/kₘₐₓ)ᵖ)
@@ -107,12 +107,12 @@ class ChebyshevFilter1D(eqx.Module):
 
     def hyperviscosity(
         self,
-        u: Num[Array, Npts],
+        u: Num[Array, "Npts"],
         nu_hyper: float,
         dt: float,
         power: int = 4,
         spectral: bool = False,
-    ) -> Num[Array, Npts]:
+    ) -> Num[Array, "Npts"]:
         """Apply hyperviscous damping in Chebyshev mode space.
 
             F(k) = exp(−ν_h kᵖ Δt)
