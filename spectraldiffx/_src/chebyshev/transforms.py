@@ -79,7 +79,9 @@ class ChebyshevTransform1D(eqx.Module):
         """Inverse Chebyshev transform: coefficients aₖ → nodal values."""
         return self.grid.transform(a, inverse=True)
 
-    def __call__(self, u: Num[Array, "Npts"], inverse: bool = False) -> Num[Array, "Npts"]:
+    def __call__(
+        self, u: Num[Array, "Npts"], inverse: bool = False
+    ) -> Num[Array, "Npts"]:
         """Alias for ``self.grid.transform(u, inverse=inverse)``."""
         return self.grid.transform(u, inverse=inverse)
 

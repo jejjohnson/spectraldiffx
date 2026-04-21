@@ -368,7 +368,9 @@ class SphericalGrid1D(eqx.Module):
     # Transform
     # ------------------------------------------------------------------
 
-    def transform(self, u: Float[Array, "N"], inverse: bool = False) -> Float[Array, "N"]:
+    def transform(
+        self, u: Float[Array, "N"], inverse: bool = False
+    ) -> Float[Array, "N"]:
         """
         Discrete Legendre Transform (DLT).
 

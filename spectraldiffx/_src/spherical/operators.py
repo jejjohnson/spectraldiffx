@@ -169,7 +169,9 @@ class SphericalDerivative1D(eqx.Module):
         """
         return self.grid.transform(c, inverse=True)
 
-    def gradient(self, u: Float[Array, "N"], spectral: bool = False) -> Float[Array, "N"]:
+    def gradient(
+        self, u: Float[Array, "N"], spectral: bool = False
+    ) -> Float[Array, "N"]:
         """
         Colatitude gradient: du/d_theta.
 
@@ -199,7 +201,9 @@ class SphericalDerivative1D(eqx.Module):
         c_grad = self._grad_coeff * c
         return self._P1_matrix.T @ c_grad
 
-    def laplacian(self, u: Float[Array, "N"], spectral: bool = False) -> Float[Array, "N"]:
+    def laplacian(
+        self, u: Float[Array, "N"], spectral: bool = False
+    ) -> Float[Array, "N"]:
         """
         Spherical Laplacian: (1/sin(theta)) * d/d_theta [sin(theta) * du/d_theta]
         (zonal, m=0 case): nabla^2_sphere u = -l*(l+1)/R^2 * u in spectral space.
