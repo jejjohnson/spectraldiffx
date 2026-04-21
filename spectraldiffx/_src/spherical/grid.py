@@ -2,24 +2,40 @@
 Spherical Harmonic Grid Module
 ================================
 
-Grid classes for pseudo-spectral methods on the sphere.  The latitude direction
-uses Gauss-Legendre quadrature (non-uniform, exact for polynomials) while the
-longitude direction uses a uniform Fourier grid.
+Grid classes for pseudo-spectral methods on the sphere.  The latitude
+direction uses Gauss–Legendre quadrature (non-uniform, exact for
+polynomials) while the longitude direction uses a uniform Fourier grid.
 
-Key Concepts:
--------------
-    • Colatitude theta in [0, pi]: theta=0 at North Pole, theta=pi at South Pole.
-    • mu = cos(theta) in [-1, 1]: the natural coordinate for Legendre polynomials.
-    • Gauss-Legendre nodes never include the poles, so sin(theta) > 0 everywhere.
-    • Longitude phi in [0, 2*pi): periodic, uniform, FFT-ready.
-
-References:
+Conventions
 -----------
+    • Colatitude θ ∈ (0, π): θ = 0 at the North Pole, π at the South Pole.
+    • μ = cos θ ∈ [−1, 1]: natural coordinate for Legendre polynomials.
+    • Gauss–Legendre nodes never include the poles, so sin θ > 0 everywhere.
+    • Longitude φ ∈ [0, 2π): uniform, FFT-ready.
+
+ALP normalisation (Schmidt semi-normalised)
+
+    P̃ₗᵐ(μ) = Nₗ,ₘ · Pₗᵐ(μ),    Nₗ,ₘ = √((2l+1)/2 · (l−m)! / (l+m)!)
+
+which makes the columns orthonormal against the GL weights:
+
+    Σⱼ wⱼ · P̃ₗᵐ(μⱼ) · P̃_{l'}^m(μⱼ) = δ_{l, l'}
+
+Stability envelope
+    :func:`_alp_matrix` evaluates P̃ₗᵐ via ``scipy.special.lpmv`` with a
+    log-gamma normalisation.  This is numerically stable in float64 up to
+    about l ≈ 512 (m up to the same).  For higher truncations use a custom
+    recurrence (not provided here).
+
+References
+----------
 [1] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods.
 [2] Trefethen, L. N. (2000). Spectral Methods in MATLAB.
 [3] Canuto et al. (2006). Spectral Methods: Fundamentals.
 [4] Durran, D. R. (2010). Numerical Methods for Fluid Dynamics.
 """
+
+from __future__ import annotations
 
 from typing import Literal
 
@@ -227,7 +243,7 @@ class SphericalGrid1D(eqx.Module):
         N: int,
         L: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid1D":
+    ) -> SphericalGrid1D:
         """Construct from number of points N and domain length L. dx = L / N."""
         return cls(N=N, L=L, dx=L / N, dealias=dealias)
 
@@ -237,7 +253,7 @@ class SphericalGrid1D(eqx.Module):
         N: int,
         dx: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid1D":
+    ) -> SphericalGrid1D:
         """Construct from N and spacing dx. L = N * dx."""
         return cls(N=N, L=N * dx, dx=dx, dealias=dealias)
 
@@ -247,7 +263,7 @@ class SphericalGrid1D(eqx.Module):
         L: float,
         dx: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid1D":
+    ) -> SphericalGrid1D:
         """Construct from domain length L and spacing dx. N = L / dx (must be integer)."""
         N_float = L / dx
         if not jnp.isclose(N_float % 1, 0) and not jnp.isclose(N_float % 1, 1):
@@ -508,7 +524,7 @@ class SphericalGrid2D(eqx.Module):
         Lx: float = 2 * np.pi,
         Ly: float = np.pi,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid2D":
+    ) -> SphericalGrid2D:
         """Construct from grid sizes and domain lengths. dx=Lx/Nx, dy=Ly/Ny."""
         return cls(Nx=Nx, Ny=Ny, Lx=Lx, Ly=Ly, dx=Lx / Nx, dy=Ly / Ny, dealias=dealias)
 
@@ -520,7 +536,7 @@ class SphericalGrid2D(eqx.Module):
         dx: float,
         dy: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid2D":
+    ) -> SphericalGrid2D:
         """Construct from grid sizes and spacings. Lx=Nx*dx, Ly=Ny*dy."""
         return cls(Nx=Nx, Ny=Ny, Lx=Nx * dx, Ly=Ny * dy, dx=dx, dy=dy, dealias=dealias)
 
@@ -532,7 +548,7 @@ class SphericalGrid2D(eqx.Module):
         dx: float,
         dy: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid2D":
+    ) -> SphericalGrid2D:
         """Construct from domain lengths and spacings. Nx=Lx/dx, Ny=Ly/dy."""
         Nx_f, Ny_f = Lx / dx, Ly / dy
         errors = []
