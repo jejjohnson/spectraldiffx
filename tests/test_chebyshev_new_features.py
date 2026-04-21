@@ -83,6 +83,32 @@ def test_cheb_helmholtz1d_neumann_manufactured_solution():
     assert jnp.allclose(u, jnp.cos(jnp.pi * x), atol=1e-10)
 
 
+def test_cheb_pure_neumann_poisson_is_well_posed():
+    """Pure Neumann Poisson (α = 0, bc_type='neumann') is rank-deficient in the
+    plain boundary-row form.  The solver must impose a gauge inside the
+    linear system so the solve is robust, not rely on post-hoc mean-removal.
+
+    Manufactured: u″ = cos(πx) with u'(±1) = 0, compatible (∫ f dx = 0).
+    Analytic solution: u = −cos(πx)/π² + const.  The solver's gauge pins
+    u[N//2] = 0, so compare against the shifted analytic solution.
+    """
+    grid = ChebyshevGrid1D.from_N_L(N=32, L=1.0)
+    solver = ChebyshevHelmholtzSolver1D(grid=grid)
+    x = grid.x
+    f = jnp.cos(jnp.pi * x)
+    u = solver.solve(f, alpha=0.0, bc_type="neumann")
+
+    # No NaNs, gauge enforced.
+    assert not bool(jnp.any(jnp.isnan(u)))
+    assert abs(float(u[grid.N // 2])) < 1e-12
+
+    # Accurate match to the analytic solution after shifting both to the
+    # same gauge (u[mid] = 0).
+    ue = -jnp.cos(jnp.pi * x) / jnp.pi**2
+    ue_shifted = ue - ue[grid.N // 2]
+    assert jnp.allclose(u, ue_shifted, atol=1e-10)
+
+
 def test_cheb_helmholtz1d_rejects_gauss_nodes():
     import pytest
 

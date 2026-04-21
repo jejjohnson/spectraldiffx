@@ -57,8 +57,11 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
     Gauss-node grids do not include the endpoints, so this boundary-row
     method is inapplicable; the constructor validates the grid and raises.
 
-    Pure Neumann + Poisson (α = 0) is only solvable up to a constant; the
-    solver subtracts the mean of the returned field to pin that gauge.
+    Pure Neumann + Poisson (α = 0) is only solvable up to a constant
+    (constant nullspace of the discretisation); the solver pins the gauge
+    inside the linear system by replacing one interior equation with the
+    point constraint ``u[N//2] = 0``, so the solve is well-posed.  Shift
+    the returned field by any constant if a different gauge is needed.
 
     Attributes
     ----------
@@ -156,12 +159,20 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         b = b.at[0].set(bc_right)
         b = b.at[N].set(bc_left)
 
-        u = jnp.linalg.solve(A, b)
         if bc_type == "neumann" and alpha == 0.0:
-            # Pure-Neumann Poisson is defined up to a constant; pin it to
-            # zero mean so the result is unique and finite.
-            u = u - jnp.mean(u)
-        return u
+            # Pure-Neumann Poisson is rank-deficient (constant nullspace:
+            # D²·1 = 0 and D·1 = 0, so A·1 = 0).  Pin a gauge inside the
+            # linear system by replacing one interior equation with
+            # u[middle] = 0.  This removes the singularity before the solve,
+            # making it robust across RHS / grid sizes.  The user can shift
+            # the result by any constant afterwards if a different gauge is
+            # needed.
+            mid = N // 2
+            gauge_row = jnp.zeros(N + 1).at[mid].set(1.0)
+            A = A.at[mid, :].set(gauge_row)
+            b = b.at[mid].set(0.0)
+
+        return jnp.linalg.solve(A, b)
 
 
 class ChebyshevPoissonSolver1D(eqx.Module):
