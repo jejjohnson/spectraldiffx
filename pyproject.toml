@@ -150,8 +150,12 @@ ignore = [
     "PLR2004",  # magic value comparison
     "PLR0913",  # too many arguments
     "ISC001",   # conflicts with formatter
+    "RUF001",   # ambiguous unicode in string literals (jaxtyping shape names, math)
     "RUF002",   # ambiguous unicode characters in docstrings (mathematical notation)
+    "RUF003",   # ambiguous unicode in comments (math: α, ν, −, ×, etc.)
     "RUF046",   # int(round(...)) is intentional for type safety
+    "RUF059",   # unused unpacked variables (intentional in tests for clarity)
+    "PLW1641",  # missing __hash__ (fine for test helpers)
     "PYI061",   # Literal[..., None] vs Literal[...] | None style preference
 ]
 unfixable = ["ERA001", "F841", "T201", "T203"]

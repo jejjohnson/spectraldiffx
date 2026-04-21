@@ -5,123 +5,122 @@ Spherical Harmonic Transform
 Wraps the full 2D Spherical Harmonic Transform with precomputed Associated
 Legendre Polynomial matrices.
 
+Normalisation convention
+------------------------
+All ALPs are *orthonormal* (Schmidt semi-normalised including the extra
+√((2l+1)/2) factor), so that for the Gauss–Legendre weights wⱼ:
+
+    Σⱼ wⱼ · P̃ₗᵐ(cos θⱼ) · P̃_{l'}^m(cos θⱼ) = δ_{l, l'}
+
+with
+
+    P̃ₗᵐ(cos θ) = Nₗ,ₘ · Pₗᵐ(cos θ),    Nₗ,ₘ = √((2l+1)/2 · (l−m)! / (l+m)!).
+
+Equivalently, the spherical harmonics Yₗᵐ are 4π-normalised in the real
+convention (no Condon–Shortley phase for m > 0 beyond what scipy's
+``lpmv`` supplies).  Work out the forward/inverse formulas below.
+
 References:
 -----------
 [1] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods.
 [3] Canuto et al. (2006). Spectral Methods: Fundamentals.
 """
 
+from __future__ import annotations
+
 import equinox as eqx
 from jaxtyping import Array, Complex, Float
 
 from .grid import SphericalGrid2D
 
+# Array-shape aliases:
+#   "Nlat Nlon"  — full lat-lon grid (Nlat = Ny, Nlon = Nx)
+#   "Nl Nm"      — spectral (l, m) grid.  In this implementation Nl = Nlat
+#                  and Nm = Nlon for triangular truncation T_{Nlat-1}.
+
 
 class SphericalHarmonicTransform(eqx.Module):
-    """
-    Full 2D Spherical Harmonic Transform.
+    """Full 2D Spherical Harmonic Transform (SHT).
 
-    This class wraps a SphericalGrid2D and provides forward/inverse SHT methods
-    with a clean API.  The Associated Legendre Polynomial matrices are
-    precomputed at construction time (scipy call) and stored as JAX arrays.
+    Wraps a :class:`SphericalGrid2D` with forward/inverse methods.  The
+    Associated Legendre Polynomial matrices are precomputed once at
+    construction time (scipy call) and stored as JAX arrays.
 
-    Mathematical Formulation:
-    -------------------------
-    The Spherical Harmonic expansion:
-        u(theta, phi) = sum_{l=0}^{L} sum_{m=-l}^{l} u_hat(l, m) * Y_l^m(theta, phi)
+    Mathematical Formulation
+    ------------------------
+    Expansion in orthonormal spherical harmonics:
 
-    where Y_l^m(theta, phi) = P_l^m_norm(cos(theta)) * exp(i*m*phi) are the
-    complex spherical harmonics with normalised ALPs.
+        u(θ, φ) = Σₗ Σₘ û(l, m) · P̃ₗᵐ(cos θ) · e^{imφ}
 
     Forward SHT:
-        Step 1: FFT in phi — u_m(theta_j) = sum_k u(theta_j, phi_k) * exp(-i*m*phi_k)
-        Step 2: Legendre transform — u_hat(l, m) = sum_j w_j * P_l^m_norm(cos(theta_j)) * u_m(theta_j)
+
+        Step 1 (FFT in longitude):
+            ûₘ(θⱼ) = Σₖ u(θⱼ, φₖ) · e^{−imφₖ}
+        Step 2 (Legendre transform in colatitude):
+            û(l, m) = Σⱼ wⱼ · P̃ₗᵐ(cos θⱼ) · ûₘ(θⱼ)
 
     Inverse SHT:
-        Step 1: Inverse Legendre — u_m(theta_j) = sum_l P_l^m_norm(cos(theta_j)) * u_hat(l, m)
-        Step 2: IFFT in phi — u(theta_j, phi_k) = ifft(u_m(theta_j, :))[k]
 
-    Attributes:
-    -----------
+        Step 1 (synthesis in θ):
+            ûₘ(θⱼ) = Σₗ û(l, m) · P̃ₗᵐ(cos θⱼ)
+        Step 2 (IFFT in φ):
+            u(θⱼ, φₖ) = IFFTₖ(ûₘ(θⱼ))
+
+    Attributes
+    ----------
     grid : SphericalGrid2D
-        The underlying lat-lon grid.
+        Underlying lat-lon grid carrying the ALP matrices.
 
-    Notes:
-    ------
-    The _P_lm attribute is inherited from grid._P_lm (shape Nx, Ny, Ny).
-    This class exposes a slightly different interface for direct use without
-    going through the grid transform method.
+    Notes
+    -----
+    The ``_P_lm`` attribute lives on :attr:`grid`; this class is a thin,
+    more-semantic wrapper around :meth:`SphericalGrid2D.transform`.
+
+    Examples
+    --------
+    >>> import jax.numpy as jnp
+    >>> grid = SphericalGrid2D.from_N_L(Nx=32, Ny=16)
+    >>> sht = SphericalHarmonicTransform(grid=grid)
+    >>> PHI, THETA = grid.X
+    >>> u = jnp.sin(THETA) * jnp.cos(PHI)  # = Re Y₁¹(θ, φ) up to a constant
+    >>> u_hat = sht.to_spectral(u)
+    >>> u_back = sht.from_spectral(u_hat)  # ≈ u
     """
 
     grid: SphericalGrid2D
 
-    def to_spectral(self, u: Float[Array, "Ny Nx"]) -> Complex[Array, "Ny Nx"]:
-        """
-        Forward Spherical Harmonic Transform: u(theta, phi) -> u_hat(l, m).
+    def to_spectral(self, u: Float[Array, "Nlat Nlon"]) -> Complex[Array, "Nl Nm"]:
+        """Forward SHT: physical u(θ, φ) → spectral û(l, m).
 
-        Parameters:
-        -----------
-        u : Float[Array, "Ny Nx"]
-            Physical field on the (Ny, Nx) lat-lon grid.
+            û(l, m) = Σⱼ wⱼ · P̃ₗᵐ(cos θⱼ) · FFTφ{u(θⱼ, ·)}[m]
 
-        Returns:
-        --------
-        u_hat : Complex[Array, "Ny Nx"]
-            Spectral coefficients u_hat(l, m_fft_idx).
-            Rows index spherical harmonic degree l, columns index m in FFT order.
+        Parameters
+        ----------
+        u : Float[Array, "Nlat Nlon"]
+            Real-valued physical field on the (Nlat, Nlon) lat-lon grid.
+
+        Returns
+        -------
+        Complex[Array, "Nl Nm"]
+            Spectral coefficients.  Rows index harmonic degree l;
+            columns index zonal wavenumber m in FFT order.
         """
         return self.grid.transform(u, inverse=False)
 
-    def from_spectral(self, u_hat: Complex[Array, "Ny Nx"]) -> Float[Array, "Ny Nx"]:
-        """
-        Inverse Spherical Harmonic Transform: u_hat(l, m) -> u(theta, phi).
-
-        Parameters:
-        -----------
-        u_hat : Complex[Array, "Ny Nx"]
-            Spectral coefficients as returned by to_spectral().
-
-        Returns:
-        --------
-        u : Float[Array, "Ny Nx"]
-            Reconstructed physical field.
-        """
+    def from_spectral(
+        self, u_hat: Complex[Array, "Nl Nm"]
+    ) -> Float[Array, "Nlat Nlon"]:
+        """Inverse SHT: spectral û(l, m) → physical u(θ, φ)."""
         return self.grid.transform(u_hat, inverse=True)
 
-    def to_spectral_1d(self, u_col: Float[Array, "Ny"]) -> Float[Array, "Ny"]:
-        """
-        1D forward Discrete Legendre Transform for a single column (m=0).
-
-        Uses the Legendre polynomial matrix from the grid's first column (m=0).
-
-        Parameters:
-        -----------
-        u_col : Float[Array, "Ny"]
-            Physical values at the Gauss-Legendre latitudes.
-
-        Returns:
-        --------
-        c : Float[Array, "Ny"]
-            Legendre spectral coefficients c_l.
-        """
+    def to_spectral_1d(self, u_col: Float[Array, Nlat]) -> Float[Array, Nl]:
+        """1D forward Discrete Legendre Transform (zonal mean, m=0)."""
         # m=0 is at fft_idx=0
-        P0 = self.grid._P_lm[0]  # (Ny, Ny)
-        w = self.grid._weights_y  # (Ny,)
+        P0 = self.grid._P_lm[0]  # (Nl, Nlat)
+        w = self.grid._weights_y  # (Nlat,)
         return P0 @ (w * u_col)
 
-    def from_spectral_1d(self, c: Float[Array, "Ny"]) -> Float[Array, "Ny"]:
-        """
-        1D inverse Discrete Legendre Transform (m=0 case).
-
-        Parameters:
-        -----------
-        c : Float[Array, "Ny"]
-            Legendre spectral coefficients.
-
-        Returns:
-        --------
-        u_col : Float[Array, "Ny"]
-            Reconstructed physical values.
-        """
-        P0 = self.grid._P_lm[0]  # (Ny, Ny)
+    def from_spectral_1d(self, c: Float[Array, Nl]) -> Float[Array, Nlat]:
+        """1D inverse DLT (zonal mean, m=0)."""
+        P0 = self.grid._P_lm[0]  # (Nl, Nlat)
         return P0.T @ c

@@ -2,24 +2,40 @@
 Spherical Harmonic Grid Module
 ================================
 
-Grid classes for pseudo-spectral methods on the sphere.  The latitude direction
-uses Gauss-Legendre quadrature (non-uniform, exact for polynomials) while the
-longitude direction uses a uniform Fourier grid.
+Grid classes for pseudo-spectral methods on the sphere.  The latitude
+direction uses Gauss–Legendre quadrature (non-uniform, exact for
+polynomials) while the longitude direction uses a uniform Fourier grid.
 
-Key Concepts:
--------------
-    • Colatitude theta in [0, pi]: theta=0 at North Pole, theta=pi at South Pole.
-    • mu = cos(theta) in [-1, 1]: the natural coordinate for Legendre polynomials.
-    • Gauss-Legendre nodes never include the poles, so sin(theta) > 0 everywhere.
-    • Longitude phi in [0, 2*pi): periodic, uniform, FFT-ready.
-
-References:
+Conventions
 -----------
+    • Colatitude θ ∈ (0, π): θ = 0 at the North Pole, π at the South Pole.
+    • μ = cos θ ∈ [−1, 1]: natural coordinate for Legendre polynomials.
+    • Gauss–Legendre nodes never include the poles, so sin θ > 0 everywhere.
+    • Longitude φ ∈ [0, 2π): uniform, FFT-ready.
+
+ALP normalisation (Schmidt semi-normalised)
+
+    P̃ₗᵐ(μ) = Nₗ,ₘ · Pₗᵐ(μ),    Nₗ,ₘ = √((2l+1)/2 · (l−m)! / (l+m)!)
+
+which makes the columns orthonormal against the GL weights:
+
+    Σⱼ wⱼ · P̃ₗᵐ(μⱼ) · P̃_{l'}^m(μⱼ) = δ_{l, l'}
+
+Stability envelope
+    :func:`_alp_matrix` evaluates P̃ₗᵐ via ``scipy.special.lpmv`` with a
+    log-gamma normalisation.  This is numerically stable in float64 up to
+    about l ≈ 512 (m up to the same).  For higher truncations use a custom
+    recurrence (not provided here).
+
+References
+----------
 [1] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods.
 [2] Trefethen, L. N. (2000). Spectral Methods in MATLAB.
 [3] Canuto et al. (2006). Spectral Methods: Fundamentals.
 [4] Durran, D. R. (2010). Numerical Methods for Fluid Dynamics.
 """
+
+from __future__ import annotations
 
 from typing import Literal
 
@@ -174,8 +190,8 @@ class SphericalGrid1D(eqx.Module):
     dx: float
     dealias: Literal["2/3", None] | None
     # Precomputed at init (numpy -> jax arrays)
-    _nodes: Float[Array, "N"]
-    _weights: Float[Array, "N"]
+    _nodes: Float[Array, N]
+    _weights: Float[Array, N]
     _P_matrix: Float[Array, "N N"]  # P_l_norm[l, j]
 
     def __init__(
@@ -227,7 +243,7 @@ class SphericalGrid1D(eqx.Module):
         N: int,
         L: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid1D":
+    ) -> SphericalGrid1D:
         """Construct from number of points N and domain length L. dx = L / N."""
         return cls(N=N, L=L, dx=L / N, dealias=dealias)
 
@@ -237,7 +253,7 @@ class SphericalGrid1D(eqx.Module):
         N: int,
         dx: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid1D":
+    ) -> SphericalGrid1D:
         """Construct from N and spacing dx. L = N * dx."""
         return cls(N=N, L=N * dx, dx=dx, dealias=dealias)
 
@@ -247,7 +263,7 @@ class SphericalGrid1D(eqx.Module):
         L: float,
         dx: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid1D":
+    ) -> SphericalGrid1D:
         """Construct from domain length L and spacing dx. N = L / dx (must be integer)."""
         N_float = L / dx
         if not jnp.isclose(N_float % 1, 0) and not jnp.isclose(N_float % 1, 1):
@@ -261,7 +277,7 @@ class SphericalGrid1D(eqx.Module):
     # ------------------------------------------------------------------
 
     @property
-    def cos_theta(self) -> Float[Array, "N"]:
+    def cos_theta(self) -> Float[Array, N]:
         """
         Gauss-Legendre nodes mu = cos(theta) in [-1, 1], ordered North to South.
 
@@ -273,7 +289,7 @@ class SphericalGrid1D(eqx.Module):
         return self._nodes
 
     @property
-    def weights(self) -> Float[Array, "N"]:
+    def weights(self) -> Float[Array, N]:
         """
         Gauss-Legendre quadrature weights (sum to 2).
 
@@ -288,7 +304,7 @@ class SphericalGrid1D(eqx.Module):
         return self._weights
 
     @property
-    def x(self) -> Float[Array, "N"]:
+    def x(self) -> Float[Array, N]:
         """
         Colatitude grid points theta = arccos(mu) in (0, pi).
 
@@ -302,7 +318,7 @@ class SphericalGrid1D(eqx.Module):
         return jnp.arccos(self._nodes)
 
     @property
-    def nodes_weights(self) -> tuple[Float[Array, "N"], Float[Array, "N"]]:
+    def nodes_weights(self) -> tuple[Float[Array, N], Float[Array, N]]:
         """
         Gauss-Legendre nodes and weights.
 
@@ -314,12 +330,12 @@ class SphericalGrid1D(eqx.Module):
         return self._nodes, self._weights
 
     @property
-    def l(self) -> Float[Array, "N"]:
+    def l(self) -> Float[Array, N]:
         """Spherical harmonic degree indices [0, 1, ..., N-1]."""
         return jnp.arange(self.N, dtype=jnp.float64)
 
     @property
-    def l_dealias(self) -> Float[Array, "N"]:
+    def l_dealias(self) -> Float[Array, N]:
         """
         Dealiased degree array: keeps l <= 2*N//3, zeros out higher degrees.
 
@@ -333,7 +349,7 @@ class SphericalGrid1D(eqx.Module):
             return jnp.where(l <= cutoff, l, 0.0)
         return l
 
-    def dealias_filter(self) -> Float[Array, "N"]:
+    def dealias_filter(self) -> Float[Array, N]:
         """
         Dealiasing filter mask: 1 for kept modes, 0 for truncated modes.
 
@@ -352,9 +368,7 @@ class SphericalGrid1D(eqx.Module):
     # Transform
     # ------------------------------------------------------------------
 
-    def transform(
-        self, u: Float[Array, "N"], inverse: bool = False
-    ) -> Float[Array, "N"]:
+    def transform(self, u: Float[Array, N], inverse: bool = False) -> Float[Array, N]:
         """
         Discrete Legendre Transform (DLT).
 
@@ -439,8 +453,8 @@ class SphericalGrid2D(eqx.Module):
     dy: float
     dealias: Literal["2/3", None] | None
     # Precomputed GL data
-    _nodes_y: Float[Array, "Ny"]
-    _weights_y: Float[Array, "Ny"]
+    _nodes_y: Float[Array, Ny]
+    _weights_y: Float[Array, Ny]
     # ALP matrix per zonal wavenumber: shape (Nx, Ny, Ny)
     # _P_lm[m_fft_idx, l_idx, lat_idx] = N_{l,|m|} * P_l^{|m|}(cos(theta_j))
     _P_lm: Float[Array, "Nx Ny Ny"]
@@ -508,7 +522,7 @@ class SphericalGrid2D(eqx.Module):
         Lx: float = 2 * np.pi,
         Ly: float = np.pi,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid2D":
+    ) -> SphericalGrid2D:
         """Construct from grid sizes and domain lengths. dx=Lx/Nx, dy=Ly/Ny."""
         return cls(Nx=Nx, Ny=Ny, Lx=Lx, Ly=Ly, dx=Lx / Nx, dy=Ly / Ny, dealias=dealias)
 
@@ -520,7 +534,7 @@ class SphericalGrid2D(eqx.Module):
         dx: float,
         dy: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid2D":
+    ) -> SphericalGrid2D:
         """Construct from grid sizes and spacings. Lx=Nx*dx, Ly=Ny*dy."""
         return cls(Nx=Nx, Ny=Ny, Lx=Nx * dx, Ly=Ny * dy, dx=dx, dy=dy, dealias=dealias)
 
@@ -532,7 +546,7 @@ class SphericalGrid2D(eqx.Module):
         dx: float,
         dy: float,
         dealias: Literal["2/3", None] | None = "2/3",
-    ) -> "SphericalGrid2D":
+    ) -> SphericalGrid2D:
         """Construct from domain lengths and spacings. Nx=Lx/dx, Ny=Ly/dy."""
         Nx_f, Ny_f = Lx / dx, Ly / dy
         errors = []
@@ -557,29 +571,29 @@ class SphericalGrid2D(eqx.Module):
     # ------------------------------------------------------------------
 
     @property
-    def x(self) -> Float[Array, "Nx"]:
+    def x(self) -> Float[Array, Nx]:
         """Longitude grid points phi in [0, Lx), uniform."""
         return jnp.linspace(0, self.Lx, self.Nx, endpoint=False)
 
     @property
-    def y(self) -> Float[Array, "Ny"]:
+    def y(self) -> Float[Array, Ny]:
         """Colatitude grid points theta = arccos(mu_j) in (0, pi)."""
         return jnp.arccos(self._nodes_y)
 
     @property
     def nodes_weights_y(
         self,
-    ) -> tuple[Float[Array, "Ny"], Float[Array, "Ny"]]:
+    ) -> tuple[Float[Array, Ny], Float[Array, Ny]]:
         """Gauss-Legendre nodes (cos(theta)) and weights for the latitude direction."""
         return self._nodes_y, self._weights_y
 
     @property
-    def cos_theta(self) -> Float[Array, "Ny"]:
+    def cos_theta(self) -> Float[Array, Ny]:
         """GL nodes mu = cos(theta) in [-1, 1], ordered North to South."""
         return self._nodes_y
 
     @property
-    def weights_y(self) -> Float[Array, "Ny"]:
+    def weights_y(self) -> Float[Array, Ny]:
         """Latitudinal GL quadrature weights (sum to 2)."""
         return self._weights_y
 
@@ -600,12 +614,12 @@ class SphericalGrid2D(eqx.Module):
         return (result[0], result[1])
 
     @property
-    def m(self) -> Float[Array, "Nx"]:
+    def m(self) -> Float[Array, Nx]:
         """Zonal wavenumbers in FFT order (integer wavenumbers * 2*pi/Lx)."""
         return 2 * jnp.pi * jnp.fft.fftfreq(self.Nx, self.dx)
 
     @property
-    def l(self) -> Float[Array, "Ny"]:
+    def l(self) -> Float[Array, Ny]:
         """Spherical harmonic degree indices [0, 1, ..., Ny-1]."""
         return jnp.arange(self.Ny, dtype=jnp.float64)
 

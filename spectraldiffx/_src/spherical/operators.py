@@ -2,31 +2,55 @@
 Spherical Derivative Operators
 ================================
 
-Pseudo-spectral derivative operators for fields on the sphere.
+Pseudo-spectral derivative operators for scalar and vector fields on the
+sphere.
 
-Mathematical conventions:
-    theta   — colatitude in (0, pi), theta=0 at North Pole.
-    phi     — longitude in [0, 2*pi).
-    mu      — cos(theta), used as argument for Legendre polynomials.
-    R       — sphere radius (inferred as Ly / pi).
-
-Metric factors on the sphere:
-    d/d_theta = 1 factor (colatitude derivative)
-    d/d_phi   = 1/(R * sin(theta)) factor for physical space operators
-
-References:
+Conventions
 -----------
+    θ   — colatitude in (0, π); θ = 0 at the North Pole, θ = π at the South.
+    φ   — longitude in [0, 2π).
+    μ   — cos θ, the natural argument of Legendre polynomials.
+    R   — sphere radius, inferred as ``grid.Ly / π``.
+
+Physical-space covariant gradient components (unit-vector frame):
+
+    ∇_θ u = (1 / R) · ∂u/∂θ
+    ∇_φ u = (1 / (R·sin θ)) · ∂u/∂φ
+
+Divergence and scalar curl of a tangent field V = (V_θ, V_φ):
+
+    ∇·V     = (1 / (R·sin θ)) · [∂(V_θ·sin θ)/∂θ + ∂V_φ/∂φ]
+    (∇×V)·r̂ = (1 / (R·sin θ)) · [∂V_θ/∂φ − ∂(V_φ·sin θ)/∂θ]
+
+Laplace–Beltrami (scalar) eigenvalue relation:
+
+    ∇² Yₗᵐ = −l(l+1)/R² · Yₗᵐ
+
+The Gauss–Legendre colatitude nodes never include the poles, so sin θ > 0
+everywhere and the 1/sin θ factor above is always finite.  Do not sample
+fields at θ = 0 or π without explicit pole handling — physical-space
+operators are singular there.
+
+References
+----------
 [1] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods.
 [4] Durran, D. R. (2010). Numerical Methods for Fluid Dynamics.
 """
 
+from __future__ import annotations
+
 import equinox as eqx
 import jax
 import jax.numpy as jnp
-from jaxtyping import Array, Float
+from jaxtyping import Array, Float, Num
 import numpy as np
 
 from .grid import SphericalGrid1D, SphericalGrid2D, _alp_matrix
+
+# Array-shape aliases used in this module:
+#   "Nlat Nlon" — physical field on the Gauss–Legendre × Fourier grid
+#   "Nl Nm"     — spectral SHT coefficients (Nl = Nlat, Nm = Nlon)
+#   "N"         — 1D latitude-only field
 
 
 def _gradient_alp_matrix(
@@ -98,7 +122,7 @@ class SphericalDerivative1D(eqx.Module):
     # Precomputed m=1 ALP matrix for gradient reconstruction
     _P1_matrix: Float[Array, "N N"]
     # Precomputed gradient coefficients: sqrt(l*(l+1))
-    _grad_coeff: Float[Array, "N"]
+    _grad_coeff: Float[Array, N]
 
     def __init__(self, grid: SphericalGrid1D):
         self.grid = grid
@@ -109,7 +133,7 @@ class SphericalDerivative1D(eqx.Module):
         l = np.arange(N, dtype=np.float64)
         self._grad_coeff = jnp.asarray(np.sqrt(l * (l + 1)))
 
-    def to_spectral(self, u: Float[Array, "N"]) -> Float[Array, "N"]:
+    def to_spectral(self, u: Float[Array, N]) -> Float[Array, N]:
         """
         Forward Discrete Legendre Transform.
 
@@ -127,7 +151,7 @@ class SphericalDerivative1D(eqx.Module):
         """
         return self.grid.transform(u, inverse=False)
 
-    def from_spectral(self, c: Float[Array, "N"]) -> Float[Array, "N"]:
+    def from_spectral(self, c: Float[Array, N]) -> Float[Array, N]:
         """
         Inverse Discrete Legendre Transform.
 
@@ -145,9 +169,7 @@ class SphericalDerivative1D(eqx.Module):
         """
         return self.grid.transform(c, inverse=True)
 
-    def gradient(
-        self, u: Float[Array, "N"], spectral: bool = False
-    ) -> Float[Array, "N"]:
+    def gradient(self, u: Float[Array, N], spectral: bool = False) -> Float[Array, N]:
         """
         Colatitude gradient: du/d_theta.
 
@@ -177,9 +199,7 @@ class SphericalDerivative1D(eqx.Module):
         c_grad = self._grad_coeff * c
         return self._P1_matrix.T @ c_grad
 
-    def laplacian(
-        self, u: Float[Array, "N"], spectral: bool = False
-    ) -> Float[Array, "N"]:
+    def laplacian(self, u: Float[Array, N], spectral: bool = False) -> Float[Array, N]:
         """
         Spherical Laplacian: (1/sin(theta)) * d/d_theta [sin(theta) * du/d_theta]
         (zonal, m=0 case): nabla^2_sphere u = -l*(l+1)/R^2 * u in spectral space.
@@ -203,8 +223,8 @@ class SphericalDerivative1D(eqx.Module):
         return self.from_spectral(c_lap)
 
     def __call__(
-        self, u: Float[Array, "N"], order: int = 1, spectral: bool = False
-    ) -> Float[Array, "N"]:
+        self, u: Float[Array, N], order: int = 1, spectral: bool = False
+    ) -> Float[Array, N]:
         """
         Apply derivative operator.
 
@@ -367,100 +387,141 @@ class SphericalDerivative2D(eqx.Module):
 
     def curl(
         self,
-        v_theta: Float[Array, "Ny Nx"],
-        v_phi: Float[Array, "Ny Nx"],
+        v_theta: Num[Array, "Nlat Nlon"],
+        v_phi: Num[Array, "Nlat Nlon"],
         spectral: bool = False,
-    ) -> Float[Array, "Ny Nx"]:
-        """
-        Vertical curl (scalar vorticity) of a 2D vector field on the sphere.
+    ) -> Float[Array, "Nlat Nlon"]:
+        """Scalar (radial) vorticity (∇×V)·r̂ of a tangent field V on the sphere.
 
-            curl V = 1/(R*sin(theta)) * [dV_theta/d_phi - d(V_phi*sin(theta))/d_theta]
+            (∇×V)·r̂ = (1 / (R·sin θ)) · [∂(V_φ·sin θ)/∂θ − ∂V_θ/∂φ]
 
-        Parameters:
-        -----------
-        v_theta : Float[Array, "Ny Nx"]
+        This is the standard GFD sign convention: for solid-body rotation
+        V_φ = Ω R sin θ the formula returns the planetary vorticity
+        2 Ω cos θ, positive in the northern hemisphere.
+
+        Parameters
+        ----------
+        v_theta : Num[Array, "Nlat Nlon"]
             Colatitude component.
-        v_phi : Float[Array, "Ny Nx"]
+        v_phi : Num[Array, "Nlat Nlon"]
             Longitude component.
         spectral : bool
             Unused (reserved for API consistency).
 
-        Returns:
-        --------
-        zeta : Float[Array, "Ny Nx"]
-            Scalar vorticity field.
+        Returns
+        -------
+        Float[Array, "Nlat Nlon"]
+            Scalar vorticity.
         """
         R = self.grid.Ly / jnp.pi
-        sin_theta = jnp.sin(self.grid.y)[:, None]  # (Ny, 1)
+        sin_theta = jnp.sin(self.grid.y)[:, None]  # (Nlat, 1)
 
-        # dV_theta/d_phi via FFT
-        m_phys = 2 * jnp.pi * jnp.fft.fftfreq(self.grid.Nx, self.grid.dx)  # (Nx,)
-        vt_hat = jnp.fft.fft(v_theta, axis=-1)  # (Ny, Nx)
-        d_vt_dphi = jnp.fft.ifft(
-            1j * m_phys[None, :] * vt_hat, axis=-1
-        ).real  # (Ny, Nx)
+        # ∂V_θ/∂φ via FFT along the longitude axis.
+        m_phys = 2 * jnp.pi * jnp.fft.fftfreq(self.grid.Nx, self.grid.dx)  # (Nlon,)
+        vt_hat = jnp.fft.fft(v_theta, axis=-1)
+        d_vt_dphi = jnp.fft.ifft(1j * m_phys[None, :] * vt_hat, axis=-1).real
 
-        # d(V_phi * sin(theta))/d_theta
-        vs = v_phi * sin_theta  # (Ny, Nx)
-        d_vs_dtheta = jax.vmap(self.deriv_theta.gradient, in_axes=1, out_axes=1)(
-            vs
-        )  # (Ny, Nx)
+        # ∂(V_φ·sin θ)/∂θ via the GL-latitude derivative.
+        vs = v_phi * sin_theta
+        d_vs_dtheta = jax.vmap(self.deriv_theta.gradient, in_axes=1, out_axes=1)(vs)
 
-        return (d_vt_dphi - d_vs_dtheta) / (R * sin_theta)
+        # Standard curl convention (positive in NH for solid-body rotation):
+        return (d_vs_dtheta - d_vt_dphi) / (R * sin_theta)
 
     def laplacian(
-        self, u: Float[Array, "Ny Nx"], spectral: bool = False
-    ) -> Float[Array, "Ny Nx"]:
-        """
-        Scalar Laplace-Beltrami operator on the sphere.
+        self,
+        u: Num[Array, "Nlat Nlon"],
+        spectral: bool = False,
+    ) -> Float[Array, "Nlat Nlon"]:
+        """Scalar Laplace–Beltrami operator on the sphere.
 
         In spectral space:
-            nabla^2 u_hat(l, m) = -l*(l+1)/R^2 * u_hat(l, m)
 
-        Parameters:
-        -----------
-        u : Float[Array, "Ny Nx"]
-            Physical field or spectral coefficients.
+            ∇² û(l, m) = −l(l+1)/R² · û(l, m)
+
+        Parameters
+        ----------
+        u : Num[Array, "Nlat Nlon"]
+            Physical field, or SHT coefficients if ``spectral=True``.
         spectral : bool
-            If True, u is already in spectral space.
+            If ``True``, ``u`` is already in spectral space.
 
-        Returns:
-        --------
-        lap_u : Float[Array, "Ny Nx"]
-            Laplacian in physical space.
+        Returns
+        -------
+        Float[Array, "Nlat Nlon"]
+            Laplacian in physical space (or spectral, mirroring the input).
         """
+        return self.iterated_laplacian(u, n=1, spectral=spectral)
+
+    def iterated_laplacian(
+        self,
+        u: Num[Array, "Nlat Nlon"],
+        n: int = 1,
+        spectral: bool = False,
+    ) -> Float[Array, "Nlat Nlon"]:
+        """Iterated Laplacian ∇^(2n) — useful for hyperdiffusion.
+
+        In spectral space:
+
+            ∇^(2n) û(l, m) = [−l(l+1)/R²]ⁿ · û(l, m)
+
+        Parameters
+        ----------
+        u : Num[Array, "Nlat Nlon"]
+            Physical field or SHT coefficients.
+        n : int
+            Number of Laplacian applications (≥ 1).  ``n=2`` is the
+            biharmonic ∇⁴, etc.
+        spectral : bool
+            If ``True``, ``u`` is already spectral and the result stays
+            spectral; otherwise the function transforms to and from
+            physical space.
+
+        Returns
+        -------
+        Float[Array, "Nlat Nlon"]
+            ∇^(2n) u.
+
+        Examples
+        --------
+        >>> lap_u = deriv.iterated_laplacian(u, n=1)
+        >>> bih_u = deriv.iterated_laplacian(u, n=2)  # biharmonic ∇⁴ u
+        """
+        if n < 1:
+            raise ValueError(f"n must be >= 1, got {n}")
         R = self.grid.Ly / jnp.pi
         u_hat = u if spectral else self.grid.transform(u)
-        l = self.grid.l  # (Ny,)
-        eig = -(l * (l + 1)) / (R**2)  # (Ny,)
-        lap_hat = eig[:, None] * u_hat  # (Ny, Nx)
-        return self.grid.transform(lap_hat, inverse=True)
+        l = self.grid.l  # (Nl,)
+        lap_eig = -(l * (l + 1)) / (R**2)  # (Nl,)
+        eig_n = lap_eig**n  # (Nl,)
+        out_hat = eig_n[:, None] * u_hat  # (Nl, Nm)
+        if spectral:
+            return out_hat
+        return self.grid.transform(out_hat, inverse=True)
+
+    def biharmonic(
+        self,
+        u: Num[Array, "Nlat Nlon"],
+        spectral: bool = False,
+    ) -> Float[Array, "Nlat Nlon"]:
+        """Biharmonic operator ∇⁴ u (alias for ``iterated_laplacian(u, n=2)``).
+
+        ∇⁴ û(l, m) = [l(l+1)/R²]² · û(l, m)
+        """
+        return self.iterated_laplacian(u, n=2, spectral=spectral)
 
     def advection_scalar(
         self,
-        v_theta: Float[Array, "Ny Nx"],
-        v_phi: Float[Array, "Ny Nx"],
-        q: Float[Array, "Ny Nx"],
-    ) -> Float[Array, "Ny Nx"]:
-        """
-        Pseudo-spectral scalar advection: (V · nabla) q.
+        v_theta: Num[Array, "Nlat Nlon"],
+        v_phi: Num[Array, "Nlat Nlon"],
+        q: Num[Array, "Nlat Nlon"],
+    ) -> Float[Array, "Nlat Nlon"]:
+        """Pseudo-spectral scalar advection (V·∇) q.
 
-        Computes the gradient of q spectrally, then multiplies by V in physical space:
-            adv = V_theta * grad_theta(q) + V_phi * grad_phi(q)
+        Evaluates the gradient of q spectrally, then multiplies by V
+        in physical space:
 
-        Parameters:
-        -----------
-        v_theta : Float[Array, "Ny Nx"]
-            Colatitude velocity component.
-        v_phi : Float[Array, "Ny Nx"]
-            Longitude velocity component.
-        q : Float[Array, "Ny Nx"]
-            Scalar field to advect.
-
-        Returns:
-        --------
-        adv : Float[Array, "Ny Nx"]
-            Advection term at each grid point.
+            (V·∇) q = V_θ · ∇_θ q + V_φ · ∇_φ q
         """
         grad_theta_q, grad_phi_q = self.gradient(q)
         return v_theta * grad_theta_q + v_phi * grad_phi_q
