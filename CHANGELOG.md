@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.13](https://github.com/jejjohnson/spectraldiffx/compare/0.0.12...0.0.13) (2026-04-21)
+
+
+### Features
+
+* chebyshev 2D solvers, CC quadrature, spherical vorticity inversion + Helmholtz decomposition ([#71](https://github.com/jejjohnson/spectraldiffx/issues/71)) ([dd1dfb1](https://github.com/jejjohnson/spectraldiffx/commit/dd1dfb1efdbbe8054e3314703614755732886d25))
+
 ## [0.0.12](https://github.com/jejjohnson/spectraldiffx/compare/v0.0.11...0.0.12) (2026-04-09)
 
 
