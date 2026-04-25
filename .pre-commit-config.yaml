@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -17,7 +17,7 @@ repos:
         files: '\.ipynb$'
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.15.11
     hooks:
       - id: ruff
         args: [--fix]
@@ -26,7 +26,7 @@ repos:
         exclude: ^notebooks/
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+    rev: v1.20.1
     hooks:
       - id: mypy
         additional_dependencies: []
@@ -34,12 +34,12 @@ repos:
         exclude: ^notebooks/
 
   - repo: https://github.com/koalaman/shellcheck-precommit
-    rev: v0.10.0
+    rev: v0.11.0
     hooks:
       - id: shellcheck
 
   - repo: https://github.com/mwouts/jupytext
-    rev: v1.16.6
+    rev: v1.19.1
     hooks:
       - id: jupytext
         args: [--sync]
