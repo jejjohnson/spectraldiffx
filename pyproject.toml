@@ -30,7 +30,7 @@ dependencies = [
     "finitediffx>=0.1.0",
     "kernex>=0.2.0",
     "equinox",
-    "gaussx",
+    "gaussx>=0.0.17",
 ]
 
 [project.urls]

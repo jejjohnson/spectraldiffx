@@ -139,7 +139,10 @@ class CapacitanceSolver(eqx.Module):
             the mask, and ψ ≈ 0 at inner-boundary points.
         """
         ny, nx = self.shape
-        psi_flat = self.solver(rhs.reshape(ny * nx))
+        # Honor the documented contract: exterior (mask = False) values are
+        # ignored by zeroing them before the base solve.
+        rhs_masked = rhs * self.mask
+        psi_flat = self.solver(rhs_masked.reshape(ny * nx))
         return psi_flat.reshape(ny, nx) * self.mask
 
 
