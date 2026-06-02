@@ -4,6 +4,13 @@ Extends a fast rectangular spectral solver (DST/DCT/FFT) to domains that are
 subsets of a rectangle (e.g. ocean basins with land masks) using the classic
 Sherman-Morrison correction via boundary Green's functions.
 
+The generic linear algebra (Green's functions, capacitance inverse, and the
+low-rank correction) lives in :class:`gaussx.CapacitanceSolver`. This module
+keeps the spectral-specific parts: extracting the inner-boundary points from a
+mask, building the rectangular base solve, and reshaping/masking fields. The
+public API (:class:`CapacitanceSolver`, :func:`build_capacitance_solver`) is
+unchanged.
+
 ``build_capacitance_solver`` performs a one-time offline precomputation
 (N_b rectangular solves, where N_b = number of irregular-boundary points).
 The returned ``CapacitanceSolver`` callable is then cheap to evaluate for any
@@ -18,6 +25,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 import equinox as eqx
+from gaussx import CapacitanceSolver as _GaussxCapacitanceSolver
 import jax.numpy as jnp
 from jaxtyping import Array, Float
 import numpy as np
@@ -77,21 +85,19 @@ class CapacitanceSolver(eqx.Module):
        N_b boundary points, giving the linear system ``C α = u[B]``
        where ``C[k,l] = g_l(b_k)`` is the **capacitance matrix**.
 
-    Construct with :func:`build_capacitance_solver`.
+    The capacitance correction is delegated to :class:`gaussx.CapacitanceSolver`;
+    this class adds the field reshaping and the exterior masking. Construct with
+    :func:`build_capacitance_solver`.
 
     Attributes
     ----------
-    _C_inv : Float[Array, "Nb Nb"]
-        Pre-inverted capacitance matrix.
-    _green_flat : Float[Array, "Nb NyNx"]
-        Green's functions (one row per boundary point), stored flat.
-    _mask : Float[Array, "Ny Nx"]
+    solver : gaussx.CapacitanceSolver
+        The generic capacitance solver operating on flat vectors.
+    mask : Float[Array, "Ny Nx"]
         Domain mask (1.0 = interior, 0.0 = exterior).  Applied to the output
         so that values outside the physical domain are exactly zero.
-    _j_b : Array
-        Row indices of inner-boundary points.
-    _i_b : Array
-        Column indices of inner-boundary points.
+    shape : tuple[int, int]
+        Grid shape ``(Ny, Nx)``.
     dx : float
         Grid spacing in x.
     dy : float
@@ -102,11 +108,9 @@ class CapacitanceSolver(eqx.Module):
         Spectral solver used as the rectangular base.
     """
 
-    _C_inv: Float[Array, "Nb Nb"]
-    _green_flat: Float[Array, "Nb NyNx"]
-    _mask: Float[Array, "Ny Nx"]
-    _j_b: Array
-    _i_b: Array
+    solver: _GaussxCapacitanceSolver
+    mask: Float[Array, "Ny Nx"]
+    shape: tuple[int, int] = eqx.field(static=True)
     dx: float
     dy: float
     lambda_: float = eqx.field(static=True)
@@ -118,17 +122,9 @@ class CapacitanceSolver(eqx.Module):
     ) -> Float[Array, "Ny Nx"]:
         """Solve (∇² − λ)ψ = rhs on the masked domain.
 
-        Given the precomputed capacitance matrix C⁻¹ and Green's functions
-        G, the online solve proceeds in four steps:
-
-        1. Rectangular solve:   u = L_rect⁻¹ rhs              [Ny, Nx]
-        2. Sample boundary:     u_B = u[j_b, i_b]             [N_b]
-        3. Correction weights:  α = C⁻¹ · u_B                 [N_b]
-        4. Subtract correction: ψ = u − Σ_k α_k g_k          [Ny, Nx]
-        5. Mask exterior:       ψ = ψ * mask                  [Ny, Nx]
-
-        The result satisfies ψ(b_k) ≈ 0 at all N_b inner-boundary points,
-        (∇² − λ)ψ = rhs at interior points, and ψ = 0 outside the mask.
+        The generic solver enforces ψ = 0 at the inner-boundary points and
+        returns the corrected field; this method reshapes between fields and
+        flat vectors and zeroes the exterior via the mask.
 
         Parameters
         ----------
@@ -142,17 +138,9 @@ class CapacitanceSolver(eqx.Module):
             Solution ψ on the full rectangular grid.  Exactly zero outside
             the mask, and ψ ≈ 0 at inner-boundary points.
         """
-        Ny, Nx = rhs.shape
-        # Step 1: rectangular spectral solve
-        u = _spectral_solve(rhs, self.dx, self.dy, self.lambda_, self.base_bc)
-        # Step 2: values of u at inner-boundary points
-        u_b = u[self._j_b, self._i_b]  # [Nb]
-        # Step 3: correction coefficients  alpha = C^{-1} u_b
-        alpha = self._C_inv @ u_b  # [Nb]
-        # Step 4: correction field  sum_k alpha_k g_k
-        correction = (self._green_flat.T @ alpha).reshape(Ny, Nx)  # [Ny, Nx]
-        # Step 5: zero out exterior cells
-        return (u - correction) * self._mask
+        ny, nx = self.shape
+        psi_flat = self.solver(rhs.reshape(ny * nx))
+        return psi_flat.reshape(ny, nx) * self.mask
 
 
 def build_capacitance_solver(
@@ -169,13 +157,9 @@ def build_capacitance_solver(
     1. **Detect inner boundary** — find the N_b mask-interior cells that are
        4-connected to at least one exterior cell (using ``scipy.ndimage.binary_dilation``
        with a cross-shaped structuring element).
-    2. **Compute Green's functions** — for each boundary point b_k, solve
-       ``L_rect g_k = e_{b_k}`` on the full rectangle using the base spectral
-       solver.  Stores G as a [N_b, Ny*Nx] matrix.
-    3. **Build capacitance matrix** — ``C[k, l] = g_l(b_k)``, i.e. the
-       response at boundary point k due to a unit source at boundary point l.
-       Shape: [N_b, N_b].
-    4. **Invert** — ``C⁻¹ = inv(C)`` via dense NumPy (offline, not JIT-traced).
+    2. **Delegate to gaussx** — :class:`gaussx.CapacitanceSolver` computes the
+       Green's functions (one rectangular base solve per boundary point), the
+       capacitance matrix, and its inverse.
 
     Complexity
     ----------
@@ -203,7 +187,7 @@ def build_capacitance_solver(
     Returns
     -------
     CapacitanceSolver
-        A callable equinox Module with all precomputed arrays baked in.
+        A callable equinox Module wrapping the precomputed gaussx solver.
 
     Raises
     ------
@@ -213,7 +197,7 @@ def build_capacitance_solver(
     from scipy.ndimage import binary_dilation
 
     mask_bool = np.asarray(mask, dtype=bool)
-    Ny, Nx = mask_bool.shape
+    ny, nx = mask_bool.shape
 
     # Inner-boundary: mask-interior cells adjacent to at least one exterior cell
     exterior = ~mask_bool
@@ -222,36 +206,25 @@ def build_capacitance_solver(
     inner_boundary = mask_bool & dilated
 
     j_b, i_b = np.where(inner_boundary)
-    N_b = len(j_b)
-    if N_b == 0:
+    n_b = len(j_b)
+    if n_b == 0:
         raise ValueError(
             "No inner-boundary points found.  Check that the mask has a "
             "non-trivial interior/exterior structure."
         )
 
-    # Helper: one rectangular spectral solve (numpy interface)
-    def _base_solve_np(f_2d: np.ndarray) -> np.ndarray:
-        f_jax = jnp.array(f_2d, dtype=float)
-        result = _spectral_solve(f_jax, dx, dy, lambda_, base_bc)
-        return np.array(result)
+    boundary_indices = jnp.asarray(j_b * nx + i_b)
 
-    # Green's functions: G[k] = solution to L_rect g_k = e_{b_k}
-    green = np.zeros((N_b, Ny, Nx), dtype=float)
-    for k in range(N_b):
-        e_k = np.zeros((Ny, Nx), dtype=float)
-        e_k[j_b[k], i_b[k]] = 1.0
-        green[k] = _base_solve_np(e_k)
+    def base_solve(rhs_flat: Float[Array, " n"]) -> Float[Array, " n"]:
+        rhs_2d = rhs_flat.reshape(ny, nx)
+        return _spectral_solve(rhs_2d, dx, dy, lambda_, base_bc).reshape(ny * nx)
 
-    # Capacitance matrix C[k, l] = green[l] evaluated at boundary point b_k
-    C = green[:, j_b, i_b].T  # [N_b, N_b]
-    C_inv = np.linalg.inv(C)
+    gaussx_solver = _GaussxCapacitanceSolver(base_solve, boundary_indices, ny * nx)
 
     return CapacitanceSolver(
-        _C_inv=jnp.array(C_inv),
-        _green_flat=jnp.array(green.reshape(N_b, Ny * Nx)),
-        _mask=jnp.array(mask_bool, dtype=float),
-        _j_b=jnp.array(j_b),
-        _i_b=jnp.array(i_b),
+        solver=gaussx_solver,
+        mask=jnp.array(mask_bool, dtype=float),
+        shape=(ny, nx),
         dx=float(dx),
         dy=float(dy),
         lambda_=float(lambda_),

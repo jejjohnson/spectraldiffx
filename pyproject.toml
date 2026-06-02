@@ -30,10 +30,18 @@ dependencies = [
     "finitediffx>=0.1.0",
     "kernex>=0.2.0",
     "equinox",
+    "gaussx",
 ]
 
 [project.urls]
 Repository = "https://github.com/jejjohnson/spectraldiffx"
+
+# gaussx provides the generic capacitance / Woodbury correction used by the
+# masked-domain capacitance solver. Until the unified-solver work is released,
+# track the feature branch.
+# TODO: switch to a released version pin once gaussx publishes these APIs.
+[tool.uv.sources]
+gaussx = { git = "https://github.com/jejjohnson/gaussx", branch = "claude/gaussx-solver-refactor-scope-3hTFq" }
 
 [project.optional-dependencies]
 test = [
