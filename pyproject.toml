@@ -37,11 +37,9 @@ dependencies = [
 Repository = "https://github.com/jejjohnson/spectraldiffx"
 
 # gaussx provides the generic capacitance / Woodbury correction used by the
-# masked-domain capacitance solver. Until the unified-solver work is released,
-# track the feature branch.
-# TODO: switch to a released version pin once gaussx publishes these APIs.
+# masked-domain capacitance solver.
 [tool.uv.sources]
-gaussx = { git = "https://github.com/jejjohnson/gaussx", branch = "claude/gaussx-solver-refactor-scope-3hTFq" }
+gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.0.17" }
 
 [project.optional-dependencies]
 test = [
