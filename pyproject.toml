@@ -30,10 +30,16 @@ dependencies = [
     "finitediffx>=0.1.0",
     "kernex>=0.2.0",
     "equinox",
+    "gaussx>=0.0.17",
 ]
 
 [project.urls]
 Repository = "https://github.com/jejjohnson/spectraldiffx"
+
+# gaussx provides the generic capacitance / Woodbury correction used by the
+# masked-domain capacitance solver.
+[tool.uv.sources]
+gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.0.17" }
 
 [project.optional-dependencies]
 test = [
