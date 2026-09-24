@@ -90,6 +90,7 @@ nav:
     - Chebyshev:
       - Grids: api/chebyshev/grids.md
       - Operators: api/chebyshev/operators.md
+      - Transforms: api/chebyshev/transforms.md
       - Filters: api/chebyshev/filters.md
       - Solvers: api/chebyshev/solvers.md
     - Spherical Harmonics:

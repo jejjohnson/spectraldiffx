@@ -207,17 +207,14 @@ def test_chebyshev_grid_2d_check_consistency():
 # ============================================================================
 
 
-@pytest.mark.parametrize("n", [0, 1, 2, 3, 4])
+@pytest.mark.parametrize("n", [0, 1, 2, 3, 4, 24])
 def test_chebyshev_grid_1d_transform_chebyshev_basis(n: int):
     """
-    Forward transform of T_n(x/L) must give coefficient vector with:
-        a[n] = 2 if n == 0, else 1
-        a[k] = 0 for all k != n.
+    Forward transform of T_n(x/L) must give the unit vector e_n:
+        a[n] = 1,  a[k] = 0 for all k != n,
 
-    This tests that the transform correctly identifies each Chebyshev basis
-    function T_n as having a single nonzero spectral coefficient.
-    The T_0 coefficient is 2 because the standard Chebyshev expansion is
-    f = a_0/2 * T_0 + sum_{k>=1} a_k * T_k, so transform(T_0) = a_0 = 2.
+    since the transform returns true Chebyshev coefficients
+    (u = sum_k a_k T_k), including the end modes n = 0 and n = N.
     """
     N = 24
     L = 1.0
@@ -228,7 +225,7 @@ def test_chebyshev_grid_1d_transform_chebyshev_basis(n: int):
     u = jnp.cos(n * jnp.arccos(x / L))
     a = grid.transform(u)
 
-    expected_amplitude = 2.0 if n == 0 else 1.0
+    expected_amplitude = 1.0
     assert jnp.isclose(a[n], expected_amplitude, atol=1e-12), (
         f"T_{n}: a[{n}] = {float(a[n]):.8f}, expected {expected_amplitude}"
     )

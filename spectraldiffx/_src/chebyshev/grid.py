@@ -312,9 +312,12 @@ class ChebyshevGrid1D(eqx.Module):
         Inverse (spectral → physical):
             Recovers nodal values uⱼ from coefficients aₖ.
 
-        Convention:
-            a[k] = FFT-extended(u)[k] / N   (Gauss-Lobatto)
-            a[0] = (1/N) Σⱼ uⱼ,  a[k] = (2/N) Σⱼ uⱼ Tₖ(xⱼ)  k > 0  (Gauss)
+        Convention (both node types):
+            uⱼ = Σₖ aₖ Tₖ(xⱼ/L)
+
+        i.e. ``a`` holds the true Chebyshev coefficients, so a constant
+        field u ≡ c maps to a = [c, 0, …, 0] and Tₙ(x/L) maps to the unit
+        vector eₙ.
 
         Parameters:
         -----------
@@ -336,19 +339,31 @@ class ChebyshevGrid1D(eqx.Module):
 
     @staticmethod
     def _transform_gl(u: Array, N: int, inverse: bool) -> Array:
-        """FFT-based DCT-I Chebyshev transform for Gauss-Lobatto nodes."""
+        """FFT-based DCT-I Chebyshev transform for Gauss-Lobatto nodes.
+
+        Forward:
+            aₖ = (2 / (N cₖ)) Σⱼ'' uⱼ cos(πjk/N),   c₀ = c_N = 2, cₖ = 1 otherwise
+
+        (the double prime halves the j = 0 and j = N terms).  This is a
+        DCT-I, evaluated as a length-2N real FFT of the even extension.
+        Inverse:
+            uⱼ = Σₖ aₖ cos(πjk/N)
+
+        Acts on the last axis of ``u`` (shape ``(..., N+1)``), so batched
+        and tensor-product transforms need no ``vmap``.
+        """
         if not inverse:
-            # Forward: extend symmetrically to length 2N, then rfft
-            # y = [u_0, u_1, ..., u_N, u_{N-1}, ..., u_1]  (length 2N)
-            y = jnp.concatenate([u, u[-2:0:-1]])
-            c = jnp.fft.rfft(y)
-            # Normalize: a[k] = Re(C[k]) / N
-            return c.real / N
+            # Even extension y = [u_0, …, u_N, u_{N-1}, …, u_1] (length 2N)
+            y = jnp.concatenate([u, u[..., -2:0:-1]], axis=-1)
+            a = jnp.fft.rfft(y, axis=-1).real / N
+            # rfft/N gives 2/cₖ-weighted values: halve the two end modes.
+            return a.at[..., 0].multiply(0.5).at[..., N].multiply(0.5)
         else:
-            # Inverse: irfft(N * a)[:N+1]
-            # a has length N+1; irfft produces length 2N
-            y = jnp.fft.irfft(N * u + 0j, n=2 * N)
-            return y[: N + 1]
+            # irfft(X, n=2N)[j] = (1/2N)[X₀ + X_N(−1)ʲ + 2 Σ_{0<k<N} Xₖ cos(πjk/N)],
+            # so X = N·a with the end modes doubled reproduces Σₖ aₖ cos(πjk/N).
+            X = N * u.at[..., 0].multiply(2.0).at[..., N].multiply(2.0)
+            y = jnp.fft.irfft(X + 0j, n=2 * N, axis=-1)
+            return y[..., : N + 1]
 
     @staticmethod
     def _transform_gauss(u: Array, N: int, inverse: bool) -> Array:
@@ -362,22 +377,27 @@ class ChebyshevGrid1D(eqx.Module):
             u[n] = Σₖ a[k] Tₖ(xₙ)   (direct synthesis, no adjustment to a[0])
 
         Dtypes are derived from the input to preserve precision in x64 mode.
+        Acts on the last axis of ``u`` (shape ``(..., N)``).
         """
         # Derive real and complex dtypes from the input to preserve precision.
-        real_dtype = jnp.result_type(u, jnp.float32)
-        complex_dtype = jnp.result_type(real_dtype, jnp.complex64)
+        # NB: ``jnp.result_type(u, jnp.float32)`` would downcast float64 to
+        # float32 (the scalar type is treated as a strong dtype), so promote
+        # the dtypes explicitly.
+        real_dtype = jnp.promote_types(u.dtype, jnp.float32)
+        complex_dtype = jnp.promote_types(real_dtype, jnp.complex64)
 
         if not inverse:
             # Forward DCT-II: a[k] = (2/N) Σⱼ uⱼ cos(πk(2j+1)/(2N))
             # Via FFT: zero-pad, apply half-sample phase shift
-            u_pad = jnp.concatenate([u, jnp.zeros(N, dtype=real_dtype)])  # length 2N
-            Y = jnp.fft.rfft(u_pad)  # complex, length N+1
+            pad = jnp.zeros((*u.shape[:-1], N), dtype=real_dtype)
+            u_pad = jnp.concatenate([u.astype(real_dtype), pad], axis=-1)  # length 2N
+            Y = jnp.fft.rfft(u_pad, axis=-1)  # complex, length N+1
             k_idx = jnp.arange(N + 1, dtype=real_dtype)
             phase = jnp.exp((-1j * jnp.pi * k_idx / (2 * N)).astype(complex_dtype))
             Z = Y * phase  # Z[k] = Σⱼ uⱼ exp(-iπ(2j+1)k/(2N))
-            a = Z[:N].real * (2.0 / N)
+            a = Z[..., :N].real * (2.0 / N)
             # Halve k=0 so that a[0] = (1/N) Σ uⱼ
-            return a.at[0].multiply(0.5)
+            return a.at[..., 0].multiply(0.5)
         else:
             # Inverse (synthesis): u[n] = Σₖ a[k] Tₖ(xₙ)
             # = Re[Σₖ a[k] exp(iπk(2n+1)/(2N))]
@@ -388,9 +408,10 @@ class ChebyshevGrid1D(eqx.Module):
             k_idx = jnp.arange(N, dtype=real_dtype)
             phase = jnp.exp((1j * jnp.pi * k_idx / (2 * N)).astype(complex_dtype))
             h = u.astype(complex_dtype) * phase  # complex, length N
-            H_full = jnp.concatenate([h, jnp.zeros(N, dtype=complex_dtype)])
-            y = jnp.fft.ifft(H_full)
-            return (2 * N * y.real)[:N]
+            pad = jnp.zeros((*u.shape[:-1], N), dtype=complex_dtype)
+            H_full = jnp.concatenate([h, pad], axis=-1)
+            y = jnp.fft.ifft(H_full, axis=-1)
+            return (2 * N * y.real)[..., :N]
 
     # ------------------------------------------------------------------
     # Dealiasing
@@ -412,7 +433,7 @@ class ChebyshevGrid1D(eqx.Module):
         if self.dealias == "2/3":
             cutoff = int(2 * self.N / 3)
             mask = jnp.arange(n_modes) <= cutoff
-            return mask.astype(jnp.float32)
+            return mask.astype(self._D.dtype)
         else:
             return jnp.ones(n_modes)
 
@@ -604,8 +625,8 @@ class ChebyshevGrid2D(eqx.Module):
         if self.dealias == "2/3":
             cutoff_x = int(2 * self.Nx / 3)
             cutoff_y = int(2 * self.Ny / 3)
-            mask_x = (jnp.arange(nx_modes) <= cutoff_x).astype(jnp.float32)
-            mask_y = (jnp.arange(ny_modes) <= cutoff_y).astype(jnp.float32)
+            mask_x = (jnp.arange(nx_modes) <= cutoff_x).astype(self._Dx.dtype)
+            mask_y = (jnp.arange(ny_modes) <= cutoff_y).astype(self._Dy.dtype)
         else:
             mask_x = jnp.ones(nx_modes)
             mask_y = jnp.ones(ny_modes)
@@ -660,6 +681,266 @@ class ChebyshevGrid2D(eqx.Module):
             errors.append(f"Lx must be > 0, got Lx={self.Lx}")
         if self.Ly <= 0:
             errors.append(f"Ly must be > 0, got Ly={self.Ly}")
+        if errors:
+            raise ValueError("\n".join(errors))
+        return True
+
+
+# ============================================================================
+# ChebyshevGrid3D
+# ============================================================================
+
+
+def _transform_along_axis(
+    u: Array, N: int, node_type: str, inverse: bool, axis: int
+) -> Array:
+    """Apply the 1D Chebyshev transform along ``axis`` of an N-d array.
+
+    The 1D kernels act on the last axis, so the target axis is moved there,
+    transformed, and moved back.
+    """
+    kernel = (
+        ChebyshevGrid1D._transform_gl
+        if node_type == "gauss-lobatto"
+        else ChebyshevGrid1D._transform_gauss
+    )
+    u_last = jnp.moveaxis(u, axis, -1)
+    return jnp.moveaxis(kernel(u_last, N, inverse), -1, axis)
+
+
+def _cheb_nodes(N: int, L: float, node_type: str) -> Array:
+    """Physical Chebyshev nodes on [−L, L] (decreasing order)."""
+    if node_type == "gauss-lobatto":
+        return L * jnp.cos(jnp.pi * jnp.arange(N + 1) / N)
+    j = jnp.arange(N)
+    return L * jnp.cos(jnp.pi * (2 * j + 1) / (2 * N))
+
+
+class ChebyshevGrid3D(eqx.Module):
+    """
+    3D Chebyshev grid on [-Lz, Lz] × [-Ly, Ly] × [-Lx, Lx].
+
+    Tensor product of three 1D Chebyshev grids.  Axis ordering mirrors
+    :class:`FourierGrid3D`: physical arrays have shape
+    ``(Nz_pts, Ny_pts, Nx_pts)`` with
+
+        axis 0 : z,   axis 1 : y,   axis 2 : x
+
+    where N*_pts = N*+1 (Gauss–Lobatto) or N* (Gauss).
+
+    Mathematical Framework:
+    -----------------------
+    For u(x, y, z) sampled at the tensor-product nodes u[k, j, i] = u(xᵢ, yⱼ, z_k):
+
+        ∂u/∂x = u ×₂ Dx     (Dx contracted with axis 2)
+        ∂u/∂y = u ×₁ Dy     (Dy contracted with axis 1)
+        ∂u/∂z = u ×₀ Dz     (Dz contracted with axis 0)
+
+    Each 1D matrix is (n+1)×(n+1) for GL nodes, so a single partial
+    derivative costs O(Nx·Ny·Nz·N) rather than the O((Nx·Ny·Nz)²) of a
+    dense Kronecker operator.
+
+    Attributes:
+    -----------
+        Nx, Ny, Nz : int
+            Polynomial degrees in x, y and z.
+        Lx, Ly, Lz : float
+            Physical domain half-lengths.
+        node_type : str
+            Node type for all three directions.
+        dealias : str or None
+            Dealiasing strategy ('2/3' or None).
+
+    Example:
+    --------
+    >>> grid = ChebyshevGrid3D.from_N_L(Nx=8, Ny=8, Nz=8, Lx=1.0, Ly=1.0, Lz=1.0)
+    >>> Z, Y, X = grid.X  # each of shape (9, 9, 9)
+    """
+
+    Nx: int
+    Ny: int
+    Nz: int
+    Lx: float
+    Ly: float
+    Lz: float
+    node_type: str
+    dealias: Literal["2/3", None] | None
+    _Dx: Array
+    _Dy: Array
+    _Dz: Array
+    _Dx2: Array
+    _Dy2: Array
+    _Dz2: Array
+
+    def __init__(
+        self,
+        Nx: int,
+        Ny: int,
+        Nz: int,
+        Lx: float = 1.0,
+        Ly: float = 1.0,
+        Lz: float = 1.0,
+        node_type: Literal["gauss-lobatto", "gauss"] = "gauss-lobatto",
+        dealias: Literal["2/3", None] | None = "2/3",
+    ):
+        self.Nx, self.Ny, self.Nz = Nx, Ny, Nz
+        self.Lx, self.Ly, self.Lz = Lx, Ly, Lz
+        self.node_type = node_type
+        self.dealias = dealias
+
+        diff = (
+            _cheb_diff_matrix_gl
+            if node_type == "gauss-lobatto"
+            else _cheb_diff_matrix_gauss
+        )
+        Dx_np = diff(Nx) / Lx
+        Dy_np = diff(Ny) / Ly
+        Dz_np = diff(Nz) / Lz
+        self._Dx = jnp.array(Dx_np)
+        self._Dy = jnp.array(Dy_np)
+        self._Dz = jnp.array(Dz_np)
+        self._Dx2 = jnp.array(Dx_np @ Dx_np)
+        self._Dy2 = jnp.array(Dy_np @ Dy_np)
+        self._Dz2 = jnp.array(Dz_np @ Dz_np)
+
+    @classmethod
+    def from_N_L(
+        cls,
+        Nx: int,
+        Ny: int,
+        Nz: int,
+        Lx: float,
+        Ly: float,
+        Lz: float,
+        node_type: Literal["gauss-lobatto", "gauss"] = "gauss-lobatto",
+        dealias: Literal["2/3", None] | None = "2/3",
+    ) -> ChebyshevGrid3D:
+        """Initialize from polynomial degrees and domain half-lengths."""
+        return cls(
+            Nx=Nx,
+            Ny=Ny,
+            Nz=Nz,
+            Lx=Lx,
+            Ly=Ly,
+            Lz=Lz,
+            node_type=node_type,
+            dealias=dealias,
+        )
+
+    @property
+    def x(self) -> Float[Array, "Nx1"]:
+        """Physical x-nodes on [-Lx, Lx]."""
+        return _cheb_nodes(self.Nx, self.Lx, self.node_type)
+
+    @property
+    def y(self) -> Float[Array, "Ny1"]:
+        """Physical y-nodes on [-Ly, Ly]."""
+        return _cheb_nodes(self.Ny, self.Ly, self.node_type)
+
+    @property
+    def z(self) -> Float[Array, "Nz1"]:
+        """Physical z-nodes on [-Lz, Lz]."""
+        return _cheb_nodes(self.Nz, self.Lz, self.node_type)
+
+    @property
+    def X(
+        self,
+    ) -> tuple[
+        Float[Array, "Nz1 Ny1 Nx1"],
+        Float[Array, "Nz1 Ny1 Nx1"],
+        Float[Array, "Nz1 Ny1 Nx1"],
+    ]:
+        """
+        3D meshgrid (Z, Y, X), each of shape (Nz_pts, Ny_pts, Nx_pts).
+
+        Indexing: Z[k, j, i] = z[k], Y[k, j, i] = y[j], X[k, j, i] = x[i]
+        (same ordering as :attr:`FourierGrid3D.X`).
+        """
+        Z, Y, X = jnp.meshgrid(self.z, self.y, self.x, indexing="ij")
+        return Z, Y, X
+
+    @property
+    def Dx(self) -> Float[Array, "Nx1 Nx1"]:
+        """x-direction differentiation matrix on [-Lx, Lx]."""
+        return self._Dx
+
+    @property
+    def Dy(self) -> Float[Array, "Ny1 Ny1"]:
+        """y-direction differentiation matrix on [-Ly, Ly]."""
+        return self._Dy
+
+    @property
+    def Dz(self) -> Float[Array, "Nz1 Nz1"]:
+        """z-direction differentiation matrix on [-Lz, Lz]."""
+        return self._Dz
+
+    @property
+    def Dx2(self) -> Float[Array, "Nx1 Nx1"]:
+        """Precomputed x-direction second-derivative matrix: Dx @ Dx."""
+        return self._Dx2
+
+    @property
+    def Dy2(self) -> Float[Array, "Ny1 Ny1"]:
+        """Precomputed y-direction second-derivative matrix: Dy @ Dy."""
+        return self._Dy2
+
+    @property
+    def Dz2(self) -> Float[Array, "Nz1 Nz1"]:
+        """Precomputed z-direction second-derivative matrix: Dz @ Dz."""
+        return self._Dz2
+
+    def dealias_filter(self) -> Float[Array, "Nz1 Ny1 Nx1"]:
+        """
+        3D dealiasing mask in Chebyshev mode space, shape (Nz_pts, Ny_pts, Nx_pts).
+
+        2/3 rule per axis: keep modes kₐ ≤ ⌊2Nₐ/3⌋ in every direction;
+        the 3D mask is the outer product of the three 1D masks.
+        """
+        offset = 1 if self.node_type == "gauss-lobatto" else 0
+        dtype = self._Dx.dtype
+
+        def mask_1d(n: int) -> Array:
+            k = jnp.arange(n + offset)
+            if self.dealias == "2/3":
+                return (k <= int(2 * n / 3)).astype(dtype)
+            return jnp.ones(n + offset, dtype=dtype)
+
+        mz, my, mx = mask_1d(self.Nz), mask_1d(self.Ny), mask_1d(self.Nx)
+        return mz[:, None, None] * my[None, :, None] * mx[None, None, :]
+
+    def transform(self, u: Array, inverse: bool = False) -> Array:
+        """
+        3D Chebyshev transform (tensor product of 1D transforms).
+
+        Forward:  a[kz, ky, kx] such that u = Σ a[kz,ky,kx] T_kz(z/Lz) T_ky(y/Ly) T_kx(x/Lx).
+        The 1D transforms along separate axes commute, so the order of
+        application is immaterial.
+
+        Parameters:
+        -----------
+        u : Array [Nz_pts, Ny_pts, Nx_pts]
+            Physical-space field (forward) or coefficients (inverse).
+        inverse : bool
+            If True, inverse transform.
+
+        Returns:
+        --------
+        Array [Nz_pts, Ny_pts, Nx_pts]
+        """
+        out = u
+        for axis, n in ((2, self.Nx), (1, self.Ny), (0, self.Nz)):
+            out = _transform_along_axis(out, n, self.node_type, inverse, axis)
+        return out
+
+    def check_consistency(self, rtol: float = 1e-5) -> bool:
+        """Verify that Nx, Ny, Nz ≥ 1 and Lx, Ly, Lz > 0."""
+        errors = []
+        for name, n in (("Nx", self.Nx), ("Ny", self.Ny), ("Nz", self.Nz)):
+            if n < 1:
+                errors.append(f"{name} must be ≥ 1, got {name}={n}")
+        for name, length in (("Lx", self.Lx), ("Ly", self.Ly), ("Lz", self.Lz)):
+            if length <= 0:
+                errors.append(f"{name} must be > 0, got {name}={length}")
         if errors:
             raise ValueError("\n".join(errors))
         return True
