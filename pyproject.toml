@@ -155,6 +155,7 @@ ignore = [
     "F821",     # undefined name (false positives with jaxtyping dimension annotations)
     "PLR2004",  # magic value comparison
     "PLR0913",  # too many arguments
+    "PLR0917",  # too many positional arguments (solver/grid APIs are positional by design)
     "ISC001",   # conflicts with formatter
     "RUF001",   # ambiguous unicode in string literals (jaxtyping shape names, math)
     "RUF002",   # ambiguous unicode characters in docstrings (mathematical notation)
