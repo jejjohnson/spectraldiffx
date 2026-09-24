@@ -37,9 +37,12 @@ dependencies = [
 Repository = "https://github.com/jejjohnson/spectraldiffx"
 
 # gaussx provides the generic capacitance / Woodbury correction used by the
-# masked-domain capacitance solver.
+# masked-domain capacitance solver, and the eigenfactorization /
+# Kronecker-sum solves behind the Chebyshev Helmholtz solvers.
+# TODO: replace the rev pin with the gaussx release tag that ships
+# EigenFactorization / kronecker_sum_solve before merging.
 [tool.uv.sources]
-gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.0.17" }
+gaussx = { git = "https://github.com/jejjohnson/gaussx", rev = "1fdece5c3a8c4182682ea4ac389119144b1d2930" }
 
 [project.optional-dependencies]
 test = [

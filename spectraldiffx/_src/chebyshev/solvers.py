@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Literal
 
 import equinox as eqx
+import gaussx
 import jax
 import jax.numpy as jnp
 from jaxtyping import Array, Float, Num
@@ -40,43 +41,6 @@ def _concrete_numpy(a: Array) -> np.ndarray | None:
         return None
 
 
-def _real_eig(E: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Eigendecomposition E = Q·diag(λ)·Q⁻¹ of a matrix with real spectrum.
-
-    The interior Chebyshev second-derivative operators (Dirichlet or
-    Neumann-eliminated) are non-symmetric but have real, distinct,
-    non-positive eigenvalues and well-conditioned eigenvectors
-    (cond(Q) ≈ 3 at N = 256), so the diagonalisation is numerically
-    benign.  Round-off imaginary parts are discarded.
-
-    Returns
-    -------
-    (λ, Q, Q⁻¹) : tuple of ndarray
-        Shapes (n,), (n, n), (n, n).
-    """
-    lam, Q = np.linalg.eig(E)
-    lam, Q = lam.real, Q.real
-    return lam, Q, np.linalg.inv(Q)
-
-
-class _Diagonalisation(eqx.Module):
-    """Precomputed E = Q·diag(λ)·Q⁻¹ (shapes (n,), (n, n), (n, n))."""
-
-    lam: Array
-    Q: Array
-    Qinv: Array
-
-    @classmethod
-    def of(cls, E: np.ndarray) -> _Diagonalisation:
-        """Diagonalise a NumPy matrix with real spectrum (see :func:`_real_eig`)."""
-        lam, Q, Qinv = _real_eig(E)
-        return cls(jnp.asarray(lam), jnp.asarray(Q), jnp.asarray(Qinv))
-
-    def solve_shifted(self, r: Array, inv: Array) -> Array:
-        """Apply Q · diag(inv) · Q⁻¹ to ``r`` (inv = 1/(λ − α) or similar)."""
-        return self.Q @ (inv * (self.Qinv @ r))
-
-
 class _Neumann1D(eqx.Module):
     """Neumann elimination data for the 1D solver.
 
@@ -85,7 +49,7 @@ class _Neumann1D(eqx.Module):
     (N−1,)) marks the constant eigenvector of the eliminated operator.
     """
 
-    diag: _Diagonalisation
+    factorization: gaussx.EigenFactorization
     Kg: Array
     KI: Array
     null: Array
@@ -138,7 +102,8 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         (E − α) u_I = f_I − D²_IB D_BB⁻¹ g,    E := D²_II − D²_IB D_BB⁻¹ D_BI
 
     In both cases E depends only on the grid, so it is diagonalised once
-    at construction, E = Q Λ Q⁻¹, and every solve is
+    at construction (:class:`gaussx.EigenFactorization`), E = Q Λ Q⁻¹, and
+    every solve is
 
         u_I = Q · diag(1 / (λ − α)) · Q⁻¹ · r                         O(N²)
 
@@ -186,7 +151,7 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
     # Boundary columns of D², D²[I, B] with B = {0, N}; shape (N−1, 2)
     _D2_IB: Array | None
     # Dirichlet interior operator E = D²_II
-    _dirichlet: _Diagonalisation | None
+    _dirichlet: gaussx.EigenFactorization | None
     # Neumann-eliminated operator and boundary lifting
     _neumann: _Neumann1D | None
 
@@ -202,13 +167,17 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         I = np.arange(1, N)
         B = np.array([0, N])
         self._D2_IB = jnp.asarray(D2[np.ix_(I, B)])
-        self._dirichlet = _Diagonalisation.of(D2[np.ix_(I, I)])
+        self._dirichlet = gaussx.EigenFactorization.from_matrix(D2[np.ix_(I, I)])
 
         Kg = np.linalg.inv(D[np.ix_(B, B)])
         KI = Kg @ D[np.ix_(B, I)]
-        diag = _Diagonalisation.of(D2[np.ix_(I, I)] - D2[np.ix_(I, B)] @ KI)
-        null = jnp.zeros(N - 1, dtype=bool).at[jnp.argmin(jnp.abs(diag.lam))].set(True)
-        self._neumann = _Neumann1D(diag, jnp.asarray(Kg), jnp.asarray(KI), null)
+        fac = gaussx.EigenFactorization.from_matrix(
+            D2[np.ix_(I, I)] - D2[np.ix_(I, B)] @ KI
+        )
+        null = jnp.zeros(N - 1, dtype=bool).at[jnp.argmin(jnp.abs(fac.eigenvalues))]
+        self._neumann = _Neumann1D(
+            fac, jnp.asarray(Kg), jnp.asarray(KI), null.set(True)
+        )
 
     def solve(
         self,
@@ -276,15 +245,13 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
 
         if bc_type == "dirichlet":
             r = f_I - D2_IB @ g
-            u_I = dirichlet.solve_shifted(r, 1.0 / (dirichlet.lam - alpha))
+            u_I = dirichlet.solve_shifted(r, alpha)
             u_B = g
         else:
             r = f_I - D2_IB @ (neumann.Kg @ g)
-            denom = neumann.diag.lam - alpha
             # α = 0: drop the constant null mode (compatibility projection)
             drop = neumann.null & (alpha == 0)
-            inv = jnp.where(drop, 0.0, 1.0 / jnp.where(drop, 1.0, denom))
-            u_I = neumann.diag.solve_shifted(r, inv)
+            u_I = neumann.factorization.solve_shifted(r, alpha, drop=drop)
             u_B = neumann.Kg @ g - neumann.KI @ u_I
 
         u = jnp.concatenate([u_B[:1], u_I, u_B[1:]])
@@ -406,7 +373,8 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
         Û[j, i] ← Û[j, i] / (λy_j + λx_i − α)
         U = Qy Û Qxᵀ
 
-    i.e. four small matrix–matrix products: O(Nx·Ny·(Nx + Ny)) per call
+    (:func:`gaussx.kronecker_sum_solve`), i.e. four small matrix–matrix
+    products: O(Nx·Ny·(Nx + Ny)) per call
     for any α (vs O((Nx·Ny)³) for the dense Kronecker system), and α may
     be traced.  If the solver is constructed inside a traced function from
     a traced grid, it falls back to the dense Kronecker solve.
@@ -435,8 +403,8 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
 
     grid: ChebyshevGrid2D
     # Interior diagonalisations Ax = Dx²[I, I] (Nx−1), Ay = Dy²[I, I] (Ny−1)
-    _diag_x: _Diagonalisation | None
-    _diag_y: _Diagonalisation | None
+    _diag_x: gaussx.EigenFactorization | None
+    _diag_y: gaussx.EigenFactorization | None
 
     def __init__(self, grid: ChebyshevGrid2D):
         self.grid = grid
@@ -447,8 +415,8 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
         if Dx2 is None or Dy2 is None:
             self._diag_x = self._diag_y = None
             return
-        self._diag_x = _Diagonalisation.of(Dx2[1:-1, 1:-1])
-        self._diag_y = _Diagonalisation.of(Dy2[1:-1, 1:-1])
+        self._diag_x = gaussx.EigenFactorization.from_matrix(Dx2[1:-1, 1:-1])
+        self._diag_y = gaussx.EigenFactorization.from_matrix(Dy2[1:-1, 1:-1])
 
     def solve(
         self,
@@ -517,9 +485,9 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
         lift = Dy2[1:-1, :] @ bc[:, 1:-1] + bc[1:-1, :] @ Dx2[1:-1, :].T
         R = f[1:-1, 1:-1] - lift  # (Ny−1, Nx−1)
 
-        U_hat = dy.Qinv @ R @ dx.Qinv.T
-        U_hat = U_hat / (dy.lam[:, None] + dx.lam[None, :] - alpha)
-        U = dy.Q @ U_hat @ dx.Q.T
+        # Ay U + U Axᵀ − α U = R: a shifted Kronecker sum, Ay on axis 0 (y)
+        # and Ax on axis 1 (x), solved by rotation into the eigenbases.
+        U = gaussx.kronecker_sum_solve((dy, dx), R, alpha)
         return bc.at[1:-1, 1:-1].set(U)
 
     def _solve_dense(self, f: Array, alpha: float | Array, bc: Array) -> Array:
