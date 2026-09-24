@@ -662,8 +662,8 @@ wheels = [
 
 [[package]]
 name = "gaussx"
-version = "0.0.17"
-source = { git = "https://github.com/jejjohnson/gaussx?tag=v0.0.17#156f0c77835e2ad59befd4b5d89257f3dfa49b47" }
+version = "0.0.29"
+source = { git = "https://github.com/jejjohnson/gaussx?tag=v0.0.29#400c23b5e969f0bfdc4eb9429956c218720d3d99" }
 dependencies = [
     { name = "einx" },
     { name = "equinox" },
@@ -1424,11 +1424,11 @@ wheels = [
 
 [[package]]
 name = "matfree"
-version = "0.5.5"
+version = "0.6.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/07/20/7daab1915d09f3618c089db9cf9d645c3da245eeb6236a7281b4759713fe/matfree-0.5.5.tar.gz", hash = "sha256:c478e0ddee7323ec0144fff558459d384a7b9283fd55fd56fc6876bd9701c55b", size = 55624, upload-time = "2025-12-02T09:01:34.401Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/97/ae/ac950986206dcd5d49b8fd7c415d5b8eff11586df99da4b4213aea341ad9/matfree-0.6.2.tar.gz", hash = "sha256:b73b4f04a0f2822c22621696c8ed3b784807c4bc55953961d1918fc3a04e49ac", size = 75589, upload-time = "2026-09-02T05:30:43.409Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/57/1d8c13471272eee62970c9e84e4dbf5dba1278d415b8c2923e4247289574/matfree-0.5.5-py3-none-any.whl", hash = "sha256:9ed7c079ec85c902df6d2c36664faa1b50069284a88ff16f8d55f1f4ba2393d0", size = 34657, upload-time = "2025-12-02T09:01:33.119Z" },
+    { url = "https://files.pythonhosted.org/packages/39/03/48458c50ff59b21e212dac2e4d2c83abe3c6855718e283eb24064675287c/matfree-0.6.2-py3-none-any.whl", hash = "sha256:41592a0188ac3cacd2ae169d146284f9f7d2e5ed94709f790130a2a97da32e92", size = 44028, upload-time = "2026-09-02T05:30:41.901Z" },
 ]
 
 [[package]]
@@ -2971,7 +2971,7 @@ requires-dist = [
     { name = "diffrax", marker = "extra == 'examples'", specifier = ">=0.5.0" },
     { name = "equinox" },
     { name = "finitediffx", specifier = ">=0.1.0" },
-    { name = "gaussx", git = "https://github.com/jejjohnson/gaussx?tag=v0.0.17" },
+    { name = "gaussx", git = "https://github.com/jejjohnson/gaussx?tag=v0.0.29" },
     { name = "hydra-core", marker = "extra == 'exp'", specifier = ">=1.3.2" },
     { name = "ipykernel", marker = "extra == 'docs'", specifier = ">=6.29.0" },
     { name = "ipykernel", marker = "extra == 'jlab'", specifier = ">=6.29.0" },
