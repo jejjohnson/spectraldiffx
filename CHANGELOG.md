@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.0](https://github.com/jejjohnson/spectraldiffx/compare/0.0.13...0.1.0) (2026-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **chebyshev:** ChebyshevGrid1D/2D.transform on Gauss–Lobatto nodes returns a₀ and a_N halved relative to before (true coefficients). Round-trips, filters and dealiasing are unaffected.
+
+### Features
+
+* **chebyshev:** fast diagonalised solvers, 3D + physics operators, coefficient calculus ([#79](https://github.com/jejjohnson/spectraldiffx/issues/79)) ([25aecf4](https://github.com/jejjohnson/spectraldiffx/commit/25aecf422f9dc2c98bd5fa46d74445cc932b049e))
+
+
+### Bug Fixes
+
+* **capacitance:** solve the right PDE for singular bases and periodic edges via gaussx.MaskedOperator ([#124](https://github.com/jejjohnson/spectraldiffx/issues/124)) ([883af7e](https://github.com/jejjohnson/spectraldiffx/commit/883af7e7f2a54fcc26a7df9d102245992a2336dc))
+
 ## [0.0.13](https://github.com/jejjohnson/spectraldiffx/compare/0.0.12...0.0.13) (2026-06-02)
 
 
