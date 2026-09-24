@@ -11,6 +11,8 @@ permissions:
 jobs:
   validate-pr-title:
     name: Validate PR Title
+    # Dependabot titles ("Bump x from 1 to 2") are capitalised by design.
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Validate Conventional Commits
@@ -30,9 +32,6 @@ jobs:
             revert
           requireScope: false
           subjectPattern: ^[a-z].*$
-          # Dependabot titles ("Bump x from 1 to 2") are capitalised.
-          ignoreLabels: |
-            dependencies
           subjectPatternError: |
             Subject must start with a lowercase letter.
             Example: "feat: add new login page"
