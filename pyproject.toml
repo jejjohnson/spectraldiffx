@@ -30,7 +30,7 @@ dependencies = [
     "finitediffx>=0.1.0",
     "kernex>=0.2.0",
     "equinox",
-    "gaussx>=0.0.29",
+    "gaussx>=0.1.0",
 ]
 
 [project.urls]
@@ -40,7 +40,7 @@ Repository = "https://github.com/jejjohnson/spectraldiffx"
 # masked-domain capacitance solver, and the eigenfactorization /
 # Kronecker-sum solves behind the Chebyshev Helmholtz solvers.
 [tool.uv.sources]
-gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.0.29" }
+gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.1.0" }
 
 [project.optional-dependencies]
 test = [

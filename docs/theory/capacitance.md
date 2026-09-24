@@ -71,10 +71,10 @@ $$K = \begin{pmatrix} 0 & 1 & 0 \\ 1 & 1 & 1 \\ 0 & 1 & 0 \end{pmatrix}$$
 3. The inner boundary is the intersection: $\mathcal{B} = \text{dilate}(E, K) \cap M$
 
 !!! info "Offline computation"
-    Inner-boundary detection uses `scipy.ndimage.binary_dilation`, which is a standard
-    NumPy/SciPy operation. This is performed **once** during the offline setup phase and
-    is **not** JIT-traced by JAX. The result is a set of index pairs $(j_b, i_b)$ for
-    $b = 1, \ldots, N_b$.
+    Inner-boundary detection (`gaussx.grid_coupling_indices`, which wraps
+    across the edges for a periodic base) is performed **once** during the
+    offline setup phase and is **not** JIT-traced by JAX. The result is a set of
+    index pairs $(j_b, i_b)$ for $b = 1, \ldots, N_b$.
 
 ![Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi.](../images/demo_capacitance/rhs_and_solution.png)
 
