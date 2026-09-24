@@ -2428,10 +2428,10 @@ provides the systematic correction needed to enforce the boundary condition exac
 </ol>
 <div class="admonition info">
 <p class="admonition-title">Offline computation</p>
-<p>Inner-boundary detection uses <code>scipy.ndimage.binary_dilation</code>, which is a standard
-NumPy/SciPy operation. This is performed <strong>once</strong> during the offline setup phase and
-is <strong>not</strong> JIT-traced by JAX. The result is a set of index pairs <span class="arithmatex">\((j_b, i_b)\)</span> for
-<span class="arithmatex">\(b = 1, \ldots, N_b\)</span>.</p>
+<p>Inner-boundary detection (<code>gaussx.grid_coupling_indices</code>, which wraps
+across the edges for a periodic base) is performed <strong>once</strong> during the
+offline setup phase and is <strong>not</strong> JIT-traced by JAX. The result is a set of
+index pairs <span class="arithmatex">\((j_b, i_b)\)</span> for <span class="arithmatex">\(b = 1, \ldots, N_b\)</span>.</p>
 </div>
 <p><img alt="Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi." src="../../images/demo_capacitance/rhs_and_solution.png" /></p>
 <hr />

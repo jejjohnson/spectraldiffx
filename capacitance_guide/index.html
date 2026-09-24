@@ -2446,9 +2446,10 @@ once) and an <strong>online</strong> phase (cheap, done many times).</p>
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># ----- Online: solve for any rhs (fast) -----</span>
 <a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>       <span class="c1"># rhs is [Ny, Nx], returns [Ny, Nx]</span>
 </code></pre></div>
-<p>The <code>solver</code> object is an <code>eqx.Module</code> (a pure pytree).  It stores the
-pre-inverted capacitance matrix and precomputed Green's functions, so the
-online solve is just one spectral solve plus a matrix-vector product.</p>
+<p>The <code>solver</code> object is an <code>eqx.Module</code> (a pure pytree).  It wraps a
+<a href="https://github.com/jejjohnson/gaussx"><code>gaussx.MaskedOperator</code></a> holding the
+LU-factorised N_b x N_b capacitance matrix, so the online solve is two
+rectangular spectral solves plus an N_b x N_b back-substitution.</p>
 <p><img alt="Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi." src="../images/demo_capacitance/rhs_and_solution.png" /></p>
 <hr />
 <h2 id="building-a-mask">Building a Mask<a class="headerlink" href="#building-a-mask" title="Permanent link">&para;</a></h2>
@@ -2474,8 +2475,9 @@ and <code>False</code> marks exterior (land/wall) cells.</p>
 <p class="admonition-title">Inner boundary detection is automatic</p>
 <p>You do not need to mark boundary points explicitly.  The solver
 automatically detects inner-boundary cells as mask-interior cells that
-are 4-connected to at least one exterior cell (using
-<code>scipy.ndimage.binary_dilation</code> with a cross-shaped structuring element).</p>
+are 4-connected to at least one exterior cell.  With <code>base_bc="fft"</code> the
+neighbourhood wraps around the periodic rectangle, so wet cells on the
+rectangle edge whose wrapped neighbour is dry are treated as boundary.</p>
 </div>
 <hr />
 <h2 id="choosing-base_bc">Choosing <code>base_bc</code><a class="headerlink" href="#choosing-base_bc" title="Permanent link">&para;</a></h2>
@@ -2517,8 +2519,10 @@ rectangular BC).  The choice affects:</p>
 <ul>
 <li><strong>Number of boundary points</strong>: DST may reduce N_b when the mask touches
   rectangle edges (since DST already enforces zero there)</li>
-<li><strong>Null mode handling</strong>: FFT and DCT have a null mode at (0,0) for Poisson;
-  DST does not</li>
+<li><strong>Null mode handling</strong>: FFT and DCT have a null (constant) mode for
+  Poisson; DST does not.  The solver handles it automatically: the constant
+  null vector enters the capacitance system, so the PDE holds exactly in the
+  interior for every base (earlier versions left a uniform residual here)</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">When in doubt, use <code>base_bc=\"dst\"</code></p>
@@ -2527,57 +2531,13 @@ boundary, DST is the most natural choice and often gives the smallest N_b.</p>
 </div>
 <hr />
 <h2 id="memory-and-performance">Memory and Performance<a class="headerlink" href="#memory-and-performance" title="Permanent link">&para;</a></h2>
-<p>The offline phase performs N_b spectral solves and stores a dense Green's
-function matrix.  The online phase is dominated by one spectral solve plus
-an N_b x N_b linear algebra step.</p>
-<table>
-<thead>
-<tr>
-<th>Grid size</th>
-<th>Typical N_b</th>
-<th>Green's matrix size</th>
-<th>Offline time</th>
-<th>Online time</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>32 x 32</td>
-<td>~50-100</td>
-<td>~100 KB</td>
-<td>&lt; 1 sec</td>
-<td>&lt; 1 ms</td>
-</tr>
-<tr>
-<td>64 x 64</td>
-<td>~100-200</td>
-<td>~3 MB</td>
-<td>~1 sec</td>
-<td>~1 ms</td>
-</tr>
-<tr>
-<td>128 x 128</td>
-<td>~200-500</td>
-<td>~30 MB</td>
-<td>~5 sec</td>
-<td>~2 ms</td>
-</tr>
-<tr>
-<td>256 x 256</td>
-<td>~400-1000</td>
-<td>~250 MB</td>
-<td>~30 sec</td>
-<td>~5 ms</td>
-</tr>
-<tr>
-<td>512 x 512</td>
-<td>~800-2000</td>
-<td>~2 GB</td>
-<td>minutes</td>
-<td>~20 ms</td>
-</tr>
-</tbody>
-</table>
+<p>The offline phase performs N_b spectral solves (one column of the
+capacitance matrix each) and keeps only the LU factors of the N_b x N_b
+capacitance matrix; no Green's-function table is stored.  The online phase
+is two spectral solves plus an N_b x N_b back-substitution.</p>
+<p>Measured at 256 x 256 with a circular mask (N_b = 520, <code>base_bc="fft"</code>,
+float64, CPU): build 1.5 s, 4 ms per solve, 3.5 MB stored.  Memory grows as
+O(N_b² + Ny·Nx) and the offline time as O(N_b · Ny·Nx · log(Ny·Nx)).</p>
 <div class="admonition note">
 <p class="admonition-title">Rule of thumb: N_b ~ O(perimeter)</p>
 <p>The number of inner-boundary points scales with the perimeter of the
@@ -2655,28 +2615,23 @@ cheap online solve is repeated.</p>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Large N_b (&gt; ~1000): consider iterative solvers</p>
-<p>The Green's function matrix has size N_b x (Ny * Nx) and the capacitance
-matrix is N_b x N_b (dense).  When N_b exceeds ~1000, memory and offline
+<p>The capacitance matrix is N_b x N_b (dense) and the build needs N_b
+spectral solves.  When N_b exceeds a few thousand, memory and offline
 time become significant.  For very fine grids or domains with long,
 convoluted boundaries, consider using an iterative solver (e.g.,
 preconditioned CG in finitevolX) instead.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">The capacitance matrix is dense</p>
-<p>The inversion <code>C_inv = np.linalg.inv(C)</code> is performed with NumPy at
-build time (not JIT-traced).  This is O(N_b^3) and can be slow for
-large N_b, but it only happens once.</p>
+<p>Its LU factorisation is O(N_b^3) at build time, but it only happens
+once.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Mask must have interior/exterior structure</p>
-<p>If the mask is all <code>True</code> (no exterior cells), <code>build_capacitance_solver</code>
-raises a <code>ValueError</code> because there are no inner-boundary points to
-correct.  In that case, just use the rectangular spectral solver directly.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">scipy is required</p>
-<p>The offline phase uses <code>scipy.ndimage.binary_dilation</code> for boundary
-detection.  Make sure scipy is installed.</p>
+<p><code>build_capacitance_solver</code> raises a <code>ValueError</code> if the mask is all
+<code>True</code> (no exterior cells: just use the rectangular spectral solver
+directly), all <code>False</code> (no wet cells), or so thin that every wet cell is
+on the inner boundary (no interior unknowns).</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Homogeneous BCs only</p>
