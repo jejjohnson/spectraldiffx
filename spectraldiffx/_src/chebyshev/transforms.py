@@ -221,3 +221,159 @@ def dealias_product(
     raise TypeError(
         f"grid must be a ChebyshevGrid1D or ChebyshevGrid2D, got {type(grid).__name__}."
     )
+
+
+# ============================================================================
+# Calculus in Chebyshev-coefficient space
+# ============================================================================
+
+
+def chebyshev_derivative_coeffs(
+    a: Num[Array, "... Nmodes"],
+    L: float = 1.0,
+    order: int = 1,
+) -> Num[Array, "... Nmodes"]:
+    """Differentiate a Chebyshev series in coefficient space (last axis).
+
+    For u(x) = Σₖ aₖ Tₖ(x/L), the derivative u'(x) = Σₖ a'ₖ Tₖ(x/L) has
+
+        cₖ a'ₖ = a'ₖ₊₂ + 2(k+1) aₖ₊₁,     a'_N = a'_{N+1} = 0
+
+    (c₀ = 2, cₖ = 1 otherwise), scaled by 1/L for the map x = L·ξ.
+    Unrolling the recurrence gives a closed form: a'ₖ is a sum over the
+    modes j > k of opposite parity,
+
+        a'ₖ = (2 / (cₖ L)) Σ_{j>k, j+k odd} j·aⱼ
+
+    which we evaluate with two reverse cumulative sums (one per parity),
+    so the whole derivative costs O(N) and parallelises on accelerators —
+    no sequential ``scan`` is needed.
+
+    Parameters
+    ----------
+    a : Num[Array, "... Nmodes"]
+        Chebyshev coefficients along the last axis (e.g. from
+        :meth:`ChebyshevGrid1D.transform`).
+    L : float
+        Domain half-length.  Default 1.0.
+    order : int
+        Derivative order (≥ 0).
+
+    Returns
+    -------
+    Num[Array, "... Nmodes"]
+        Coefficients of the ``order``-th derivative (same shape as ``a``;
+        the top ``order`` modes are zero).
+
+    Examples
+    --------
+    d/dx T₃(x) = 3 U₂(x) = 3 (T₀ + 2 T₂):
+
+    >>> import jax.numpy as jnp
+    >>> a = jnp.array([0.0, 0.0, 0.0, 1.0, 0.0])
+    >>> chebyshev_derivative_coeffs(a)  # ≈ [3, 0, 6, 0, 0]
+    """
+    if order < 0:
+        raise ValueError(f"order must be >= 0, got {order}")
+    n_modes = a.shape[-1]
+    k = jnp.arange(n_modes)
+    odd = (k % 2).astype(bool)
+    c = jnp.where(k == 0, 2.0, 1.0)
+
+    def rev_cumsum(v: Array) -> Array:
+        return jnp.flip(jnp.cumsum(jnp.flip(v, axis=-1), axis=-1), axis=-1)
+
+    out = a
+    for _ in range(order):
+        b = 2.0 * k * out  # 2j·aⱼ
+        s_odd = rev_cumsum(jnp.where(odd, b, 0.0))  # Σ_{j≥k, j odd} 2j aⱼ
+        s_even = rev_cumsum(jnp.where(odd, 0.0, b))  # Σ_{j≥k, j even} 2j aⱼ
+        # Mode k collects the opposite-parity tail (j = k is excluded
+        # automatically because it has the same parity as k).
+        out = jnp.where(odd, s_even, s_odd) / (c * L)
+    return out
+
+
+def chebyshev_antiderivative_coeffs(
+    a: Num[Array, "... Nmodes"],
+    L: float = 1.0,
+) -> Num[Array, "... Nmodes"]:
+    """Indefinite integral of a Chebyshev series, vanishing at x = −L.
+
+    Uses ∫T₀ = T₁, ∫T₁ = T₂/4 and, for k ≥ 2,
+
+        ∫Tₖ dξ = T_{k+1} / (2(k+1)) − T_{k−1} / (2(k−1))
+
+    so that the antiderivative U(x) = Σₖ Bₖ Tₖ(x/L) has
+
+        Bₖ = L (cₖ₋₁ aₖ₋₁ − aₖ₊₁) / (2k),     k ≥ 1   (c₀ = 2, a_{N+1} = 0)
+
+    and B₀ is fixed by U(−L) = Σₖ Bₖ (−1)ᵏ = 0.
+
+    The exact antiderivative has degree N+1; its top mode
+    B_{N+1} = L a_N / (2(N+1)) is dropped to keep the array shape, which
+    is exact whenever a_N = 0 (e.g. for any dealiased or resolved field).
+
+    Parameters
+    ----------
+    a : Num[Array, "... Nmodes"]
+        Chebyshev coefficients along the last axis.
+    L : float
+        Domain half-length.
+
+    Returns
+    -------
+    Num[Array, "... Nmodes"]
+        Coefficients of U(x) = ∫_{−L}^{x} u(s) ds.
+
+    Examples
+    --------
+    ∫_{−1}^{x} 1 ds = x + 1 = T₀ + T₁:
+
+    >>> import jax.numpy as jnp
+    >>> chebyshev_antiderivative_coeffs(jnp.array([1.0, 0.0, 0.0]))  # ≈ [1, 1, 0]
+    """
+    n_modes = a.shape[-1]
+    k = jnp.arange(n_modes)
+    c = jnp.where(k == 0, 2.0, 1.0)
+    zero = jnp.zeros_like(a[..., :1])
+    a_prev = jnp.concatenate([zero, (c * a)[..., :-1]], axis=-1)  # cₖ₋₁ aₖ₋₁
+    a_next = jnp.concatenate([a[..., 1:], zero], axis=-1)  # aₖ₊₁
+    k_safe = jnp.where(k == 0, 1, k)
+    B = jnp.where(k == 0, 0.0, L * (a_prev - a_next) / (2.0 * k_safe))
+    sign = jnp.where(k % 2 == 0, 1.0, -1.0)
+    B0 = -jnp.sum(B * sign, axis=-1)
+    return B.at[..., 0].set(B0)
+
+
+def chebyshev_integral_coeffs(
+    a: Num[Array, "... Nmodes"],
+    L: float = 1.0,
+) -> Num[Array, "..."]:
+    """Definite integral ∫_{−L}^{L} u(x) dx from Chebyshev coefficients.
+
+    Since ∫_{−1}^{1} Tₖ(ξ) dξ = 2 / (1 − k²) for even k and 0 for odd k,
+
+        ∫_{−L}^{L} u dx = L Σ_{k even} 2 aₖ / (1 − k²)
+
+    On Gauss–Lobatto nodes this is identical to Clenshaw–Curtis
+    quadrature; on Gauss nodes it is the corresponding Fejér-type rule.
+
+    Parameters
+    ----------
+    a : Num[Array, "... Nmodes"]
+        Chebyshev coefficients along the last axis.
+    L : float
+        Domain half-length.
+
+    Returns
+    -------
+    Num[Array, "..."]
+        The integral, reducing the last axis.
+    """
+    n_modes = a.shape[-1]
+    k = jnp.arange(n_modes)
+    even = k % 2 == 0
+    k2m1 = jnp.where(even, 1.0 - k * k, 1.0)
+    w = jnp.where(even, 2.0 / k2m1, 0.0)
+    return L * jnp.sum(a * w, axis=-1)

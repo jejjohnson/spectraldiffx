@@ -104,6 +104,12 @@ $$c_{n-1} \hat{u}'_{n-1} = \hat{u}'_{n+1} + 2n \hat{u}_n, \quad n = N, N-1, \ldo
 
 starting from $\hat{u}'_N = 0$ and $\hat{u}'_{N+1} = 0$. This avoids matrix-vector products and runs in $O(N)$ operations after the initial DCT.
 
+Unrolling the recurrence gives the closed form
+
+$$\hat{u}'_k = \frac{2}{c_k} \sum_{\substack{j > k \\ j + k \text{ odd}}} j\, \hat{u}_j,$$
+
+i.e. a reverse cumulative sum over each parity class. `spectraldiffx` evaluates it this way (`chebyshev_derivative_coeffs`), so the step is parallel rather than a sequential scan. Pass `method="fft"` to `ChebyshevDerivative1D/2D/3D` to use this path; the default `"matrix"` path is usually faster for moderate $N$ because a dense mat-vec maps well onto BLAS.
+
 **Full algorithm:**
 
 1. $\hat{u}_n \leftarrow \text{DCT}(u_j)$
@@ -140,11 +146,17 @@ The 1D Helmholtz equation with Dirichlet BCs:
 
 $$u'' - \alpha u = f, \quad u(-1) = a, \quad u(1) = b$$
 
-In Chebyshev pseudospectral form, this becomes a banded linear system:
+In Chebyshev pseudospectral form, this becomes a (dense) linear system:
 
 $$(\mathbf{D}^2 - \alpha \mathbf{I})\mathbf{u} = \mathbf{f}$$
 
-with rows $0$ and $N$ replaced by the boundary conditions. The system is solved once (or LU-factored for repeated solves with different $f$).
+with rows $0$ and $N$ replaced by the boundary conditions.
+
+Rather than factorising this system on every call, `spectraldiffx` eliminates the two boundary unknowns (directly for Dirichlet, via the boundary rows of $\mathbf{D}$ for Neumann) and diagonalises the remaining $(N-1)\times(N-1)$ interior operator once, $\mathbf{E} = \mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^{-1}$. $\mathbf{E}$ depends only on the grid, so each solve is
+
+$$\mathbf{u}_I = \mathbf{Q}\,(\boldsymbol{\Lambda} - \alpha)^{-1}\,\mathbf{Q}^{-1}\mathbf{r},$$
+
+an $O(N^2)$ operation for *any* $\alpha$ — which may even be a traced JAX value. The eigenvalues are real and non-positive and $\mathbf{Q}$ is well conditioned, so this is as accurate as a direct solve. For pure-Neumann Poisson ($\alpha = 0$) the constant eigenmode is dropped and the gauge $u_{N/2} = 0$ is imposed.
 
 For $\alpha = 0$ this reduces to the **Chebyshev Poisson solver**.
 
@@ -168,7 +180,7 @@ The 2D Laplacian is:
 
 $$\nabla^2 = \mathbf{D}_x^2 + \mathbf{D}_y^2$$
 
-For separable problems (e.g., rectangular domains with separable BCs), the 2D Helmholtz equation reduces to a sequence of 1D solves via the **matrix diagonalisation method**, reducing cost from $O(N^4)$ to $O(N^3)$.
+For separable problems (e.g., rectangular domains with separable BCs), the 2D Helmholtz equation reduces to a sequence of 1D solves via the **matrix diagonalisation method**, reducing cost from $O(N^4)$ to $O(N^3)$. `ChebyshevHelmholtzSolver2D` uses exactly this (Haidvogel & Zang, 1979): the interior $\mathbf{D}_x^2$ and $\mathbf{D}_y^2$ blocks are diagonalised once, and each Dirichlet solve is four small matrix products plus a pointwise division by $\lambda^y_j + \lambda^x_i - \alpha$.
 
 ---
 
@@ -177,3 +189,4 @@ For separable problems (e.g., rectangular domains with separable BCs), the 2D He
 - Trefethen, L.N. (2000). *Spectral Methods in MATLAB*. SIAM.
 - Boyd, J.P. (2001). *Chebyshev and Fourier Spectral Methods*. Dover.
 - Canuto, C., et al. (2006). *Spectral Methods: Fundamentals in Single Domains*. Springer.
+- Haidvogel, D.B. & Zang, T. (1979). The accurate solution of Poisson's equation by expansion in Chebyshev polynomials. *J. Comput. Phys.* 30, 167–180.

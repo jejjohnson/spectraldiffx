@@ -7,8 +7,10 @@ from __future__ import annotations
 from typing import Literal
 
 import equinox as eqx
+import jax
 import jax.numpy as jnp
 from jaxtyping import Array, Float, Num
+import numpy as np
 
 from .grid import ChebyshevGrid1D, ChebyshevGrid2D
 
@@ -17,6 +19,86 @@ from .grid import ChebyshevGrid1D, ChebyshevGrid2D
 #   "Nypts Nxpts"  — 2D Chebyshev grid (Ny+1, Nx+1 for GL)
 
 BCType = Literal["dirichlet", "neumann"]
+
+
+# ============================================================================
+# Construction-time helpers (NumPy, run once outside JIT)
+# ============================================================================
+
+
+def _concrete_numpy(a: Array) -> np.ndarray | None:
+    """Return ``a`` as a NumPy array, or ``None`` if it is a JAX tracer.
+
+    Solvers precompute eigendecompositions with NumPy at construction time.
+    When a solver is built *inside* a traced function from a traced grid,
+    the matrices are unavailable and the solver falls back to a dense
+    per-call solve.
+    """
+    try:
+        return np.asarray(a)
+    except (TypeError, jax.errors.TracerArrayConversionError):
+        return None
+
+
+def _real_eig(E: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Eigendecomposition E = Q·diag(λ)·Q⁻¹ of a matrix with real spectrum.
+
+    The interior Chebyshev second-derivative operators (Dirichlet or
+    Neumann-eliminated) are non-symmetric but have real, distinct,
+    non-positive eigenvalues and well-conditioned eigenvectors
+    (cond(Q) ≈ 3 at N = 256), so the diagonalisation is numerically
+    benign.  Round-off imaginary parts are discarded.
+
+    Returns
+    -------
+    (λ, Q, Q⁻¹) : tuple of ndarray
+        Shapes (n,), (n, n), (n, n).
+    """
+    lam, Q = np.linalg.eig(E)
+    lam, Q = lam.real, Q.real
+    return lam, Q, np.linalg.inv(Q)
+
+
+class _Diagonalisation(eqx.Module):
+    """Precomputed E = Q·diag(λ)·Q⁻¹ (shapes (n,), (n, n), (n, n))."""
+
+    lam: Array
+    Q: Array
+    Qinv: Array
+
+    @classmethod
+    def of(cls, E: np.ndarray) -> _Diagonalisation:
+        """Diagonalise a NumPy matrix with real spectrum (see :func:`_real_eig`)."""
+        lam, Q, Qinv = _real_eig(E)
+        return cls(jnp.asarray(lam), jnp.asarray(Q), jnp.asarray(Qinv))
+
+    def solve_shifted(self, r: Array, inv: Array) -> Array:
+        """Apply Q · diag(inv) · Q⁻¹ to ``r`` (inv = 1/(λ − α) or similar)."""
+        return self.Q @ (inv * (self.Qinv @ r))
+
+
+class _Neumann1D(eqx.Module):
+    """Neumann elimination data for the 1D solver.
+
+    Boundary rows D_BB u_B + D_BI u_I = g give u_B = K_g g − K_I u_I with
+    K_g = D_BB⁻¹ (2, 2) and K_I = D_BB⁻¹ D_BI (2, N−1).  ``null`` (bool,
+    (N−1,)) marks the constant eigenvector of the eliminated operator.
+    """
+
+    diag: _Diagonalisation
+    Kg: Array
+    KI: Array
+    null: Array
+
+
+def _maybe_check_alpha(alpha: float | Array) -> None:
+    """Raise if ``alpha`` is concrete and negative (skip for tracers)."""
+    try:
+        value = float(alpha)
+    except (TypeError, jax.errors.ConcretizationTypeError):
+        return
+    if value < 0:
+        raise ValueError(f"alpha must be >= 0, got {value}")
 
 
 # ============================================================================
@@ -38,30 +120,45 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
 
     For α = 0 this reduces to Poisson.
 
-    Method — Boundary-Row Replacement
-    ---------------------------------
+    Method — Boundary Elimination + Matrix Diagonalisation
+    -------------------------------------------------------
     On Gauss–Lobatto nodes the endpoints x[0]=+L and x[N]=−L are collocation
-    points, so we discretise as
+    points.  Split the nodes into interior I = {1, …, N−1} and boundary
+    B = {0, N}.  Collocating D²u − αu = f at the interior nodes gives
 
-        A u = b,   A = D² − α·I,   b = f
+        (D²_II − α) u_I + D²_IB u_B = f_I                            (1)
 
-    and then overwrite rows 0 and N with the boundary equations:
+    Dirichlet: u_B = g is given, so
 
-        Dirichlet : row 0 ← eᵀ₀,       b[0]  ← bc_right
-                    row N ← eᵀ_N,      b[N]  ← bc_left
-        Neumann   : row 0 ← D[0, :],   b[0]  ← bc_right
-                    row N ← D[N, :],   b[N]  ← bc_left
+        (D²_II − α) u_I = f_I − D²_IB g,       E := D²_II
 
-    The resulting (N+1)×(N+1) linear system is solved with :func:`jnp.linalg.solve`.
+    Neumann: the boundary rows D_BB u_B + D_BI u_I = g give
+    u_B = D_BB⁻¹ (g − D_BI u_I); substituting into (1),
 
-    Gauss-node grids do not include the endpoints, so this boundary-row
-    method is inapplicable; the constructor validates the grid and raises.
+        (E − α) u_I = f_I − D²_IB D_BB⁻¹ g,    E := D²_II − D²_IB D_BB⁻¹ D_BI
 
-    Pure Neumann + Poisson (α = 0) is only solvable up to a constant
-    (constant nullspace of the discretisation); the solver pins the gauge
-    inside the linear system by replacing one interior equation with the
-    point constraint ``u[N//2] = 0``, so the solve is well-posed.  Shift
-    the returned field by any constant if a different gauge is needed.
+    In both cases E depends only on the grid, so it is diagonalised once
+    at construction, E = Q Λ Q⁻¹, and every solve is
+
+        u_I = Q · diag(1 / (λ − α)) · Q⁻¹ · r                         O(N²)
+
+    for *any* α — no per-call O(N³) factorisation, and α may be a traced
+    JAX value (so the solve is ``jit``/``grad``-compatible in α).  E has
+    real, non-positive eigenvalues and well-conditioned eigenvectors, so
+    the diagonalisation is as accurate as a direct LU solve.
+
+    Pure Neumann + Poisson (α = 0) is only solvable up to a constant: the
+    Neumann E has an exact null vector (the constant).  The solver drops
+    that eigen-component (i.e. projects out the incompatible part of f)
+    and then fixes the gauge u[N//2] = 0.  Shift the returned field by any
+    constant if a different gauge is needed.
+
+    Gauss-node grids do not include the endpoints, so this method is
+    inapplicable; ``solve`` validates the grid and raises.
+
+    If the solver is constructed inside a traced function from a traced
+    grid (so its matrices cannot be read at construction time), it falls
+    back to an equivalent dense boundary-row solve on every call.
 
     Attributes
     ----------
@@ -86,13 +183,39 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
     """
 
     grid: ChebyshevGrid1D
+    # Boundary columns of D², D²[I, B] with B = {0, N}; shape (N−1, 2)
+    _D2_IB: Array | None
+    # Dirichlet interior operator E = D²_II
+    _dirichlet: _Diagonalisation | None
+    # Neumann-eliminated operator and boundary lifting
+    _neumann: _Neumann1D | None
+
+    def __init__(self, grid: ChebyshevGrid1D):
+        self.grid = grid
+        D = _concrete_numpy(grid.D) if grid.node_type == "gauss-lobatto" else None
+        if D is None or grid.N < 2:
+            self._D2_IB = self._dirichlet = self._neumann = None
+            return
+
+        N = grid.N
+        D2 = D @ D
+        I = np.arange(1, N)
+        B = np.array([0, N])
+        self._D2_IB = jnp.asarray(D2[np.ix_(I, B)])
+        self._dirichlet = _Diagonalisation.of(D2[np.ix_(I, I)])
+
+        Kg = np.linalg.inv(D[np.ix_(B, B)])
+        KI = Kg @ D[np.ix_(B, I)]
+        diag = _Diagonalisation.of(D2[np.ix_(I, I)] - D2[np.ix_(I, B)] @ KI)
+        null = jnp.zeros(N - 1, dtype=bool).at[jnp.argmin(jnp.abs(diag.lam))].set(True)
+        self._neumann = _Neumann1D(diag, jnp.asarray(Kg), jnp.asarray(KI), null)
 
     def solve(
         self,
         f: Num[Array, "Npts"],
-        alpha: float = 0.0,
-        bc_left: float = 0.0,
-        bc_right: float = 0.0,
+        alpha: float | Float[Array, ""] = 0.0,
+        bc_left: float | Float[Array, ""] = 0.0,
+        bc_right: float | Float[Array, ""] = 0.0,
         bc_type: BCType = "dirichlet",
     ) -> Float[Array, "Npts"]:
         """Solve (d²/dx² − α) u = f on [−L, L] with Dirichlet or Neumann BCs.
@@ -101,15 +224,17 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         ----------
         f : Num[Array, "Npts"]
             Source term sampled at the N+1 Gauss–Lobatto nodes
-            (ordered x[0]=+L, …, x[N]=−L).
-        alpha : float
+            (ordered x[0]=+L, …, x[N]=−L).  The boundary entries f[0] and
+            f[N] are ignored (they are replaced by the BCs).
+        alpha : float or scalar Array
             Helmholtz parameter (≥ 0).  α=0 gives the Poisson equation.
-        bc_left : float
+            May be a traced value.
+        bc_left : float or scalar Array
             BC value at x = −L.  Dirichlet: u(−L); Neumann: u'(−L).
-        bc_right : float
+        bc_right : float or scalar Array
             BC value at x = +L.  Dirichlet: u(+L); Neumann: u'(+L).
         bc_type : {"dirichlet", "neumann"}
-            Boundary-condition flavour.
+            Boundary-condition flavour (static).
 
         Returns
         -------
@@ -120,12 +245,12 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         ------
         ValueError
             If the grid uses Gauss nodes, the length of ``f`` is wrong,
-            or ``alpha < 0``.
+            or a concrete ``alpha`` is negative.
         """
         if self.grid.node_type != "gauss-lobatto":
             raise ValueError(
                 "ChebyshevHelmholtzSolver1D requires 'gauss-lobatto' nodes — "
-                "the boundary-row method evaluates u (or u') at the endpoints "
+                "the boundary conditions evaluate u (or u') at the endpoints "
                 "x[0]=+L and x[N]=−L, which Gauss nodes exclude. Got "
                 f"node_type='{self.grid.node_type}'."
             )
@@ -134,44 +259,68 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
                 f"f must have length N+1={self.grid.N + 1} (Gauss–Lobatto), "
                 f"got length {f.shape[0]}."
             )
-        if alpha < 0:
-            raise ValueError(f"alpha must be >= 0, got {alpha}")
+        _maybe_check_alpha(alpha)
         if bc_type not in ("dirichlet", "neumann"):
             raise ValueError(
                 f"bc_type must be 'dirichlet' or 'neumann', got {bc_type!r}"
             )
+        D2_IB, dirichlet, neumann = self._D2_IB, self._dirichlet, self._neumann
+        if D2_IB is None or dirichlet is None or neumann is None:
+            return self._solve_dense(f, alpha, bc_left, bc_right, bc_type)
 
-        D = self.grid.D
         N = self.grid.N
-
-        # A = D² − α·I  (interior operator; boundary rows replaced below)
-        A = D @ D - alpha * jnp.eye(N + 1)
-        b = f
+        g = jnp.stack([jnp.asarray(bc_right), jnp.asarray(bc_left)]).astype(
+            D2_IB.dtype
+        )  # (2,), ordered like B = {0, N}
+        f_I = f[1:N]
 
         if bc_type == "dirichlet":
-            # Row 0 → u(+L) = bc_right, row N → u(−L) = bc_left
+            r = f_I - D2_IB @ g
+            u_I = dirichlet.solve_shifted(r, 1.0 / (dirichlet.lam - alpha))
+            u_B = g
+        else:
+            r = f_I - D2_IB @ (neumann.Kg @ g)
+            denom = neumann.diag.lam - alpha
+            # α = 0: drop the constant null mode (compatibility projection)
+            drop = neumann.null & (alpha == 0)
+            inv = jnp.where(drop, 0.0, 1.0 / jnp.where(drop, 1.0, denom))
+            u_I = neumann.diag.solve_shifted(r, inv)
+            u_B = neumann.Kg @ g - neumann.KI @ u_I
+
+        u = jnp.concatenate([u_B[:1], u_I, u_B[1:]])
+        if bc_type == "neumann":
+            # Gauge for the pure-Neumann Poisson case: u[N//2] = 0.
+            u = jnp.where(alpha == 0, u - u[N // 2], u)
+        return u
+
+    def _solve_dense(
+        self,
+        f: Array,
+        alpha: float | Array,
+        bc_left: float | Array,
+        bc_right: float | Array,
+        bc_type: str,
+    ) -> Array:
+        """Dense boundary-row solve, used when the grid is traced.
+
+        A = D² − α·I with rows 0 and N replaced by the boundary equations
+        (identity rows for Dirichlet, rows of D for Neumann); O(N³) per call.
+        """
+        D = self.grid.D
+        N = self.grid.N
+        A = D @ D - alpha * jnp.eye(N + 1)
+        if bc_type == "dirichlet":
             A = A.at[0, :].set(0.0).at[0, 0].set(1.0)
             A = A.at[N, :].set(0.0).at[N, N].set(1.0)
-        else:  # neumann
-            # Row 0 → u'(+L) = D[0,:]·u, row N → u'(−L) = D[N,:]·u
-            A = A.at[0, :].set(D[0, :])
-            A = A.at[N, :].set(D[N, :])
-        b = b.at[0].set(bc_right)
-        b = b.at[N].set(bc_left)
-
-        if bc_type == "neumann" and alpha == 0.0:
-            # Pure-Neumann Poisson is rank-deficient (constant nullspace:
-            # D²·1 = 0 and D·1 = 0, so A·1 = 0).  Pin a gauge inside the
-            # linear system by replacing one interior equation with
-            # u[middle] = 0.  This removes the singularity before the solve,
-            # making it robust across RHS / grid sizes.  The user can shift
-            # the result by any constant afterwards if a different gauge is
-            # needed.
+        else:
+            A = A.at[0, :].set(D[0, :]).at[N, :].set(D[N, :])
+        b = f.at[0].set(bc_right).at[N].set(bc_left)
+        if bc_type == "neumann":
+            # Pure-Neumann Poisson: replace one interior equation by u[mid] = 0.
             mid = N // 2
-            gauge_row = jnp.zeros(N + 1).at[mid].set(1.0)
-            A = A.at[mid, :].set(gauge_row)
-            b = b.at[mid].set(0.0)
-
+            pinned = A.at[mid, :].set(jnp.zeros(N + 1).at[mid].set(1.0))
+            A = jnp.where(alpha == 0, pinned, A)
+            b = jnp.where(alpha == 0, b.at[mid].set(0.0), b)
         return jnp.linalg.solve(A, b)
 
 
@@ -179,6 +328,8 @@ class ChebyshevPoissonSolver1D(eqx.Module):
     """1D Chebyshev Poisson solver: d²u/dx² = f on [−L, L].
 
     Convenience wrapper around :class:`ChebyshevHelmholtzSolver1D` with α = 0.
+    The wrapped solver (and its precomputed eigendecomposition) is built
+    once at construction.
 
     Attributes
     ----------
@@ -195,17 +346,21 @@ class ChebyshevPoissonSolver1D(eqx.Module):
     """
 
     grid: ChebyshevGrid1D
+    _helmholtz: ChebyshevHelmholtzSolver1D
+
+    def __init__(self, grid: ChebyshevGrid1D):
+        self.grid = grid
+        self._helmholtz = ChebyshevHelmholtzSolver1D(grid)
 
     def solve(
         self,
         f: Num[Array, "Npts"],
-        bc_left: float = 0.0,
-        bc_right: float = 0.0,
+        bc_left: float | Float[Array, ""] = 0.0,
+        bc_right: float | Float[Array, ""] = 0.0,
         bc_type: BCType = "dirichlet",
     ) -> Float[Array, "Npts"]:
         """Solve d²u/dx² = f with Dirichlet or Neumann BCs."""
-        inner = ChebyshevHelmholtzSolver1D(grid=self.grid)
-        return inner.solve(
+        return self._helmholtz.solve(
             f,
             alpha=0.0,
             bc_left=bc_left,
@@ -230,25 +385,36 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
     as four 1D arrays (top, bottom, left, right), evaluated at the
     Gauss–Lobatto nodes along each edge.
 
-    Method — Vectorised Boundary-Row Replacement
-    --------------------------------------------
-    Let Dx, Dy be the 1D Chebyshev differentiation matrices.  The 2D
-    Helmholtz operator in the Kronecker form acting on vec(u) is
+    Method — Matrix Diagonalisation (Haidvogel & Zang 1979)
+    -------------------------------------------------------
+    With u[j, i] = u(xᵢ, yⱼ), the collocated operator is
 
-        A = Iᵧ ⊗ Dx²  +  Dy² ⊗ Iₓ  − α·I
+        ∇²u = Dy² · u + u · Dx²ᵀ
 
-    where ``vec(u) = u.reshape(-1)`` with row-major (C) ordering.  The
-    boundary rows of A are overwritten with the identity so that the
-    corresponding unknowns equal the supplied BC values.  The dense
-    (Nₓ+1)(Nᵧ+1) system is factored once per call with
-    :func:`jnp.linalg.solve`.
+    Split each direction into interior (I) and boundary (B) nodes.  The
+    boundary values u_B are known, so the interior unknowns U = u[I, I]
+    satisfy the Sylvester equation
+
+        Ay U + U Axᵀ − α U = R,
+        Ay = Dy²[I, I],   Ax = Dx²[I, I],
+        R  = f[I, I] − Dy²[I, B] u[B, I] − u[I, B] Dx²[I, B]ᵀ
+
+    (the corner values never enter).  Diagonalising the 1D operators once
+    at construction, Ay = Qy Λy Qy⁻¹ and Ax = Qx Λx Qx⁻¹, the solve is
+
+        Û = Qy⁻¹ R Qx⁻ᵀ
+        Û[j, i] ← Û[j, i] / (λy_j + λx_i − α)
+        U = Qy Û Qxᵀ
+
+    i.e. four small matrix–matrix products: O(Nx·Ny·(Nx + Ny)) per call
+    for any α (vs O((Nx·Ny)³) for the dense Kronecker system), and α may
+    be traced.  If the solver is constructed inside a traced function from
+    a traced grid, it falls back to the dense Kronecker solve.
 
     Notes
     -----
-    • The system size is (Nₓ+1)(Nᵧ+1); for Nₓ = Nᵧ ≈ 32 the dense solve
-      is very fast on GPU but becomes costly (~O(N⁶)) beyond ≈ 48.
     • For pure-Neumann Poisson in 2D we do not provide a solver here; use
-      a Fourier backend or ADD a tau-style compatibility correction.
+      a Fourier backend.
 
     Attributes
     ----------
@@ -268,11 +434,26 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
     """
 
     grid: ChebyshevGrid2D
+    # Interior diagonalisations Ax = Dx²[I, I] (Nx−1), Ay = Dy²[I, I] (Ny−1)
+    _diag_x: _Diagonalisation | None
+    _diag_y: _Diagonalisation | None
+
+    def __init__(self, grid: ChebyshevGrid2D):
+        self.grid = grid
+        Dx2 = Dy2 = None
+        if grid.node_type == "gauss-lobatto" and min(grid.Nx, grid.Ny) >= 2:
+            Dx2 = _concrete_numpy(grid.Dx2)
+            Dy2 = _concrete_numpy(grid.Dy2)
+        if Dx2 is None or Dy2 is None:
+            self._diag_x = self._diag_y = None
+            return
+        self._diag_x = _Diagonalisation.of(Dx2[1:-1, 1:-1])
+        self._diag_y = _Diagonalisation.of(Dy2[1:-1, 1:-1])
 
     def solve(
         self,
         f: Num[Array, "Nypts Nxpts"],
-        alpha: float = 0.0,
+        alpha: float | Float[Array, ""] = 0.0,
         bc_top: float | Num[Array, "Nxpts"] = 0.0,
         bc_bottom: float | Num[Array, "Nxpts"] = 0.0,
         bc_left: float | Num[Array, "Nypts"] = 0.0,
@@ -287,12 +468,14 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
             right  col is grid.x[0]     (x = +Lx)   at axis 1, index 0
             left   col is grid.x[-1]    (x = −Lx)   at axis 1, index Nₓ
 
+        At the four corners the left/right values take precedence.
+
         Parameters
         ----------
         f : Num[Array, "Nypts Nxpts"]
-            Source term at the 2D GL nodes.
-        alpha : float
-            Helmholtz parameter (≥ 0).
+            Source term at the 2D GL nodes (boundary entries are ignored).
+        alpha : float or scalar Array
+            Helmholtz parameter (≥ 0).  May be a traced value.
         bc_top, bc_bottom : float or Num[Array, "Nxpts"]
             Dirichlet values along the top and bottom edges.  Scalars broadcast.
         bc_left, bc_right : float or Num[Array, "Nypts"]
@@ -307,62 +490,66 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
             raise ValueError(
                 "ChebyshevHelmholtzSolver2D requires 'gauss-lobatto' nodes."
             )
-        if alpha < 0:
-            raise ValueError(f"alpha must be >= 0, got {alpha}")
+        _maybe_check_alpha(alpha)
 
-        Nx, Ny = self.grid.Nx, self.grid.Ny
-        Nxpts = Nx + 1
-        Nypts = Ny + 1
+        Nxpts = self.grid.Nx + 1
+        Nypts = self.grid.Ny + 1
         if f.shape != (Nypts, Nxpts):
             raise ValueError(
                 f"f must have shape (Ny+1, Nx+1)=({Nypts}, {Nxpts}), got {f.shape}."
             )
 
-        Dx2 = self.grid.Dx2
-        Dy2 = self.grid.Dy2
-
-        # Build the Kronecker operator
-        #   A = I_y ⊗ Dx²  +  Dy² ⊗ I_x  − α·I
-        Ix = jnp.eye(Nxpts)
-        Iy = jnp.eye(Nypts)
-        A = jnp.kron(Iy, Dx2) + jnp.kron(Dy2, Ix) - alpha * jnp.eye(Nxpts * Nypts)
-
-        # Flatten f (row-major); for vec() of a (Ny, Nx) matrix, the row
-        # index is the outer (slower) index → Kronecker order is (Iy ⊗ Dx).
-        b = f.reshape(-1)
-
-        # Build a boolean mask that marks boundary DOFs.
-        boundary_mask = jnp.zeros((Nypts, Nxpts), dtype=bool)
-        boundary_mask = boundary_mask.at[0, :].set(True)
-        boundary_mask = boundary_mask.at[-1, :].set(True)
-        boundary_mask = boundary_mask.at[:, 0].set(True)
-        boundary_mask = boundary_mask.at[:, -1].set(True)
-        bmask_flat = boundary_mask.reshape(-1)
-
-        # Assemble the boundary-value array using the same orientation as u.
-        bc = jnp.zeros((Nypts, Nxpts))
+        # Boundary-value array in the same orientation as u.
+        dtype = self.grid.Dx2.dtype
+        bc = jnp.zeros((Nypts, Nxpts), dtype=dtype)
         bc = bc.at[0, :].set(jnp.broadcast_to(jnp.asarray(bc_top), (Nxpts,)))
         bc = bc.at[-1, :].set(jnp.broadcast_to(jnp.asarray(bc_bottom), (Nxpts,)))
         bc = bc.at[:, 0].set(jnp.broadcast_to(jnp.asarray(bc_right), (Nypts,)))
         bc = bc.at[:, -1].set(jnp.broadcast_to(jnp.asarray(bc_left), (Nypts,)))
-        bc_flat = bc.reshape(-1)
 
-        # Replace boundary rows of A with identity rows and boundary entries of b
-        # with the prescribed BC values.
+        dx, dy = self._diag_x, self._diag_y
+        if dx is None or dy is None:
+            return self._solve_dense(f, alpha, bc)
+
+        Dx2, Dy2 = self.grid.Dx2, self.grid.Dy2
+        # bc is zero in the interior, so Dy²[I, :] bc[:, I] = Dy²[I, B] u[B, I]
+        # and bc[I, :] Dx²[I, :]ᵀ = u[I, B] Dx²[I, B]ᵀ — the boundary lifting.
+        lift = Dy2[1:-1, :] @ bc[:, 1:-1] + bc[1:-1, :] @ Dx2[1:-1, :].T
+        R = f[1:-1, 1:-1] - lift  # (Ny−1, Nx−1)
+
+        U_hat = dy.Qinv @ R @ dx.Qinv.T
+        U_hat = U_hat / (dy.lam[:, None] + dx.lam[None, :] - alpha)
+        U = dy.Q @ U_hat @ dx.Q.T
+        return bc.at[1:-1, 1:-1].set(U)
+
+    def _solve_dense(self, f: Array, alpha: float | Array, bc: Array) -> Array:
+        """Dense Kronecker solve, used when the grid is traced.
+
+        A = I_y ⊗ Dx² + Dy² ⊗ I_x − α·I with boundary rows replaced by
+        identity rows; O((Nx·Ny)³) per call.
+        """
+        Nypts, Nxpts = bc.shape
+        Dx2, Dy2 = self.grid.Dx2, self.grid.Dy2
+        A = (
+            jnp.kron(jnp.eye(Nypts), Dx2)
+            + jnp.kron(Dy2, jnp.eye(Nxpts))
+            - alpha * jnp.eye(Nxpts * Nypts)
+        )
+        mask = jnp.ones((Nypts, Nxpts), dtype=bool).at[1:-1, 1:-1].set(False)
+        m = mask.reshape(-1)
         idx = jnp.arange(Nxpts * Nypts)
-        A_b = jnp.where(bmask_flat[:, None], 0.0, A)
-        # Set A[i, i] = 1 for boundary i
-        A_b = A_b.at[idx, idx].set(jnp.where(bmask_flat, 1.0, A_b[idx, idx]))
-        b_b = jnp.where(bmask_flat, bc_flat, b)
-
-        u_flat = jnp.linalg.solve(A_b, b_b)
-        return u_flat.reshape(Nypts, Nxpts)
+        A = jnp.where(m[:, None], 0.0, A)
+        A = A.at[idx, idx].set(jnp.where(m, 1.0, A[idx, idx]))
+        b = jnp.where(m, bc.reshape(-1), f.reshape(-1))
+        return jnp.linalg.solve(A, b).reshape(Nypts, Nxpts)
 
 
 class ChebyshevPoissonSolver2D(eqx.Module):
     """2D Chebyshev Poisson solver: ∇²u = f with Dirichlet BCs.
 
     Convenience wrapper around :class:`ChebyshevHelmholtzSolver2D` with α = 0.
+    The wrapped solver (and its precomputed eigendecompositions) is built
+    once at construction.
 
     Attributes
     ----------
@@ -380,6 +567,11 @@ class ChebyshevPoissonSolver2D(eqx.Module):
     """
 
     grid: ChebyshevGrid2D
+    _helmholtz: ChebyshevHelmholtzSolver2D
+
+    def __init__(self, grid: ChebyshevGrid2D):
+        self.grid = grid
+        self._helmholtz = ChebyshevHelmholtzSolver2D(grid)
 
     def solve(
         self,
@@ -390,8 +582,7 @@ class ChebyshevPoissonSolver2D(eqx.Module):
         bc_right: float | Num[Array, "Nypts"] = 0.0,
     ) -> Float[Array, "Nypts Nxpts"]:
         """Solve ∇²u = f with Dirichlet BCs on all four edges."""
-        inner = ChebyshevHelmholtzSolver2D(grid=self.grid)
-        return inner.solve(
+        return self._helmholtz.solve(
             f,
             alpha=0.0,
             bc_top=bc_top,
