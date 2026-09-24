@@ -42,9 +42,10 @@ solver = build_capacitance_solver(
 psi = solver(rhs)       # rhs is [Ny, Nx], returns [Ny, Nx]
 ```
 
-The `solver` object is an `eqx.Module` (a pure pytree).  It stores the
-pre-inverted capacitance matrix and precomputed Green's functions, so the
-online solve is just one spectral solve plus a matrix-vector product.
+The `solver` object is an `eqx.Module` (a pure pytree).  It wraps a
+[`gaussx.MaskedOperator`](https://github.com/jejjohnson/gaussx) holding the
+LU-factorised N_b x N_b capacitance matrix, so the online solve is two
+rectangular spectral solves plus an N_b x N_b back-substitution.
 
 ![Capacitance solver on a circular ocean basin. Left: mask with inner-boundary points (red). Center: RHS (ones inside mask). Right: solution psi.](images/demo_capacitance/rhs_and_solution.png)
 
@@ -83,8 +84,9 @@ mask[Ny // 2:, :Nx // 2] = False  # remove lower-left quadrant
 !!! tip "Inner boundary detection is automatic"
     You do not need to mark boundary points explicitly.  The solver
     automatically detects inner-boundary cells as mask-interior cells that
-    are 4-connected to at least one exterior cell (using
-    `scipy.ndimage.binary_dilation` with a cross-shaped structuring element).
+    are 4-connected to at least one exterior cell.  With `base_bc="fft"` the
+    neighbourhood wraps around the periodic rectangle, so wet cells on the
+    rectangle edge whose wrapped neighbour is dry are treated as boundary.
 
 ---
 
@@ -105,8 +107,10 @@ rectangular BC).  The choice affects:
 
 - **Number of boundary points**: DST may reduce N_b when the mask touches
   rectangle edges (since DST already enforces zero there)
-- **Null mode handling**: FFT and DCT have a null mode at (0,0) for Poisson;
-  DST does not
+- **Null mode handling**: FFT and DCT have a null (constant) mode for
+  Poisson; DST does not.  The solver handles it automatically: the constant
+  null vector enters the capacitance system, so the PDE holds exactly in the
+  interior for every base (earlier versions left a uniform residual here)
 
 !!! tip "When in doubt, use `base_bc=\"dst\"`"
     For bounded physical domains where the solution is zero on the outer
@@ -116,17 +120,14 @@ rectangular BC).  The choice affects:
 
 ## Memory and Performance
 
-The offline phase performs N_b spectral solves and stores a dense Green's
-function matrix.  The online phase is dominated by one spectral solve plus
-an N_b x N_b linear algebra step.
+The offline phase performs N_b spectral solves (one column of the
+capacitance matrix each) and keeps only the LU factors of the N_b x N_b
+capacitance matrix; no Green's-function table is stored.  The online phase
+is two spectral solves plus an N_b x N_b back-substitution.
 
-| Grid size     | Typical N_b   | Green's matrix size | Offline time  | Online time        |
-|---------------|---------------|---------------------|---------------|--------------------|
-| 32 x 32       | ~50-100       | ~100 KB             | < 1 sec       | < 1 ms             |
-| 64 x 64       | ~100-200      | ~3 MB               | ~1 sec        | ~1 ms              |
-| 128 x 128     | ~200-500      | ~30 MB              | ~5 sec        | ~2 ms              |
-| 256 x 256     | ~400-1000     | ~250 MB             | ~30 sec       | ~5 ms              |
-| 512 x 512     | ~800-2000     | ~2 GB               | minutes       | ~20 ms             |
+Measured at 256 x 256 with a circular mask (N_b = 520, `base_bc="fft"`,
+float64, CPU): build 1.5 s, 4 ms per solve, 3.5 MB stored.  Memory grows as
+O(N_b² + Ny·Nx) and the offline time as O(N_b · Ny·Nx · log(Ny·Nx)).
 
 !!! note "Rule of thumb: N_b ~ O(perimeter)"
     The number of inner-boundary points scales with the perimeter of the
@@ -216,25 +217,21 @@ cheap online solve is repeated.
 ## Limitations
 
 !!! warning "Large N_b (> ~1000): consider iterative solvers"
-    The Green's function matrix has size N_b x (Ny * Nx) and the capacitance
-    matrix is N_b x N_b (dense).  When N_b exceeds ~1000, memory and offline
+    The capacitance matrix is N_b x N_b (dense) and the build needs N_b
+    spectral solves.  When N_b exceeds a few thousand, memory and offline
     time become significant.  For very fine grids or domains with long,
     convoluted boundaries, consider using an iterative solver (e.g.,
     preconditioned CG in finitevolX) instead.
 
 !!! warning "The capacitance matrix is dense"
-    The inversion `C_inv = np.linalg.inv(C)` is performed with NumPy at
-    build time (not JIT-traced).  This is O(N_b^3) and can be slow for
-    large N_b, but it only happens once.
+    Its LU factorisation is O(N_b^3) at build time, but it only happens
+    once.
 
 !!! warning "Mask must have interior/exterior structure"
-    If the mask is all `True` (no exterior cells), `build_capacitance_solver`
-    raises a `ValueError` because there are no inner-boundary points to
-    correct.  In that case, just use the rectangular spectral solver directly.
-
-!!! warning "scipy is required"
-    The offline phase uses `scipy.ndimage.binary_dilation` for boundary
-    detection.  Make sure scipy is installed.
+    `build_capacitance_solver` raises a `ValueError` if the mask is all
+    `True` (no exterior cells: just use the rectangular spectral solver
+    directly), all `False` (no wet cells), or so thin that every wet cell is
+    on the inner boundary (no interior unknowns).
 
 !!! note "Homogeneous BCs only"
     The capacitance method enforces psi = 0 at all inner-boundary points.
