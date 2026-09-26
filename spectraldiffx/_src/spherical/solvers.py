@@ -15,11 +15,11 @@ Helmholtz on the sphere
 
 Gauge and compatibility
 -----------------------
-For pure Poisson (α = 0) the mean mode (l = 0) is indeterminate; the
-solver sets it to zero by default, which corresponds to the zero-mean
-gauge: ∫_S² φ dΩ = 0.  This also enforces the solvability condition
-∫ f dΩ = 0 implicitly (any non-zero mean of f is discarded).  Use
-``zero_mean=False`` only when α > 0.
+For pure Poisson (α = 0) the mean mode (l = 0) is undefined; the solver
+always sets it to zero, the zero-mean gauge ∫_S² φ dΩ = 0. This also
+enforces the solvability condition ∫ f dΩ = 0 implicitly (any non-zero
+mean of f is discarded). For Helmholtz with α > 0 the l = 0 mode is
+solved like every other mode unless ``zero_mean=True`` is passed (gh-92).
 
 Vorticity / streamfunction solver
     The vorticity ζ = (∇×V)·r̂ on the sphere satisfies ∇²ψ = ζ with
@@ -64,8 +64,8 @@ class SphericalPoissonSolver(eqx.Module):
 
         φ̂(l, m) = −f̂(l, m) · [l(l+1)/R²]⁻¹    (l ≥ 1)
 
-    The l=0 mode is set to zero when ``zero_mean=True`` (default) since
-    ∇² annihilates constants on the sphere.
+    The l=0 mode is always set to zero (∇² annihilates constants on the
+    sphere, so it is undefined).
 
     Attributes
     ----------
@@ -99,8 +99,8 @@ class SphericalPoissonSolver(eqx.Module):
         f : Num[Array, ...]
             Source field.  Shape ``(N,)`` for 1D or ``(Nlat, Nlon)`` for 2D.
         zero_mean : bool
-            If ``True``, pin the l=0 mode of φ to zero (gauge fix).  Required
-            for well-posedness of Poisson on the sphere.
+            Must be ``True`` (default): the l=0 mode of φ is undefined and is
+            set to zero. ``False`` raises ``ValueError`` (gh-92).
         spectral : bool
             If ``True``, ``f`` is already a DLT/SHT coefficient array.
 
@@ -109,22 +109,20 @@ class SphericalPoissonSolver(eqx.Module):
         Float[Array, ...]
             Solution in physical space (same shape as ``f``).
         """
+        if not zero_mean:
+            raise ValueError(
+                "zero_mean=False: the l=0 mode of a Poisson solution on the "
+                "sphere is undefined (gh-92)."
+            )
         R = _sphere_radius(self.grid)
         f_hat = f if spectral else self.grid.transform(f)
         l = self.grid.l
         eigenval = l * (l + 1) / (R**2)
-
-        if isinstance(self.grid, SphericalGrid1D):
-            # Guard l=0 division; the mode is overwritten immediately below.
-            denom = jnp.where(eigenval == 0.0, 1.0, eigenval)
-            phi_hat = -f_hat / denom
-            if zero_mean:
-                phi_hat = jnp.where(l == 0.0, 0.0, phi_hat)
-        else:
-            denom = jnp.where(eigenval[:, None] == 0.0, 1.0, eigenval[:, None])
-            phi_hat = -f_hat / denom
-            if zero_mean:
-                phi_hat = jnp.where(l[:, None] == 0.0, 0.0, phi_hat)
+        if not isinstance(self.grid, SphericalGrid1D):
+            eigenval = eigenval[:, None]
+        # Guard the l=0 division, then set the undefined mode to zero.
+        denom = jnp.where(eigenval == 0.0, 1.0, eigenval)
+        phi_hat = jnp.where(eigenval == 0.0, 0.0, -f_hat / denom)
 
         return self.grid.transform(phi_hat, inverse=True)
 
@@ -136,8 +134,9 @@ class SphericalHelmholtzSolver(eqx.Module):
 
         φ̂(l, m) = −f̂(l, m) / [l(l+1)/R² + α]
 
-    Non-singular for α > 0; for α = 0 this reduces to Poisson and the
-    l=0 gauge (zero-mean) is enforced by default.
+    Non-singular for α > 0, where the l=0 mode (the mean) is solved like
+    every other mode. For α = 0 this reduces to Poisson and the undefined
+    l=0 mode is set to zero (gh-92).
 
     Attributes
     ----------
@@ -154,7 +153,7 @@ class SphericalHelmholtzSolver(eqx.Module):
     >>> alpha = 4.0
     >>> # For φ = cos θ: (∇² − α) φ = (−2/R² − α) cos θ
     >>> f = (-2.0 / R**2 - alpha) * jnp.cos(THETA)
-    >>> phi = solver.solve(f, alpha=alpha, zero_mean=False)  # ≈ cos(θ)
+    >>> phi = solver.solve(f, alpha=alpha)  # ≈ cos(θ)
     """
 
     grid: SphericalGrid1D | SphericalGrid2D
@@ -163,7 +162,7 @@ class SphericalHelmholtzSolver(eqx.Module):
         self,
         f: Num[Array, "..."],
         alpha: float = 0.0,
-        zero_mean: bool = True,
+        zero_mean: bool | None = None,
         spectral: bool = False,
     ) -> Float[Array, "..."]:
         """Solve (∇² − α) φ = f on the sphere.
@@ -174,9 +173,10 @@ class SphericalHelmholtzSolver(eqx.Module):
             Source field (1D ``(N,)`` or 2D ``(Nlat, Nlon)``).
         alpha : float
             Helmholtz parameter (≥ 0).  α=0 falls back to Poisson.
-        zero_mean : bool
-            If ``True`` and α = 0, enforce the l=0 gauge by zeroing the
-            mean of φ.  Ignored effectively when α > 0 (non-singular).
+        zero_mean : bool or None
+            ``None`` (default): zero the l=0 mode only when α = 0, where it
+            is undefined. ``True``: always zero it. ``False``: keep it; an
+            error when α = 0 (gh-92).
         spectral : bool
             If ``True``, ``f`` is already a DLT/SHT coefficient array.
 
@@ -187,23 +187,22 @@ class SphericalHelmholtzSolver(eqx.Module):
         """
         if alpha < 0:
             raise ValueError(f"alpha must be >= 0, got {alpha}")
+        if zero_mean is False and alpha == 0:
+            raise ValueError(
+                "zero_mean=False with alpha=0: the l=0 mode of the solution is "
+                "undefined (gh-92). Use zero_mean=None (default) or True."
+            )
         R = _sphere_radius(self.grid)
         f_hat = f if spectral else self.grid.transform(f)
         l = self.grid.l
-        eigenval = l * (l + 1) / (R**2)
-
-        if isinstance(self.grid, SphericalGrid1D):
-            denom = eigenval + alpha
-            denom_safe = jnp.where(denom == 0.0, 1.0, denom)
-            phi_hat = -f_hat / denom_safe
-            if zero_mean:
-                phi_hat = jnp.where(l == 0.0, 0.0, phi_hat)
-        else:
-            denom = eigenval[:, None] + alpha
-            denom_safe = jnp.where(denom == 0.0, 1.0, denom)
-            phi_hat = -f_hat / denom_safe
-            if zero_mean:
-                phi_hat = jnp.where(l[:, None] == 0.0, 0.0, phi_hat)
+        if not isinstance(self.grid, SphericalGrid1D):
+            l = l[:, None]
+        denom = l * (l + 1) / (R**2) + alpha
+        denom_safe = jnp.where(denom == 0.0, 1.0, denom)
+        # An undefined (zero-denominator) mode is set to 0, never -f_hat.
+        phi_hat = jnp.where(denom == 0.0, 0.0, -f_hat / denom_safe)
+        if zero_mean:
+            phi_hat = jnp.where(l == 0.0, 0.0, phi_hat)
 
         return self.grid.transform(phi_hat, inverse=True)
 
