@@ -151,6 +151,9 @@ select = [
     "TID",    # tidy imports
     "ISC",    # implicit string concatenation
     "RUF",    # ruff-specific rules
+    # numpydoc section format, so mkdocstrings (docstring_style: numpy)
+    # renders every Parameters/Returns/... section (gh-118)
+    "D405", "D406", "D407", "D408", "D409", "D410", "D411", "D412", "D414",
 ]
 ignore = [
     "E402",     # module level import not at top of file
@@ -176,6 +179,9 @@ ignore = [
                 # (type-checkers don't apply PEP 563 stringification)
 ]
 unfixable = ["ERA001", "F841", "T201", "T203"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.ruff.lint.isort]
 combine-as-imports = true

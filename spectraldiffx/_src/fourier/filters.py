@@ -21,8 +21,8 @@ class SpectralFilter1D(eqx.Module):
 
     where F(k) is the filter kernel.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         grid : FourierGrid1D
             The 1D Fourier grid object containing wavenumbers k [N].
     """
@@ -38,8 +38,8 @@ class SpectralFilter1D(eqx.Module):
         This filter is near unity for low wavenumbers and falls off sharply
         near the grid scale (k_max), removing poorly resolved high frequencies.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array [N]
             Physical space field or spectral coefficients of the field.
         alpha : float, optional
@@ -49,8 +49,8 @@ class SpectralFilter1D(eqx.Module):
         spectral : bool, optional
             If True, u is treated as spectral coefficients (u_hat). Default is False.
 
-        Returns:
-        --------
+        Returns
+        -------
         Array [N]
             Filtered field or spectral coefficients.
         """
@@ -76,8 +76,8 @@ class SpectralFilter1D(eqx.Module):
 
         Simulates the effect of high-order diffusion: du/dt = -nu_h * (-1)^(p/2) * d^p u / dx^p.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array [N]
             Physical space field or spectral coefficients of the field.
         nu_hyper : float
@@ -100,8 +100,8 @@ class SpectralFilter2D(eqx.Module):
     """
     2D Spectral filter for doubly periodic domains.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         grid : FourierGrid2D
             The 2D Fourier grid object [Ny, Nx].
     """
@@ -142,8 +142,8 @@ class SpectralFilter3D(eqx.Module):
     """
     3D Spectral filter for triply periodic domains.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         grid : FourierGrid3D
             The 3D Fourier grid object [Nz, Ny, Nx].
     """

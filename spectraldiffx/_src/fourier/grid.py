@@ -26,8 +26,8 @@ Limitations:
     • Global basis (non-local)
     • Best for smooth solutions
 
-References:
------------
+References
+----------
 [1] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods.
 [2] Trefethen, L. N. (2000). Spectral Methods in MATLAB.
 [3] Canuto et al. (2006). Spectral Methods: Fundamentals.
@@ -65,8 +65,8 @@ class FourierGrid1D(eqx.Module):
     FFT Ordering:
         k = [0, 1, 2, ..., N/2-1, -N/2, -N/2+1, ..., -1]
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         N : int
             Number of grid points
         L : float
@@ -88,13 +88,13 @@ class FourierGrid1D(eqx.Module):
 
         Checks the relationship: L ≈ N * dx
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         rtol : float
             Relative tolerance for the floating point comparison.
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
             True if consistent, raises ValueError otherwise.
         """
@@ -150,8 +150,8 @@ class FourierGrid1D(eqx.Module):
 
         Calculates: N = L / dx (Must result in an integer)
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError: If L is not divisible by dx (N is not an integer).
         """
         N_float = L / dx
@@ -176,8 +176,8 @@ class FourierGrid1D(eqx.Module):
 
         k = 2π·[0, 1, 2, ..., N/2-1, -N/2, -N/2+1, ..., -1]/L
 
-        Returns:
-        --------
+        Returns
+        -------
         k : Array [N]
             Wavenumbers [rad/m]
         """
@@ -201,8 +201,8 @@ class FourierGrid1D(eqx.Module):
         To avoid aliasing: k_max(w) ≤ N/2
         Therefore: 2·k_max(u) ≤ N/2  →  k_max(u) ≤ N/3
 
-        Returns:
-        --------
+        Returns
+        -------
         k : Array [N]
             Dealiased wavenumbers
         """
@@ -217,8 +217,8 @@ class FourierGrid1D(eqx.Module):
         """
         Dealiasing filter: 1 for kept modes, 0 for removed.
 
-        Returns:
-        --------
+        Returns
+        -------
         filter : Array [N]
             Filter mask (1 or 0)
         """
@@ -254,8 +254,8 @@ class FourierGrid2D(eqx.Module):
     2D FFT:
         û_{kx,ky} = (1/(Nx·Ny))·ΣΣ u_{j,l}·exp(-i(kx·x_j + ky·y_l))
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         Nx, Ny : int
             Grid points in x, y
         Lx, Ly : float
@@ -282,13 +282,13 @@ class FourierGrid2D(eqx.Module):
             Lx ≈ Nx * dx
             Ly ≈ Ny * dy
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         rtol : float
             Relative tolerance for the floating point comparison.
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
             True if consistent, raises ValueError otherwise.
         """
@@ -366,8 +366,8 @@ class FourierGrid2D(eqx.Module):
             Nx = Lx / dx
             Ny = Ly / dy
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError: If L is not divisible by dx (N is not an integer).
         """
         Nx_float = Lx / dx
@@ -476,8 +476,8 @@ class FourierGrid3D(eqx.Module):
         Axis 1: y-direction (Height)
         Axis 2: x-direction (Width)
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         Nz, Ny, Nx : int
             Grid points in z, y, x
         Lz, Ly, Lx : float
@@ -508,13 +508,13 @@ class FourierGrid3D(eqx.Module):
             Ly ≈ Ny * dy
             Lx ≈ Nx * dx
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         rtol : float
             Relative tolerance for the floating point comparison.
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
             True if consistent, raises ValueError otherwise.
         """
@@ -630,8 +630,8 @@ class FourierGrid3D(eqx.Module):
             Ny = Ly / dy
             Nx = Lx / dx
 
-        Raises:
-        -------
+        Raises
+        ------
         ValueError: If any L is not divisible by its corresponding d.
         """
         Nz_float = Lz / dz

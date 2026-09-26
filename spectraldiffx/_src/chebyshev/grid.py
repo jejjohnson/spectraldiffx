@@ -18,8 +18,8 @@ Advantages:
     • Handles non-periodic boundary conditions (Dirichlet, Neumann)
     • Node clustering near boundaries reduces Runge phenomenon
 
-References:
------------
+References
+----------
 [1] Trefethen, L. N. (2000). Spectral Methods in MATLAB. SIAM.
 [2] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods. Dover.
 [3] Canuto et al. (2006). Spectral Methods: Fundamentals in Single Domains.
@@ -51,13 +51,13 @@ def _cheb_diff_matrix_gl(N: int) -> np.ndarray:
 
     where cᵢ = 2 for i = 0 or N, else cᵢ = 1.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     N : int
         Polynomial degree. Matrix size is (N+1) × (N+1).
 
-    Returns:
-    --------
+    Returns
+    -------
     D : ndarray [N+1, N+1]
         Differentiation matrix on [-1, 1].
     """
@@ -98,13 +98,13 @@ def _cheb_diff_matrix_gauss(N: int) -> np.ndarray:
 
     where wⱼ = (-1)ʲ sin(π(2j+1)/(2N)) are the barycentric weights.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     N : int
         Number of Gauss nodes. Matrix size is N × N.
 
-    Returns:
-    --------
+    Returns
+    -------
     D : ndarray [N, N]
         Differentiation matrix on [-1, 1].
     """
@@ -156,8 +156,8 @@ class ChebyshevGrid1D(eqx.Module):
     So the physical differentiation matrix is:
         D_phys = D_ref / L
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         N : int
             Polynomial degree (Gauss-Lobatto: N+1 points; Gauss: N points).
         L : float
@@ -182,8 +182,8 @@ class ChebyshevGrid1D(eqx.Module):
         dealias: Literal["2/3", None] | None = "2/3",
     ):
         """
-        Parameters:
-        -----------
+        Parameters
+        ----------
         N : int
             Polynomial degree (≥ 1).
         L : float
@@ -219,8 +219,8 @@ class ChebyshevGrid1D(eqx.Module):
         """
         Initialize from polynomial degree N and domain half-length L.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         N : int
             Polynomial degree.
         L : float
@@ -245,8 +245,8 @@ class ChebyshevGrid1D(eqx.Module):
 
         Computes: L = N * dx / 2  (since dx ≈ 2L/N for the full domain [-L, L])
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         N : int
             Polynomial degree.
         dx : float
@@ -271,8 +271,8 @@ class ChebyshevGrid1D(eqx.Module):
         Gauss-Lobatto: xⱼ = L·cos(πj/N), j = 0,...,N  (N+1 points, decreasing)
         Gauss:         xⱼ = L·cos(π(2j+1)/(2N)), j=0,...,N-1 (N points, decreasing)
 
-        Returns:
-        --------
+        Returns
+        -------
         x : Array [N+1] for GL, [N] for Gauss
         """
         if self.node_type == "gauss-lobatto":
@@ -290,8 +290,8 @@ class ChebyshevGrid1D(eqx.Module):
 
         Rows sum to zero: D @ ones = 0 (derivative of constant = 0).
 
-        Returns:
-        --------
+        Returns
+        -------
         D : Array [N+1, N+1] for GL, [N, N] for Gauss
         """
         return self._D
@@ -319,15 +319,15 @@ class ChebyshevGrid1D(eqx.Module):
         field u ≡ c maps to a = [c, 0, …, 0] and Tₙ(x/L) maps to the unit
         vector eₙ.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array
             Physical-space values (forward) or spectral coefficients (inverse).
         inverse : bool
             If True, compute physical values from spectral coefficients.
 
-        Returns:
-        --------
+        Returns
+        -------
         Array
             Spectral coefficients (forward) or physical values (inverse).
         """
@@ -424,8 +424,8 @@ class ChebyshevGrid1D(eqx.Module):
         2/3 rule: keep modes 0,...,floor(2N/3), zero out higher modes.
         This prevents aliasing in quadratic nonlinearities.
 
-        Returns:
-        --------
+        Returns
+        -------
         mask : Array [N+1] for GL, [N] for Gauss
             1.0 for kept modes, 0.0 for removed modes.
         """
@@ -445,13 +445,13 @@ class ChebyshevGrid1D(eqx.Module):
         """
         Verify that N ≥ 1 and L > 0.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         rtol : float
             Unused (kept for API consistency with FourierGrid).
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
             True if consistent, raises ValueError otherwise.
         """
@@ -482,8 +482,8 @@ class ChebyshevGrid2D(eqx.Module):
             ∂u/∂x [j,i] = (u @ Dxᵀ)[j,i]     (Dx applied along axis 1)
             ∂u/∂y [j,i] = (Dy @ u)[j,i]        (Dy applied along axis 0)
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         Nx, Ny : int
             Polynomial degrees in x and y directions.
         Lx, Ly : float
@@ -615,8 +615,8 @@ class ChebyshevGrid2D(eqx.Module):
         """
         1D dealiasing masks for x and y mode spaces.
 
-        Returns:
-        --------
+        Returns
+        -------
         (mask_x, mask_y) : tuple of Arrays
             Masks of shape (Nx_pts,) and (Ny_pts,).
         """
@@ -639,15 +639,15 @@ class ChebyshevGrid2D(eqx.Module):
         Forward: applies 1D transform along x-axis (axis 1), then y-axis (axis 0).
         Inverse: applies 1D inverse along y-axis (axis 0), then x-axis (axis 1).
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array [Ny_pts, Nx_pts]
             Physical-space field (forward) or spectral coefficients (inverse).
         inverse : bool
             If True, inverse transform.
 
-        Returns:
-        --------
+        Returns
+        -------
         Array [Ny_pts, Nx_pts]
         """
         Nx, Ny = self.Nx, self.Ny
@@ -740,8 +740,8 @@ class ChebyshevGrid3D(eqx.Module):
     derivative costs O(Nx·Ny·Nz·N) rather than the O((Nx·Ny·Nz)²) of a
     dense Kronecker operator.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         Nx, Ny, Nz : int
             Polynomial degrees in x, y and z.
         Lx, Ly, Lz : float
@@ -916,15 +916,15 @@ class ChebyshevGrid3D(eqx.Module):
         The 1D transforms along separate axes commute, so the order of
         application is immaterial.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array [Nz_pts, Ny_pts, Nx_pts]
             Physical-space field (forward) or coefficients (inverse).
         inverse : bool
             If True, inverse transform.
 
-        Returns:
-        --------
+        Returns
+        -------
         Array [Nz_pts, Ny_pts, Nx_pts]
         """
         out = u
