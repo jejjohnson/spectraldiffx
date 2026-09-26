@@ -2351,9 +2351,11 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">spectraldiffx</span><span class="w"> </span><span class="kn">import</span> <span class="n">FourierGrid1D</span><span class="p">,</span> <span class="n">SpectralFilter1D</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">grid</span> <span class="o">=</span> <span class="n">FourierGrid1D</span><span class="o">.</span><span class="n">from_N_L</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">L</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">filt</span> <span class="o">=</span> <span class="n">SpectralFilter1D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">filter_type</span><span class="o">=</span><span class="s2">&quot;exponential&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">u</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># smooth field + grid-scale noise</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">u_filtered</span> <span class="o">=</span> <span class="n">filt</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">filt</span> <span class="o">=</span> <span class="n">SpectralFilter1D</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">u_filtered</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">exponential_filter</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">36.0</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>  <span class="c1"># damps k near Nyquist</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">u_damped</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">hyperviscosity</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">nu_hyper</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>  <span class="c1"># exp(-nu |k|^4 dt)</span>
 </code></pre></div>
 <hr />
 <h2 id="key-concepts">Key Concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
@@ -2375,7 +2377,7 @@
 </tr>
 <tr>
 <td><strong><code>SpectralFilter*D</code></strong></td>
-<td>Spectral-space low-pass filters (exponential, raised cosine)</td>
+<td>Spectral-space low-pass filters (exponential, hyperviscous)</td>
 </tr>
 <tr>
 <td><strong><code>SpectralHelmholtzSolver*D</code></strong></td>
@@ -2391,7 +2393,7 @@
 </tr>
 </tbody>
 </table>
-<p>All objects are <a href="https://github.com/patrick-kidger/equinox">Equinox</a> modules, which means they are JAX pytrees and work seamlessly inside <code>jax.jit</code>, <code>jax.vmap</code>, and <code>jax.grad</code>.</p>
+<p>All objects are <a href="https://github.com/patrick-kidger/equinox">Equinox</a> modules, which means they are JAX pytrees. Fields and arrays can be traced by <code>jax.jit</code>, <code>jax.vmap</code> and <code>jax.grad</code>. To pass a grid or operator <em>as an argument</em> to a jitted function, use <code>eqx.filter_jit</code> (plain <code>jax.jit</code> rejects the non-array fields), or close over the object instead; see #82.</p>
 
 
 

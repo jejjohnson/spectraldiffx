@@ -1148,6 +1148,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#one-policy-for-every-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One Policy for Every Solver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#jit-safe-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3126,6 +3137,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#one-policy-for-every-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        One Policy for Every Solver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#jit-safe-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3449,7 +3471,7 @@ than an exact solution.</p>
 <h3 id="eigenvalues_3">Eigenvalues<a class="headerlink" href="#eigenvalues_3" title="Permanent link">&para;</a></h3>
 <div class="arithmatex">\[\lambda_k^{\text{DCT-I}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi k}{2(N-1)}\right), \quad k = 0, \ldots, N-1\]</div>
 <h3 id="null-mode">Null Mode<a class="headerlink" href="#null-mode" title="Permanent link">&para;</a></h3>
-<p>Same as DCT-II: <span class="arithmatex">\(\lambda_0 = 0\)</span>, handled by the zero-mean gauge (<span class="arithmatex">\(\hat{\psi}_{0,0} = 0\)</span>).</p>
+<p><span class="arithmatex">\(\lambda_0 = 0\)</span>, handled by setting <span class="arithmatex">\(\hat{\psi}_{0,0} = 0\)</span>. Unlike DCT-II this imposes the <strong>trapezoid</strong> mean <span class="arithmatex">\(w \cdot \psi = 0\)</span> with <span class="arithmatex">\(w = (\tfrac12, 1, \ldots, 1, \tfrac12)\)</span> per axis, not the plain mean; see <a href="#6-null-mode-handling-zero-mean-gauge">§6</a>.</p>
 <h3 id="api_3">API<a class="headerlink" href="#api_3" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Layer 0 — pure functions</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">psi</span> <span class="o">=</span> <span class="n">solve_helmholtz_dct1</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">lambda_</span><span class="p">)</span>
@@ -3526,6 +3548,49 @@ than an exact solution.</p>
 </tbody>
 </table>
 <p><strong>Physical meaning:</strong> the null mode corresponds to the freedom to add an arbitrary constant to <span class="arithmatex">\(\psi\)</span> without affecting <span class="arithmatex">\(\nabla^2 \psi\)</span>. The zero-mean gauge pins this constant by enforcing <span class="arithmatex">\(\overline{\psi} = 0\)</span>.</p>
+<h3 id="one-policy-for-every-solver">One Policy for Every Solver<a class="headerlink" href="#one-policy-for-every-solver" title="Permanent link">&para;</a></h3>
+<p>The same rule applies to the Fourier functions, the Fourier solver classes, and the spherical solvers:</p>
+<ol>
+<li><strong>An undefined mode is set to zero, never to an arbitrary value.</strong> Where the denominator vanishes (the constant mode at <span class="arithmatex">\(\lambda = 0\)</span> for periodic, Neumann or spherical problems), <span class="arithmatex">\(\hat{\psi} = 0\)</span>. The solve is effectively done for <span class="arithmatex">\(f - \mathrm{proj}(f)\)</span>: any component of <span class="arithmatex">\(f\)</span> along the null direction is discarded silently.</li>
+<li><strong><code>zero_mean</code> on the solver classes</strong> (<code>SpectralHelmholtzSolver1D/2D/3D</code>, <code>SphericalHelmholtzSolver</code>):<ul>
+<li><code>None</code> (default): zero the mean mode only when it is undefined (<span class="arithmatex">\(\alpha = 0\)</span>). With <span class="arithmatex">\(\alpha &gt; 0\)</span> the mean is solved like every other mode, so a field with a non-zero mean is recovered.</li>
+<li><code>True</code>: always zero the mean mode, even for <span class="arithmatex">\(\alpha &gt; 0\)</span>.</li>
+<li><code>False</code>: keep it. This raises <code>ValueError</code> when <span class="arithmatex">\(\alpha = 0\)</span>, where the mean is undefined.</li>
+</ul>
+</li>
+<li><strong><code>SphericalPoissonSolver</code></strong> always zeroes the <span class="arithmatex">\(l = 0\)</span> mode; <code>zero_mean=False</code> raises.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>BC family</th>
+<th>Null vector</th>
+<th>Gauge imposed at <span class="arithmatex">\(\lambda = 0\)</span></th>
+<th>Solvability (component discarded from <span class="arithmatex">\(f\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Periodic (FFT), Neumann staggered (DCT-II), sphere</td>
+<td>constant</td>
+<td>plain mean <span class="arithmatex">\(\overline{\psi} = 0\)</span></td>
+<td><span class="arithmatex">\(\overline{f}\)</span></td>
+</tr>
+<tr>
+<td>Neumann regular (DCT-I)</td>
+<td>constant</td>
+<td>trapezoid mean <span class="arithmatex">\(w \cdot \psi = 0\)</span></td>
+<td><span class="arithmatex">\(w \cdot f / w \cdot 1\)</span></td>
+</tr>
+<tr>
+<td>Dirichlet (DST), mixed</td>
+<td>none</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why DCT-I is different:</strong> its FD2 matrix is not symmetric (the boundary rows are <span class="arithmatex">\([-2,\ 2]/\Delta x^2\)</span>). Its left null vector is the trapezoid weight <span class="arithmatex">\(w = (\tfrac12, 1, \ldots, 1, \tfrac12)\)</span> per axis, and zeroing the DCT-I <span class="arithmatex">\(k = 0\)</span> coefficient imposes <span class="arithmatex">\(w \cdot \psi = 0\)</span>, not <span class="arithmatex">\(\overline{\psi} = 0\)</span>. The two agree only for fields that are symmetric about the domain centre.</p>
 <h3 id="jit-safe-implementation">JIT-Safe Implementation<a class="headerlink" href="#jit-safe-implementation" title="Permanent link">&para;</a></h3>
 <p>The null-mode fix must be compatible with JAX's <code>jit</code> and <code>vmap</code> transformations. The implementation uses a conditional safe-division pattern:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">is_null</span> <span class="o">=</span> <span class="p">(</span><span class="n">denom</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span>

@@ -2836,7 +2836,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=23013f20">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=adda5be8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2870,7 +2870,7 @@ via <code>SpectralHelmholtzSolver2D</code>.</p>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=80c15bf4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=36799ddc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2957,7 +2957,7 @@ app = cyclopts.App()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c158c123">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=acf3a3fb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -2968,7 +2968,7 @@ app = cyclopts.App()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2dead34d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6bb78bad">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3029,7 +3029,7 @@ class State(eqx.Module):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=550bd794">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8cacb914">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3040,7 +3040,7 @@ class State(eqx.Module):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0c70b9cc">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b4bce1ba">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3097,7 +3097,7 @@ def get_psi_and_uv_from_q(q: Float[Array, "Ny Nx"], p: Params):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13758c6f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f1b04389">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3108,7 +3108,7 @@ def get_psi_and_uv_from_q(q: Float[Array, "Ny Nx"], p: Params):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=78402f42">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c218caff">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3156,20 +3156,14 @@ def get_psi_and_uv_from_q(q: Float[Array, "Ny Nx"], p: Params):
 <span class="k">def</span><span class="w"> </span><span class="nf">implicit_term</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Params</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Computes the implicit part of the RHS: Diffusion.</span>
-<span class="sd">    RHS_imp = nu * laplacian^n(q)</span>
+<span class="sd">    RHS_imp = (-1)^(n+1) * nu * laplacian^n(q)</span>
 
-<span class="sd">    The Laplacian is computed directly in spectral space WITHOUT dealiasing,</span>
-<span class="sd">    because the implicit operator must be a clean linear operator for the IMEX</span>
-<span class="sd">    solver to invert correctly. Applying dealiasing here would cause mode mismatch</span>
-<span class="sd">    at the dealiased boundary, leading to instability and NaN.</span>
+<span class="sd">    ``deriv.hyperviscosity`` is always dissipative (multiplier -nu |k|^(2n))</span>
+<span class="sd">    and, like every linear operator, acts on all resolved modes, so it is a</span>
+<span class="sd">    clean linear operator for the IMEX solver to invert.</span>
 <span class="sd">    """</span>
     <span class="k">del</span> <span class="n">t</span>  <span class="c1"># Autonomous equation</span>
-    <span class="n">q_hat</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">K2</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">K2</span>
-    <span class="c1"># Apply (-K2)^nv in spectral space for laplacian^nv, without dealiasing</span>
-    <span class="n">lap_hat</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="n">K2</span><span class="p">)</span> <span class="o">**</span> <span class="n">args</span><span class="o">.</span><span class="n">nv</span><span class="p">)</span> <span class="o">*</span> <span class="n">q_hat</span>
-    <span class="n">diffusion</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">lap_hat</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-    <span class="k">return</span> <span class="n">State</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nu</span> <span class="o">*</span> <span class="n">diffusion</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">State</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">deriv</span><span class="o">.</span><span class="n">hyperviscosity</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nv</span><span class="p">))</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">
 
@@ -3203,27 +3197,21 @@ def explicit_term(t: float, y: State, args: Params) -&gt; State:
 def implicit_term(t: float, y: State, args: Params) -&gt; State:
     """
     Computes the implicit part of the RHS: Diffusion.
-    RHS_imp = nu * laplacian^n(q)
+    RHS_imp = (-1)^(n+1) * nu * laplacian^n(q)
 
-    The Laplacian is computed directly in spectral space WITHOUT dealiasing,
-    because the implicit operator must be a clean linear operator for the IMEX
-    solver to invert correctly. Applying dealiasing here would cause mode mismatch
-    at the dealiased boundary, leading to instability and NaN.
+    ``deriv.hyperviscosity`` is always dissipative (multiplier -nu |k|^(2n))
+    and, like every linear operator, acts on all resolved modes, so it is a
+    clean linear operator for the IMEX solver to invert.
     """
     del t  # Autonomous equation
-    q_hat = args.grid.transform(y.q)
-    K2 = args.grid.K2
-    # Apply (-K2)^nv in spectral space for laplacian^nv, without dealiasing
-    lap_hat = ((-K2) ** args.nv) * q_hat
-    diffusion = args.grid.transform(lap_hat, inverse=True).real
-    return State(q=args.nu * diffusion)</div>
+    return State(q=args.deriv.hyperviscosity(y.q, args.nu, order=args.nv))</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cff8c3de">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6f27109e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3234,7 +3222,7 @@ def implicit_term(t: float, y: State, args: Params) -&gt; State:
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b16701e7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=182a076a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3299,7 +3287,7 @@ def generate_initial_pv(grid: FourierGrid2D, seed: int = 42) -&gt; jnp.ndarray:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=be0b748f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e88a8bf5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3310,7 +3298,7 @@ def generate_initial_pv(grid: FourierGrid2D, seed: int = 42) -&gt; jnp.ndarray:
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2bbcbad4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2c7711c0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3595,7 +3583,7 @@ def run_qg_model(
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0e6776b4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=eb367683">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3606,7 +3594,7 @@ def run_qg_model(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ed3c78ff">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2e756fdf">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3689,7 +3677,7 @@ def build_dataset(
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=46e0efa2">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b28c5ef8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3700,7 +3688,7 @@ def build_dataset(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4cccb6a0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5f069aca">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3805,7 +3793,7 @@ def plot_results(ds: xr.Dataset):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d62ad688">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8662c326">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3817,7 +3805,7 @@ def plot_results(ds: xr.Dataset):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f74e23e8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9457aa46">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3867,7 +3855,7 @@ OUTPUT_DIR = pathlib.Path("./output/qg_model")</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3ac173b9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=009e6294">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3981,7 +3969,7 @@ logger.success(f"Simulation complete! Steps taken: {sol.stats['num_steps']}")</d
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4fc02c17">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=39746e72">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4027,7 +4015,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b6c0e90c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=09f4763d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4038,7 +4026,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=686ae745">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=91bada9d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

@@ -165,20 +165,14 @@ def explicit_term(t: float, y: State, args: Params) -> State:
 def implicit_term(t: float, y: State, args: Params) -> State:
     """
     Computes the implicit part of the RHS: Diffusion.
-    RHS_imp = nu * laplacian^n(q)
+    RHS_imp = (-1)^(n+1) * nu * laplacian^n(q)
 
-    The Laplacian is computed directly in spectral space WITHOUT dealiasing,
-    because the implicit operator must be a clean linear operator for the IMEX
-    solver to invert correctly. Applying dealiasing here would cause mode mismatch
-    at the dealiased boundary, leading to instability and NaN.
+    ``deriv.hyperviscosity`` is always dissipative (multiplier -nu |k|^(2n))
+    and, like every linear operator, acts on all resolved modes, so it is a
+    clean linear operator for the IMEX solver to invert.
     """
     del t  # Autonomous equation
-    q_hat = args.grid.transform(y.q)
-    K2 = args.grid.K2
-    # Apply (-K2)^nv in spectral space for laplacian^nv, without dealiasing
-    lap_hat = ((-K2) ** args.nv) * q_hat
-    diffusion = args.grid.transform(lap_hat, inverse=True).real
-    return State(q=args.nu * diffusion)
+    return State(q=args.deriv.hyperviscosity(y.q, args.nu, order=args.nv))
 
 
 # %% [markdown]
