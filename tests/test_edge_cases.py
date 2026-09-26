@@ -33,39 +33,39 @@ def test_length_one_matches_scipy(name, type_):
     )
 
 
-# Complex input is silently wrong on these paths (the imaginary part is
-# dropped or mixed in): gh-93.
-_COMPLEX_SILENTLY_WRONG = {
-    ("dct", 2), ("dct", 3), ("dct", 4), ("dst", 3), ("dst", 4),
-    ("idct", 2), ("idct", 3), ("idct", 4), ("idst", 2), ("idst", 4),
-}  # fmt: skip
-
-
-@pytest.mark.parametrize(
-    ("name", "type_"),
-    [
-        pytest.param(
-            name,
-            t,
-            marks=pytest.mark.xfail(
-                (name, t) in _COMPLEX_SILENTLY_WRONG,
-                reason="gh-93: complex input silently wrong",
-                strict=True,
-            ),
-        )
-        for name in _TRANSFORMS
-        for t in (1, 2, 3, 4)
-    ],
-)
-def test_complex_input_matches_scipy_or_raises(name, type_):
-    ours, ref = _TRANSFORMS[name]
+@pytest.mark.parametrize("type_", [1, 2, 3, 4])
+@pytest.mark.parametrize("name", list(_TRANSFORMS))
+def test_complex_input_raises(name, type_):
+    """Complex input used to come back silently wrong (gh-93)."""
+    ours, _ = _TRANSFORMS[name]
     rng = np.random.default_rng(type_)
     z = rng.standard_normal(6) + 1j * rng.standard_normal(6)
-    try:
-        got = np.asarray(ours(jnp.asarray(z), type=type_))
-    except (TypeError, ValueError):
-        return
-    np.testing.assert_allclose(got, ref(z, type=type_), atol=1e-12)
+    with pytest.raises(TypeError, match="real input only"):
+        ours(jnp.asarray(z), type=type_)
+    with pytest.raises(TypeError, match="real input only"):
+        sdx.dctn(jnp.asarray(z).reshape(2, 3), type=type_)
+
+
+def test_complex_physical_input_to_operators_raises():
+    grid1 = sdx.FourierGrid1D.from_N_L(16, 2 * np.pi)
+    grid2 = sdx.FourierGrid2D.from_N_L(Nx=8, Ny=6, Lx=2 * np.pi, Ly=2 * np.pi)
+    z1 = jnp.exp(3j * grid1.x)
+    z2 = jnp.ones((6, 8), dtype=jnp.complex128)
+    d1, d2 = sdx.SpectralDerivative1D(grid1), sdx.SpectralDerivative2D(grid2)
+    for call in (
+        lambda: d1(z1),
+        lambda: d1.laplacian(z1),
+        lambda: d2.gradient(z2),
+        lambda: d2.laplacian(z2),
+        lambda: d2.advection_scalar(z2, z2, z2),
+    ):
+        with pytest.raises(TypeError, match="must be real"):
+            call()
+    # Complex Fourier coefficients are fine with spectral=True.
+    u_hat = grid1.transform(jnp.sin(grid1.x))
+    np.testing.assert_allclose(
+        np.asarray(d1(u_hat, spectral=True)), np.asarray(jnp.cos(grid1.x)), atol=1e-12
+    )
 
 
 def test_zero_mean_false_keeps_the_mean():

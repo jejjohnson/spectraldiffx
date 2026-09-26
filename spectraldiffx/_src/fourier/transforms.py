@@ -43,6 +43,10 @@ Inverse transforms satisfy:
   idst(dst(x, t, norm=m), t, norm=m) == x   for all t ∈ {1,2,3,4}, m ∈ {None, "ortho"}
 
 All functions accept JAX arrays and are compatible with ``jax.jit``.
+
+Dtypes: input must be real (float32 or float64); the output has the input's
+dtype, also under ``jax_enable_x64``. Complex input raises ``TypeError``:
+transform ``x.real`` and ``x.imag`` separately (gh-93).
 """
 
 from __future__ import annotations
@@ -129,7 +133,7 @@ def _dct1_ortho(x: Array, axis: int) -> Array:
     """
     N = x.shape[axis]
     # Build c vector: [1/sqrt(2), 1, ..., 1, 1/sqrt(2)]
-    c = jnp.ones(N)
+    c = jnp.ones(N, dtype=x.dtype)
     c = c.at[0].set(_SQRT_HALF)
     c = c.at[N - 1].set(_SQRT_HALF)
     c = c.reshape(_phase_shape(x.ndim, axis, N))
@@ -144,7 +148,7 @@ def _dct1_ortho(x: Array, axis: int) -> Array:
     k = jnp.arange(N).reshape(_phase_shape(x.ndim, axis, N))
     idx0 = _make_idx(x.ndim, axis, slice(0, 1))
     idxN = _make_idx(x.ndim, axis, slice(N - 1, N))
-    endpoint_term = x_s[idx0] + (-1.0) ** k * x_s[idxN]
+    endpoint_term = x_s[idx0] + _alternating_sign(k, x.dtype) * x_s[idxN]
     pure_sum = (y_unnorm + endpoint_term) / 2.0
     # Scale output: c(k) * sqrt(2/(N-1))
     return pure_sum * c * math.sqrt(2.0 / (N - 1))
@@ -220,6 +224,25 @@ def _validate_norm(norm: str | None) -> None:
     """Raise ValueError if *norm* is not None or "ortho"."""
     if norm is not None and norm != "ortho":
         raise ValueError(f"norm must be None or 'ortho'; got {norm!r}")
+
+
+def _validate_real(x: Array) -> None:
+    """Raise TypeError for complex input (gh-93).
+
+    The FFT-based algorithms take real/imaginary parts of intermediate
+    products, so a complex input would silently give a wrong real result.
+    Transform the real and imaginary parts separately instead.
+    """
+    if jnp.iscomplexobj(x):
+        raise TypeError(
+            "DCT/DST transforms accept real input only; got dtype "
+            f"{jnp.asarray(x).dtype}. Transform x.real and x.imag separately."
+        )
+
+
+def _alternating_sign(n: Array, dtype) -> Array:
+    """(-1)^n in *dtype*; ``(-1.0) ** n`` would be float64 under x64."""
+    return (1 - 2 * (n % 2)).astype(dtype)
 
 
 # ---------------------------------------------------------------------------
@@ -350,9 +373,9 @@ def _dst3(x: Array, axis: int) -> Array:
     N = x.shape[axis]
     n = jnp.arange(N).reshape(_phase_shape(x.ndim, axis, N))
     k = jnp.arange(N).reshape(_phase_shape(x.ndim, axis, N))
-    z = (-1.0) ** n * jnp.flip(x, axis=axis)
+    z = _alternating_sign(n, x.dtype) * jnp.flip(x, axis=axis)
     dct3_z = _dct3(z, axis)
-    return (-1.0) ** k * jnp.flip(dct3_z, axis=axis)
+    return _alternating_sign(k, x.dtype) * jnp.flip(dct3_z, axis=axis)
 
 
 def _dst4(x: Array, axis: int) -> Array:
@@ -468,7 +491,7 @@ def dct(
     Parameters
     ----------
     x : Float[Array, " N"]
-        Input 1-D array of length N.
+        Input 1-D array of length N. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DCT variant.  Default: 2.
     norm : {None, "ortho"}
@@ -493,6 +516,7 @@ def dct(
     if type not in _DCT_IMPLS:
         raise ValueError(f"DCT type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
+    _validate_real(x)
     # DCT-I ortho requires a custom implementation (asymmetric weights)
     if norm == "ortho" and type == 1:
         return _dct1_ortho(x, axis=0)
@@ -518,7 +542,7 @@ def idct(
     Parameters
     ----------
     x : Float[Array, " N"]
-        DCT-transformed 1-D array of length N.
+        DCT-transformed 1-D array of length N. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DCT variant of the *forward* transform to invert.
     norm : {None, "ortho"}
@@ -539,6 +563,7 @@ def idct(
             f"idct expects a 1-D array, got ndim={x.ndim}. Use idctn for multi-dimensional input."
         )
     _validate_norm(norm)
+    _validate_real(x)
     # Ortho DCT-I is self-inverse (symmetric orthogonal matrix)
     if norm == "ortho" and type == 1:
         return _dct1_ortho(x, axis=0)
@@ -568,7 +593,7 @@ def dst(
     Parameters
     ----------
     x : Float[Array, " N"]
-        Input 1-D array of length N.
+        Input 1-D array of length N. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DST variant.  Default: 1.
     norm : {None, "ortho"}
@@ -593,6 +618,7 @@ def dst(
     if type not in _DST_IMPLS:
         raise ValueError(f"DST type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
+    _validate_real(x)
     if norm == "ortho" and type == 3:
         x = _prescale_type3(x, axis=0, transform="dst")
     y = _DST_IMPLS[type](x, 0)
@@ -614,7 +640,7 @@ def idst(
     Parameters
     ----------
     x : Float[Array, " N"]
-        DST-transformed 1-D array of length N.
+        DST-transformed 1-D array of length N. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DST variant of the *forward* transform to invert.
     norm : {None, "ortho"}
@@ -635,6 +661,7 @@ def idst(
             f"idst expects a 1-D array, got ndim={x.ndim}. Use idstn for multi-dimensional input."
         )
     _validate_norm(norm)
+    _validate_real(x)
     if norm == "ortho":
         x = _remove_ortho_forward(x, type, axis=0, transform="dst")
     y = _idst_along_axis(x, type, axis=0)
@@ -663,7 +690,7 @@ def dctn(
     Parameters
     ----------
     x : Float[Array, "..."]
-        Input array of any dimensionality.
+        Input array of any dimensionality. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DCT variant.  Default: 2.
     axes : sequence of int or None
@@ -679,6 +706,7 @@ def dctn(
     if type not in _DCT_IMPLS:
         raise ValueError(f"DCT type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
+    _validate_real(x)
     if axes is None:
         axes = list(range(x.ndim))
     y = x
@@ -709,7 +737,7 @@ def idctn(
     Parameters
     ----------
     x : Float[Array, "..."]
-        DCT-transformed array.
+        DCT-transformed array. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DCT variant of the *forward* transform to invert.
     axes : sequence of int or None
@@ -723,6 +751,7 @@ def idctn(
         Reconstructed N-D array, same shape as input.
     """
     _validate_norm(norm)
+    _validate_real(x)
     if axes is None:
         axes = list(range(x.ndim))
     y = x
@@ -754,7 +783,7 @@ def dstn(
     Parameters
     ----------
     x : Float[Array, "..."]
-        Input array of any dimensionality.
+        Input array of any dimensionality. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DST variant.  Default: 1.
     axes : sequence of int or None
@@ -770,6 +799,7 @@ def dstn(
     if type not in _DST_IMPLS:
         raise ValueError(f"DST type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
+    _validate_real(x)
     if axes is None:
         axes = list(range(x.ndim))
     y = x
@@ -797,7 +827,7 @@ def idstn(
     Parameters
     ----------
     x : Float[Array, "..."]
-        DST-transformed array.
+        DST-transformed array. Real (float32/float64); dtype is preserved.
     type : {1, 2, 3, 4}
         DST variant of the *forward* transform to invert.
     axes : sequence of int or None
@@ -811,6 +841,7 @@ def idstn(
         Reconstructed N-D array, same shape as input.
     """
     _validate_norm(norm)
+    _validate_real(x)
     if axes is None:
         axes = list(range(x.ndim))
     y = x

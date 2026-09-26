@@ -65,27 +65,12 @@ def test_nd_axes_match_scipy(name, type_, axes):
         )
 
 
-# float32 input comes back float64 on these paths: gh-93.
-_PROMOTES_FLOAT32 = {("dst", 3), ("idst", 2)}
-
-
-@pytest.mark.parametrize(
-    ("name", "type_"),
-    [
-        pytest.param(
-            name,
-            t,
-            marks=pytest.mark.xfail(
-                (name, t) in _PROMOTES_FLOAT32,
-                reason="gh-93: float32 promoted to float64",
-                strict=True,
-            ),
-        )
-        for name in _PAIRS
-        for t in TYPES
-    ],
-)
-def test_float32_is_preserved(name, type_):
-    ours, _ = _PAIRS[name]
-    x = jnp.asarray(np.random.default_rng(0).standard_normal(16), dtype=jnp.float32)
-    assert ours(x, type=type_).dtype == jnp.float32
+@pytest.mark.parametrize("norm", NORMS, ids=["norm=None", "norm=ortho"])
+@pytest.mark.parametrize("type_", TYPES)
+@pytest.mark.parametrize("name", list(_PAIRS) + list(_PAIRS_N))
+def test_float32_is_preserved(name, type_, norm):
+    """float32 in, float32 out, under x64 (gh-93)."""
+    ours, _ = {**_PAIRS, **_PAIRS_N}[name]
+    shape = (16,) if name in _PAIRS else (6, 5)
+    x = jnp.asarray(np.random.default_rng(0).standard_normal(shape), dtype=jnp.float32)
+    assert ours(x, type=type_, norm=norm).dtype == jnp.float32
