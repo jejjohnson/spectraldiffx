@@ -591,6 +591,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2299,6 +2310,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2385,6 +2407,45 @@
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
 <a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="n">error</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">du_dx</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">x</span><span class="p">)))</span>
 <a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max error: </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># should be &lt; 1e-12</span>
+</code></pre></div>
+<hr />
+<h2 id="precision">Precision<a class="headerlink" href="#precision" title="Permanent link">&para;</a></h2>
+<p>JAX computes in float32 unless 64-bit mode is enabled. The test suite runs in
+float64 (<code>tests/conftest.py</code>), and <code>tests/test_float32.py</code> checks the float32
+default. Measured relative difference between a float32 result and the same
+computation in float64 (CPU):</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>N</th>
+<th>float32 vs float64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DCT/DST types I–IV, forward + inverse</td>
+<td>64²</td>
+<td>1.7e-7 – 2.3e-7</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst</code> (random or smooth RHS)</td>
+<td>64² – 1024²</td>
+<td>1.5e-7 – 3.2e-7</td>
+</tr>
+<tr>
+<td 0_="0," 1="1"><code>build_capacitance_solver</code>, every <code>base_bc</code>, λ ∈</td>
+<td>24 × 20</td>
+<td>1.4e-7 – 4.1e-7</td>
+</tr>
+</tbody>
+</table>
+<p>These are a few times float32 machine epsilon (1.2e-7) and do not grow with N
+over this range. Enable float64 when you need more digits, or when a
+downstream computation (e.g. long time integration) amplifies round-off:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;jax_enable_x64&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 
 

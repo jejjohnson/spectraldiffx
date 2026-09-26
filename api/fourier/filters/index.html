@@ -1652,17 +1652,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D--mathematical-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mathematical Formulation:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#spectraldiffx.SpectralFilter1D-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1683,34 +1672,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="exponential_filter">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D.exponential_filter--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D.exponential_filter--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -1721,23 +1682,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="hyperviscosity">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D.hyperviscosity--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -2388,17 +2332,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D--mathematical-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mathematical Formulation:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#spectraldiffx.SpectralFilter1D-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2419,34 +2352,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="exponential_filter">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D.exponential_filter--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters:
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D.exponential_filter--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -2457,23 +2362,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="hyperviscosity">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SpectralFilter1D.hyperviscosity--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters:
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -2640,14 +2528,38 @@
 
 
         <p>1D Spectral filter for smoothing and numerical stabilization.</p>
-<h4 id="spectraldiffx.SpectralFilter1D--mathematical-formulation">Mathematical Formulation:<a class="headerlink" href="#spectraldiffx.SpectralFilter1D--mathematical-formulation" title="Permanent link">&para;</a></h4>
-<p>Filters are applied as a multiplicative mask in Fourier space:
+
+
+<details class="mathematical-formulation:" open>
+  <summary>Mathematical Formulation:</summary>
+  <p>Filters are applied as a multiplicative mask in Fourier space:
     u_hat_filtered(k) = F(k) * u_hat(k)</p>
 <p>where F(k) is the filter kernel.</p>
-        <hr />
-<div class="highlight"><pre><span></span><code>grid : FourierGrid1D
-    The 1D Fourier grid object containing wavenumbers k [N].
-</code></pre></div>
+</details>
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="spectraldiffx.SpectralFilter1D.grid">grid</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="FourierGrid1D (spectraldiffx._src.fourier.grid.FourierGrid1D)" href="../grids/#spectraldiffx.FourierGrid1D">FourierGrid1D</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The 1D Fourier grid object containing wavenumbers k [N].</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
 
@@ -2752,8 +2664,8 @@
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a>
 <a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    where F(k) is the filter kernel.</span>
 <a id="__codelineno-0-23" name="__codelineno-0-23"></a>
-<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    Attributes:</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    -----------</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    Attributes</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    ----------</span>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">        grid : FourierGrid1D</span>
 <a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">            The 1D Fourier grid object containing wavenumbers k [N].</span>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -2769,8 +2681,8 @@
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        This filter is near unity for low wavenumbers and falls off sharply</span>
 <a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">        near the grid scale (k_max), removing poorly resolved high frequencies.</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        Parameters:</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">        -----------</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        Parameters</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">        ----------</span>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">        u : Array [N]</span>
 <a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">            Physical space field or spectral coefficients of the field.</span>
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">        alpha : float, optional</span>
@@ -2780,8 +2692,8 @@
 <a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">        spectral : bool, optional</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">            If True, u is treated as spectral coefficients (u_hat). Default is False.</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        --------</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">        Returns</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        -------</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">        Array [N]</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">            Filtered field or spectral coefficients.</span>
 <a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -2807,8 +2719,8 @@
 <a id="__codelineno-0-76" name="__codelineno-0-76"></a>
 <a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sd">        Simulates the effect of high-order diffusion: du/dt = -nu_h * (-1)^(p/2) * d^p u / dx^p.</span>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">        Parameters:</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">        -----------</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">        Parameters</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">        ----------</span>
 <a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">        u : Array [N]</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">            Physical space field or spectral coefficients of the field.</span>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">        nu_hyper : float</span>
@@ -2855,18 +2767,108 @@
         <p>Apply 1D exponential filter: F(k) = exp(-alpha * (abs(k) / k_max)^power)</p>
 <p>This filter is near unity for low wavenumbers and falls off sharply
 near the grid scale (k_max), removing poorly resolved high frequencies.</p>
-<h6 id="spectraldiffx.SpectralFilter1D.exponential_filter--parameters">Parameters:<a class="headerlink" href="#spectraldiffx.SpectralFilter1D.exponential_filter--parameters" title="Permanent link">&para;</a></h6>
-<p>u : Array [N]
-    Physical space field or spectral coefficients of the field.
-alpha : float, optional
-    Damping coefficient. Default is 36.0.
-power : int, optional
-    Sharpening order (even integer). Default is 16.
-spectral : bool, optional
-    If True, u is treated as spectral coefficients (u_hat). Default is False.</p>
-<h6 id="spectraldiffx.SpectralFilter1D.exponential_filter--returns">Returns:<a class="headerlink" href="#spectraldiffx.SpectralFilter1D.exponential_filter--returns" title="Permanent link">&para;</a></h6>
-<p>Array [N]
-    Filtered field or spectral coefficients.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>u</code>
+            </td>
+            <td>
+                  <code><span title="jaxtyping.Array">Array</span>[<span title="N">N</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Physical space field or spectral coefficients of the field.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>alpha</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Damping coefficient. Default is 36.0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>36.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>power</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Sharpening order (even integer). Default is 16.</p>
+              </div>
+            </td>
+            <td>
+                  <code>16</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>spectral</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, u is treated as spectral coefficients (u_hat). Default is False.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="jaxtyping.Array">Array</span>[<span title="N">N</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Filtered field or spectral coefficients.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -2912,8 +2914,8 @@ spectral : bool, optional
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">    This filter is near unity for low wavenumbers and falls off sharply</span>
 <a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">    near the grid scale (k_max), removing poorly resolved high frequencies.</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">    Parameters:</span>
-<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">    -----------</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">    ----------</span>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">    u : Array [N]</span>
 <a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="sd">        Physical space field or spectral coefficients of the field.</span>
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">    alpha : float, optional</span>
@@ -2923,8 +2925,8 @@ spectral : bool, optional
 <a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="sd">    spectral : bool, optional</span>
 <a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="sd">        If True, u is treated as spectral coefficients (u_hat). Default is False.</span>
 <a id="__codelineno-0-51" name="__codelineno-0-51"></a>
-<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    --------</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">    -------</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    Array [N]</span>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">        Filtered field or spectral coefficients.</span>
 <a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -2955,17 +2957,101 @@ spectral : bool, optional
 
         <p>Apply 1D hyperviscous damping: F(k) = exp(-nu_h * abs(k)^power * dt)</p>
 <p>Simulates the effect of high-order diffusion: du/dt = -nu_h * (-1)^(p/2) * d^p u / dx^p.</p>
-<h6 id="spectraldiffx.SpectralFilter1D.hyperviscosity--parameters">Parameters:<a class="headerlink" href="#spectraldiffx.SpectralFilter1D.hyperviscosity--parameters" title="Permanent link">&para;</a></h6>
-<p>u : Array [N]
-    Physical space field or spectral coefficients of the field.
-nu_hyper : float
-    Hyperviscosity coefficient.
-dt : float
-    Effective time step for the damping.
-power : int, optional
-    Order of the Laplacian power (e.g., 4 for biharmonic). Default is 4.
-spectral : bool, optional
-    If True, u is treated as spectral coefficients (u_hat). Default is False.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>u</code>
+            </td>
+            <td>
+                  <code><span title="jaxtyping.Array">Array</span>[<span title="N">N</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Physical space field or spectral coefficients of the field.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>nu_hyper</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Hyperviscosity coefficient.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>dt</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Effective time step for the damping.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>power</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Order of the Laplacian power (e.g., 4 for biharmonic). Default is 4.</p>
+              </div>
+            </td>
+            <td>
+                  <code>4</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>spectral</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If True, u is treated as spectral coefficients (u_hat). Default is False.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -3013,8 +3099,8 @@ spectral : bool, optional
 <a id="__codelineno-0-76" name="__codelineno-0-76"></a>
 <a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="sd">    Simulates the effect of high-order diffusion: du/dt = -nu_h * (-1)^(p/2) * d^p u / dx^p.</span>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">    Parameters:</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">    -----------</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="sd">    ----------</span>
 <a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">    u : Array [N]</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">        Physical space field or spectral coefficients of the field.</span>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">    nu_hyper : float</span>
@@ -3063,10 +3149,31 @@ spectral : bool, optional
 
 
         <p>2D Spectral filter for doubly periodic domains.</p>
-        <hr />
-<div class="highlight"><pre><span></span><code>grid : FourierGrid2D
-    The 2D Fourier grid object [Ny, Nx].
-</code></pre></div>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="spectraldiffx.SpectralFilter2D.grid">grid</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="FourierGrid2D (spectraldiffx._src.fourier.grid.FourierGrid2D)" href="../grids/#spectraldiffx.FourierGrid2D">FourierGrid2D</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The 2D Fourier grid object [Ny, Nx].</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
 
@@ -3120,8 +3227,8 @@ spectral : bool, optional
 <a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="sd">    2D Spectral filter for doubly periodic domains.</span>
 <a id="__codelineno-0-102" name="__codelineno-0-102"></a>
-<a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="sd">    Attributes:</span>
-<a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">    -----------</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="sd">    Attributes</span>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="sd">    ----------</span>
 <a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="sd">        grid : FourierGrid2D</span>
 <a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="sd">            The 2D Fourier grid object [Ny, Nx].</span>
 <a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -3294,10 +3401,31 @@ spectral : bool, optional
 
 
         <p>3D Spectral filter for triply periodic domains.</p>
-        <hr />
-<div class="highlight"><pre><span></span><code>grid : FourierGrid3D
-    The 3D Fourier grid object [Nz, Ny, Nx].
-</code></pre></div>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="spectraldiffx.SpectralFilter3D.grid">grid</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="FourierGrid3D (spectraldiffx._src.fourier.grid.FourierGrid3D)" href="../grids/#spectraldiffx.FourierGrid3D">FourierGrid3D</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The 3D Fourier grid object [Nz, Ny, Nx].</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
 
@@ -3351,8 +3479,8 @@ spectral : bool, optional
 <a id="__codelineno-0-142" name="__codelineno-0-142"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-143" name="__codelineno-0-143"></a><span class="sd">    3D Spectral filter for triply periodic domains.</span>
 <a id="__codelineno-0-144" name="__codelineno-0-144"></a>
-<a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="sd">    Attributes:</span>
-<a id="__codelineno-0-146" name="__codelineno-0-146"></a><span class="sd">    -----------</span>
+<a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="sd">    Attributes</span>
+<a id="__codelineno-0-146" name="__codelineno-0-146"></a><span class="sd">    ----------</span>
 <a id="__codelineno-0-147" name="__codelineno-0-147"></a><span class="sd">        grid : FourierGrid3D</span>
 <a id="__codelineno-0-148" name="__codelineno-0-148"></a><span class="sd">            The 3D Fourier grid object [Nz, Ny, Nx].</span>
 <a id="__codelineno-0-149" name="__codelineno-0-149"></a><span class="sd">    &quot;&quot;&quot;</span>

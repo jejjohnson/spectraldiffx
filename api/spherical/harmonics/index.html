@@ -2086,50 +2086,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--mathematical-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mathematical Formulation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--attributes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attributes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#spectraldiffx.SphericalHarmonicTransform-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2149,34 +2105,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="to_spectral">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform.to_spectral--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform.to_spectral--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -2314,50 +2242,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--mathematical-formulation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mathematical Formulation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--attributes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Attributes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Notes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform--examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#spectraldiffx.SphericalHarmonicTransform-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2377,34 +2261,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="to_spectral">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform.to_spectral--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#spectraldiffx.SphericalHarmonicTransform.to_spectral--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -2495,8 +2351,11 @@
 <p>Wraps a :class:<code>SphericalGrid2D</code> with forward/inverse methods.  The
 Associated Legendre Polynomial matrices are precomputed once at
 construction time (scipy call) and stored as JAX arrays.</p>
-<h4 id="spectraldiffx.SphericalHarmonicTransform--mathematical-formulation">Mathematical Formulation<a class="headerlink" href="#spectraldiffx.SphericalHarmonicTransform--mathematical-formulation" title="Permanent link">&para;</a></h4>
-<p>Expansion in orthonormal spherical harmonics:</p>
+
+
+<details class="mathematical-formulation" open>
+  <summary>Mathematical Formulation</summary>
+  <p>Expansion in orthonormal spherical harmonics:</p>
 <div class="highlight"><pre><span></span><code>u(θ, φ) = Σₗ Σₘ û(l, m) · P̃ₗᵐ(cos θ) · e^{imφ}
 </code></pre></div>
 <p>Forward SHT:</p>
@@ -2511,26 +2370,48 @@ Step 2 (Legendre transform in colatitude):
 Step 2 (IFFT in φ):
     u(θⱼ, φₖ) = IFFTₖ(ûₘ(θⱼ))
 </code></pre></div>
-<h4 id="spectraldiffx.SphericalHarmonicTransform--attributes">Attributes<a class="headerlink" href="#spectraldiffx.SphericalHarmonicTransform--attributes" title="Permanent link">&para;</a></h4>
-<p>grid : SphericalGrid2D
-    Underlying lat-lon grid carrying the ALP matrices.</p>
-<h4 id="spectraldiffx.SphericalHarmonicTransform--notes">Notes<a class="headerlink" href="#spectraldiffx.SphericalHarmonicTransform--notes" title="Permanent link">&para;</a></h4>
-<p>The <code>_P_lm</code> attribute lives on :attr:<code>grid</code>; this class is a thin,
+</details>
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="spectraldiffx.SphericalHarmonicTransform.grid">grid</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SphericalGrid2D (spectraldiffx._src.spherical.grid.SphericalGrid2D)" href="../grids/#spectraldiffx.SphericalGrid2D">SphericalGrid2D</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Underlying lat-lon grid carrying the ALP matrices.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>The <code>_P_lm</code> attribute lives on :attr:<code>grid</code>; this class is a thin,
 more-semantic wrapper around :meth:<code>SphericalGrid2D.transform</code>.</p>
-<h4 id="spectraldiffx.SphericalHarmonicTransform--examples">Examples<a class="headerlink" href="#spectraldiffx.SphericalHarmonicTransform--examples" title="Permanent link">&para;</a></h4>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>import jax.numpy as jnp
-grid = SphericalGrid2D.from_N_L(Nx=32, Ny=16)
-sht = SphericalHarmonicTransform(grid=grid)
-PHI, THETA = grid.X
-u = jnp.sin(THETA) * jnp.cos(PHI)  # = Re Y₁¹(θ, φ) up to a constant
-u_hat = sht.to_spectral(u)
-u_back = sht.from_spectral(u_hat)  # ≈ u</p>
-</blockquote>
-</blockquote>
-</blockquote>
+</details>
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">SphericalGrid2D</span><span class="o">.</span><span class="n">from_N_L</span><span class="p">(</span><span class="n">Nx</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">Ny</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">sht</span> <span class="o">=</span> <span class="n">SphericalHarmonicTransform</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">PHI</span><span class="p">,</span> <span class="n">THETA</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">X</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">THETA</span><span class="p">)</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">PHI</span><span class="p">)</span>  <span class="c1"># = Re Y₁¹(θ, φ) up to a constant</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">u_hat</span> <span class="o">=</span> <span class="n">sht</span><span class="o">.</span><span class="n">to_spectral</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">u_back</span> <span class="o">=</span> <span class="n">sht</span><span class="o">.</span><span class="n">from_spectral</span><span class="p">(</span><span class="n">u_hat</span><span class="p">)</span>  <span class="c1"># ≈ u</span>
+</code></pre></div>
 
 
 
@@ -2740,13 +2621,61 @@ u_back = sht.from_spectral(u_hat)  # ≈ u</p>
         <p>Forward SHT: physical u(θ, φ) → spectral û(l, m).</p>
 <div class="highlight"><pre><span></span><code>û(l, m) = Σⱼ wⱼ · P̃ₗᵐ(cos θⱼ) · FFTφ{u(θⱼ, ·)}[m]
 </code></pre></div>
-<h6 id="spectraldiffx.SphericalHarmonicTransform.to_spectral--parameters">Parameters<a class="headerlink" href="#spectraldiffx.SphericalHarmonicTransform.to_spectral--parameters" title="Permanent link">&para;</a></h6>
-<p>u : Float[Array, "Nlat Nlon"]
-    Real-valued physical field on the (Nlat, Nlon) lat-lon grid.</p>
-<h6 id="spectraldiffx.SphericalHarmonicTransform.to_spectral--returns">Returns<a class="headerlink" href="#spectraldiffx.SphericalHarmonicTransform.to_spectral--returns" title="Permanent link">&para;</a></h6>
-<p>Complex[Array, "Nl Nm"]
-    Spectral coefficients.  Rows index harmonic degree l;
-    columns index zonal wavenumber m in FFT order.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>u</code>
+            </td>
+            <td>
+                  <code><span title="jaxtyping.Float">Float</span>[<span title="jaxtyping.Array">Array</span>, &#39;Nlat Nlon&#39;]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Real-valued physical field on the (Nlat, Nlon) lat-lon grid.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="jaxtyping.Complex">Complex</span>[<span title="jaxtyping.Array">Array</span>, &#39;Nl Nm&#39;]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Spectral coefficients.  Rows index harmonic degree l;
+columns index zonal wavenumber m in FFT order.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
