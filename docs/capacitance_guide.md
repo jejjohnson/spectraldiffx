@@ -29,6 +29,11 @@ once) and an **online** phase (cheap, done many times).
 import numpy as np
 from spectraldiffx import build_capacitance_solver
 
+Ny, Nx = 64, 64
+j, i = np.mgrid[0:Ny, 0:Nx]
+mask = (j - Ny / 2) ** 2 + (i - Nx / 2) ** 2 < (0.4 * Nx) ** 2  # circular basin
+rhs = np.where(mask, 1.0, 0.0)
+
 # ----- Offline: build the solver (N_b spectral solves) -----
 solver = build_capacitance_solver(
     mask,               # bool array [Ny, Nx]: True = interior
@@ -171,7 +176,10 @@ solver = build_capacitance_solver(
     lambda_=0.0,     # Poisson equation
     base_bc="dst",   # Dirichlet rectangle
 )
-print(f"Boundary points (N_b): {len(solver._j_b)}")
+interior = np.zeros(mask.size, dtype=bool)
+interior[np.asarray(solver.interior_indices)] = True
+boundary = mask & ~interior.reshape(mask.shape)  # inner-boundary cells
+print(f"Boundary points (N_b): {boundary.sum()}")
 
 # --- Create a source term ---
 j_jax = jnp.arange(Ny)[:, None]
@@ -184,7 +192,7 @@ rhs = rhs * jnp.array(mask, dtype=float)  # zero outside mask
 psi = solver(rhs)
 
 # --- Verify: psi should be ~0 at boundary points ---
-boundary_values = psi[solver._j_b, solver._i_b]
+boundary_values = psi[boundary]
 print(f"Max |psi| at boundary: {jnp.max(jnp.abs(boundary_values)):.2e}")
 # Should be ~1e-14 or smaller with float64
 

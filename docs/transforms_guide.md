@@ -202,8 +202,11 @@ print(f"Spectral:  {spectral_energy:.6f}")
     Passing a 2-D array to `dct()` or `dst()` raises a `ValueError`.  Use
     `dctn()` / `dstn()` with the `axes` parameter for multi-dimensional input.
     ```python
-    # WRONG
-    dct(jnp.ones((10, 10)))  # ValueError: dct expects a 1-D array
+    # WRONG: raises ValueError("dct expects a 1-D array ...")
+    try:
+        dct(jnp.ones((10, 10)))
+    except ValueError as err:
+        print(err)
 
     # RIGHT
     dctn(jnp.ones((10, 10)), type=2, axes=[0, 1])
