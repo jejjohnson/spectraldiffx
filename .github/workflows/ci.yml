@@ -46,4 +46,6 @@ jobs:
         with:
           # [tool.coverage.xml] output in pyproject.toml
           files: ./reports/coverage.xml
+          # Codecov rejects tokenless uploads because main is protected.
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
