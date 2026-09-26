@@ -1,4 +1,5 @@
 import jax.numpy as jnp
+import numpy as np
 import pytest
 
 from spectraldiffx._src.fourier.filters import (
@@ -144,3 +145,55 @@ def test_filter3d_hyperviscosity_dc_preserved(grid3d):
     assert jnp.isclose(jnp.abs(u_hat_f[0, 0, 0]), 1.0, atol=1e-15), (
         "3D hyperviscosity: DC mode must be preserved"
     )
+
+
+# ---------------------------------------------------------------------------
+# Tensor-product exponential filter (gh-89)
+# ---------------------------------------------------------------------------
+
+_ALPHA = 36.0
+
+
+def _nyquist_checkerboard(grid, axis):
+    """(-1)^j along one axis: the pure axis-Nyquist mode."""
+    idx = np.indices(np.asarray(grid.X[0]).shape)[axis]
+    return jnp.asarray((-1.0) ** idx)
+
+
+@pytest.mark.parametrize(
+    "make",
+    [
+        lambda: FourierGrid2D.from_N_L(Nx=64, Ny=64, Lx=2 * np.pi, Ly=2 * np.pi),
+        lambda: FourierGrid2D.from_N_L(Nx=64, Ny=16, Lx=2 * np.pi, Ly=1.0),
+        lambda: FourierGrid3D.from_N_L(
+            Nz=32, Ny=32, Nx=32, Lz=2 * np.pi, Ly=2 * np.pi, Lx=2 * np.pi
+        ),
+    ],
+    ids=["64x64", "64x16", "32x32x32"],
+)
+def test_exponential_filter_damps_every_axis_nyquist(make):
+    grid = make()
+    filt = (SpectralFilter2D if len(grid.X) == 2 else SpectralFilter3D)(grid=grid)
+    for axis in range(len(grid.X)):
+        u = _nyquist_checkerboard(grid, axis)
+        # F(axis Nyquist) = exp(-alpha): read it off the spectral multiplier.
+        u_hat = grid.transform(u)
+        out_hat = filt.exponential_filter(u_hat, alpha=_ALPHA, spectral=True)
+        peak = np.unravel_index(np.argmax(np.abs(np.asarray(u_hat))), u_hat.shape)
+        ratio = complex(out_hat[peak] / u_hat[peak])
+        assert abs(ratio - np.exp(-_ALPHA)) < 1e-12
+        # A checkerboard along one axis is removed after one application.
+        out = filt.exponential_filter(u, alpha=_ALPHA)
+        assert float(jnp.linalg.norm(out) / jnp.linalg.norm(u)) < 1e-12
+
+
+def test_exponential_filter_keeps_mean_and_multiplies():
+    grid = FourierGrid2D.from_N_L(Nx=32, Ny=24, Lx=2 * np.pi, Ly=1.0)
+    filt = SpectralFilter2D(grid=grid)
+    u = jnp.asarray(np.random.default_rng(0).standard_normal((24, 32)))
+    once = filt.exponential_filter(u)
+    assert abs(float(jnp.mean(once) - jnp.mean(u))) < 1e-14
+    # Applying the multiplier twice equals applying F² (alpha doubled).
+    twice = filt.exponential_filter(once)
+    squared = filt.exponential_filter(u, alpha=2 * 36.0)
+    np.testing.assert_allclose(np.asarray(twice), np.asarray(squared), atol=1e-12)

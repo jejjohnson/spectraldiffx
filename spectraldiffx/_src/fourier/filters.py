@@ -10,6 +10,13 @@ from jaxtyping import Array
 from .grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 
 
+def _exponential_1d(k: Array, alpha: float, power: int) -> Array:
+    """exp(-alpha (|k| / k_max)^power) on one axis, k_max its Nyquist."""
+    k_max = jnp.abs(k).max()
+    k_max_safe = jnp.where(k_max == 0, 1.0, k_max)
+    return jnp.exp(-alpha * (jnp.abs(k) / k_max_safe) ** power)
+
+
 class SpectralFilter1D(eqx.Module):
     """
     1D Spectral filter for smoothing and numerical stabilization.
@@ -55,11 +62,7 @@ class SpectralFilter1D(eqx.Module):
             Filtered field or spectral coefficients.
         """
         u_hat = u if spectral else self.grid.transform(u)
-        k = self.grid.k
-        k_max = jnp.abs(k).max()
-        k_max_safe = jnp.where(k_max == 0, 1.0, k_max)
-
-        filter_mask = jnp.exp(-alpha * (jnp.abs(k) / k_max_safe) ** power)
+        filter_mask = _exponential_1d(self.grid.k, alpha, power)
         u_hat_f = u_hat * filter_mask
         return u_hat_f if spectral else self.grid.transform(u_hat_f, inverse=True).real
 
@@ -111,14 +114,37 @@ class SpectralFilter2D(eqx.Module):
     def exponential_filter(
         self, u: Array, alpha: float = 36.0, power: int = 16, spectral: bool = False
     ) -> Array:
-        """Apply 2D exponential filter based on isotropic wavenumber magnitude."""
-        u_hat = u if spectral else self.grid.transform(u)
-        K2 = self.grid.K2
-        k_mag = jnp.sqrt(K2)
-        k_max = k_mag.max()
-        k_max_safe = jnp.where(k_max == 0, 1.0, k_max)
+        """Apply the 2D exponential filter, a tensor product of 1D filters.
 
-        filter_mask = jnp.exp(-alpha * (k_mag / k_max_safe) ** power)
+            F(kx, ky) = exp(-alpha (|kx|/kx_max)^power) · exp(-alpha (|ky|/ky_max)^power)
+
+        with kx_max, ky_max the per-axis Nyquist wavenumbers, so every
+        axis-Nyquist mode is damped by exp(-alpha), as in 1D and consistent
+        with the per-axis 2/3 mask. (Normalising |k| by the corner of the
+        wavenumber box instead left the axis Nyquist modes almost undamped,
+        gh-89.)
+
+        Parameters
+        ----------
+        u : Array [Ny, Nx]
+            Physical field, or its spectral coefficients if ``spectral``.
+        alpha : float, optional
+            Damping at each axis Nyquist, exp(-alpha). Default 36.0.
+        power : int, optional
+            Sharpening order (even integer). Default 16.
+        spectral : bool, optional
+            If True, ``u`` is already spectral and the result stays spectral.
+
+        Returns
+        -------
+        Array [Ny, Nx]
+            Filtered field (or spectral coefficients).
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        filter_mask = (
+            _exponential_1d(self.grid.ky, alpha, power)[:, None]
+            * _exponential_1d(self.grid.kx, alpha, power)[None, :]
+        )
         u_hat_f = u_hat * filter_mask
         return u_hat_f if spectral else self.grid.transform(u_hat_f, inverse=True).real
 
@@ -153,14 +179,34 @@ class SpectralFilter3D(eqx.Module):
     def exponential_filter(
         self, u: Array, alpha: float = 36.0, power: int = 16, spectral: bool = False
     ) -> Array:
-        """Apply isotropic 3D exponential filter."""
-        u_hat = u if spectral else self.grid.transform(u)
-        K2 = self.grid.K2
-        k_mag = jnp.sqrt(K2)
-        k_max = k_mag.max()
-        k_max_safe = jnp.where(k_max == 0, 1.0, k_max)
+        """Apply the 3D exponential filter, a tensor product of 1D filters.
 
-        filter_mask = jnp.exp(-alpha * (k_mag / k_max_safe) ** power)
+            F = Π_{d ∈ z, y, x} exp(-alpha (|k_d| / k_d,max)^power)
+
+        with per-axis Nyquist normalisation (see ``SpectralFilter2D``, gh-89).
+
+        Parameters
+        ----------
+        u : Array [Nz, Ny, Nx]
+            Physical field, or its spectral coefficients if ``spectral``.
+        alpha : float, optional
+            Damping at each axis Nyquist, exp(-alpha). Default 36.0.
+        power : int, optional
+            Sharpening order (even integer). Default 16.
+        spectral : bool, optional
+            If True, ``u`` is already spectral and the result stays spectral.
+
+        Returns
+        -------
+        Array [Nz, Ny, Nx]
+            Filtered field (or spectral coefficients).
+        """
+        u_hat = u if spectral else self.grid.transform(u)
+        filter_mask = (
+            _exponential_1d(self.grid.kz, alpha, power)[:, None, None]
+            * _exponential_1d(self.grid.ky, alpha, power)[None, :, None]
+            * _exponential_1d(self.grid.kx, alpha, power)[None, None, :]
+        )
         u_hat_f = u_hat * filter_mask
         return u_hat_f if spectral else self.grid.transform(u_hat_f, inverse=True).real
 
