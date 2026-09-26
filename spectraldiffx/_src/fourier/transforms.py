@@ -42,7 +42,9 @@ Inverse transforms satisfy:
   idct(dct(x, t, norm=m), t, norm=m) == x   for all t ∈ {1,2,3,4}, m ∈ {None, "ortho"}
   idst(dst(x, t, norm=m), t, norm=m) == x   for all t ∈ {1,2,3,4}, m ∈ {None, "ortho"}
 
-All functions accept JAX arrays and are compatible with ``jax.jit``.
+All functions accept JAX arrays and are compatible with ``jax.jit``; ``type``,
+``norm`` and ``axes`` select the algorithm in Python and must be static
+(e.g. ``jax.jit(dctn, static_argnames=("type", "norm", "axes"))``).
 
 Dtypes: input must be real (float32 or float64); the output has the input's
 dtype, also under ``jax_enable_x64``. Complex input raises ``TypeError``:
@@ -240,6 +242,24 @@ def _validate_real(x: Array) -> None:
         )
 
 
+def _validate_type(type: int, kind: str) -> None:
+    """Raise ValueError unless *type* is the int 1, 2, 3 or 4 (not a bool)."""
+    if isinstance(type, bool) or not isinstance(type, int) or type not in (1, 2, 3, 4):
+        raise ValueError(f"{kind} type must be 1, 2, 3, or 4; got {type!r}")
+
+
+def _validate_dct1_length(x: Array, type: int, axes: Sequence[int] | None) -> None:
+    """DCT-I divides by N - 1, so every transformed axis needs N >= 2."""
+    if type != 1:
+        return
+    for ax in range(x.ndim) if axes is None else axes:
+        if x.shape[ax] < 2:
+            raise ValueError(
+                f"DCT-I requires N >= 2 along every transformed axis; "
+                f"axis {ax} has N = {x.shape[ax]}."
+            )
+
+
 def _alternating_sign(n: Array, dtype) -> Array:
     """(-1)^n in *dtype*; ``(-1.0) ** n`` would be float64 under x64."""
     return (1 - 2 * (n % 2)).astype(dtype)
@@ -416,7 +436,7 @@ def _idct_along_axis(x: Array, type: int, axis: int) -> Array:
 
     Inverse scaling:
     * IDCT-I   = DCT-I(x)   / (2(N-1))  — DCT-I is self-inverse up to scale
-    * IDCT-II  = DCT-III(x) / (2N)      — uses irfft shortcut for efficiency
+    * IDCT-II  = DCT-III(x) / (2N)      — the DCT-III algorithm inlined
     * IDCT-III = DCT-II(x)  / (2N)
     * IDCT-IV  = DCT-IV(x)  / (2N)      — DCT-IV is self-inverse up to scale
     """
@@ -425,7 +445,7 @@ def _idct_along_axis(x: Array, type: int, axis: int) -> Array:
         # IDCT-I = DCT-I(x) / (2(N-1))
         return _dct1(x, axis) / (2 * (N - 1))
     if type == 2:
-        # IDCT-II = DCT-III(x) / (2N) — uses irfft shortcut for efficiency
+        # IDCT-II = DCT-III(x) / (2N): the same irfft algorithm as _dct3.
         k = jnp.arange(N).reshape(_phase_shape(x.ndim, axis, N))
         phase = jnp.exp(1j * jnp.pi * k / (2 * N))
         b = x.astype(jnp.result_type(x.dtype, jnp.complex64)) * phase
@@ -513,10 +533,10 @@ def dct(
         raise ValueError(
             f"dct expects a 1-D array, got ndim={x.ndim}. Use dctn for multi-dimensional input."
         )
-    if type not in _DCT_IMPLS:
-        raise ValueError(f"DCT type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DCT")
+    _validate_dct1_length(x, type, None)
     # DCT-I ortho requires a custom implementation (asymmetric weights)
     if norm == "ortho" and type == 1:
         return _dct1_ortho(x, axis=0)
@@ -564,6 +584,8 @@ def idct(
         )
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DCT")
+    _validate_dct1_length(x, type, None)
     # Ortho DCT-I is self-inverse (symmetric orthogonal matrix)
     if norm == "ortho" and type == 1:
         return _dct1_ortho(x, axis=0)
@@ -615,10 +637,9 @@ def dst(
         raise ValueError(
             f"dst expects a 1-D array, got ndim={x.ndim}. Use dstn for multi-dimensional input."
         )
-    if type not in _DST_IMPLS:
-        raise ValueError(f"DST type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DST")
     if norm == "ortho" and type == 3:
         x = _prescale_type3(x, axis=0, transform="dst")
     y = _DST_IMPLS[type](x, 0)
@@ -662,6 +683,7 @@ def idst(
         )
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DST")
     if norm == "ortho":
         x = _remove_ortho_forward(x, type, axis=0, transform="dst")
     y = _idst_along_axis(x, type, axis=0)
@@ -703,10 +725,10 @@ def dctn(
     Float[Array, "..."]
         N-D DCT of *x*, same shape as input.
     """
-    if type not in _DCT_IMPLS:
-        raise ValueError(f"DCT type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DCT")
+    _validate_dct1_length(x, type, axes)
     if axes is None:
         axes = list(range(x.ndim))
     y = x
@@ -752,6 +774,8 @@ def idctn(
     """
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DCT")
+    _validate_dct1_length(x, type, axes)
     if axes is None:
         axes = list(range(x.ndim))
     y = x
@@ -796,10 +820,9 @@ def dstn(
     Float[Array, "..."]
         N-D DST of *x*, same shape as input.
     """
-    if type not in _DST_IMPLS:
-        raise ValueError(f"DST type must be 1, 2, 3, or 4; got {type}")
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DST")
     if axes is None:
         axes = list(range(x.ndim))
     y = x
@@ -842,6 +865,7 @@ def idstn(
     """
     _validate_norm(norm)
     _validate_real(x)
+    _validate_type(type, "DST")
     if axes is None:
         axes = list(range(x.ndim))
     y = x

@@ -9,7 +9,7 @@ Key Concepts:
 -------------
     • Spectral representation: u(x) = Σ û_k·exp(ikx)
     • Derivatives in Fourier space: ∂ⁿu/∂xⁿ ↔ (ik)ⁿ·û_k
-    • Dealiasing: 2/3 rule or padding to prevent aliasing
+    • Dealiasing: 2/3 rule to prevent aliasing
     • Pseudo-spectral: nonlinear terms computed in physical space
 
 Advantages:
@@ -34,15 +34,39 @@ References
 [4] Durran, D. R. (2010). Numerical Methods for Fluid Dynamics.
 """
 
+import math
 from typing import Literal
 
 import equinox as eqx
 import jax.numpy as jnp
 from jaxtyping import Array, Complex, Float
+import numpy as np
 
 # ============================================================================
 # Fourier Grid and Wavenumbers
 # ============================================================================
+
+
+def _validate_dealias(dealias: object) -> None:
+    """Only the 2/3 rule is implemented (3/2 padding is tracked in #83)."""
+    if dealias not in ("2/3", None):
+        raise ValueError(f"dealias must be '2/3' or None; got {dealias!r}")
+
+
+def _check_lengths(*axes: tuple[str, int, float, float]) -> None:
+    """Raise if L != N·d on any axis, for concrete Python/NumPy numbers.
+
+    Uses plain Python arithmetic so it also works while a grid is built
+    inside ``jax.jit`` from constants; traced or array values are skipped.
+    """
+    for name, n, length, step in axes:
+        if not all(isinstance(v, (int, float, np.number)) for v in (length, step)):
+            continue
+        if not math.isclose(float(length), n * float(step), rel_tol=1e-5):
+            raise ValueError(
+                f"Grid inconsistency detected on axis {name}: "
+                f"L = {length} but N * d = {n} * {step} = {n * float(step)}."
+            )
 
 
 def _two_thirds_mask(N: int) -> Float[Array, "N"]:
@@ -67,12 +91,12 @@ class FourierGrid1D(eqx.Module):
 
         Grid points: x_j = j·Δx = j·L/N, j = 0, 1, ..., N-1
 
-        Wavenumbers: k_n = 2πn/L, n = -N/2+1, ..., N/2
+        Wavenumbers: k_n = 2πn/L, n = -N/2, ..., N/2-1 (``fftfreq`` order below)
 
     Discrete Fourier Transform:
-        û_k = (1/N)·Σ_{j=0}^{N-1} u_j·exp(-ik·x_j)
+        û_k = Σ_{j=0}^{N-1} u_j·exp(-ik·x_j)          (``transform``, unnormalised)
 
-        u_j = Σ_{k=-N/2+1}^{N/2} û_k·exp(ik·x_j)
+        u_j = (1/N)·Σ_k û_k·exp(ik·x_j)              (``transform(inverse=True)``)
 
     FFT Ordering:
         k = [0, 1, 2, ..., N/2-1, -N/2, -N/2+1, ..., -1]
@@ -86,13 +110,22 @@ class FourierGrid1D(eqx.Module):
         dx : float
             Grid spacing [m]. Must satisfy L = N * dx.
         dealias : str
-            Dealiasing method ('2/3', 'padding', None)
+            Dealiasing method: '2/3' or None
     """
 
     N: int
     L: float
     dx: float
-    dealias: Literal["2/3", "padding", None] | None = "2/3"
+    dealias: Literal["2/3", None] | None = "2/3"
+
+    def __check_init__(self) -> None:
+        """Validate ``dealias`` and, for concrete values, L ≈ N·dx (gh-94).
+
+        The ``from_*`` constructors derive the redundant field, so this only
+        fires for a plain constructor call with inconsistent values.
+        """
+        _validate_dealias(self.dealias)
+        _check_lengths(("x", self.N, self.L, self.dx))
 
     def check_consistency(self, rtol: float = 1e-5) -> bool:
         """
@@ -125,7 +158,7 @@ class FourierGrid1D(eqx.Module):
         cls,
         N: int,
         L: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid1D":
         """
         Initialize FourierGrid using Number of points (N) and Length (L).
@@ -140,7 +173,7 @@ class FourierGrid1D(eqx.Module):
         cls,
         N: int,
         dx: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid1D":
         """
         Initialize FourierGrid using Number of points (N) and Spacing (dx).
@@ -155,7 +188,7 @@ class FourierGrid1D(eqx.Module):
         cls,
         L: float,
         dx: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid1D":
         """
         Initialize FourierGrid using Length (L) and Spacing (dx).
@@ -260,7 +293,7 @@ class FourierGrid2D(eqx.Module):
         u(x,y) = ΣΣ û_{kx,ky}·exp(i(kx·x + ky·y))
 
     2D FFT:
-        û_{kx,ky} = (1/(Nx·Ny))·ΣΣ u_{j,l}·exp(-i(kx·x_j + ky·y_l))
+        û_{kx,ky} = ΣΣ u_{j,l}·exp(-i(kx·x_j + ky·y_l))   (unnormalised; the 1/(Nx·Ny) is in the inverse)
 
     Attributes
     ----------
@@ -280,7 +313,18 @@ class FourierGrid2D(eqx.Module):
     Ly: float
     dx: float
     dy: float
-    dealias: Literal["2/3", "padding", None] | None = "2/3"
+    dealias: Literal["2/3", None] | None = "2/3"
+
+    def __check_init__(self) -> None:
+        """Validate ``dealias`` and, for concrete values, Lx ≈ Nx·dx and Ly ≈ Ny·dy (gh-94).
+
+        The ``from_*`` constructors derive the redundant field, so this only
+        fires for a plain constructor call with inconsistent values.
+        """
+        _validate_dealias(self.dealias)
+        _check_lengths(
+            ("x", self.Nx, self.Lx, self.dx), ("y", self.Ny, self.Ly, self.dy)
+        )
 
     def check_consistency(self, rtol: float = 1e-5) -> bool:
         """
@@ -325,7 +369,7 @@ class FourierGrid2D(eqx.Module):
         Ny: int,
         Lx: float,
         Ly: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid2D":
         """
         Initialize FourierGrid2D using Number of points (N) and Length (L).
@@ -345,7 +389,7 @@ class FourierGrid2D(eqx.Module):
         Ny: int,
         dx: float,
         dy: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid2D":
         """
         Initialize FourierGrid2D using Number of points (N) and Spacing (dx/dy).
@@ -365,7 +409,7 @@ class FourierGrid2D(eqx.Module):
         Ly: float,
         dx: float,
         dy: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid2D":
         """
         Initialize FourierGrid2D using Length (L) and Spacing (dx/dy).
@@ -469,7 +513,7 @@ class FourierGrid3D(eqx.Module):
         u(z,y,x) = ΣΣΣ û_{kz,ky,kx}·exp(i(kz·z + ky·y + kx·x))
 
     3D FFT:
-        û_{kz,ky,kx} = (1/(Nz·Ny·Nx))·ΣΣΣ u_{m,l,j}·exp(-i(kz·z_m + ky·y_l + kx·x_j))
+        û_{kz,ky,kx} = ΣΣΣ u_{m,l,j}·exp(-i(kz·z_m + ky·y_l + kx·x_j))   (unnormalised; the 1/N is in the inverse)
 
     Grid Shapes (indexing='ij'):
         Physical/Spectral arrays have shape (Nz, Ny, Nx).
@@ -498,7 +542,20 @@ class FourierGrid3D(eqx.Module):
     dz: float
     dy: float
     dx: float
-    dealias: Literal["2/3", "padding", None] | None = "2/3"
+    dealias: Literal["2/3", None] | None = "2/3"
+
+    def __check_init__(self) -> None:
+        """Validate ``dealias`` and, for concrete values, L ≈ N·d on every axis (gh-94).
+
+        The ``from_*`` constructors derive the redundant field, so this only
+        fires for a plain constructor call with inconsistent values.
+        """
+        _validate_dealias(self.dealias)
+        _check_lengths(
+            ("x", self.Nx, self.Lx, self.dx),
+            ("y", self.Ny, self.Ly, self.dy),
+            ("z", self.Nz, self.Lz, self.dz),
+        )
 
     def check_consistency(self, rtol: float = 1e-5) -> bool:
         """
@@ -551,7 +608,7 @@ class FourierGrid3D(eqx.Module):
         Lz: float,
         Ly: float,
         Lx: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid3D":
         """
         Initialize FourierGrid3D using Number of points (N) and Length (L).
@@ -586,7 +643,7 @@ class FourierGrid3D(eqx.Module):
         dz: float,
         dy: float,
         dx: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid3D":
         """
         Initialize FourierGrid3D using Number of points (N) and Spacing (dz/dy/dx).
@@ -621,7 +678,7 @@ class FourierGrid3D(eqx.Module):
         dz: float,
         dy: float,
         dx: float,
-        dealias: Literal["2/3", "padding", None] | None = "2/3",
+        dealias: Literal["2/3", None] | None = "2/3",
     ) -> "FourierGrid3D":
         """
         Initialize FourierGrid3D using Length (L) and Spacing (dz/dy/dx).
