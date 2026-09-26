@@ -25,7 +25,7 @@ _TRANSFORMS = {
 @pytest.mark.parametrize("type_", [2, 3, 4])
 @pytest.mark.parametrize("name", list(_TRANSFORMS))
 def test_length_one_matches_scipy(name, type_):
-    """N = 1 for types 2-4 (type 1 at N = 1 is gh-94)."""
+    """N = 1 for types 2-4 (DCT-I needs N >= 2; see test_guards.py)."""
     ours, ref = _TRANSFORMS[name]
     x = np.array([1.5])
     np.testing.assert_allclose(

@@ -365,7 +365,10 @@ def dst1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of interior grid points.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = (N + 1)·dx``, which is what
+        the solvers pass. Passing N·dx instead scales every eigenvalue
+        by the wrong factor (gh-94).
 
     Returns
     -------
@@ -390,7 +393,9 @@ def dst2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of cell-centred grid points.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------
@@ -417,7 +422,10 @@ def dct1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points (including both boundary points).  Must be >= 2.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = (N − 1)·dx``, which is what
+        the solvers pass. Passing N·dx instead scales every eigenvalue
+        by the wrong factor (gh-94).
 
     Returns
     -------
@@ -445,7 +453,9 @@ def dct2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------
@@ -479,7 +489,9 @@ def dst3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points.
     L : float
-        Domain length.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------
@@ -499,7 +511,9 @@ def dct3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------
@@ -519,7 +533,9 @@ def dst4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of cell-centred grid points.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------
@@ -539,7 +555,9 @@ def dct4_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of cell-centred grid points.
     L : float
-        Domain length.  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------
@@ -564,7 +582,9 @@ def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     N : int
         Number of grid points in one period.
     L : float
-        Domain length (period).  Must be positive.
+        Domain length between the boundary conditions. For a grid of
+        N points with spacing dx this is ``L = N·dx``, which is what
+        the solvers pass (gh-94).
 
     Returns
     -------

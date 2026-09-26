@@ -108,6 +108,21 @@ _BC_DISPATCH: dict[
 }
 
 
+def _check_finite(psi: Array) -> Array:
+    """Raise (at run time, also under jit) if the solution is not finite.
+
+    A non-null zero denominator means ``lambda_`` coincides with an
+    eigenvalue of the discrete operator (only possible for ``lambda_ < 0``),
+    so the solve is singular there; NaN/inf input also ends up here (gh-94).
+    """
+    return eqx.error_if(
+        psi,
+        ~jnp.all(jnp.isfinite(psi)),
+        "Helmholtz solve produced a non-finite result: lambda_ is an eigenvalue "
+        "of the discrete operator (resonance), or the input is not finite.",
+    )
+
+
 def _lookup_bc(
     bc: BoundaryCondition,
 ) -> tuple[str, _DSTDCTType | None, _EigFn, bool]:
@@ -214,7 +229,10 @@ def modify_rhs_1d(
 
     Modifies the right-hand side at boundary-adjacent grid points to
     account for non-zero boundary values.  This exploits the FD2 stencil
-    structure and must only be used with FD2 eigenvalues.
+    structure and must only be used with FD2 eigenvalues. It is exact on
+    regular (vertex) grids; on staggered grids the ghost-point correction
+    (e.g. −2a/dx² for DST-II Dirichlet) is second-order accurate, not exact
+    (error ≈ 1.8e-3 at dx = 0.1, converging at rate 4 per halving).
 
     Parameters
     ----------
@@ -495,7 +513,9 @@ def solve_helmholtz_2d(
 
         solve_jit = jax.jit(solve_helmholtz_2d, static_argnames=("bc_x", "bc_y"))
 
-    Inhomogeneous BC support uses FD2 eigenvalues only (the default).
+    This function always uses the FD2 eigenvalues (it has no
+    ``approximation`` argument), which is what the inhomogeneous BC support
+    requires.
     """
     # Apply inhomogeneous BC RHS modification if any values are non-None.
     _has_inhomogeneous = any(v is not None for v in (*bc_x_values, *bc_y_values))
@@ -554,7 +574,7 @@ def solve_helmholtz_2d(
         temp = jnp.fft.ifft(psi_hat, axis=0)
         psi = _inverse_1d(temp.real, fam_x, type_x, axis=1)
 
-    return psi
+    return _check_finite(psi)
 
 
 def solve_poisson_2d(
@@ -675,7 +695,9 @@ def solve_helmholtz_3d(
             solve_helmholtz_3d, static_argnames=("bc_x", "bc_y", "bc_z")
         )
 
-    Inhomogeneous BC support uses FD2 eigenvalues only (the default).
+    This function always uses the FD2 eigenvalues (it has no
+    ``approximation`` argument), which is what the inhomogeneous BC support
+    requires.
     """
     # Apply inhomogeneous BC RHS modification if any values are non-None.
     _has_inhomogeneous = any(
@@ -744,7 +766,7 @@ def solve_helmholtz_3d(
     for axis, family, type_ in real_axes:
         data = _inverse_1d(data, family, type_, axis)
 
-    return data
+    return _check_finite(data)
 
 
 def solve_poisson_3d(
@@ -860,11 +882,14 @@ def solve_helmholtz_fft_1d(
     rhs_hat = jnp.fft.fft(rhs)
     eig = _eig_1d(fft_eigenvalues, fft_eigenvalues_ps, N, dx, N * dx, approximation)
     denom = eig - lambda_
-    is_null = denom == 0.0
+    # Only the k = 0 mode is a null mode; a zero denominator elsewhere is a
+    # resonance (lambda_ < 0 hitting an eigenvalue) and is reported by
+    # _check_finite instead of being silently zeroed (gh-94).
+    is_null = (jnp.arange(denom.shape[0]) == 0) & (denom == 0.0)
     denom_safe = jnp.where(is_null, 1.0, denom)
     psi_hat = rhs_hat / denom_safe
     psi_hat = jnp.where(is_null, 0.0, psi_hat)
-    return jnp.real(jnp.fft.ifft(psi_hat))
+    return _check_finite(jnp.real(jnp.fft.ifft(psi_hat)))
 
 
 def solve_poisson_fft_1d(
@@ -930,7 +955,7 @@ def solve_helmholtz_dst1_1d(
         dst1_eigenvalues, dst1_eigenvalues_ps, N, dx, (N + 1) * dx, approximation
     )
     psi_hat = rhs_hat / (eig - lambda_)
-    return idstn(psi_hat, type=1, axes=[0])
+    return _check_finite(idstn(psi_hat, type=1, axes=[0]))
 
 
 def solve_poisson_dst1_1d(
@@ -992,7 +1017,7 @@ def solve_helmholtz_dst2_1d(
     rhs_hat = dstn(rhs, type=2, axes=[0])
     eig = _eig_1d(dst2_eigenvalues, dst2_eigenvalues_ps, N, dx, N * dx, approximation)
     psi_hat = rhs_hat / (eig - lambda_)
-    return idstn(psi_hat, type=2, axes=[0])
+    return _check_finite(idstn(psi_hat, type=2, axes=[0]))
 
 
 def solve_poisson_dst2_1d(
@@ -1062,11 +1087,14 @@ def solve_helmholtz_dct1_1d(
         dct1_eigenvalues, dct1_eigenvalues_ps, N, dx, (N - 1) * dx, approximation
     )
     denom = eig - lambda_
-    is_null = denom == 0.0
+    # Only the k = 0 mode is a null mode; a zero denominator elsewhere is a
+    # resonance (lambda_ < 0 hitting an eigenvalue) and is reported by
+    # _check_finite instead of being silently zeroed (gh-94).
+    is_null = (jnp.arange(denom.shape[0]) == 0) & (denom == 0.0)
     denom_safe = jnp.where(is_null, 1.0, denom)
     psi_hat = rhs_hat / denom_safe
     psi_hat = jnp.where(is_null, 0.0, psi_hat)
-    return idctn(psi_hat, type=1, axes=[0])
+    return _check_finite(idctn(psi_hat, type=1, axes=[0]))
 
 
 def solve_poisson_dct1_1d(
@@ -1131,11 +1159,14 @@ def solve_helmholtz_dct2_1d(
     rhs_hat = dctn(rhs, type=2, axes=[0])
     eig = _eig_1d(dct2_eigenvalues, dct2_eigenvalues_ps, N, dx, N * dx, approximation)
     denom = eig - lambda_
-    is_null = denom == 0.0
+    # Only the k = 0 mode is a null mode; a zero denominator elsewhere is a
+    # resonance (lambda_ < 0 hitting an eigenvalue) and is reported by
+    # _check_finite instead of being silently zeroed (gh-94).
+    is_null = (jnp.arange(denom.shape[0]) == 0) & (denom == 0.0)
     denom_safe = jnp.where(is_null, 1.0, denom)
     psi_hat = rhs_hat / denom_safe
     psi_hat = jnp.where(is_null, 0.0, psi_hat)
-    return idctn(psi_hat, type=2, axes=[0])
+    return _check_finite(idctn(psi_hat, type=2, axes=[0]))
 
 
 def solve_poisson_dct2_1d(
@@ -1202,7 +1233,8 @@ def solve_helmholtz_fft(
     lambda_ : float
         Helmholtz parameter λ.  Default: 0.0 (Poisson).
     approximation : {"fd2", "spectral"}
-        Eigenvalue type.  Default: ``"fd2"``.
+        Eigenvalue type.  Default: ``"fd2"``. ``SpectralHelmholtzSolver2D``
+        uses the continuous k², i.e. ``"spectral"`` (gh-94).
 
     Returns
     -------
@@ -1220,7 +1252,7 @@ def solve_helmholtz_fft(
     psi_hat = psi_hat.at[0, 0].set(
         jnp.where(is_null, jnp.zeros_like(psi_hat[0, 0]), psi_hat[0, 0])
     )
-    return jnp.real(jnp.fft.ifft2(psi_hat))
+    return _check_finite(jnp.real(jnp.fft.ifft2(psi_hat)))
 
 
 def solve_poisson_fft(
@@ -1299,7 +1331,7 @@ def solve_helmholtz_dst(
     )
     eig2d = eigy[:, None] + eigx[None, :] - lambda_
     psi_hat = rhs_hat / eig2d
-    return idstn(psi_hat, type=1, axes=[0, 1])
+    return _check_finite(idstn(psi_hat, type=1, axes=[0, 1]))
 
 
 def solve_poisson_dst(
@@ -1382,7 +1414,7 @@ def solve_helmholtz_dct(
     eig2d_safe = eig2d.at[0, 0].set(jnp.where(is_null, 1.0, eig2d[0, 0]))
     psi_hat = rhs_hat / eig2d_safe
     psi_hat = psi_hat.at[0, 0].set(jnp.where(is_null, 0.0, psi_hat[0, 0]))
-    return idctn(psi_hat, type=2, axes=[0, 1])
+    return _check_finite(idctn(psi_hat, type=2, axes=[0, 1]))
 
 
 def solve_poisson_dct(
@@ -1470,7 +1502,7 @@ def solve_helmholtz_dst2(
     )
     eig2d = eigy[:, None] + eigx[None, :] - lambda_
     psi_hat = rhs_hat / eig2d
-    return idstn(psi_hat, type=2, axes=[0, 1])
+    return _check_finite(idstn(psi_hat, type=2, axes=[0, 1]))
 
 
 def solve_poisson_dst2(
@@ -1554,7 +1586,7 @@ def solve_helmholtz_dct1(
     eig2d_safe = eig2d.at[0, 0].set(jnp.where(is_null, 1.0, eig2d[0, 0]))
     psi_hat = rhs_hat / eig2d_safe
     psi_hat = psi_hat.at[0, 0].set(jnp.where(is_null, 0.0, psi_hat[0, 0]))
-    return idctn(psi_hat, type=1, axes=[0, 1])
+    return _check_finite(idctn(psi_hat, type=1, axes=[0, 1]))
 
 
 def solve_poisson_dct1(
@@ -1646,7 +1678,7 @@ def solve_helmholtz_fft_3d(
     psi_hat = psi_hat.at[0, 0, 0].set(
         jnp.where(is_null, jnp.zeros_like(psi_hat[0, 0, 0]), psi_hat[0, 0, 0])
     )
-    return jnp.real(jnp.fft.ifftn(psi_hat))
+    return _check_finite(jnp.real(jnp.fft.ifftn(psi_hat)))
 
 
 def solve_poisson_fft_3d(
@@ -1723,7 +1755,7 @@ def solve_helmholtz_dst1_3d(
     )
     eig3d = eigz[:, None, None] + eigy[None, :, None] + eigx[None, None, :] - lambda_
     psi_hat = rhs_hat / eig3d
-    return idstn(psi_hat, type=1, axes=[0, 1, 2])
+    return _check_finite(idstn(psi_hat, type=1, axes=[0, 1, 2]))
 
 
 def solve_poisson_dst1_3d(
@@ -1800,7 +1832,7 @@ def solve_helmholtz_dst2_3d(
     )
     eig3d = eigz[:, None, None] + eigy[None, :, None] + eigx[None, None, :] - lambda_
     psi_hat = rhs_hat / eig3d
-    return idstn(psi_hat, type=2, axes=[0, 1, 2])
+    return _check_finite(idstn(psi_hat, type=2, axes=[0, 1, 2]))
 
 
 def solve_poisson_dst2_3d(
@@ -1887,7 +1919,7 @@ def solve_helmholtz_dct1_3d(
     eig3d_safe = eig3d.at[0, 0, 0].set(jnp.where(is_null, 1.0, eig3d[0, 0, 0]))
     psi_hat = rhs_hat / eig3d_safe
     psi_hat = psi_hat.at[0, 0, 0].set(jnp.where(is_null, 0.0, psi_hat[0, 0, 0]))
-    return idctn(psi_hat, type=1, axes=[0, 1, 2])
+    return _check_finite(idctn(psi_hat, type=1, axes=[0, 1, 2]))
 
 
 def solve_poisson_dct1_3d(
@@ -1967,7 +1999,7 @@ def solve_helmholtz_dct2_3d(
     eig3d_safe = eig3d.at[0, 0, 0].set(jnp.where(is_null, 1.0, eig3d[0, 0, 0]))
     psi_hat = rhs_hat / eig3d_safe
     psi_hat = psi_hat.at[0, 0, 0].set(jnp.where(is_null, 0.0, psi_hat[0, 0, 0]))
-    return idctn(psi_hat, type=2, axes=[0, 1, 2])
+    return _check_finite(idctn(psi_hat, type=2, axes=[0, 1, 2]))
 
 
 def solve_poisson_dct2_3d(
@@ -2009,12 +2041,16 @@ def solve_poisson_dct2_3d(
 
 
 def _check_zero_mean(alpha: float, zero_mean: bool | None) -> None:
-    """Reject ``zero_mean=False`` for a singular solve (gh-92).
+    """Validate α ≥ 0 (gh-94) and reject ``zero_mean=False`` at α = 0 (gh-92).
 
     At α = 0 the mean mode of the solution is undefined; the solvers set it
     to zero rather than return an arbitrary value. Asking to keep it is an
-    error when α is a concrete zero (a traced α cannot be checked).
+    error when α is a concrete zero. A negative α can hit an eigenvalue
+    (resonance), which the classes do not support. A traced α cannot be
+    checked.
     """
+    if isinstance(alpha, (int, float)) and alpha < 0:
+        raise ValueError(f"alpha must be >= 0, got {alpha}")
     if zero_mean is False and isinstance(alpha, (int, float)) and alpha == 0:
         raise ValueError(
             "zero_mean=False with alpha=0: the mean of the solution is "
@@ -2032,6 +2068,12 @@ class SpectralHelmholtzSolver1D(eqx.Module):
         φ̂_k = −f̂_k / (k² + α)
 
     where k = 2πm/L are the Fourier wavenumbers from ``grid.k``.
+
+    These classes use the continuous wavenumbers k² (equivalent to
+    ``approximation="spectral"``), while the ``solve_helmholtz_*`` functions
+    default to the FD2 eigenvalues (``approximation="fd2"``). The two agree
+    for well-resolved modes and differ near the grid scale (by ~7e-3
+    relative at 16², gh-94).
 
     Null mode (gh-92): for α = 0 (Poisson) the k = 0 mode is singular and
     φ̂_0 is set to 0; for α > 0 it is solved like every other mode.
@@ -2096,6 +2138,12 @@ class SpectralHelmholtzSolver2D(eqx.Module):
 
     where |k|² = kx² + ky² is provided by ``grid.K2``.
 
+    These classes use the continuous wavenumbers k² (equivalent to
+    ``approximation="spectral"``), while the ``solve_helmholtz_*`` functions
+    default to the FD2 eigenvalues (``approximation="fd2"``). The two agree
+    for well-resolved modes and differ near the grid scale (by ~7e-3
+    relative at 16², gh-94).
+
     Null mode (gh-92): for α = 0 (Poisson) the (0,0) mode is singular and
     set to 0; for α > 0 it is solved like every other mode.
 
@@ -2158,6 +2206,12 @@ class SpectralHelmholtzSolver3D(eqx.Module):
         φ̂[l,j,i] = −f̂[l,j,i] / (kx_i² + ky_j² + kz_l² + α)
 
     where |k|² = kx² + ky² + kz² is provided by ``grid.K2``.
+
+    These classes use the continuous wavenumbers k² (equivalent to
+    ``approximation="spectral"``), while the ``solve_helmholtz_*`` functions
+    default to the FD2 eigenvalues (``approximation="fd2"``). The two agree
+    for well-resolved modes and differ near the grid scale (by ~7e-3
+    relative at 16², gh-94).
 
     Null mode (gh-92): for α = 0 (Poisson) the (0,0,0) mode is singular and
     set to 0; for α > 0 it is solved like every other mode.

@@ -108,4 +108,4 @@ u_filtered = filt(u)
 | **`ChebyshevGrid*D`** | Gauss-Lobatto nodes on $[-1,1]$; DCT-based transforms |
 | **`SphericalGrid*D`** | Gauss-Legendre grids for spherical harmonic transforms |
 
-All objects are [Equinox](https://github.com/patrick-kidger/equinox) modules, which means they are JAX pytrees and work seamlessly inside `jax.jit`, `jax.vmap`, and `jax.grad`.
+All objects are [Equinox](https://github.com/patrick-kidger/equinox) modules, which means they are JAX pytrees. Fields and arrays can be traced by `jax.jit`, `jax.vmap` and `jax.grad`. To pass a grid or operator *as an argument* to a jitted function, use `eqx.filter_jit` (plain `jax.jit` rejects the non-array fields), or close over the object instead; see #82.
