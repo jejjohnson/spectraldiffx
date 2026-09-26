@@ -45,6 +45,18 @@ from jaxtyping import Array, Complex, Float
 # ============================================================================
 
 
+def _two_thirds_mask(N: int) -> Float[Array, "N"]:
+    """Orszag's 2/3-rule mask for one axis: keep mode n iff 3|n| < N.
+
+    Works on the integer mode numbers from ``fftfreq``, so the cutoff is
+    strict and independent of the domain length: for N = 48 the mode
+    n = 16 = N/3 is removed, since its square lands on 2N/3 and aliases back
+    onto -N/3 (gh-88).
+    """
+    n = jnp.fft.fftfreq(N, d=1.0 / N)
+    return jnp.where(3 * jnp.abs(n) < N, 1.0, 0.0)
+
+
 class FourierGrid1D(eqx.Module):
     """
     Fourier grid setup for periodic domain.
@@ -188,7 +200,7 @@ class FourierGrid1D(eqx.Module):
         """
         Dealiased wavenumbers (set high frequencies to zero).
 
-        2/3 rule: Keep |k| ≤ k_max/3
+        2/3 rule: keep mode n (k = 2πn/L) iff 3|n| < N, strictly.
         This prevents aliasing in quadratic nonlinearities.
 
         Mathematical Justification:
@@ -199,7 +211,8 @@ class FourierGrid1D(eqx.Module):
         Maximum frequency in w: k_max(w) = k_max(u) + k_max(v)
 
         To avoid aliasing: k_max(w) ≤ N/2
-        Therefore: 2·k_max(u) ≤ N/2  →  k_max(u) ≤ N/3
+        The alias of 2K lands at 2K − N, which must itself be removed:
+        N − 2K > K, i.e. 3K < N (strict; K = N/3 aliases onto −N/3).
 
         Returns
         -------
@@ -208,9 +221,7 @@ class FourierGrid1D(eqx.Module):
         """
         k = self.k
         if self.dealias == "2/3":
-            k_max = jnp.abs(k).max()
-            cutoff = k_max * 2 / 3
-            k = jnp.where(jnp.abs(k) > cutoff, 0.0, k)
+            k = jnp.where(_two_thirds_mask(self.N) > 0, k, 0.0)
         return k
 
     def dealias_filter(self) -> Float[Array, "N"]:
@@ -223,10 +234,7 @@ class FourierGrid1D(eqx.Module):
             Filter mask (1 or 0)
         """
         if self.dealias == "2/3":
-            k = self.k
-            k_max = jnp.abs(k).max()
-            cutoff = k_max * 2 / 3
-            return jnp.where(jnp.abs(k) <= cutoff, 1.0, 0.0)
+            return _two_thirds_mask(self.N)
         else:
             return jnp.ones(self.N)
 
@@ -435,18 +443,11 @@ class FourierGrid2D(eqx.Module):
         return KX**2 + KY**2
 
     def dealias_filter(self) -> Float[Array, "Ny Nx"]:
-        """2D dealiasing filter."""
+        """2D dealiasing filter: outer product of the per-axis 2/3 masks."""
         if self.dealias == "2/3":
-            KX, KY = self.KX
-            kx_max = jnp.abs(self.kx).max()
-            ky_max = jnp.abs(self.ky).max()
-            cutoff_x = kx_max * 2 / 3
-            cutoff_y = ky_max * 2 / 3
-
-            filter_x = jnp.where(jnp.abs(KX) <= cutoff_x, 1.0, 0.0)
-            filter_y = jnp.where(jnp.abs(KY) <= cutoff_y, 1.0, 0.0)
-
-            return filter_x * filter_y
+            return (
+                _two_thirds_mask(self.Ny)[:, None] * _two_thirds_mask(self.Nx)[None, :]
+            )
         else:
             return jnp.ones((self.Ny, self.Nx))
 
@@ -737,22 +738,13 @@ class FourierGrid3D(eqx.Module):
         return KZ**2 + KY**2 + KX**2
 
     def dealias_filter(self) -> Float[Array, "Nz Ny Nx"]:
-        """3D dealiasing filter."""
+        """3D dealiasing filter: outer product of the per-axis 2/3 masks."""
         if self.dealias == "2/3":
-            KZ, KY, KX = self.KX
-            kz_max = jnp.abs(self.kz).max()
-            ky_max = jnp.abs(self.ky).max()
-            kx_max = jnp.abs(self.kx).max()
-
-            cutoff_z = kz_max * 2 / 3
-            cutoff_y = ky_max * 2 / 3
-            cutoff_x = kx_max * 2 / 3
-
-            filter_z = jnp.where(jnp.abs(KZ) <= cutoff_z, 1.0, 0.0)
-            filter_y = jnp.where(jnp.abs(KY) <= cutoff_y, 1.0, 0.0)
-            filter_x = jnp.where(jnp.abs(KX) <= cutoff_x, 1.0, 0.0)
-
-            return filter_z * filter_y * filter_x
+            return (
+                _two_thirds_mask(self.Nz)[:, None, None]
+                * _two_thirds_mask(self.Ny)[None, :, None]
+                * _two_thirds_mask(self.Nx)[None, None, :]
+            )
         else:
             return jnp.ones((self.Nz, self.Ny, self.Nx))
 

@@ -3,7 +3,10 @@ import numpy as np
 import pytest
 
 from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
-from spectraldiffx._src.fourier.operators import SpectralDerivative1D
+from spectraldiffx._src.fourier.operators import (
+    SpectralDerivative1D,
+    SpectralDerivative2D,
+)
 
 
 def test_fourier_grid_1d():
@@ -109,20 +112,55 @@ def _alias_energy_1d(N):
     return float(np.abs(np.fft.fft(np.asarray(v))[alias]) / N)
 
 
-@pytest.mark.parametrize(
-    "N",
-    [
-        pytest.param(
-            N,
-            marks=pytest.mark.xfail(
-                N % 6 == 0, reason="gh-88: keeps |k| = N/3", strict=True
-            ),
-        )
-        for N in (30, 32, 48, 63, 64, 96)
-    ],
-)
+@pytest.mark.parametrize("N", [30, 32, 48, 63, 64, 96])
 def test_fourier_grid_1d_dealias_is_alias_free(N):
     assert _alias_energy_1d(N) < 1e-14
+
+
+def test_fourier_grid_1d_k_dealias_matches_filter():
+    """k_dealias keeps exactly the modes dealias_filter keeps (N = 48)."""
+    grid = FourierGrid1D.from_N_L(48, 2 * jnp.pi, dealias="2/3")
+    kept = np.asarray(grid.dealias_filter()) > 0
+    k, k_d = np.asarray(grid.k), np.asarray(grid.k_dealias)
+    assert np.array_equal(k_d[kept], k[kept])
+    assert np.all(k_d[~kept] == 0.0)
+    assert kept.sum() == 31  # |n| <= 15: 3 * 16 = 48 is not < 48
+
+
+def _kept_1d(N):
+    n = np.fft.fftfreq(N, d=1.0 / N)
+    return 3 * np.abs(n) < N
+
+
+def test_fourier_grid_2d_dealias_filter_is_per_axis_strict():
+    grid = FourierGrid2D.from_N_L(Nx=48, Ny=32, Lx=2 * jnp.pi, Ly=1.0, dealias="2/3")
+    expected = np.outer(_kept_1d(32), _kept_1d(48))
+    assert np.array_equal(np.asarray(grid.dealias_filter()) > 0, expected)
+
+
+def test_fourier_grid_3d_dealias_filter_is_per_axis_strict():
+    grid = FourierGrid3D.from_N_L(
+        Nz=12, Ny=32, Nx=48, Lz=1.0, Ly=2.0, Lx=2 * jnp.pi, dealias="2/3"
+    )
+    expected = (
+        _kept_1d(12)[:, None, None]
+        & _kept_1d(32)[None, :, None]
+        & _kept_1d(48)[None, None, :]
+    )
+    assert np.array_equal(np.asarray(grid.dealias_filter()) > 0, expected)
+
+
+def test_fourier_2d_dealiased_product_is_alias_free():
+    """apply_dealias(u·u) on 48 × 30 leaves nothing at the aliases of the
+    largest kept modes along each axis."""
+    grid = FourierGrid2D.from_N_L(Nx=48, Ny=30, Lx=2 * jnp.pi, Ly=2 * jnp.pi)
+    X, Y = grid.X
+    Kx, Ky = 15, 9  # largest kept: 3 * 16 = 48, 3 * 10 = 30 are removed
+    u = jnp.cos(Kx * X) * jnp.cos(Ky * Y)
+    v_hat = np.asarray(grid.transform(SpectralDerivative2D(grid).apply_dealias(u * u)))
+    ay, ax = (2 * Ky - 30) % 30, (2 * Kx - 48) % 48
+    assert np.abs(v_hat[:, ax]).max() / v_hat.size < 1e-14
+    assert np.abs(v_hat[ay, :]).max() / v_hat.size < 1e-14
 
 
 def test_fourier_grid_1d_k_dealias_none_unchanged():
