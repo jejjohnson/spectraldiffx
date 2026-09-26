@@ -1,4 +1,5 @@
 import jax.numpy as jnp
+import numpy as np
 
 from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 from spectraldiffx._src.fourier.operators import (
@@ -242,3 +243,53 @@ def test_deriv3d_advection_scalar_zero_velocity():
     zero = jnp.zeros((N, N, N))
     adv = d.advection_scalar(zero, zero, zero, q)
     assert jnp.allclose(adv, 0.0, atol=1e-14)
+
+
+# --- advection_scalar is dealiased like jacobian (gh-90) ---
+
+
+def _band_limited(grid, deriv, seed, shape):
+    rng = np.random.default_rng(seed)
+    return deriv.apply_dealias(jnp.asarray(rng.standard_normal(shape)))
+
+
+def _energy_outside_mask(grid, f):
+    f_hat = jnp.abs(grid.transform(f)) ** 2
+    mask = grid.dealias_filter()
+    return float((f_hat * (1 - mask)).sum() / f_hat.sum())
+
+
+def test_deriv2d_advection_scalar_matches_jacobian():
+    N = 48
+    grid = FourierGrid2D.from_N_L(Nx=N, Ny=N, Lx=2 * jnp.pi, Ly=2 * jnp.pi)
+    deriv = SpectralDerivative2D(grid=grid)
+    psi = _band_limited(grid, deriv, 0, (N, N))
+    q = _band_limited(grid, deriv, 1, (N, N))
+    u, v = deriv.velocity_from_streamfunction(psi)
+    adv = deriv.advection_scalar(u, v, q)
+    jac = deriv.jacobian(psi, q)
+    scale = float(jnp.abs(jac).max())
+    assert float(jnp.abs(adv - jac).max()) < 1e-10 * scale
+    assert _energy_outside_mask(grid, adv) < 1e-14
+    # The spectral=True input path gives the same result.
+    adv_s = deriv.advection_scalar(u, v, grid.transform(q), spectral=True)
+    assert float(jnp.abs(adv_s - adv).max()) < 1e-10 * scale
+
+
+def test_deriv3d_advection_scalar_matches_horizontal_jacobian():
+    grid = FourierGrid3D.from_N_L(
+        Nz=24, Ny=16, Nx=32, Lz=2 * jnp.pi, Ly=2 * jnp.pi, Lx=2 * jnp.pi
+    )
+    deriv = SpectralDerivative3D(grid=grid)
+    shape = (24, 16, 32)
+    psi = _band_limited(grid, deriv, 2, shape)
+    q = _band_limited(grid, deriv, 3, shape)
+    _, KY, KX = grid.KX
+    psi_hat = grid.transform(psi)
+    u = -grid.transform(1j * KY * psi_hat, inverse=True).real
+    v = grid.transform(1j * KX * psi_hat, inverse=True).real
+    adv = deriv.advection_scalar(jnp.zeros(shape), v, u, q)
+    jac = deriv.jacobian(psi, q)
+    scale = float(jnp.abs(jac).max())
+    assert float(jnp.abs(adv - jac).max()) < 1e-10 * scale
+    assert _energy_outside_mask(grid, adv) < 1e-14

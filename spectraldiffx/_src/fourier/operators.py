@@ -377,23 +377,42 @@ class SpectralDerivative2D(eqx.Module):
             self.grid.transform(vy_sol_hat, inverse=True).real,
         )
 
-    def advection_scalar(self, vx: Array, vy: Array, q: Array) -> Float[Array, "Ny Nx"]:
+    def advection_scalar(
+        self, vx: Array, vy: Array, q: Array, spectral: bool = False
+    ) -> Float[Array, "Ny Nx"]:
         """
         Compute scalar advection (u·∇)q using the pseudo-spectral method.
 
-        This method computes derivatives in Fourier space for accuracy, then
-        transforms back to physical space to perform the multiplication.
+        Derivatives are taken in Fourier space, the products formed in
+        physical space, and the result truncated with the grid's 2/3 mask,
+        exactly as :meth:`jacobian` does. With ``(vx, vy)`` from
+        :meth:`velocity_from_streamfunction` the two agree (gh-90).
 
-        Out = vx * ∂q/∂x + vy * ∂q/∂y
+        Out = dealias(vx * ∂q/∂x + vy * ∂q/∂y)
+
+        Parameters
+        ----------
+        vx, vy : Array [Ny, Nx]
+            Velocity components in physical space.
+        q : Array [Ny, Nx]
+            Advected scalar, physical (or spectral if ``spectral``).
+        spectral : bool
+            If True, ``q`` is given as spectral coefficients. The result is
+            always returned in physical space.
+
+        Returns
+        -------
+        Array [Ny, Nx]
+            The dealiased advection term in physical space.
         """
-        q_hat = self.grid.transform(q)
+        q_hat = q if spectral else self.grid.transform(q)
         KX, KY = self.grid.KX
         dealias = self.grid.dealias_filter()
 
         dq_dx = self.grid.transform(1j * KX * q_hat * dealias, inverse=True).real
         dq_dy = self.grid.transform(1j * KY * q_hat * dealias, inverse=True).real
 
-        return vx * dq_dx + vy * dq_dy
+        return self.apply_dealias(vx * dq_dx + vy * dq_dy)
 
 
 class SpectralDerivative3D(eqx.Module):
@@ -579,10 +598,29 @@ class SpectralDerivative3D(eqx.Module):
         )
 
     def advection_scalar(
-        self, vz: Array, vy: Array, vx: Array, q: Array
+        self, vz: Array, vy: Array, vx: Array, q: Array, spectral: bool = False
     ) -> Float[Array, "Nz Ny Nx"]:
-        """Compute the 3D scalar advection term: (u·∇)q."""
-        q_hat = self.grid.transform(q)
+        """Compute the dealiased 3D scalar advection term (u·∇)q.
+
+        The products are formed in physical space and truncated with the
+        grid's 2/3 mask, as in 2D (gh-90).
+
+        Parameters
+        ----------
+        vz, vy, vx : Array [Nz, Ny, Nx]
+            Velocity components in physical space.
+        q : Array [Nz, Ny, Nx]
+            Advected scalar, physical (or spectral if ``spectral``).
+        spectral : bool
+            If True, ``q`` is given as spectral coefficients. The result is
+            always returned in physical space.
+
+        Returns
+        -------
+        Array [Nz, Ny, Nx]
+            The dealiased advection term in physical space.
+        """
+        q_hat = q if spectral else self.grid.transform(q)
         KZ, KY, KX = self.grid.KX
         dealias = self.grid.dealias_filter()
 
@@ -590,4 +628,4 @@ class SpectralDerivative3D(eqx.Module):
         dq_dy = self.grid.transform(1j * KY * q_hat * dealias, inverse=True).real
         dq_dx = self.grid.transform(1j * KX * q_hat * dealias, inverse=True).real
 
-        return vz * dq_dz + vy * dq_dy + vx * dq_dx
+        return self.apply_dealias(vz * dq_dz + vy * dq_dy + vx * dq_dx)
