@@ -204,9 +204,12 @@ from spectraldiffx import (
     solve_helmholtz_dct1_3d,  # Neumann, regular
     solve_helmholtz_dct2_3d,  # Neumann, staggered
     solve_helmholtz_fft_3d,   # Periodic
+    solve_poisson_fft_3d,
 )
 
-# Example: 3-D periodic Poisson solve
+# Example: 3-D periodic Poisson solve on a (Nz, Ny, Nx) grid
+Nz, dz = 8, 1.0
+rhs_3d = jnp.broadcast_to(rhs, (Nz, Ny, Nx))  # the 2-D source, stacked in z
 psi_3d = solve_poisson_fft_3d(rhs_3d, dx, dy, dz)
 ```
 
@@ -371,7 +374,9 @@ solver_2d = MixedBCHelmholtzSolver2D(
 )
 psi = solver_2d(rhs)
 
-# With inhomogeneous BCs (values passed at call time):
+# With inhomogeneous BCs (values passed at call time), one value per x column:
+bottom_vals = jnp.zeros(Nx)
+top_vals = jnp.ones(Nx)
 psi = solver_2d(rhs, bc_y_values=(bottom_vals, top_vals))
 
 # 3D: atmospheric BL (periodic x/y, Neumann z)

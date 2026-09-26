@@ -90,9 +90,11 @@ Suppress aliasing or high-frequency noise with a spectral filter:
 from spectraldiffx import FourierGrid1D, SpectralFilter1D
 
 grid = FourierGrid1D.from_N_L(N=128, L=2 * jnp.pi)
-filt = SpectralFilter1D(grid=grid, filter_type="exponential", order=8)
+u = jnp.sin(grid.x) + 0.1 * jnp.sin(60 * grid.x)  # smooth field + grid-scale noise
 
-u_filtered = filt(u)
+filt = SpectralFilter1D(grid=grid)
+u_filtered = filt.exponential_filter(u, alpha=36.0, power=16)  # damps k near Nyquist
+u_damped = filt.hyperviscosity(u, nu_hyper=1e-6, dt=1.0, power=4)  # exp(-nu |k|^4 dt)
 ```
 
 ---
@@ -103,7 +105,7 @@ u_filtered = filt(u)
 |---------|-------------|
 | **`FourierGrid*D`** | Uniform periodic grids; stores wavenumbers and transform helpers |
 | **`SpectralDerivative*D`** | Differentiation via multiplication in spectral space |
-| **`SpectralFilter*D`** | Spectral-space low-pass filters (exponential, raised cosine) |
+| **`SpectralFilter*D`** | Spectral-space low-pass filters (exponential, hyperviscous) |
 | **`SpectralHelmholtzSolver*D`** | Solve $(\nabla^2 - \alpha)u = f$ in spectral space |
 | **`ChebyshevGrid*D`** | Gauss-Lobatto nodes on $[-1,1]$; DCT-based transforms |
 | **`SphericalGrid*D`** | Gauss-Legendre grids for spherical harmonic transforms |
