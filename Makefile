@@ -1,5 +1,20 @@
-.PHONY: help install_mamba install_macos install_linux update_macos update_linux
-.DEFAULT_GOAL = help
+# =============================================================================
+# spectraldiffx Makefile
+# =============================================================================
+#
+# Every target runs through uv. The quality targets run exactly what CI runs:
+#   make test       # uv run pytest tests -n auto
+#   make lint       # uv run ruff check .          (no auto-fix: can fail)
+#   make format     # uv run ruff format . && uv run ruff check --fix .
+#   make typecheck  # uv run ty check spectraldiffx
+#
+# =============================================================================
+
+.DEFAULT_GOAL := help
+
+PKGROOT = spectraldiffx
+TESTS = tests
+NOTEBOOKS_DIR = notebooks
 
 # ANSI Color Codes for pretty terminal output
 BLUE   := \033[36m
@@ -8,87 +23,53 @@ GREEN  := \033[32m
 RED    := \033[31m
 RESET  := \033[0m
 
-PYTHON = python
-VERSION = 3.8
-NAME = py_name
-ROOT = ./
-PIP = pip
-CONDA = conda
-SHELL = bash
-PKGROOT = ocn-tools
-TESTS = ${PKGROOT}/tests
-ENVS = ${PKGROOT}/environments
-NOTEBOOKS_DIR = notebooks
+.PHONY: help install sync lint format format-check typecheck precommit test test-cov \
+        docs docs-serve
 
 help:	## Display this help
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make $(BLUE)<target>$(RESET)\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  $(BLUE)%-18s$(RESET) %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ Installation
-install_mamba: ## Install mamba in base environment
-	conda install mamba -n base
-
-install_macos: ## Install conda env in MACOS
-	mamba env create -f ${ENVS}/macos.yaml
-
-install_linux: ## Install conda env in Linux
-	mamba env create -f ${ENVS}/linux.yaml
-
-update_macos: ## Update conda env in MACOS
-	mamba env update -f ${ENVS}/macos.yaml
-
-update_linux: ## Update conda env in linux
-	mamba env update -f ${ENVS}/linux.yaml
-
-install_precommit: ## Install precommit tools
-	mamba install pre-commit -c conda-forge
-	pre-commit install --all-files
-
-##@ Formatting
-.PHONY: uv-format
-uv-format: ## Run ruff formatter
-	@printf "$(YELLOW)>>> Formatting code with ruff...$(RESET)\n"
-	@uv run ruff format spectraldiffx
-	@uv run ruff check --fix spectraldiffx
-	@printf "$(GREEN)>>> Codebase formatted successfully.$(RESET)\n"
-
-.PHONY: uv-lint
-uv-lint: ## Run ruff check and mypy
-	@printf "$(YELLOW)>>> Executing static analysis and type checking...$(RESET)\n"
-	@uv run ruff check spectraldiffx
-	@uv run mypy spectraldiffx
-	@printf "$(GREEN)>>> Linting checks passed.$(RESET)\n"
-
-.PHONY: uv-pre-commit
-uv-pre-commit: ## Run all pre-commit hooks
-	@printf "$(YELLOW)>>> Running pre-commit hooks on all files...$(RESET)\n"
-	@uv run pre-commit run --all-files
-	@printf "$(GREEN)>>> Pre-commit checks passed.$(RESET)\n"
-
-##@ Testing
-test:  ## Test code using pytest.
-	@printf "\033[1;34mRunning tests with pytest...\033[0m\n\n"
-	pytest -v ${PKGROOT}/ ${TESTS}
-	@printf "\033[1;34mPyTest passes!\033[0m\n\n"
-
-.PHONY: install
-install: ## Install all project dependencies
-	@printf "$(YELLOW)>>> Initiating environment synchronization and dependency installation...$(RESET)\n"
-	@uv sync --all-extras
-	@uv run pre-commit install
+##@ Setup
+install: ## Install all extras and the pre-commit hooks
+	@printf "$(YELLOW)>>> Installing all dependencies...$(RESET)\n"
+	uv sync --all-extras
+	uv run pre-commit install
 	@printf "$(GREEN)>>> Environment is ready and pre-commit hooks are active.$(RESET)\n"
 
-.PHONY: uv-sync
-uv-sync: ## Update lock file and sync dependencies using uv
-	@printf "$(YELLOW)>>> Updating and syncing dependencies with uv...$(RESET)\n"
-	@uv lock --upgrade
-	@uv sync --all-extras
-	@printf "$(GREEN)>>> uv environment synchronized.$(RESET)\n"
+sync: ## Upgrade the lock file and re-sync all extras
+	uv lock --upgrade
+	uv sync --all-extras
 
-.PHONY: uv-test
-uv-test: ## Run pytest with coverage using uv
-	@printf "$(YELLOW)>>> Launching test suite with verbosity...$(RESET)\n"
-	@uv run pytest tests -v
-	@printf "$(GREEN)>>> All tests passed.$(RESET)\n"
+##@ Quality (the same commands CI runs)
+lint: ## Lint the whole repo with ruff (no auto-fix)
+	uv run ruff check .
+
+format: ## Format and auto-fix the whole repo with ruff
+	uv run ruff format .
+	uv run ruff check --fix .
+
+format-check: ## Check formatting without rewriting files
+	uv run ruff format --check .
+
+typecheck: ## Type check the package with ty
+	uv run ty check $(PKGROOT)
+
+precommit: ## Run every pre-commit hook on all files
+	uv run pre-commit run --all-files
+
+##@ Testing
+test: ## Run the test suite in parallel
+	uv run pytest $(TESTS) -n auto
+
+test-cov: ## Run the test suite with coverage (report in reports/)
+	uv run pytest $(TESTS) -n auto --cov --cov-report=term --cov-report=xml
+
+##@ Docs
+docs: ## Build the docs site (strict)
+	uv run --extra docs mkdocs build --strict
+
+docs-serve: ## Serve the docs locally with live reload
+	uv run --extra docs mkdocs serve
 
 ##@ Notebooks (Jupytext)
 .PHONY: nb-to-py

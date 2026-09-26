@@ -51,7 +51,7 @@ from .operators import SphericalDerivative2D
 #   "Nlat Nlon"  — 2D lat-lon grid / SHT coefficients
 
 
-def _sphere_radius(grid: SphericalGrid1D | SphericalGrid2D) -> Float[Array, ""]:
+def _sphere_radius(grid: SphericalGrid1D | SphericalGrid2D) -> float:
     """Infer sphere radius R from ``grid.L`` (1D) or ``grid.Ly`` (2D)."""
     L = grid.L if isinstance(grid, SphericalGrid1D) else grid.Ly
     return L / jnp.pi
@@ -88,10 +88,10 @@ class SphericalPoissonSolver(eqx.Module):
 
     def solve(
         self,
-        f: Num[Array, ...],
+        f: Num[Array, "..."],
         zero_mean: bool = True,
         spectral: bool = False,
-    ) -> Float[Array, ...]:
+    ) -> Float[Array, "..."]:
         """Solve ∇²φ = f on the sphere.
 
         Parameters
@@ -161,11 +161,11 @@ class SphericalHelmholtzSolver(eqx.Module):
 
     def solve(
         self,
-        f: Num[Array, ...],
+        f: Num[Array, "..."],
         alpha: float = 0.0,
         zero_mean: bool = True,
         spectral: bool = False,
-    ) -> Float[Array, ...]:
+    ) -> Float[Array, "..."]:
         """Solve (∇² − α) φ = f on the sphere.
 
         Parameters

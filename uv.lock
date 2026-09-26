@@ -156,15 +156,6 @@ wheels = [
 ]
 
 [[package]]
-name = "beartype"
-version = "0.22.9"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c7/94/1009e248bbfbab11397abca7193bea6626806be9a327d399810d523a07cb/beartype-0.22.9.tar.gz", hash = "sha256:8f82b54aa723a2848a56008d18875f91c1db02c32ef6a62319a002e3e25a975f", size = 1608866, upload-time = "2025-12-13T06:50:30.72Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/cc/18245721fa7747065ab478316c7fea7c74777d07f37ae60db2e84f8172e8/beartype-0.22.9-py3-none-any.whl", hash = "sha256:d16c9bbc61ea14637596c5f6fbff2ee99cbe3573e46a716401734ef50c3060c2", size = 1333658, upload-time = "2025-12-13T06:50:28.266Z" },
-]
-
-[[package]]
 name = "beautifulsoup4"
 version = "4.14.3"
 source = { registry = "https://pypi.org/simple" }
@@ -602,19 +593,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c1/e0/a75dbe4bca1e7d41307323dad5ea2efdd95408f74ab2de8bd7dba9b51a1a/filelock-3.20.2.tar.gz", hash = "sha256:a2241ff4ddde2a7cebddf78e39832509cb045d18ec1a09d7248d6bfc6bfbbe64", size = 19510, upload-time = "2026-01-02T15:33:32.582Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9a/30/ab407e2ec752aa541704ed8f93c11e2a5d92c168b8a755d818b74a3c5c2d/filelock-3.20.2-py3-none-any.whl", hash = "sha256:fbba7237d6ea277175a32c54bb71ef814a8546d8601269e1bfc388de333974e8", size = 16697, upload-time = "2026-01-02T15:33:31.133Z" },
-]
-
-[[package]]
-name = "finitediffx"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jax" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/59/7d/24398c0b011bc473a763c830e757d270f14327e64cf8ac27313a57e84f0a/finitediffx-0.1.0.tar.gz", hash = "sha256:52d9e67e551f5cad2b555ddf0ef84ab3f61011172b30b738a07c4776e6f3afbc", size = 20007, upload-time = "2023-07-27T14:07:10.346Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/d3/818f9d6ca330f4aa78e618f24dac8a79c5d0825b00e9927c461a23539bb4/finitediffx-0.1.0-py3-none-any.whl", hash = "sha256:0b4a900453d8c7317f5e6668e47371cfe27020f075dd9890182561ab19e11572", size = 17714, upload-time = "2023-07-27T14:07:08.806Z" },
 ]
 
 [[package]]
@@ -1242,18 +1220,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/9b/5d/82a614a49493fa84b2019a3e03020a8b9927208ae177b81f7e0b30330c82/jupytext-1.18.1.tar.gz", hash = "sha256:5c0962ca8d222db45cbe1848b4805dbbe3ddb957603fc96651b6cd7fd403fafb", size = 4270997, upload-time = "2025-10-19T15:06:30.992Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/0d/2d240e7098e0cafba4d25e9530e7596b1bb1bd4476e41b10346bcaaa36d6/jupytext-1.18.1-py3-none-any.whl", hash = "sha256:24f999400726a1c658beae55e15fdd2a6255ab1a418697864cd779874e6011ab", size = 167143, upload-time = "2025-10-19T15:06:28.975Z" },
-]
-
-[[package]]
-name = "kernex"
-version = "0.2.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jax" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a0/de/8a338586754fe77efef4d45d2adeee1a8389b433a8b03fee8ba6bf3a04e6/kernex-0.2.1.tar.gz", hash = "sha256:102814a1f35879b1b6f57f2c113768266c566e2e2eed9dc96d4c25a90d5fbed7", size = 26955, upload-time = "2025-11-15T12:08:20.43Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/ff/108214af06b6b1259bdd66a7ccb49e370395c648cd2fbfe7872f705d9e40/kernex-0.2.1-py3-none-any.whl", hash = "sha256:5f02f70209765f4c6c01ef9ee80f5d739ee6cc0dda31a5f3a603a53c8081a53d", size = 30819, upload-time = "2025-11-15T12:08:19.187Z" },
 ]
 
 [[package]]
@@ -2838,17 +2804,16 @@ wheels = [
 
 [[package]]
 name = "spectraldiffx"
-version = "0.0.13"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "beartype" },
     { name = "equinox" },
-    { name = "finitediffx" },
     { name = "gaussx" },
     { name = "jax" },
     { name = "jaxlib" },
     { name = "jaxtyping" },
-    { name = "kernex" },
+    { name = "numpy" },
+    { name = "scipy" },
 ]
 
 [package.optional-dependencies]
@@ -2965,12 +2930,10 @@ dev = [
 requires-dist = [
     { name = "autoroot", marker = "extra == 'exp'", specifier = ">=1.0.0" },
     { name = "autoroot", marker = "extra == 'jlab'", specifier = ">=1.0.0" },
-    { name = "beartype", specifier = ">=0.18.0" },
     { name = "coverage", marker = "extra == 'test'", specifier = ">=7.4.0" },
     { name = "cyclopts", marker = "extra == 'examples'", specifier = ">=0.8.0" },
     { name = "diffrax", marker = "extra == 'examples'", specifier = ">=0.5.0" },
     { name = "equinox" },
-    { name = "finitediffx", specifier = ">=0.1.0" },
     { name = "gaussx", git = "https://github.com/jejjohnson/gaussx?tag=v0.1.0" },
     { name = "hydra-core", marker = "extra == 'exp'", specifier = ">=1.3.2" },
     { name = "ipykernel", marker = "extra == 'docs'", specifier = ">=6.29.0" },
@@ -2981,7 +2944,6 @@ requires-dist = [
     { name = "jaxtyping", specifier = ">=0.2.28" },
     { name = "jupyter", marker = "extra == 'jlab'", specifier = ">=1.0.0" },
     { name = "jupytext", marker = "extra == 'docs'", specifier = ">=1.16.0" },
-    { name = "kernex", specifier = ">=0.2.0" },
     { name = "lineax", marker = "extra == 'examples'", specifier = ">=0.1.0" },
     { name = "linkify-it-py", marker = "extra == 'docs'", specifier = ">=2.0.3" },
     { name = "loguru", marker = "extra == 'examples'", specifier = ">=0.7.2" },
@@ -3002,6 +2964,7 @@ requires-dist = [
     { name = "nbstripout", marker = "extra == 'dev'", specifier = ">=0.7.1" },
     { name = "netcdf4", marker = "extra == 'examples'", specifier = ">=1.6.5" },
     { name = "networkx", marker = "extra == 'test'", specifier = ">=3.2" },
+    { name = "numpy", specifier = ">=1.26.0" },
     { name = "numpy", marker = "extra == 'examples'", specifier = ">=1.26.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18.0" },
@@ -3011,6 +2974,7 @@ requires-dist = [
     { name = "pytest-pretty", marker = "extra == 'test'", specifier = ">=1.2.0" },
     { name = "pytest-xdist", marker = "extra == 'test'", specifier = ">=3.5.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
+    { name = "scipy", specifier = ">=1.12.0" },
     { name = "seaborn", marker = "extra == 'exp'", specifier = ">=0.13.2" },
     { name = "spectraldiffx", extras = ["test", "dev", "exp", "jlab", "docs", "examples"], marker = "extra == 'all'" },
     { name = "tqdm", marker = "extra == 'examples'", specifier = ">=4.66.0" },

@@ -22,7 +22,6 @@ Standing instructions specific to the `spectraldiffx` source package.
 * `equinox` for PyTree-compatible dataclasses
 * `jaxtyping` for array type annotations
 * `jax` for all numerical computations
-* `beartype` for runtime type checking
 
 ## Testing
 

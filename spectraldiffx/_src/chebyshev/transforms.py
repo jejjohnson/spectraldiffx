@@ -140,9 +140,9 @@ def _apply_dealias_1d(
 
 def dealias_product(
     grid: ChebyshevGrid1D | ChebyshevGrid2D,
-    a: Num[Array, ...],
-    b: Num[Array, ...],
-) -> Num[Array, ...]:
+    a: Num[Array, "..."],
+    b: Num[Array, "..."],
+) -> Num[Array, "..."]:
     """Compute the dealiased pointwise product a·b on a Chebyshev grid.
 
     Implements a 2/3-style truncation in Chebyshev-coefficient space:

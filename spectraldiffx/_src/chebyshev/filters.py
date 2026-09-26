@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import equinox as eqx
 import jax.numpy as jnp
+from jax.typing import DTypeLike
 from jaxtyping import Array, Num
 
 from .grid import ChebyshevGrid1D, ChebyshevGrid2D
@@ -15,7 +16,7 @@ from .grid import ChebyshevGrid1D, ChebyshevGrid2D
 #   "Nypts Nxpts"  — 2D tensor-product grid
 
 
-def _coeff_dtype(a: Num[Array, ...]) -> type:
+def _coeff_dtype(a: Num[Array, "..."]) -> DTypeLike:
     """Return the real floating dtype of a coefficient array.
 
     Falls back to ``jnp.float32`` for non-floating dtypes so filter kernels
