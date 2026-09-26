@@ -3,6 +3,7 @@
 import equinox as eqx
 import jax
 import jax.numpy as jnp
+import pytest
 
 from spectraldiffx._src.fourier.eigenvalues import (
     dct1_eigenvalues,
@@ -473,6 +474,7 @@ class TestDST1Solvers3D:
 class TestDST2Solvers3D:
     """DST-II 3D solvers."""
 
+    @pytest.mark.slow
     def test_helmholtz_eigenfunction_recovery(self):
         kx, ky, kz = 2, 1, 1
         x = jnp.arange(NX)

@@ -332,7 +332,7 @@ class SphericalGrid1D(eqx.Module):
     @property
     def l(self) -> Float[Array, "N"]:
         """Spherical harmonic degree indices [0, 1, ..., N-1]."""
-        return jnp.arange(self.N, dtype=jnp.float64)
+        return jnp.arange(self.N, dtype=float)
 
     @property
     def l_dealias(self) -> Float[Array, "N"]:
@@ -623,7 +623,7 @@ class SphericalGrid2D(eqx.Module):
     @property
     def l(self) -> Float[Array, "Ny"]:
         """Spherical harmonic degree indices [0, 1, ..., Ny-1]."""
-        return jnp.arange(self.Ny, dtype=jnp.float64)
+        return jnp.arange(self.Ny, dtype=float)
 
     @property
     def laplacian_eigenvalues(self) -> Float[Array, "Ny Nx"]:

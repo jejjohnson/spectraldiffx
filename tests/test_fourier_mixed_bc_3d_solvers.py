@@ -153,6 +153,7 @@ class TestSameBCConsistency:
         )
         assert jnp.allclose(got, ref, atol=1e-10)
 
+    @pytest.mark.slow
     def test_dirichlet_stag_matches_dst2(self):
         rhs = self._make_rhs("dirichlet_stag", dst2_eigenvalues, _ef_dst2, 2)
         ref = solve_helmholtz_dst2_3d(rhs, DX, DY, DZ, 1.0)

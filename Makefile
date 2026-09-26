@@ -23,7 +23,7 @@ GREEN  := \033[32m
 RED    := \033[31m
 RESET  := \033[0m
 
-.PHONY: help install sync lint format format-check typecheck precommit test test-cov \
+.PHONY: help install sync lint format format-check typecheck precommit test test-fast test-slow test-cov \
         docs docs-serve
 
 help:	## Display this help
@@ -58,8 +58,14 @@ precommit: ## Run every pre-commit hook on all files
 	uv run pre-commit run --all-files
 
 ##@ Testing
-test: ## Run the test suite in parallel
+test: ## Run the whole test suite in parallel
 	uv run pytest $(TESTS) -n auto
+
+test-fast: ## Run the fast tests only (what PR CI runs)
+	uv run pytest $(TESTS) -n auto -m "not slow and not integration"
+
+test-slow: ## Run only the slow and integration tests
+	uv run pytest $(TESTS) -n auto -m "slow or integration"
 
 test-cov: ## Run the test suite with coverage (report in reports/)
 	uv run pytest $(TESTS) -n auto --cov --cov-report=term --cov-report=xml

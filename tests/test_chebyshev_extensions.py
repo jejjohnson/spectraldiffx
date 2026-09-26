@@ -193,6 +193,7 @@ def grid2d() -> ChebyshevGrid2D:
     return ChebyshevGrid2D.from_N_L(Nx=24, Ny=22, Lx=1.0, Ly=1.5)
 
 
+@pytest.mark.slow
 def test_2d_fft_matches_matrix(grid2d: ChebyshevGrid2D):
     X, Y = grid2d.X
     u = jnp.sin(2 * X) * jnp.exp(Y)
@@ -293,6 +294,7 @@ def test_3d_grid_check_consistency_raises():
         grid.check_consistency()
 
 
+@pytest.mark.slow
 def test_3d_transform_roundtrip(grid3d: ChebyshevGrid3D):
     Z, Y, X = grid3d.X
     u = jnp.exp(X) * jnp.cos(Y) * (1 + Z**2)
@@ -307,6 +309,7 @@ def test_3d_transform_tensor_mode():
     assert jnp.allclose(a, jnp.zeros_like(a).at[2, 0, 1].set(1.0), atol=1e-13)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("method", ["matrix", "fft"])
 def test_3d_gradient_and_laplacian(grid3d: ChebyshevGrid3D, method: str):
     Z, Y, X = grid3d.X
@@ -407,6 +410,7 @@ def test_1d_solver_traced_grid_falls_back_to_dense():
     assert jnp.allclose(build_and_solve(grid, f), jnp.sin(jnp.pi * grid.x), atol=1e-9)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("alpha", [0.0, 3.0])
 def test_2d_solver_matches_dense(alpha: float):
     grid = ChebyshevGrid2D.from_N_L(Nx=12, Ny=10, Lx=1.0, Ly=0.8)

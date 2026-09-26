@@ -204,6 +204,7 @@ class TestDirichletStag2DConvergence:
     The staggered ghost-point interpolation gives O(h^2) accuracy.
     """
 
+    @pytest.mark.slow
     def test_convergence(self):
         errors = []
         for N in [16, 32, 64]:
@@ -407,6 +408,7 @@ class TestConvergence:
 class TestInhomogeneous3D:
     """3D inhomogeneous Dirichlet with quadratic solution."""
 
+    @pytest.mark.slow
     def test_quadratic_3d(self):
         Nx, Ny, Nz = 8, 6, 5
         dx, dy, dz = 0.1, 0.1, 0.1
