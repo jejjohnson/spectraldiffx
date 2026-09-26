@@ -228,7 +228,7 @@ $$\lambda_k^{\text{DCT-I}} = -\frac{4}{\Delta x^2}\,\sin^2\!\left(\frac{\pi k}{2
 
 ### Null Mode
 
-Same as DCT-II: $\lambda_0 = 0$, handled by the zero-mean gauge ($\hat{\psi}_{0,0} = 0$).
+$\lambda_0 = 0$, handled by setting $\hat{\psi}_{0,0} = 0$. Unlike DCT-II this imposes the **trapezoid** mean $w \cdot \psi = 0$ with $w = (\tfrac12, 1, \ldots, 1, \tfrac12)$ per axis, not the plain mean; see [§6](#6-null-mode-handling-zero-mean-gauge).
 
 ### API
 
@@ -314,6 +314,25 @@ For Neumann and periodic BCs, the $(0,0)$ spectral mode has zero eigenvalue. Thi
 | Neumann/Periodic, $\lambda = 0$ | $0$ | Yes | Set $\hat{\psi}_{0,0} = 0$ |
 
 **Physical meaning:** the null mode corresponds to the freedom to add an arbitrary constant to $\psi$ without affecting $\nabla^2 \psi$. The zero-mean gauge pins this constant by enforcing $\overline{\psi} = 0$.
+
+### One Policy for Every Solver
+
+The same rule applies to the Fourier functions, the Fourier solver classes, and the spherical solvers:
+
+1. **An undefined mode is set to zero, never to an arbitrary value.** Where the denominator vanishes (the constant mode at $\lambda = 0$ for periodic, Neumann or spherical problems), $\hat{\psi} = 0$. The solve is effectively done for $f - \mathrm{proj}(f)$: any component of $f$ along the null direction is discarded silently.
+2. **`zero_mean` on the solver classes** (`SpectralHelmholtzSolver1D/2D/3D`, `SphericalHelmholtzSolver`):
+    - `None` (default): zero the mean mode only when it is undefined ($\alpha = 0$). With $\alpha > 0$ the mean is solved like every other mode, so a field with a non-zero mean is recovered.
+    - `True`: always zero the mean mode, even for $\alpha > 0$.
+    - `False`: keep it. This raises `ValueError` when $\alpha = 0$, where the mean is undefined.
+3. **`SphericalPoissonSolver`** always zeroes the $l = 0$ mode; `zero_mean=False` raises.
+
+| BC family | Null vector | Gauge imposed at $\lambda = 0$ | Solvability (component discarded from $f$) |
+|-----------|-------------|--------------------------------|---------------------------------------------|
+| Periodic (FFT), Neumann staggered (DCT-II), sphere | constant | plain mean $\overline{\psi} = 0$ | $\overline{f}$ |
+| Neumann regular (DCT-I) | constant | trapezoid mean $w \cdot \psi = 0$ | $w \cdot f / w \cdot 1$ |
+| Dirichlet (DST), mixed | none | — | — |
+
+**Why DCT-I is different:** its FD2 matrix is not symmetric (the boundary rows are $[-2,\ 2]/\Delta x^2$). Its left null vector is the trapezoid weight $w = (\tfrac12, 1, \ldots, 1, \tfrac12)$ per axis, and zeroing the DCT-I $k = 0$ coefficient imposes $w \cdot \psi = 0$, not $\overline{\psi} = 0$. The two agree only for fields that are symmetric about the domain centre.
 
 ### JIT-Safe Implementation
 

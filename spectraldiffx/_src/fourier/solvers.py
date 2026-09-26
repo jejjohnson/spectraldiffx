@@ -1034,8 +1034,11 @@ def solve_helmholtz_dct1_1d(
 ) -> Float[Array, " N"]:
     """Solve (∇² − λ)ψ = f in 1-D with Neumann BCs on a regular grid (DCT-I).
 
-    The k=0 eigenvalue is zero.  For λ=0 (Poisson), the null mode is
-    projected out (zero-mean gauge).
+    The k=0 eigenvalue is zero. For λ=0 (Poisson), the null mode is
+    projected out. The DCT-I FD2 matrix is not symmetric: its left null
+    vector is the trapezoid weight w = (1/2, 1, …, 1, 1/2), so the gauge is
+    the *trapezoid* mean w·ψ = 0 (not the plain mean), and a right-hand side
+    with w·f ≠ 0 is silently replaced by f − (w·f / w·1) (gh-92).
 
     Parameters
     ----------
@@ -1086,7 +1089,7 @@ def solve_poisson_dct1_1d(
     Returns
     -------
     Float[Array, " N"]
-        Zero-mean solution ψ, same shape as *rhs*.
+        Solution ψ with trapezoid mean w·ψ = 0, same shape as *rhs*.
     """
     return solve_helmholtz_dct1_1d(rhs, dx, lambda_=0.0, approximation=approximation)
 
@@ -1513,9 +1516,12 @@ def solve_helmholtz_dct1(
 ) -> Float[Array, "Ny Nx"]:
     """Solve (∇² − λ)ψ = f with Neumann BCs on a regular grid (DCT-I).
 
-    When ``lambda_ == 0`` the (0,0) mode is singular (Λ[0,0] = 0,
-    corresponding to the constant null mode of the Neumann Laplacian).
-    This is handled by setting ψ̂[0,0] = 0 (zero-mean gauge).
+    When ``lambda_ == 0`` the zero mode is singular (the constant null mode
+    of the Neumann Laplacian) and ψ̂ there is set to 0. The DCT-I FD2 matrix
+    is not symmetric: its left null vector is the tensor product of the 1-D
+    trapezoid weights w = (1/2, 1, …, 1, 1/2), so the gauge is the
+    *trapezoid* mean w·ψ = 0 (not the plain mean), and a right-hand side
+    with w·f ≠ 0 is silently replaced by f − (w·f / w·1) (gh-92).
 
     Parameters
     ----------
@@ -1574,7 +1580,7 @@ def solve_poisson_dct1(
     Returns
     -------
     Float[Array, "Ny Nx"]
-        Zero-mean solution ψ, same shape as *rhs*.
+        Solution ψ with trapezoid mean w·ψ = 0, same shape as *rhs*.
     """
     return solve_helmholtz_dct1(rhs, dx, dy, lambda_=0.0, approximation=approximation)
 
@@ -1842,6 +1848,13 @@ def solve_helmholtz_dct1_3d(
 ) -> Float[Array, "Nz Ny Nx"]:
     """Solve (∇² − λ)ψ = f with Neumann BCs on a regular 3-D grid (DCT-I).
 
+    When ``lambda_ == 0`` the zero mode is singular (the constant null mode
+    of the Neumann Laplacian) and ψ̂ there is set to 0. The DCT-I FD2 matrix
+    is not symmetric: its left null vector is the tensor product of the 1-D
+    trapezoid weights w = (1/2, 1, …, 1, 1/2), so the gauge is the
+    *trapezoid* mean w·ψ = 0 (not the plain mean), and a right-hand side
+    with w·f ≠ 0 is silently replaced by f − (w·f / w·1) (gh-92).
+
     Parameters
     ----------
     rhs : Float[Array, "Nz Ny Nx"]
@@ -1899,7 +1912,7 @@ def solve_poisson_dct1_3d(
     Returns
     -------
     Float[Array, "Nz Ny Nx"]
-        Zero-mean solution ψ, same shape as *rhs*.
+        Solution ψ with trapezoid mean w·ψ = 0, same shape as *rhs*.
     """
     return solve_helmholtz_dct1_3d(
         rhs, dx, dy, dz, lambda_=0.0, approximation=approximation
@@ -1995,6 +2008,21 @@ def solve_poisson_dct2_3d(
 # ---------------------------------------------------------------------------
 
 
+def _check_zero_mean(alpha: float, zero_mean: bool | None) -> None:
+    """Reject ``zero_mean=False`` for a singular solve (gh-92).
+
+    At α = 0 the mean mode of the solution is undefined; the solvers set it
+    to zero rather than return an arbitrary value. Asking to keep it is an
+    error when α is a concrete zero (a traced α cannot be checked).
+    """
+    if zero_mean is False and isinstance(alpha, (int, float)) and alpha == 0:
+        raise ValueError(
+            "zero_mean=False with alpha=0: the mean of the solution is "
+            "undefined for the singular Poisson problem. Use zero_mean=None "
+            "(default) or True."
+        )
+
+
 class SpectralHelmholtzSolver1D(eqx.Module):
     """1D Helmholtz/Poisson solver with periodic BCs using FFT.
 
@@ -2005,8 +2033,8 @@ class SpectralHelmholtzSolver1D(eqx.Module):
 
     where k = 2πm/L are the Fourier wavenumbers from ``grid.k``.
 
-    For α = 0 (Poisson), the k=0 mode is singular; ``zero_mean=True``
-    projects it out (sets φ̂_0 = 0).
+    Null mode (gh-92): for α = 0 (Poisson) the k = 0 mode is singular and
+    φ̂_0 is set to 0; for α > 0 it is solved like every other mode.
 
     Attributes
     ----------
@@ -2020,7 +2048,7 @@ class SpectralHelmholtzSolver1D(eqx.Module):
         self,
         f: Array,
         alpha: float = 0.0,
-        zero_mean: bool = True,
+        zero_mean: bool | None = None,
         spectral: bool = False,
     ) -> Array:
         """Solve (d²/dx² − α)φ = f.
@@ -2031,8 +2059,10 @@ class SpectralHelmholtzSolver1D(eqx.Module):
             Source term in physical space.
         alpha : float
             Helmholtz parameter (α ≥ 0).  Default: 0.0 (Poisson).
-        zero_mean : bool
-            Force the mean (k=0 mode) to zero.  Default: True.
+        zero_mean : bool or None
+            ``None`` (default): zero the k=0 mode only when α = 0, where it is
+            undefined. ``True``: always zero it. ``False``: keep it; an
+            error when α = 0 (gh-92).
         spectral : bool
             If True, *f* is already in spectral space.
 
@@ -2045,8 +2075,10 @@ class SpectralHelmholtzSolver1D(eqx.Module):
         k2 = self.grid.k**2
         denom = k2 + alpha  # k^2 + alpha  [N]
 
+        _check_zero_mean(alpha, zero_mean)
         denom_safe = jnp.where(denom == 0.0, 1.0, denom)
-        phi_hat = -f_hat / denom_safe  # phi_hat = -f_hat/(k^2+alpha)  [N]
+        # An undefined (zero-denominator) mode is set to 0, never -f_hat.
+        phi_hat = jnp.where(denom == 0.0, 0.0, -f_hat / denom_safe)
 
         if zero_mean:
             phi_hat = jnp.where(k2 == 0.0, 0.0, phi_hat)
@@ -2064,8 +2096,8 @@ class SpectralHelmholtzSolver2D(eqx.Module):
 
     where |k|² = kx² + ky² is provided by ``grid.K2``.
 
-    For α = 0 (Poisson), the (0,0) mode is singular; ``zero_mean=True``
-    projects it out.
+    Null mode (gh-92): for α = 0 (Poisson) the (0,0) mode is singular and
+    set to 0; for α > 0 it is solved like every other mode.
 
     Attributes
     ----------
@@ -2079,7 +2111,7 @@ class SpectralHelmholtzSolver2D(eqx.Module):
         self,
         f: Array,
         alpha: float = 0.0,
-        zero_mean: bool = True,
+        zero_mean: bool | None = None,
         spectral: bool = False,
     ) -> Array:
         """Solve (∇² − α)φ = f.
@@ -2090,8 +2122,10 @@ class SpectralHelmholtzSolver2D(eqx.Module):
             Source term in physical space.
         alpha : float
             Helmholtz parameter (α ≥ 0).  Default: 0.0 (Poisson).
-        zero_mean : bool
-            Force the (0,0) mode to zero.  Default: True.
+        zero_mean : bool or None
+            ``None`` (default): zero the (0,0) mode only when α = 0, where it is
+            undefined. ``True``: always zero it. ``False``: keep it; an
+            error when α = 0 (gh-92).
         spectral : bool
             If True, *f* is already in spectral space.
 
@@ -2104,8 +2138,10 @@ class SpectralHelmholtzSolver2D(eqx.Module):
         K2 = self.grid.K2  # kx^2 + ky^2  [Ny, Nx]
         denom = K2 + alpha
 
+        _check_zero_mean(alpha, zero_mean)
         denom_safe = jnp.where(denom == 0.0, 1.0, denom)
-        phi_hat = -f_hat / denom_safe  # -f_hat / (|k|^2 + alpha)
+        # An undefined (zero-denominator) mode is set to 0, never -f_hat.
+        phi_hat = jnp.where(denom == 0.0, 0.0, -f_hat / denom_safe)
 
         if zero_mean:
             phi_hat = jnp.where(K2 == 0.0, 0.0, phi_hat)
@@ -2123,8 +2159,8 @@ class SpectralHelmholtzSolver3D(eqx.Module):
 
     where |k|² = kx² + ky² + kz² is provided by ``grid.K2``.
 
-    For α = 0 (Poisson), the (0,0,0) mode is singular; ``zero_mean=True``
-    projects it out.
+    Null mode (gh-92): for α = 0 (Poisson) the (0,0,0) mode is singular and
+    set to 0; for α > 0 it is solved like every other mode.
 
     Attributes
     ----------
@@ -2138,7 +2174,7 @@ class SpectralHelmholtzSolver3D(eqx.Module):
         self,
         f: Array,
         alpha: float = 0.0,
-        zero_mean: bool = True,
+        zero_mean: bool | None = None,
         spectral: bool = False,
     ) -> Array:
         """Solve (∇² − α)φ = f.
@@ -2149,8 +2185,10 @@ class SpectralHelmholtzSolver3D(eqx.Module):
             Source term in physical space.
         alpha : float
             Helmholtz parameter (α ≥ 0).  Default: 0.0 (Poisson).
-        zero_mean : bool
-            Force the (0,0,0) mode to zero.  Default: True.
+        zero_mean : bool or None
+            ``None`` (default): zero the (0,0,0) mode only when α = 0, where it is
+            undefined. ``True``: always zero it. ``False``: keep it; an
+            error when α = 0 (gh-92).
         spectral : bool
             If True, *f* is already in spectral space.
 
@@ -2163,8 +2201,10 @@ class SpectralHelmholtzSolver3D(eqx.Module):
         K2 = self.grid.K2  # kx^2 + ky^2 + kz^2  [Nz, Ny, Nx]
         denom = K2 + alpha
 
+        _check_zero_mean(alpha, zero_mean)
         denom_safe = jnp.where(denom == 0.0, 1.0, denom)
-        phi_hat = -f_hat / denom_safe  # -f_hat / (|k|^2 + alpha)
+        # An undefined (zero-denominator) mode is set to 0, never -f_hat.
+        phi_hat = jnp.where(denom == 0.0, 0.0, -f_hat / denom_safe)
 
         if zero_mean:
             phi_hat = jnp.where(K2 == 0.0, 0.0, phi_hat)
@@ -2315,6 +2355,9 @@ class RegularNeumannHelmholtzSolver2D(eqx.Module):
 
     Solves ``(∇² − α)ψ = f`` where ∂ψ/∂n = 0 on all four edges, using
     the DCT-I spectral method (see :func:`solve_helmholtz_dct1`).
+
+    The α = 0 gauge is the trapezoid mean w·ψ = 0; see
+    :func:`solve_helmholtz_dct1` (gh-92).
 
     Attributes
     ----------
