@@ -38,6 +38,14 @@ class SpectralDerivative1D(eqx.Module):
 
     where k are the discrete wavenumbers: k = 2 * pi * n / L.
 
+    Dealiasing
+    ----------
+    Linear operators (``__call__``, ``gradient``, ``laplacian``,
+    ``biharmonic``, ``hyperviscosity``, ``inverse_laplacian``) act on every
+    resolved mode and never apply the grid's 2/3 mask, so e.g.
+    ``laplacian(inverse_laplacian(u)) == u``.
+    Use :meth:`apply_dealias` to truncate nonlinear products (gh-91).
+
     Attributes
     ----------
         grid : FourierGrid1D
@@ -70,9 +78,9 @@ class SpectralDerivative1D(eqx.Module):
         # 1. Obtain spectral coefficients u_hat [N]
         u_hat = u if spectral else self.grid.transform(u)
 
-        # 2. Multiply by (i*k)^order [N]
-        # We use k_dealias to zero out high-frequency modes prone to aliasing
-        k = self.grid.k_dealias
+        # 2. Multiply by (i*k)^order [N]. Linear operators keep every
+        # resolved mode; only products are 2/3-truncated (gh-91).
+        k = self.grid.k
         du_hat = (1j * k) ** order * u_hat
 
         # 3. Inverse Transform back to physical space [N]
@@ -100,8 +108,7 @@ class SpectralDerivative1D(eqx.Module):
         """
         u_hat = u if spectral else self.grid.transform(u)
         k = self.grid.k
-        dealias = self.grid.dealias_filter()
-        lap_hat = -(k**2) * u_hat * dealias
+        lap_hat = -(k**2) * u_hat
         return self.grid.transform(lap_hat, inverse=True).real
 
     def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "N"]:
@@ -111,8 +118,7 @@ class SpectralDerivative1D(eqx.Module):
         """
         u_hat = u if spectral else self.grid.transform(u)
         k = self.grid.k
-        dealias = self.grid.dealias_filter()
-        bih_hat = k**4 * u_hat * dealias
+        bih_hat = k**4 * u_hat
         return self.grid.transform(bih_hat, inverse=True).real
 
     def hyperviscosity(
@@ -143,8 +149,7 @@ class SpectralDerivative1D(eqx.Module):
         _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(u)
         k = self.grid.k
-        dealias = self.grid.dealias_filter()
-        hyp_hat = -nu * k ** (2 * order) * u_hat * dealias
+        hyp_hat = -nu * k ** (2 * order) * u_hat
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(self, u: Array, spectral: bool = False) -> Float[Array, "N"]:
@@ -191,6 +196,16 @@ class SpectralDerivative2D(eqx.Module):
 
     Gradient vector: ∇u = (∂u/∂x, ∂u/∂y)
     Laplacian: ∇^2 u = ∂^2u/∂x^2 + ∂^2u/∂y^2 ↔ -(kx^2 + ky^2) * u_hat
+
+    Dealiasing
+    ----------
+    Linear operators (``gradient``, ``divergence``, ``curl``, ``laplacian``,
+    ``biharmonic``, ``hyperviscosity``, ``inverse_laplacian``,
+    ``velocity_from_streamfunction``, ``project_vector``) act on every
+    resolved mode and never apply the grid's 2/3 mask, so e.g.
+    ``laplacian(inverse_laplacian(u)) == u``. Only the product operators
+    ``jacobian`` and ``advection_scalar`` truncate (inputs and result);
+    :meth:`apply_dealias` applies the mask explicitly (gh-91).
     """
 
     grid: FourierGrid2D
@@ -201,10 +216,9 @@ class SpectralDerivative2D(eqx.Module):
         """Compute the gradient vector [du/dx, du/dy]."""
         u_hat = u if spectral else self.grid.transform(u)
         KX, KY = self.grid.KX
-        dealias = self.grid.dealias_filter()
 
-        du_dx = self.grid.transform(1j * KX * u_hat * dealias, inverse=True).real
-        du_dy = self.grid.transform(1j * KY * u_hat * dealias, inverse=True).real
+        du_dx = self.grid.transform(1j * KX * u_hat, inverse=True).real
+        du_dy = self.grid.transform(1j * KY * u_hat, inverse=True).real
         return du_dx, du_dy
 
     def divergence(
@@ -216,9 +230,8 @@ class SpectralDerivative2D(eqx.Module):
         vx_hat = vx if spectral else self.grid.transform(vx)
         vy_hat = vy if spectral else self.grid.transform(vy)
         KX, KY = self.grid.KX
-        dealias = self.grid.dealias_filter()
 
-        div_hat = (1j * KX * vx_hat + 1j * KY * vy_hat) * dealias
+        div_hat = 1j * KX * vx_hat + 1j * KY * vy_hat
         return self.grid.transform(div_hat, inverse=True).real
 
     def curl(
@@ -230,9 +243,8 @@ class SpectralDerivative2D(eqx.Module):
         vx_hat = vx if spectral else self.grid.transform(vx)
         vy_hat = vy if spectral else self.grid.transform(vy)
         KX, KY = self.grid.KX
-        dealias = self.grid.dealias_filter()
 
-        curl_hat = (1j * KX * vy_hat - 1j * KY * vx_hat) * dealias
+        curl_hat = 1j * KX * vy_hat - 1j * KY * vx_hat
         return self.grid.transform(curl_hat, inverse=True).real
 
     def laplacian(self, u: Array, spectral: bool = False) -> Float[Array, "Ny Nx"]:
@@ -241,16 +253,14 @@ class SpectralDerivative2D(eqx.Module):
         """
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
-        dealias = self.grid.dealias_filter()
-        lap_hat = -K2 * u_hat * dealias
+        lap_hat = -K2 * u_hat
         return self.grid.transform(lap_hat, inverse=True).real
 
     def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "Ny Nx"]:
         """Compute the 2D biharmonic: nabla^4 u = (kx^2 + ky^2)^2 * u_hat."""
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
-        dealias = self.grid.dealias_filter()
-        bih_hat = K2**2 * u_hat * dealias
+        bih_hat = K2**2 * u_hat
         return self.grid.transform(bih_hat, inverse=True).real
 
     def hyperviscosity(
@@ -280,8 +290,7 @@ class SpectralDerivative2D(eqx.Module):
         _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
-        dealias = self.grid.dealias_filter()
-        hyp_hat = -nu * K2**order * u_hat * dealias
+        hyp_hat = -nu * K2**order * u_hat
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(
@@ -306,9 +315,8 @@ class SpectralDerivative2D(eqx.Module):
         """Compute velocity from a streamfunction: u = -dpsi/dy, v = dpsi/dx."""
         psi_hat = psi if spectral else self.grid.transform(psi)
         KX, KY = self.grid.KX
-        dealias = self.grid.dealias_filter()
-        u = self.grid.transform(-1j * KY * psi_hat * dealias, inverse=True).real
-        v = self.grid.transform(1j * KX * psi_hat * dealias, inverse=True).real
+        u = self.grid.transform(-1j * KY * psi_hat, inverse=True).real
+        v = self.grid.transform(1j * KX * psi_hat, inverse=True).real
         return u, v
 
     def jacobian(
@@ -383,9 +391,9 @@ class SpectralDerivative2D(eqx.Module):
         """
         Compute scalar advection (u·∇)q using the pseudo-spectral method.
 
-        Derivatives are taken in Fourier space, the products formed in
-        physical space, and the result truncated with the grid's 2/3 mask,
-        exactly as :meth:`jacobian` does. With ``(vx, vy)`` from
+        Both factors are truncated with the grid's 2/3 mask, the products
+        formed in physical space, and the result truncated again, exactly as
+        :meth:`jacobian` does. With ``(vx, vy)`` from
         :meth:`velocity_from_streamfunction` the two agree (gh-90).
 
         Out = dealias(vx * ∂q/∂x + vy * ∂q/∂y)
@@ -412,6 +420,7 @@ class SpectralDerivative2D(eqx.Module):
         dq_dx = self.grid.transform(1j * KX * q_hat * dealias, inverse=True).real
         dq_dy = self.grid.transform(1j * KY * q_hat * dealias, inverse=True).real
 
+        vx, vy = self.apply_dealias(vx), self.apply_dealias(vy)
         return self.apply_dealias(vx * dq_dx + vy * dq_dy)
 
 
@@ -425,6 +434,16 @@ class SpectralDerivative3D(eqx.Module):
     Wavenumbers: (kz, ky, kx).
 
     Gradient vector: ∇u = (∂u/∂z, ∂u/∂y, ∂u/∂x)
+
+    Dealiasing
+    ----------
+    Linear operators (``gradient``, ``divergence``, ``curl``, ``laplacian``,
+    ``biharmonic``, ``hyperviscosity``, ``inverse_laplacian``,
+    ``velocity_from_streamfunction``, ``project_vector``) act on every
+    resolved mode and never apply the grid's 2/3 mask, so e.g.
+    ``laplacian(inverse_laplacian(u)) == u``. Only the product operators
+    ``jacobian`` and ``advection_scalar`` truncate (inputs and result);
+    :meth:`apply_dealias` applies the mask explicitly (gh-91).
     """
 
     grid: FourierGrid3D
@@ -433,11 +452,10 @@ class SpectralDerivative3D(eqx.Module):
         """Compute the 3D gradient vector field."""
         u_hat = u if spectral else self.grid.transform(u)
         KZ, KY, KX = self.grid.KX
-        dealias = self.grid.dealias_filter()
 
-        du_dz = self.grid.transform(1j * KZ * u_hat * dealias, inverse=True).real
-        du_dy = self.grid.transform(1j * KY * u_hat * dealias, inverse=True).real
-        du_dx = self.grid.transform(1j * KX * u_hat * dealias, inverse=True).real
+        du_dz = self.grid.transform(1j * KZ * u_hat, inverse=True).real
+        du_dy = self.grid.transform(1j * KY * u_hat, inverse=True).real
+        du_dx = self.grid.transform(1j * KX * u_hat, inverse=True).real
         return du_dz, du_dy, du_dx
 
     def divergence(
@@ -448,9 +466,8 @@ class SpectralDerivative3D(eqx.Module):
         vy_hat = vy if spectral else self.grid.transform(vy)
         vx_hat = vx if spectral else self.grid.transform(vx)
         KZ, KY, KX = self.grid.KX
-        dealias = self.grid.dealias_filter()
 
-        div_hat = (1j * KZ * vz_hat + 1j * KY * vy_hat + 1j * KX * vx_hat) * dealias
+        div_hat = 1j * KZ * vz_hat + 1j * KY * vy_hat + 1j * KX * vx_hat
         return self.grid.transform(div_hat, inverse=True).real
 
     def curl(
@@ -468,11 +485,10 @@ class SpectralDerivative3D(eqx.Module):
         vy_hat = vy if spectral else self.grid.transform(vy)
         vx_hat = vx if spectral else self.grid.transform(vx)
         KZ, KY, KX = self.grid.KX
-        dealias = self.grid.dealias_filter()
 
-        wz_hat = (1j * KX * vy_hat - 1j * KY * vx_hat) * dealias
-        wy_hat = (1j * KZ * vx_hat - 1j * KX * vz_hat) * dealias
-        wx_hat = (1j * KY * vz_hat - 1j * KZ * vy_hat) * dealias
+        wz_hat = 1j * KX * vy_hat - 1j * KY * vx_hat
+        wy_hat = 1j * KZ * vx_hat - 1j * KX * vz_hat
+        wx_hat = 1j * KY * vz_hat - 1j * KZ * vy_hat
 
         return (
             self.grid.transform(wz_hat, inverse=True).real,
@@ -484,16 +500,14 @@ class SpectralDerivative3D(eqx.Module):
         """Compute 3D Laplacian: ∇^2 u = ∂^2u/∂z^2 + ∂^2u/∂y^2 + ∂^2u/∂x^2."""
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
-        dealias = self.grid.dealias_filter()
-        lap_hat = -K2 * u_hat * dealias
+        lap_hat = -K2 * u_hat
         return self.grid.transform(lap_hat, inverse=True).real
 
     def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "Nz Ny Nx"]:
         """Compute the 3D biharmonic: nabla^4 u."""
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
-        dealias = self.grid.dealias_filter()
-        bih_hat = K2**2 * u_hat * dealias
+        bih_hat = K2**2 * u_hat
         return self.grid.transform(bih_hat, inverse=True).real
 
     def hyperviscosity(
@@ -509,8 +523,7 @@ class SpectralDerivative3D(eqx.Module):
         _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(u)
         K2 = self.grid.K2
-        dealias = self.grid.dealias_filter()
-        hyp_hat = -nu * K2**order * u_hat * dealias
+        hyp_hat = -nu * K2**order * u_hat
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(
@@ -538,9 +551,8 @@ class SpectralDerivative3D(eqx.Module):
         """
         psi_hat = psi if spectral else self.grid.transform(psi)
         _KZ, KY, KX = self.grid.KX
-        dealias = self.grid.dealias_filter()
-        u = self.grid.transform(-1j * KY * psi_hat * dealias, inverse=True).real
-        v = self.grid.transform(1j * KX * psi_hat * dealias, inverse=True).real
+        u = self.grid.transform(-1j * KY * psi_hat, inverse=True).real
+        v = self.grid.transform(1j * KX * psi_hat, inverse=True).real
         return u, v
 
     def jacobian(
@@ -602,8 +614,9 @@ class SpectralDerivative3D(eqx.Module):
     ) -> Float[Array, "Nz Ny Nx"]:
         """Compute the dealiased 3D scalar advection term (u·∇)q.
 
-        The products are formed in physical space and truncated with the
-        grid's 2/3 mask, as in 2D (gh-90).
+        Both factors are truncated with the grid's 2/3 mask, the products
+        formed in physical space, and the result truncated again, as in 2D
+        (gh-90).
 
         Parameters
         ----------
@@ -628,4 +641,5 @@ class SpectralDerivative3D(eqx.Module):
         dq_dy = self.grid.transform(1j * KY * q_hat * dealias, inverse=True).real
         dq_dx = self.grid.transform(1j * KX * q_hat * dealias, inverse=True).real
 
+        vz, vy, vx = (self.apply_dealias(v) for v in (vz, vy, vx))
         return self.apply_dealias(vz * dq_dz + vy * dq_dy + vx * dq_dx)

@@ -263,6 +263,8 @@ def test_dealias_removes_aliased_energy_in_gradient():
 
     Without dealiasing: d(u^2)/dx has spurious energy at |k|=14.
     With dealiasing: the mode at |k|=14 is zeroed (aliased mode removed).
+    The product is truncated explicitly with apply_dealias; the linear
+    gradient itself keeps every resolved mode (gh-91).
     """
     N = 32
     # Without dealiasing
@@ -279,7 +281,7 @@ def test_dealias_removes_aliased_energy_in_gradient():
 
     # Compute d(u^2)/dx via spectral derivative
     dusq_nd = deriv_nd.gradient(u_sq)
-    dusq_d = deriv_d.gradient(u_sq)
+    dusq_d = deriv_d.gradient(deriv_d.apply_dealias(u_sq))
 
     # In spectral space: check energy at k=14 (the aliased mode index)
     dusq_nd_hat = grid_nd.transform(dusq_nd)
