@@ -293,3 +293,72 @@ def test_deriv3d_advection_scalar_matches_horizontal_jacobian():
     scale = float(jnp.abs(jac).max())
     assert float(jnp.abs(adv - jac).max()) < 1e-10 * scale
     assert _energy_outside_mask(grid, adv) < 1e-14
+
+
+# --- Linear operators keep every resolved mode (gh-91) ---
+
+
+def test_linear_operators_invert_on_high_modes_1d():
+    grid = FourierGrid1D.from_N_L(64, 2 * jnp.pi)  # default dealias="2/3"
+    deriv = SpectralDerivative1D(grid)
+    u = jnp.cos(25 * grid.x)  # 25 > N/3 but resolved (< N/2)
+    np.testing.assert_allclose(
+        np.asarray(deriv.laplacian(deriv.inverse_laplacian(u))),
+        np.asarray(u),
+        atol=1e-10,
+    )
+    for k in range(1, 32):
+        du = deriv.gradient(jnp.cos(k * grid.x))
+        np.testing.assert_allclose(
+            np.asarray(du), np.asarray(-k * jnp.sin(k * grid.x)), atol=1e-10 * k
+        )
+
+
+def test_linear_operators_invert_on_high_modes_2d():
+    grid = FourierGrid2D.from_N_L(Nx=64, Ny=64, Lx=2 * jnp.pi, Ly=2 * jnp.pi)
+    deriv = SpectralDerivative2D(grid)
+    X, Y = grid.X
+    u = jnp.cos(25 * X) * jnp.sin(23 * Y)
+    np.testing.assert_allclose(
+        np.asarray(deriv.laplacian(deriv.inverse_laplacian(u))),
+        np.asarray(u),
+        atol=1e-10,
+    )
+    du_dx, du_dy = deriv.gradient(u)
+    np.testing.assert_allclose(
+        np.asarray(du_dx),
+        np.asarray(-25 * jnp.sin(25 * X) * jnp.sin(23 * Y)),
+        atol=1e-9,
+    )
+    np.testing.assert_allclose(
+        np.asarray(du_dy), np.asarray(23 * jnp.cos(25 * X) * jnp.cos(23 * Y)), atol=1e-9
+    )
+
+
+def test_linear_operators_invert_on_high_modes_3d():
+    grid = FourierGrid3D.from_N_L(
+        Nz=64, Ny=16, Nx=64, Lz=2 * jnp.pi, Ly=2 * jnp.pi, Lx=2 * jnp.pi
+    )
+    deriv = SpectralDerivative3D(grid)
+    Z, Y, X = grid.X
+    u = jnp.cos(25 * X) * jnp.cos(3 * Y) * jnp.sin(22 * Z)
+    np.testing.assert_allclose(
+        np.asarray(deriv.laplacian(deriv.inverse_laplacian(u))),
+        np.asarray(u),
+        atol=1e-10,
+    )
+
+
+def test_project_vector_agrees_with_linear_operators():
+    """A high-mode solenoidal field passes through project_vector unchanged,
+    and divergence (unmasked) sees it as divergence-free."""
+    grid = FourierGrid2D.from_N_L(Nx=64, Ny=64, Lx=2 * jnp.pi, Ly=2 * jnp.pi)
+    deriv = SpectralDerivative2D(grid)
+    X, Y = grid.X
+    psi = jnp.sin(25 * X) * jnp.cos(24 * Y)
+    u, v = deriv.velocity_from_streamfunction(psi)
+    assert float(jnp.abs(u).max()) > 1.0  # the high modes are kept
+    pu, pv = deriv.project_vector(u, v)
+    np.testing.assert_allclose(np.asarray(pu), np.asarray(u), atol=1e-10)
+    np.testing.assert_allclose(np.asarray(pv), np.asarray(v), atol=1e-10)
+    assert float(jnp.abs(deriv.divergence(u, v)).max()) < 1e-9

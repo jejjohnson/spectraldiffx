@@ -510,10 +510,7 @@ def qg_tendency(q: jnp.ndarray, params: QGParams) -> jnp.ndarray:
 
     # Step 4: Hyperviscosity  (-1)^(nv+1) * nu * (nabla^2)^nv q
     if params.nu > 0:
-        lap_q = q
-        for _ in range(params.nv):
-            lap_q = deriv.laplacian(lap_q)
-        rhs = rhs + (-1) ** (params.nv + 1) * params.nu * lap_q
+        rhs = rhs + deriv.hyperviscosity(q, params.nu, order=params.nv)
 
     # Step 5: Linear drag  -mu * q
     if params.mu > 0:
