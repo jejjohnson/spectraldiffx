@@ -26,13 +26,14 @@ repos:
       - id: ruff-format
         exclude: ^notebooks/
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.3.1
+  - repo: local
     hooks:
-      - id: mypy
-        additional_dependencies: []
-        args: [--ignore-missing-imports]
-        exclude: ^notebooks/
+      - id: ty
+        name: ty check (matches the Type Check workflow)
+        entry: uv run ty check spectraldiffx
+        language: system
+        types: [python]
+        pass_filenames: false
 
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0

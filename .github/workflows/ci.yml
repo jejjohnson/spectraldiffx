@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - main
+  # Any base branch, so stacked PRs are checked too.
   pull_request:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -42,5 +41,6 @@ jobs:
         if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v7
         with:
-          files: ./coverage.xml
+          # [tool.coverage.xml] output in pyproject.toml
+          files: ./reports/coverage.xml
           fail_ci_if_error: false

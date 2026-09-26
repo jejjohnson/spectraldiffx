@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - main
+  # Any base branch, so stacked PRs are checked too.
   pull_request:
-    branches:
-      - main
 
 permissions:
   contents: read

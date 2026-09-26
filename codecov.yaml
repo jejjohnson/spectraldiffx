@@ -6,9 +6,6 @@ coverage:
         target: auto
         threshold: 5%
 
-fixes:
-  - "/home/runner/work/jaxsw/jaxsw/::" # Correct paths
-
 ignore:
   - "setup.py"
   - "*/tests/.*"

@@ -24,13 +24,12 @@ classifiers = [
 ]
 dependencies = [
     "jaxtyping>=0.2.28",
-    "beartype>=0.18.0",
     "jax>=0.4.30",
     "jaxlib>=0.4.30",
-    "finitediffx>=0.1.0",
-    "kernex>=0.2.0",
     "equinox",
     "gaussx>=0.1.0",
+    "numpy>=1.26.0",
+    "scipy>=1.12.0",
 ]
 
 [project.urls]
@@ -116,14 +115,18 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-filterwarnings = ["error", "ignore::DeprecationWarning"]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+    # Keep JAX's own deprecation notices visible instead of hiding them.
+    "default::DeprecationWarning:jax.*",
+]
 testpaths = ["spectraldiffx", "tests"]
 xfail_strict = true
 
 [tool.ruff]
-fix = true
 line-length = 88
-target-version = "py310"
+target-version = "py312"
 exclude = ["docs/", "notebooks/"]
 
 [tool.ruff.lint]
@@ -192,7 +195,3 @@ source = ["spectraldiffx"]
 [tool.coverage.xml]
 output = "reports/coverage.xml"
 
-[tool.ty.rules]
-# Pre-existing type errors in Union-typed grid attributes (solvers.py) and dtype return type (filters.py)
-unresolved-attribute = "ignore"
-invalid-return-type = "ignore"

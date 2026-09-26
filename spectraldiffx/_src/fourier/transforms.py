@@ -649,11 +649,11 @@ def idst(
 
 
 def dctn(
-    x: Float[Array, ...],
+    x: Float[Array, "..."],
     type: Literal[1, 2, 3, 4] = 2,
     axes: Sequence[int] | None = None,
     norm: Literal["ortho"] | None = None,
-) -> Float[Array, ...]:
+) -> Float[Array, "..."]:
     """N-dimensional DCT: apply DCT sequentially along each axis.
 
     For a 2-D array with ``axes=[0, 1]``, this computes the separable
@@ -696,11 +696,11 @@ def dctn(
 
 
 def idctn(
-    x: Float[Array, ...],
+    x: Float[Array, "..."],
     type: Literal[1, 2, 3, 4] = 2,
     axes: Sequence[int] | None = None,
     norm: Literal["ortho"] | None = None,
-) -> Float[Array, ...]:
+) -> Float[Array, "..."]:
     """N-dimensional inverse DCT: apply IDCT sequentially along each axis.
 
     Satisfies ``idctn(dctn(x, t, axes, norm=m), t, axes, norm=m) == x``.
@@ -740,11 +740,11 @@ def idctn(
 
 
 def dstn(
-    x: Float[Array, ...],
+    x: Float[Array, "..."],
     type: Literal[1, 2, 3, 4] = 1,
     axes: Sequence[int] | None = None,
     norm: Literal["ortho"] | None = None,
-) -> Float[Array, ...]:
+) -> Float[Array, "..."]:
     """N-dimensional DST: apply DST sequentially along each axis.
 
     For a 2-D array with ``axes=[0, 1]``, this computes the separable
@@ -784,11 +784,11 @@ def dstn(
 
 
 def idstn(
-    x: Float[Array, ...],
+    x: Float[Array, "..."],
     type: Literal[1, 2, 3, 4] = 1,
     axes: Sequence[int] | None = None,
     norm: Literal["ortho"] | None = None,
-) -> Float[Array, ...]:
+) -> Float[Array, "..."]:
     """N-dimensional inverse DST: apply IDST sequentially along each axis.
 
     Satisfies ``idstn(dstn(x, t, axes, norm=m), t, axes, norm=m) == x``.

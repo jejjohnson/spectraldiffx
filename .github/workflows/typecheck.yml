@@ -3,8 +3,8 @@ name: Type Check
 on:
   push:
     branches: [main, master]
+  # Any base branch, so stacked PRs are checked too.
   pull_request:
-    branches: [main, master]
 
 permissions:
   contents: read
