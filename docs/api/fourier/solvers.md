@@ -39,6 +39,12 @@ See the [theory page](../../theory/elliptic_solvers.md) for the mathematical bac
 
 ::: spectraldiffx.solve_poisson_dst
 
+Aliases naming the transform explicitly (same functions):
+
+::: spectraldiffx.solve_helmholtz_dst1
+
+::: spectraldiffx.solve_poisson_dst1
+
 #### 3D
 
 ::: spectraldiffx.solve_helmholtz_dst1_3d
@@ -99,6 +105,12 @@ See the [theory page](../../theory/elliptic_solvers.md) for the mathematical bac
 
 ::: spectraldiffx.solve_poisson_dct
 
+Aliases naming the transform explicitly (same functions):
+
+::: spectraldiffx.solve_helmholtz_dct2
+
+::: spectraldiffx.solve_poisson_dct2
+
 #### 3D
 
 ::: spectraldiffx.solve_helmholtz_dct2_3d
@@ -106,6 +118,8 @@ See the [theory page](../../theory/elliptic_solvers.md) for the mathematical bac
 ::: spectraldiffx.solve_poisson_dct2_3d
 
 ### Mixed Per-Axis BCs (2D/3D)
+
+::: spectraldiffx.BoundaryCondition
 
 #### 2D
 

@@ -38,8 +38,8 @@ class SpectralDerivative1D(eqx.Module):
 
     where k are the discrete wavenumbers: k = 2 * pi * n / L.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
         grid : FourierGrid1D
             The 1D grid object containing wavenumbers k [N].
     """
@@ -52,8 +52,8 @@ class SpectralDerivative1D(eqx.Module):
         """
         Compute the n-th derivative of a field.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array [N]
             The input field. If spectral=False, this is physical space.
             If spectral=True, this is complex Fourier coefficients.
@@ -62,8 +62,8 @@ class SpectralDerivative1D(eqx.Module):
         spectral : bool, optional
             Whether the input 'u' is already in Fourier space. Default is False.
 
-        Returns:
-        --------
+        Returns
+        -------
         du_dx : Array [N]
             The n-th derivative in physical space.
         """
@@ -82,8 +82,8 @@ class SpectralDerivative1D(eqx.Module):
         """
         Compute the first derivative (gradient) du/dx.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Array [N]
             Input field.
         spectral : bool, optional

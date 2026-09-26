@@ -20,8 +20,8 @@ Equivalently, the spherical harmonics Yₗᵐ are 4π-normalised in the real
 convention (no Condon–Shortley phase for m > 0 beyond what scipy's
 ``lpmv`` supplies).  Work out the forward/inverse formulas below.
 
-References:
------------
+References
+----------
 [1] Boyd, J. P. (2001). Chebyshev and Fourier Spectral Methods.
 [3] Canuto et al. (2006). Spectral Methods: Fundamentals.
 """

@@ -73,15 +73,15 @@ def _gradient_alp_matrix(
     where P_l^1_norm[l, j] = N_{l,1} * P_l^1(cos(theta_j))
     and   N_{l,1} = sqrt((2*l+1) / (2*l*(l+1)))  for l >= 1.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     N : int
         Grid size (number of GL nodes).
     nodes_np : ndarray [N]
         Gauss-Legendre nodes (cos(theta)).
 
-    Returns:
-    --------
+    Returns
+    -------
     P1 : ndarray [N, N]
         Normalised m=1 ALP matrix.  Row 0 (l=0) is zero.
     """
@@ -112,8 +112,8 @@ class SphericalDerivative1D(eqx.Module):
     Laplacian on the unit sphere (eigenvalue relation):
         nabla^2_sphere u = -sum_l c_l * l*(l+1) / R^2 * P_l_norm(cos(theta))
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     grid : SphericalGrid1D
         The 1D Gauss-Legendre grid.
     """
@@ -139,13 +139,13 @@ class SphericalDerivative1D(eqx.Module):
 
         c_l = sum_j w_j * P_l_norm(cos(theta_j)) * u(theta_j)
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "N"]
             Physical field at GL nodes.
 
-        Returns:
-        --------
+        Returns
+        -------
         c : Float[Array, "N"]
             Legendre spectral coefficients.
         """
@@ -157,13 +157,13 @@ class SphericalDerivative1D(eqx.Module):
 
         u(theta_j) ≈ sum_l c_l * P_l_norm(cos(theta_j))
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         c : Float[Array, "N"]
             Legendre spectral coefficients.
 
-        Returns:
-        --------
+        Returns
+        -------
         u : Float[Array, "N"]
             Physical field at GL nodes.
         """
@@ -180,15 +180,15 @@ class SphericalDerivative1D(eqx.Module):
             2. Multiply:    c_grad_l = -sqrt(l*(l+1)) * c_l
             3. Reconstruct: du/d_theta = P1_norm_matrix.T @ c_grad
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "N"]
             Physical field or spectral coefficients (if spectral=True).
         spectral : bool
             If True, u contains Legendre coefficients.
 
-        Returns:
-        --------
+        Returns
+        -------
         du_dtheta : Float[Array, "N"]
             Colatitude derivative du/d_theta at GL nodes.
         """
@@ -208,15 +208,15 @@ class SphericalDerivative1D(eqx.Module):
         Spherical Laplacian: (1/sin(theta)) * d/d_theta [sin(theta) * du/d_theta]
         (zonal, m=0 case): nabla^2_sphere u = -l*(l+1)/R^2 * u in spectral space.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "N"]
             Physical field or spectral coefficients.
         spectral : bool
             If True, u contains Legendre coefficients.
 
-        Returns:
-        --------
+        Returns
+        -------
         lap_u : Float[Array, "N"]
             Laplacian at GL nodes.
         """
@@ -232,8 +232,8 @@ class SphericalDerivative1D(eqx.Module):
         """
         Apply derivative operator.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "N"]
             Physical field or spectral coefficients.
         order : int
@@ -241,8 +241,8 @@ class SphericalDerivative1D(eqx.Module):
         spectral : bool
             If True, u contains Legendre coefficients.
 
-        Returns:
-        --------
+        Returns
+        -------
         Array [N]
         """
         if order == 1:
@@ -282,8 +282,8 @@ class SphericalDerivative2D(eqx.Module):
         Laplacian (via eigenvalue in spectral space):
             nabla^2 u = sum_{l,m} -l*(l+1)/R^2 * u_hat(l,m) * Y_l^m
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     grid : SphericalGrid2D
         The full lat-lon grid.
     deriv_theta : SphericalDerivative1D
@@ -313,15 +313,15 @@ class SphericalDerivative2D(eqx.Module):
             grad_theta u = (1/R) * du/d_theta
             grad_phi   u = 1 / (R * sin(theta)) * du/d_phi
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "Ny Nx"]
             Physical field.
         spectral : bool
             If True, u is already in spectral (SHT) space.
 
-        Returns:
-        --------
+        Returns
+        -------
         (grad_theta, grad_phi) : tuple of Float[Array, "Ny Nx"]
             Covariant gradient components.
         """
@@ -357,8 +357,8 @@ class SphericalDerivative2D(eqx.Module):
 
             div V = 1/(R*sin(theta)) * [d(V_theta*sin(theta))/d_theta + dV_phi/d_phi]
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         v_theta : Float[Array, "Ny Nx"]
             Colatitude component (physical space).
         v_phi : Float[Array, "Ny Nx"]
@@ -366,8 +366,8 @@ class SphericalDerivative2D(eqx.Module):
         spectral : bool
             Unused (reserved for API consistency; inputs expected in physical space).
 
-        Returns:
-        --------
+        Returns
+        -------
         div : Float[Array, "Ny Nx"]
             Scalar divergence field.
         """

@@ -49,13 +49,13 @@ def _gauss_legendre_nodes_weights(N: int):
     """
     Compute Gauss-Legendre nodes and weights via scipy.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     N : int
         Number of quadrature points.
 
-    Returns:
-    --------
+    Returns
+    -------
     nodes : ndarray [N]
         GL nodes (cos(theta)) ordered North to South (1 to -1).
     weights : ndarray [N]
@@ -78,15 +78,15 @@ def _legendre_matrix(l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     Gauss-Legendre quadrature weights:
         sum_j w_j * P_norm[l, j] * P_norm[l', j] = delta_{l, l'}
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     l_values : ndarray [Nl]
         Legendre degree indices (integer values 0, 1, ..., N-1).
     mu : ndarray [Ny]
         Gauss-Legendre nodes (cos(theta) values).
 
-    Returns:
-    --------
+    Returns
+    -------
     P : ndarray [Nl, Ny]
         Normalised Legendre polynomial matrix.
     """
@@ -113,8 +113,8 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
 
     For l < m, P_l^m = 0 (returned as zero rows).
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     m_abs : int
         Absolute value of the zonal wavenumber m (>= 0).
     l_values : ndarray [Nl]
@@ -122,8 +122,8 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     mu : ndarray [Ny]
         Gauss-Legendre nodes (cos(theta)).
 
-    Returns:
-    --------
+    Returns
+    -------
     P : ndarray [Nl, Ny]
         Normalised ALP matrix.  Rows with l < m_abs are zero.
     """
@@ -173,8 +173,8 @@ class SphericalGrid1D(eqx.Module):
     where P_l_norm(mu) = sqrt((2*l+1)/2) * P_l(mu) is the normalised Legendre
     polynomial satisfying sum_j w_j * P_l_norm(mu_j) * P_l'_norm(mu_j) = delta_{l,l'}.
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     N : int
         Number of Gauss-Legendre quadrature points.
     L : float
@@ -222,13 +222,13 @@ class SphericalGrid1D(eqx.Module):
         """
         Verify that N, L, and dx are consistent: L ≈ N * dx.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         rtol : float
             Relative tolerance.
 
-        Returns:
-        --------
+        Returns
+        -------
         bool
             True if consistent, raises ValueError otherwise.
         """
@@ -281,8 +281,8 @@ class SphericalGrid1D(eqx.Module):
         """
         Gauss-Legendre nodes mu = cos(theta) in [-1, 1], ordered North to South.
 
-        Returns:
-        --------
+        Returns
+        -------
         mu : Float[Array, "N"]
             cos(theta) values, mu[0] = near 1 (North Pole), mu[-1] = near -1 (South Pole).
         """
@@ -296,8 +296,8 @@ class SphericalGrid1D(eqx.Module):
         These weights absorb the sin(theta) * d_theta Jacobian, so:
             integral_0^pi u(theta) sin(theta) d_theta ≈ sum_j w_j * u(theta_j)
 
-        Returns:
-        --------
+        Returns
+        -------
         w : Float[Array, "N"]
             Quadrature weights.
         """
@@ -310,8 +310,8 @@ class SphericalGrid1D(eqx.Module):
 
         Points are clustered near the poles.  The poles themselves are excluded.
 
-        Returns:
-        --------
+        Returns
+        -------
         theta : Float[Array, "N"]
             Colatitude [rad].
         """
@@ -322,8 +322,8 @@ class SphericalGrid1D(eqx.Module):
         """
         Gauss-Legendre nodes and weights.
 
-        Returns:
-        --------
+        Returns
+        -------
         (mu, w) : tuple of Float[Array, "N"]
             mu = cos(theta) nodes, w = quadrature weights.
         """
@@ -339,8 +339,8 @@ class SphericalGrid1D(eqx.Module):
         """
         Dealiased degree array: keeps l <= 2*N//3, zeros out higher degrees.
 
-        Returns:
-        --------
+        Returns
+        -------
         l_d : Float[Array, "N"]
         """
         l = self.l
@@ -353,8 +353,8 @@ class SphericalGrid1D(eqx.Module):
         """
         Dealiasing filter mask: 1 for kept modes, 0 for truncated modes.
 
-        Returns:
-        --------
+        Returns
+        -------
         mask : Float[Array, "N"]
             Binary mask in degree space.
         """
@@ -382,15 +382,15 @@ class SphericalGrid1D(eqx.Module):
             u(theta_j) ≈ sum_l c_l * P_l_norm(cos(theta_j))
                        = P_matrix.T @ c
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "N"]
             Physical field (if inverse=False) or spectral coefficients (if inverse=True).
         inverse : bool
             Direction of transform. Default False (physical -> spectral).
 
-        Returns:
-        --------
+        Returns
+        -------
         Array [N]
             Spectral coefficients c_l (forward) or physical values u(theta_j) (inverse).
         """
@@ -429,8 +429,8 @@ class SphericalGrid2D(eqx.Module):
         1. FFT in phi-direction -> u_m(theta_j) for each m.
         2. For each m: Legendre transform in theta -> u_hat(l, m).
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     Nx : int
         Number of longitude points (uniform, Fourier).
     Ny : int
@@ -645,8 +645,8 @@ class SphericalGrid2D(eqx.Module):
             - Keeps l <= 2*Ny//3 in latitude
             - Keeps |m| <= 2*Nx//3 / 2 in longitude (Fourier 2/3 rule)
 
-        Returns:
-        --------
+        Returns
+        -------
         mask : Float[Array, "Ny Nx"]
             Binary mask (1 = kept, 0 = truncated).
         """
@@ -683,15 +683,15 @@ class SphericalGrid2D(eqx.Module):
                 u_m(theta_j) = sum_l u_hat(l, m) * P_l^m_norm(cos(theta_j))
             Step 2: IFFT in longitude.
 
-        Parameters:
-        -----------
+        Parameters
+        ----------
         u : Float[Array, "Ny Nx"] or Complex[Array, "Ny Nx"]
             Physical field (inverse=False) or spectral coefficients (inverse=True).
         inverse : bool
             Direction of transform.
 
-        Returns:
-        --------
+        Returns
+        -------
         Complex[Array, "Ny Nx"]
             Spectral coefficients u_hat(l, m) (forward) or
             Float[Array, "Ny Nx"] reconstructed physical field (inverse).
