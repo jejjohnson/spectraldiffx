@@ -122,6 +122,10 @@ filterwarnings = [
     "default::DeprecationWarning:jax.*",
 ]
 testpaths = ["spectraldiffx", "tests"]
+markers = [
+    "slow: individually expensive tests (> ~3 s); skipped in PR CI, run by tests-extended.yml",
+    "integration: end-to-end workflows; skipped in PR CI, run by tests-extended.yml",
+]
 xfail_strict = true
 
 [tool.ruff]

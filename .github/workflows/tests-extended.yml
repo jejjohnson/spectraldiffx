@@ -1,0 +1,46 @@
+name: Extended Tests
+
+# PR CI skips tests marked `slow` or `integration`. This workflow runs them:
+# nightly, and on demand from the Actions tab or
+#   gh workflow run tests-extended.yml                 # heavy lane (slow + integration)
+#   gh workflow run tests-extended.yml -f suite=full   # entire suite
+#   gh workflow run tests-extended.yml --ref my-branch -f suite=full
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Which tests to run"
+        type: choice
+        default: heavy
+        options:
+          - heavy   # only slow + integration tests
+          - full    # entire suite
+
+permissions:
+  contents: read
+
+jobs:
+  test-extended:
+    name: Extended Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: uv sync --extra test
+      - name: Run heavy lane (slow + integration)
+        # Scheduled runs have no inputs; they take the heavy lane.
+        if: inputs.suite != 'full'
+        run: uv run pytest tests -v -n auto -m "slow or integration" --durations=10
+      - name: Run full suite
+        if: inputs.suite == 'full'
+        run: uv run pytest tests -v -n auto --durations=10
