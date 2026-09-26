@@ -1,7 +1,9 @@
 import jax.numpy as jnp
+import numpy as np
 import pytest
 
 from spectraldiffx._src.fourier.grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
+from spectraldiffx._src.fourier.operators import SpectralDerivative1D
 
 
 def test_fourier_grid_1d():
@@ -90,33 +92,37 @@ def test_grid_invalid_n():
 # --- k_dealias correctness tests ---
 
 
-def test_fourier_grid_1d_k_dealias_zeros_above_cutoff():
+def _alias_energy_1d(N):
+    """Energy the 2/3 rule lets through at the alias of the largest kept mode.
+
+    For the largest kept mode K, cos(Kx)² has components at 0 and ±2K. On an
+    N-point grid, 2K > N/2 aliases to 2K − N. Orszag's rule is alias-free iff
+    that alias is removed by the mask, i.e. 3K < N (gh-88, gh-119).
     """
-    FourierGrid1D.k_dealias must set |k| > k_max*2/3 to zero.
+    grid = FourierGrid1D.from_N_L(N, 2 * jnp.pi, dealias="2/3")
+    mask = np.asarray(grid.dealias_filter())
+    n = np.fft.fftfreq(N, d=1.0 / N)
+    K = int(np.abs(n[mask > 0]).max())
+    u = jnp.cos(K * grid.x)
+    v = SpectralDerivative1D(grid).apply_dealias(u * u)
+    alias = (2 * K - N) % N
+    return float(np.abs(np.fft.fft(np.asarray(v))[alias]) / N)
 
-    For N=32, k_max = 16 * 2π/L, cutoff = k_max * 2/3 ≈ 10.67 * 2π/L.
-    Wavenumbers with |k| > cutoff must be zeroed out.
-    """
-    N = 32
-    L = 2 * jnp.pi
-    grid = FourierGrid1D.from_N_L(N, L, dealias="2/3")
-    k = grid.k
-    k_d = grid.k_dealias
 
-    k_max = float(jnp.max(jnp.abs(k)))
-    cutoff = k_max * 2.0 / 3.0
-
-    above_cutoff_mask = jnp.abs(k) > cutoff
-    below_or_equal_mask = ~above_cutoff_mask
-
-    # Modes above cutoff must be zeroed
-    assert jnp.allclose(k_d[above_cutoff_mask], 0.0, atol=1e-15), (
-        "k_dealias: modes above cutoff must be zero"
-    )
-    # Modes below or equal cutoff must be preserved
-    assert jnp.allclose(k_d[below_or_equal_mask], k[below_or_equal_mask], atol=1e-15), (
-        "k_dealias: modes at or below cutoff must be unchanged"
-    )
+@pytest.mark.parametrize(
+    "N",
+    [
+        pytest.param(
+            N,
+            marks=pytest.mark.xfail(
+                N % 6 == 0, reason="gh-88: keeps |k| = N/3", strict=True
+            ),
+        )
+        for N in (30, 32, 48, 63, 64, 96)
+    ],
+)
+def test_fourier_grid_1d_dealias_is_alias_free(N):
+    assert _alias_energy_1d(N) < 1e-14
 
 
 def test_fourier_grid_1d_k_dealias_none_unchanged():
