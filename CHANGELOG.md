@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.1](https://github.com/jejjohnson/spectraldiffx/compare/0.1.0...0.1.1) (2026-09-26)
+
+
+### Bug Fixes
+
+* **docs:** run every doc code fence in CI; fix the snippets that did not run ([#138](https://github.com/jejjohnson/spectraldiffx/issues/138)) ([078bb44](https://github.com/jejjohnson/spectraldiffx/commit/078bb447a383bd2d0aad491542a7f4200aac27d7)), closes [#95](https://github.com/jejjohnson/spectraldiffx/issues/95)
+* **filters:** tensor-product 2D/3D exponential filter with per-axis Nyquist ([#131](https://github.com/jejjohnson/spectraldiffx/issues/131)) ([2f19480](https://github.com/jejjohnson/spectraldiffx/commit/2f194809be6c6d027c48a77a1d46d6dca8ec97b3)), closes [#89](https://github.com/jejjohnson/spectraldiffx/issues/89)
+* **fourier:** input guards and docstring corrections ([#137](https://github.com/jejjohnson/spectraldiffx/issues/137)) ([bda98e7](https://github.com/jejjohnson/spectraldiffx/commit/bda98e7d77820159d29fdfba2c85c9afba99613f)), closes [#94](https://github.com/jejjohnson/spectraldiffx/issues/94)
+* **grid:** make the 2/3 dealiasing mask strict (3|n| &lt; N) ([#130](https://github.com/jejjohnson/spectraldiffx/issues/130)) ([263f4a3](https://github.com/jejjohnson/spectraldiffx/commit/263f4a3ea982c3b29936d97d5fd4bd40977668c9)), closes [#88](https://github.com/jejjohnson/spectraldiffx/issues/88)
+* **operators:** dealias advection_scalar like jacobian ([#132](https://github.com/jejjohnson/spectraldiffx/issues/132)) ([4589eaf](https://github.com/jejjohnson/spectraldiffx/commit/4589eaf3abbd0899e3a8ac708ea368f5e9d5abfb)), closes [#90](https://github.com/jejjohnson/spectraldiffx/issues/90)
+* **solvers:** one null-mode policy; zero_mean no longer drops a defined mean ([#135](https://github.com/jejjohnson/spectraldiffx/issues/135)) ([2122d6c](https://github.com/jejjohnson/spectraldiffx/commit/2122d6c7d9bc2bdb4a463db1a688b89640ebf61c)), closes [#92](https://github.com/jejjohnson/spectraldiffx/issues/92)
+* **transforms, operators:** preserve float32; reject complex input explicitly ([#136](https://github.com/jejjohnson/spectraldiffx/issues/136)) ([c2f619c](https://github.com/jejjohnson/spectraldiffx/commit/c2f619c0efe889103aef652cf8129c33f70336b3)), closes [#93](https://github.com/jejjohnson/spectraldiffx/issues/93)
+
 ## [0.1.0](https://github.com/jejjohnson/spectraldiffx/compare/0.0.13...0.1.0) (2026-09-24)
 
 
