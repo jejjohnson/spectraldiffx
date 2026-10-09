@@ -80,6 +80,7 @@ nav:
     - Navier-Stokes 2D: notebooks/navier_stokes_2d.py
     - QG Model: notebooks/qg_model.py
   - API Reference:
+    - Capability index: api/capabilities.md
     - Fourier:
       - Transforms: api/fourier/transforms.md
       - Eigenvalues: api/fourier/eigenvalues.md

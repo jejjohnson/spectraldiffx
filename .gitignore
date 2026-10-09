@@ -164,3 +164,6 @@ notebooks/*.gif
 
 # exclude checkpoints from source control by default
 *checkpoint.py
+
+# Plans and scratch design notes (AGENTS.md, "Plans")
+.plans/

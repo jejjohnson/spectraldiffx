@@ -24,7 +24,7 @@ RED    := \033[31m
 RESET  := \033[0m
 
 .PHONY: help install sync lint format format-check typecheck precommit test test-fast test-slow test-cov \
-        docs docs-serve
+        docs docs-serve capabilities
 
 help:	## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make $(BLUE)<target>$(RESET)\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  $(BLUE)%-18s$(RESET) %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
@@ -76,6 +76,9 @@ docs: ## Build the docs site (strict)
 
 docs-serve: ## Serve the docs locally with live reload
 	uv run --extra docs mkdocs serve
+
+capabilities: ## Regenerate docs/api/capabilities.md (every public name, for reuse)
+	uv run python scripts/capabilities.py
 
 ##@ Notebooks (Jupytext)
 .PHONY: nb-to-py
