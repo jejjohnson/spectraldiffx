@@ -10,3 +10,8 @@ Read "Boundaries", "Reuse before you write" and "The contracts" in
 diff adds, search [`docs/api/capabilities.md`](../../../docs/api/capabilities.md)
 for an existing equivalent; then apply [`CODE_REVIEW.md`](../../../CODE_REVIEW.md)
 and report in its format.
+
+The full procedure, with the reuse and spectral-numerics checklists, is the
+`spectraldiffx-review` recipe in
+[`.claude/skills/spectraldiffx-review/SKILL.md`](../../../.claude/skills/spectraldiffx-review/SKILL.md)
+and the two reviewers in [`.claude/agents/`](../../../.claude/agents/).

@@ -40,6 +40,12 @@ The essentials, in case you only read this file:
   `uv run ruff check .`, `uv run ruff format --check .`, `make typecheck`;
   `make capabilities` after a public API change; `make docs` after a docs
   change.
+- Step-by-step recipes (add an elliptic solver or BC, a transform, a
+  derivative operator, a filter, a notebook; bump gaussx; pre-PR check;
+  review; squash message) are plain Markdown in
+  `.claude/skills/<name>/SKILL.md`, and the two review checklists
+  (`reuse-reviewer`, `spectral-numerics-reviewer`) in `.claude/agents/`;
+  follow them as written.
 - Path-scoped standards live in `.github/instructions/`; code review follows
   [`CODE_REVIEW.md`](../CODE_REVIEW.md).
 

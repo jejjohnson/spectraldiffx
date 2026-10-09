@@ -14,5 +14,21 @@ specific to Claude Code.
 - **Run Python through `uv run`**, and run tests from the repo root
   (`tests/conftest.py` turns x64 on). Make targets take no paths; select
   tests with `uv run pytest tests/<file> -k <expr>`.
+- **Skills** in `.claude/skills/` load on their own when a task matches
+  their description (or run them as `/<name>`):
+  - building: `add-elliptic-solver`, `add-transform`,
+    `add-derivative-operator`, `add-spectral-filter`, `add-notebook`,
+    `bump-upstream-pins`;
+  - shipping: `pre-pr-check`, `spectraldiffx-review`, `squash-commit`.
+- **Subagents** (`.claude/agents/`), both read-only, both used by
+  `spectraldiffx-review`; run them on any diff that adds code, before
+  committing:
+  - `reuse-reviewer`: does the diff re-implement something in
+    `docs/api/capabilities.md` (spectraldiffx, gaussx) or a shared private
+    helper?
+  - `spectral-numerics-reviewer`: BC ↔ transform ↔ eigenvalue pairing,
+    normalisation, wavenumber scale and axis order, dealiasing, Nyquist,
+    null modes and resonance, dtype / complex promotion, traced control
+    flow.
 - **GitHub.** When the `gh` CLI is unavailable, use the GitHub MCP tools for
   the same operations (PRs, issues, review threads, check runs).
