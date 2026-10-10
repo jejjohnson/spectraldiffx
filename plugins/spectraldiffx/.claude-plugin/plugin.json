@@ -1,0 +1,11 @@
+{
+  "name": "spectraldiffx",
+  "description": "Write pseudospectral code in JAX on spectraldiffx — Fourier, Chebyshev and spherical-harmonic grids, spectral derivatives with correct dealiasing, DCT / DST transforms, Poisson and Helmholtz solvers with per-axis boundary conditions, masked-domain capacitance solves and spectral filters — instead of hand-rolling wavenumbers, FFT tricks and divide-by-k² solvers.",
+  "author": {
+    "name": "jejjohnson"
+  },
+  "homepage": "https://jejjohnson.github.io/spectraldiffx/agents/",
+  "repository": "https://github.com/jejjohnson/spectraldiffx",
+  "license": "MIT",
+  "keywords": ["jax", "pseudospectral", "spectral-methods", "fft", "dct", "poisson", "helmholtz", "equinox"]
+}

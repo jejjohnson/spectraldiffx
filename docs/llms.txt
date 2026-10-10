@@ -1,0 +1,57 @@
+# spectraldiffx
+
+> Pseudospectral differentiation, filtering, spectral transforms and elliptic solvers in JAX, on Fourier, Chebyshev and spherical-harmonic bases, in 1-D, 2-D and 3-D. Grids are Equinox modules that own their wavenumbers and 2/3 dealiasing mask; derivative operators, filters and solvers are built from a grid; DCT / DST types I–IV follow scipy's conventions; Poisson / Helmholtz solvers take a boundary condition per axis (periodic, Dirichlet, Neumann, regular or staggered, or mixed) and pick the FFT / DST / DCT that diagonalises it; a capacitance solver handles basins with land masks. Everything runs under jit, vmap and grad. Use these instead of hand-writing wavenumbers, FFT derivatives, aliased products, DCTs or divide-by-k² solves.
+
+One package, `spectraldiffx` (import `spectraldiffx as sdx`), installed from GitHub together with its upstream gaussx: `uv add "gaussx @ git+https://github.com/jejjohnson/gaussx.git@v0.1.0" "spectraldiffx @ git+https://github.com/jejjohnson/spectraldiffx.git"`. finitevolX builds on it. Before writing a helper, search the capability index — every public name with a one-line summary, plus gaussx. Code you add should keep three rules:
+
+- **Wavenumbers and masks come from the grid:** `grid.k`, `grid.KX`, `grid.K2`, `grid.dealias_filter()`; fields are `(Ny, Nx)` with x on the last axis.
+- **Dealias products, not linear operators:** derivatives keep every resolved mode; products go through `deriv.jacobian`, `deriv.advection_scalar` or `deriv.apply_dealias`.
+- **The boundary condition picks the transform:** `sdx.solve_helmholtz_2d(f, dx, dy, bc_x="periodic", bc_y="dirichlet")`, never an FFT solve on a walled domain; `sdx.build_capacitance_solver` for a masked basin.
+
+Claude Code users can install the `spectraldiffx` plugin: `/plugin marketplace add jejjohnson/spectraldiffx`, then `/plugin install spectraldiffx@spectraldiffx`.
+
+## Start here
+
+- [Home](https://jejjohnson.github.io/spectraldiffx/): what spectraldiffx provides, with a quick start
+- [Quick Start](https://jejjohnson.github.io/spectraldiffx/quickstart/): Fourier and Chebyshev derivatives and spectral filtering in a few lines
+- [Capability index](https://jejjohnson.github.io/spectraldiffx/api/capabilities/): every public name, grouped like the API reference, with a summary; then gaussx
+- [Building with agents](https://jejjohnson.github.io/spectraldiffx/agents/): the Claude Code plugin, this file, and rules to paste into your project's AGENTS.md
+- [Installation](https://jejjohnson.github.io/spectraldiffx/installation/)
+
+## Guides
+
+- [Spectral transforms](https://jejjohnson.github.io/spectraldiffx/transforms_guide/): DCT / DST types I–IV, normalisation, n-D use
+- [Elliptic solvers](https://jejjohnson.github.io/spectraldiffx/elliptic_solvers_guide/): Poisson / Helmholtz with per-axis boundary conditions, FD2 vs spectral eigenvalues, inhomogeneous boundary values
+- [Capacitance solver](https://jejjohnson.github.io/spectraldiffx/capacitance_guide/): elliptic solves on masked, irregular domains
+
+## Theory
+
+- [Overview](https://jejjohnson.github.io/spectraldiffx/theory/)
+- [Fourier pseudospectral methods](https://jejjohnson.github.io/spectraldiffx/theory/fourier/)
+- [Spectral transforms](https://jejjohnson.github.io/spectraldiffx/theory/spectral_transforms/)
+- [Elliptic solvers](https://jejjohnson.github.io/spectraldiffx/theory/elliptic_solvers/)
+- [Capacitance method](https://jejjohnson.github.io/spectraldiffx/theory/capacitance/)
+- [Chebyshev pseudospectral methods](https://jejjohnson.github.io/spectraldiffx/theory/chebyshev/)
+- [Spherical harmonic methods](https://jejjohnson.github.io/spectraldiffx/theory/spherical/)
+
+## API reference
+
+- [Fourier transforms](https://jejjohnson.github.io/spectraldiffx/api/fourier/transforms/): `dct`, `dst`, `idct`, `idst`, `dctn`, `dstn`, `idctn`, `idstn`
+- [Fourier eigenvalues](https://jejjohnson.github.io/spectraldiffx/api/fourier/eigenvalues/): FD2 and pseudo-spectral Laplacian eigenvalues
+- [Fourier grids](https://jejjohnson.github.io/spectraldiffx/api/fourier/grids/)
+- [Fourier operators](https://jejjohnson.github.io/spectraldiffx/api/fourier/operators/)
+- [Fourier filters](https://jejjohnson.github.io/spectraldiffx/api/fourier/filters/)
+- [Fourier solvers](https://jejjohnson.github.io/spectraldiffx/api/fourier/solvers/): the `solve_*` functions and solver classes
+- [Capacitance solver](https://jejjohnson.github.io/spectraldiffx/api/fourier/capacitance/)
+- [Chebyshev grids](https://jejjohnson.github.io/spectraldiffx/api/chebyshev/grids/), [operators](https://jejjohnson.github.io/spectraldiffx/api/chebyshev/operators/), [transforms and quadrature](https://jejjohnson.github.io/spectraldiffx/api/chebyshev/transforms/), [filters](https://jejjohnson.github.io/spectraldiffx/api/chebyshev/filters/), [solvers](https://jejjohnson.github.io/spectraldiffx/api/chebyshev/solvers/)
+- [Spherical grids](https://jejjohnson.github.io/spectraldiffx/api/spherical/grids/), [operators](https://jejjohnson.github.io/spectraldiffx/api/spherical/operators/), [filters](https://jejjohnson.github.io/spectraldiffx/api/spherical/filters/), [harmonic transform](https://jejjohnson.github.io/spectraldiffx/api/spherical/harmonics/), [solvers](https://jejjohnson.github.io/spectraldiffx/api/spherical/solvers/)
+
+## Optional
+
+- [1-D differentiation](https://jejjohnson.github.io/spectraldiffx/notebooks/demo_1d/)
+- [2-D differentiation](https://jejjohnson.github.io/spectraldiffx/notebooks/demo_2d/)
+- [Mixed boundary conditions](https://jejjohnson.github.io/spectraldiffx/notebooks/mixed_bc_solvers/)
+- [Inhomogeneous boundary conditions](https://jejjohnson.github.io/spectraldiffx/notebooks/inhomogeneous_bcs/)
+- [Capacitance](https://jejjohnson.github.io/spectraldiffx/notebooks/demo_capacitance/)
+- [QG turbulence](https://jejjohnson.github.io/spectraldiffx/notebooks/demo_qg/)
+- [Source code](https://github.com/jejjohnson/spectraldiffx)
