@@ -288,6 +288,7 @@ Read the test's docstring before changing what it checks.
 | `tests/test_guards.py`, `tests/test_edge_cases.py` | Input guards (DCT-I length, transform type, `dealias`, `L = N·dx`, resonant `λ`, negative `alpha`) and input corners (N = 1, complex input, `spectral=True`) |
 | `tests/test_anisotropic.py` | Non-square grids with a different length per axis: no swapped axes |
 | `tests/test_correctness.py` | Parseval, spectral convergence, dealiasing of products, conservation in model dynamics |
+| `tests/test_plugin_skill.py` | The downstream plugin's named API exists; its worked example runs and its claims hold (slow) |
 | `tests/test_release_please_config.py` | Release tags are plain semver (`0.1.1`, no component, no `v`) |
 | ruff (`make lint`), ty (`make typecheck`) | Lint (including the numpydoc section format and sorted `__all__`) and types on `spectraldiffx/` |
 
@@ -308,6 +309,15 @@ agent can read and follow them):
 | Verify before a PR | `pre-pr-check` |
 | Review a change | `spectraldiffx-review` (+ the read-only `.claude/agents/reuse-reviewer.md` and `spectral-numerics-reviewer.md`) |
 | Write a squash commit message | `squash-commit` |
+
+Downstream users get spectraldiffx's guidance through the Claude Code plugin
+in `plugins/spectraldiffx/` (published by `.claude-plugin/marketplace.json`)
+and `docs/llms.txt` (served at the site root); see `docs/agents.md`. When the
+public API or the headline usage changes, update
+`plugins/spectraldiffx/skills/spectral-methods-with-spectraldiffx/` too:
+`tests/test_plugin_skill.py` runs its worked example (slow tier) and checks
+that every `sdx.X` / `spectraldiffx.X` / `gaussx.X` it and the plugin
+reviewer name still exists.
 
 ## Working in the repo
 

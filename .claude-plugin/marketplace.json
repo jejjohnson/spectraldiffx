@@ -1,0 +1,14 @@
+{
+  "name": "spectraldiffx",
+  "owner": {
+    "name": "jejjohnson"
+  },
+  "description": "Claude Code plugins for pseudospectral methods in JAX on spectraldiffx.",
+  "plugins": [
+    {
+      "name": "spectraldiffx",
+      "source": "./plugins/spectraldiffx",
+      "description": "Build pseudospectral code on spectraldiffx (Fourier / Chebyshev / spherical grids, derivatives, dealiasing, DCT / DST transforms, Poisson and Helmholtz solvers with per-axis boundary conditions, masked-domain capacitance solves) instead of re-implementing it: a spectral-methods skill and a reuse reviewer."
+    }
+  ]
+}
