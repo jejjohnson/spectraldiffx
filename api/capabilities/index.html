@@ -1,0 +1,5517 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Pseudospectral differentiation, filtering, and PDE solvers in JAX — fully differentiable and JIT-compatible.">
+      
+      
+        <meta name="author" content="J. Emmanuel Johnson">
+      
+      
+      
+        <link rel="prev" href="../../notebooks/qg_model/">
+      
+      
+        <link rel="next" href="../fourier/transforms/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Capability index - SpectralDiffX</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#capability-index" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="SpectralDiffX" class="md-header__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SpectralDiffX
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Capability index
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../installation/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../quickstart/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Quick Start
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../theory/" class="md-tabs__link">
+          
+  
+  
+  Theory
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../transforms_guide/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../agents/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Building with agents
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/demo_1d/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="SpectralDiffX" class="md-nav__button md-logo" aria-label="SpectralDiffX" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    SpectralDiffX
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jejjohnson/spectraldiffx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jejjohnson/spectraldiffx
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Theory
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Theory
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/fourier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/spectral_transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elliptic Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Method
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/chebyshev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev Pseudospectral Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../theory/spherical/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonic Methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../transforms_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../elliptic_solvers_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elliptic Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../capacitance_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Solver
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building with agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_1d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1D Fourier Pseudospectral Differentiation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2D Pseudospectral Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/eigenfunction_gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenfunction &amp; Eigenvalue Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/solver_comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solver Comparison: Regular vs Staggered Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/mixed_bc_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mixed Per-Axis Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/inhomogeneous_bcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inhomogeneous Boundary Conditions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/ps_vs_fd2_eigenvalues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pseudo-Spectral vs Finite-Difference Eigenvalues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_elliptic_solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral Elliptic PDE Solvers: Poisson &amp; Helmholtz Equations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance Matrix Method: Poisson &amp; Helmholtz on Irregular Domains
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/demo_qg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decaying 2D Barotropic Quasi-Geostrophic Turbulence
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/pseudospectral_part2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QG Turbulence with Adaptive Time Stepping (Diffrax)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/kdv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Korteweg-de Vries Equation: Soliton Interactions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/navier_stokes_2d/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2D Navier-Stokes (Vorticity) Simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notebooks/qg_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1.5-Layer Quasigeostrophic (QG) Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capability index
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capability index
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spectraldiffx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        spectraldiffx
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="spectraldiffx">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-transforms-docsapifouriertransformsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Transforms (docs/api/fourier/transforms.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fourier: Spectral Transforms (docs/api/fourier/transforms.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-d-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1-D Transforms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n-d-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N-D Transforms
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-eigenvalue-helpers-docsapifouriereigenvaluesmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Eigenvalue Helpers (docs/api/fourier/eigenvalues.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fourier: Eigenvalue Helpers (docs/api/fourier/eigenvalues.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fd2-eigenvalues-finite-difference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FD2 Eigenvalues (Finite-Difference)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ps-eigenvalues-pseudo-spectral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PS Eigenvalues (Pseudo-Spectral)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-fourier-grids-docsapifouriergridsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Fourier Grids (docs/api/fourier/grids.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-derivative-operators-docsapifourieroperatorsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Derivative Operators (docs/api/fourier/operators.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-filters-docsapifourierfiltersmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Filters (docs/api/fourier/filters.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-elliptic-solvers-docsapifouriersolversmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Elliptic Solvers (docs/api/fourier/solvers.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fourier: Spectral Elliptic Solvers (docs/api/fourier/solvers.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-0-pure-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 0 — Pure Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-module-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1 — Module Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-capacitance-solver-docsapifouriercapacitancemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Capacitance Solver (docs/api/fourier/capacitance.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-grids-docsapichebyshevgridsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Grids (docs/api/chebyshev/grids.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-derivative-operators-docsapichebyshevoperatorsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Derivative Operators (docs/api/chebyshev/operators.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-transforms-calculus-quadrature-docsapichebyshevtransformsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Transforms, Calculus &amp; Quadrature (docs/api/chebyshev/transforms.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chebyshev: Chebyshev Transforms, Calculus &amp; Quadrature (docs/api/chebyshev/transforms.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transforms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coefficient-space-calculus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coefficient-space calculus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clenshawcurtis-quadrature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clenshaw–Curtis quadrature
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-filters-docsapichebyshevfiltersmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Filters (docs/api/chebyshev/filters.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-helmholtz-solvers-docsapichebyshevsolversmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Helmholtz Solvers (docs/api/chebyshev/solvers.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-grids-docsapisphericalgridsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Grids (docs/api/spherical/grids.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-derivative-operators-docsapisphericaloperatorsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Derivative Operators (docs/api/spherical/operators.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-filters-docsapisphericalfiltersmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Filters (docs/api/spherical/filters.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-harmonic-transform-docsapisphericalharmonicsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Harmonic Transform (docs/api/spherical/harmonics.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-harmonic-solvers-docsapisphericalsolversmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Harmonic Solvers (docs/api/spherical/solvers.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spherical: Spherical Harmonic Solvers (docs/api/spherical/solvers.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geophysical-inversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geophysical inversions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upstream-gaussx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upstream: gaussx
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Upstream: gaussx">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gaussx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gaussx
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fourier
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fourier
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/eigenvalues/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eigenvalues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fourier/capacitance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Capacitance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_3" id="__nav_8_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chebyshev
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chebyshev
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chebyshev/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_4" id="__nav_8_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spherical Harmonics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Spherical Harmonics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/grids/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grids
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/operators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/filters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/harmonics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harmonics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spherical/solvers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solvers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spectraldiffx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        spectraldiffx
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="spectraldiffx">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-transforms-docsapifouriertransformsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Transforms (docs/api/fourier/transforms.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fourier: Spectral Transforms (docs/api/fourier/transforms.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-d-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1-D Transforms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n-d-transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N-D Transforms
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-eigenvalue-helpers-docsapifouriereigenvaluesmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Eigenvalue Helpers (docs/api/fourier/eigenvalues.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fourier: Eigenvalue Helpers (docs/api/fourier/eigenvalues.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fd2-eigenvalues-finite-difference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FD2 Eigenvalues (Finite-Difference)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ps-eigenvalues-pseudo-spectral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PS Eigenvalues (Pseudo-Spectral)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-fourier-grids-docsapifouriergridsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Fourier Grids (docs/api/fourier/grids.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-derivative-operators-docsapifourieroperatorsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Derivative Operators (docs/api/fourier/operators.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-filters-docsapifourierfiltersmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Filters (docs/api/fourier/filters.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-spectral-elliptic-solvers-docsapifouriersolversmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Spectral Elliptic Solvers (docs/api/fourier/solvers.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fourier: Spectral Elliptic Solvers (docs/api/fourier/solvers.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-0-pure-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 0 — Pure Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-1-module-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 1 — Module Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fourier-capacitance-solver-docsapifouriercapacitancemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fourier: Capacitance Solver (docs/api/fourier/capacitance.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-grids-docsapichebyshevgridsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Grids (docs/api/chebyshev/grids.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-derivative-operators-docsapichebyshevoperatorsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Derivative Operators (docs/api/chebyshev/operators.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-transforms-calculus-quadrature-docsapichebyshevtransformsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Transforms, Calculus &amp; Quadrature (docs/api/chebyshev/transforms.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chebyshev: Chebyshev Transforms, Calculus &amp; Quadrature (docs/api/chebyshev/transforms.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transforms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coefficient-space-calculus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coefficient-space calculus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clenshawcurtis-quadrature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clenshaw–Curtis quadrature
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-filters-docsapichebyshevfiltersmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Filters (docs/api/chebyshev/filters.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chebyshev-chebyshev-helmholtz-solvers-docsapichebyshevsolversmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chebyshev: Chebyshev Helmholtz Solvers (docs/api/chebyshev/solvers.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-grids-docsapisphericalgridsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Grids (docs/api/spherical/grids.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-derivative-operators-docsapisphericaloperatorsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Derivative Operators (docs/api/spherical/operators.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-filters-docsapisphericalfiltersmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Filters (docs/api/spherical/filters.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-harmonic-transform-docsapisphericalharmonicsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Harmonic Transform (docs/api/spherical/harmonics.md)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spherical-spherical-harmonic-solvers-docsapisphericalsolversmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spherical: Spherical Harmonic Solvers (docs/api/spherical/solvers.md)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spherical: Spherical Harmonic Solvers (docs/api/spherical/solvers.md)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geophysical-inversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geophysical inversions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upstream-gaussx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upstream: gaussx
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Upstream: gaussx">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gaussx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gaussx
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="capability-index">Capability index<a class="headerlink" href="#capability-index" title="Permanent link">&para;</a></h1>
+<!-- Generated by scripts/capabilities.py — do not edit by hand. -->
+
+<p>Every public name in spectraldiffx (121 of them), each listed once
+and grouped as the API reference groups it, with the first sentence of
+its docstring; then the public API of gaussx, which spectraldiffx builds
+on. Search this page before writing a helper: if what you need is here,
+compose it; if it is almost here, extend it where it lives. Regenerate
+with <code>make capabilities</code> after changing a public API
+(<code>tests/test_capabilities.py</code> checks it is current).</p>
+<h2 id="spectraldiffx"><code>spectraldiffx</code><a class="headerlink" href="#spectraldiffx" title="Permanent link">&para;</a></h2>
+<h3 id="fourier-spectral-transforms-docsapifouriertransformsmd">Fourier: Spectral Transforms (<code>docs/api/fourier/transforms.md</code>)<a class="headerlink" href="#fourier-spectral-transforms-docsapifouriertransformsmd" title="Permanent link">&para;</a></h3>
+<h4 id="1-d-transforms">1-D Transforms<a class="headerlink" href="#1-d-transforms" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dct</code></td>
+<td>function</td>
+<td>Discrete Cosine Transform of a 1-D vector.</td>
+</tr>
+<tr>
+<td><code>dst</code></td>
+<td>function</td>
+<td>Discrete Sine Transform of a 1-D vector.</td>
+</tr>
+<tr>
+<td><code>idct</code></td>
+<td>function</td>
+<td>Inverse Discrete Cosine Transform of a 1-D vector.</td>
+</tr>
+<tr>
+<td><code>idst</code></td>
+<td>function</td>
+<td>Inverse Discrete Sine Transform of a 1-D vector.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="n-d-transforms">N-D Transforms<a class="headerlink" href="#n-d-transforms" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dctn</code></td>
+<td>function</td>
+<td>N-dimensional DCT: apply DCT sequentially along each axis.</td>
+</tr>
+<tr>
+<td><code>dstn</code></td>
+<td>function</td>
+<td>N-dimensional DST: apply DST sequentially along each axis.</td>
+</tr>
+<tr>
+<td><code>idctn</code></td>
+<td>function</td>
+<td>N-dimensional inverse DCT: apply IDCT sequentially along each axis.</td>
+</tr>
+<tr>
+<td><code>idstn</code></td>
+<td>function</td>
+<td>N-dimensional inverse DST: apply IDST sequentially along each axis.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fourier-eigenvalue-helpers-docsapifouriereigenvaluesmd">Fourier: Eigenvalue Helpers (<code>docs/api/fourier/eigenvalues.md</code>)<a class="headerlink" href="#fourier-eigenvalue-helpers-docsapifouriereigenvaluesmd" title="Permanent link">&para;</a></h3>
+<h4 id="fd2-eigenvalues-finite-difference">FD2 Eigenvalues (Finite-Difference)<a class="headerlink" href="#fd2-eigenvalues-finite-difference" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dst1_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for the DST-I basis (homogeneous Dirichlet BCs).</td>
+</tr>
+<tr>
+<td><code>dst2_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for the DST-II basis (Dirichlet BCs, staggered grid).</td>
+</tr>
+<tr>
+<td><code>dct1_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for the DCT-I basis (Neumann BCs, regular grid).</td>
+</tr>
+<tr>
+<td><code>dct2_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for the DCT-II basis (homogeneous Neumann BCs).</td>
+</tr>
+<tr>
+<td><code>fft_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for the FFT basis (periodic BCs).</td>
+</tr>
+<tr>
+<td><code>dst3_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for Dirichlet-left + Neumann-right on a regular grid.</td>
+</tr>
+<tr>
+<td><code>dct3_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for Neumann-left + Dirichlet-right on a regular grid.</td>
+</tr>
+<tr>
+<td><code>dst4_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for Dirichlet-left + Neumann-right on a staggered grid.</td>
+</tr>
+<tr>
+<td><code>dct4_eigenvalues</code></td>
+<td>function</td>
+<td>1-D Laplacian eigenvalues for Neumann-left + Dirichlet-right on a staggered grid.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ps-eigenvalues-pseudo-spectral">PS Eigenvalues (Pseudo-Spectral)<a class="headerlink" href="#ps-eigenvalues-pseudo-spectral" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dst1_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for DST-I (Dirichlet BCs, regular grid).</td>
+</tr>
+<tr>
+<td><code>dst2_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for DST-II (Dirichlet BCs, staggered grid).</td>
+</tr>
+<tr>
+<td><code>dct1_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for DCT-I (Neumann BCs, regular grid).</td>
+</tr>
+<tr>
+<td><code>dct2_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for DCT-II (Neumann BCs, staggered grid).</td>
+</tr>
+<tr>
+<td><code>fft_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for the FFT basis (periodic BCs).</td>
+</tr>
+<tr>
+<td><code>dst3_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for Dirichlet-left + Neumann-right on a regular grid.</td>
+</tr>
+<tr>
+<td><code>dct3_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for Neumann-left + Dirichlet-right on a regular grid.</td>
+</tr>
+<tr>
+<td><code>dst4_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for Dirichlet-left + Neumann-right on a staggered grid.</td>
+</tr>
+<tr>
+<td><code>dct4_eigenvalues_ps</code></td>
+<td>function</td>
+<td>PS eigenvalues for Neumann-left + Dirichlet-right on a staggered grid.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fourier-fourier-grids-docsapifouriergridsmd">Fourier: Fourier Grids (<code>docs/api/fourier/grids.md</code>)<a class="headerlink" href="#fourier-fourier-grids-docsapifouriergridsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FourierGrid1D</code></td>
+<td>class</td>
+<td>Fourier grid setup for periodic domain.</td>
+</tr>
+<tr>
+<td><code>FourierGrid2D</code></td>
+<td>class</td>
+<td>2D Fourier grid for doubly periodic domain.</td>
+</tr>
+<tr>
+<td><code>FourierGrid3D</code></td>
+<td>class</td>
+<td>3D Fourier grid for triply periodic domain.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fourier-spectral-derivative-operators-docsapifourieroperatorsmd">Fourier: Spectral Derivative Operators (<code>docs/api/fourier/operators.md</code>)<a class="headerlink" href="#fourier-spectral-derivative-operators-docsapifourieroperatorsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SpectralDerivative1D</code></td>
+<td>class</td>
+<td>1D Spectral derivative operator using the Fast Fourier Transform (FFT).</td>
+</tr>
+<tr>
+<td><code>SpectralDerivative2D</code></td>
+<td>class</td>
+<td>2D Spectral derivative operators for doubly periodic rectangular domains.</td>
+</tr>
+<tr>
+<td><code>SpectralDerivative3D</code></td>
+<td>class</td>
+<td>3D Spectral derivative operators for triply periodic domains.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fourier-spectral-filters-docsapifourierfiltersmd">Fourier: Spectral Filters (<code>docs/api/fourier/filters.md</code>)<a class="headerlink" href="#fourier-spectral-filters-docsapifourierfiltersmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SpectralFilter1D</code></td>
+<td>class</td>
+<td>1D Spectral filter for smoothing and numerical stabilization.</td>
+</tr>
+<tr>
+<td><code>SpectralFilter2D</code></td>
+<td>class</td>
+<td>2D Spectral filter for doubly periodic domains.</td>
+</tr>
+<tr>
+<td><code>SpectralFilter3D</code></td>
+<td>class</td>
+<td>3D Spectral filter for triply periodic domains.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fourier-spectral-elliptic-solvers-docsapifouriersolversmd">Fourier: Spectral Elliptic Solvers (<code>docs/api/fourier/solvers.md</code>)<a class="headerlink" href="#fourier-spectral-elliptic-solvers-docsapifouriersolversmd" title="Permanent link">&para;</a></h3>
+<h4 id="layer-0-pure-functions">Layer 0 — Pure Functions<a class="headerlink" href="#layer-0-pure-functions" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>solve_helmholtz_fft_1d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f in 1-D with periodic BCs using the FFT.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_fft_1d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f in 1-D with periodic BCs using FFT.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_fft</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with periodic BCs using the 2-D FFT.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_fft</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with periodic BCs using the 2-D FFT.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_fft_3d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with periodic BCs using the 3-D FFT.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_fft_3d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with periodic BCs using the 3-D FFT.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst1_1d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f in 1-D with Dirichlet BCs on a regular grid (DST-I).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst1_1d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f in 1-D with Dirichlet BCs on a regular grid (DST-I).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with homogeneous Dirichlet BCs using DST-I.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with homogeneous Dirichlet BCs using DST-I.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst1</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with homogeneous Dirichlet BCs using DST-I.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst1</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with homogeneous Dirichlet BCs using DST-I.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst1_3d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with Dirichlet BCs on a regular 3-D grid (DST-I).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst1_3d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with Dirichlet BCs on a regular 3-D grid (DST-I).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst2_1d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f in 1-D with Dirichlet BCs on a staggered grid (DST-II).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst2_1d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f in 1-D with Dirichlet BCs on a staggered grid (DST-II).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst2</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with Dirichlet BCs on a staggered grid (DST-II).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst2</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with Dirichlet BCs on a staggered grid (DST-II).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dst2_3d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with Dirichlet BCs on a staggered 3-D grid (DST-II).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dst2_3d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with Dirichlet BCs on a staggered 3-D grid (DST-II).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct1_1d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f in 1-D with Neumann BCs on a regular grid (DCT-I).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct1_1d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f in 1-D with Neumann BCs on a regular grid (DCT-I).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct1</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with Neumann BCs on a regular grid (DCT-I).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct1</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with Neumann BCs on a regular grid (DCT-I).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct1_3d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with Neumann BCs on a regular 3-D grid (DCT-I).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct1_3d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with Neumann BCs on a regular 3-D grid (DCT-I).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct2_1d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f in 1-D with Neumann BCs on a staggered grid (DCT-II).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct2_1d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f in 1-D with Neumann BCs on a staggered grid (DCT-II).</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with homogeneous Neumann BCs using DCT-II.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with homogeneous Neumann BCs using DCT-II.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct2</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with homogeneous Neumann BCs using DCT-II.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct2</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with homogeneous Neumann BCs using DCT-II.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_dct2_3d</code></td>
+<td>function</td>
+<td>Solve (∇² − λ)ψ = f with Neumann BCs on a staggered 3-D grid (DCT-II).</td>
+</tr>
+<tr>
+<td><code>solve_poisson_dct2_3d</code></td>
+<td>function</td>
+<td>Solve ∇²ψ = f with Neumann BCs on a staggered 3-D grid (DCT-II).</td>
+</tr>
+<tr>
+<td><code>BoundaryCondition</code></td>
+<td>type alias</td>
+<td>Type alias: <code>'periodic'</code>, <code>'dirichlet'</code>, <code>'dirichlet_stag'</code>, <code>'neumann'</code>, <code>'neumann_stag'</code>, or one of 4 supported <code>(left, right)</code> pairs.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_2d</code></td>
+<td>function</td>
+<td>Solve (nabla^2 - lambda)psi = f in 2-D with per-axis boundary conditions.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_2d</code></td>
+<td>function</td>
+<td>Solve nabla^2 psi = f in 2-D with per-axis boundary conditions.</td>
+</tr>
+<tr>
+<td><code>solve_helmholtz_3d</code></td>
+<td>function</td>
+<td>Solve (nabla^2 - lambda)psi = f in 3-D with per-axis boundary conditions.</td>
+</tr>
+<tr>
+<td><code>solve_poisson_3d</code></td>
+<td>function</td>
+<td>Solve nabla^2 psi = f in 3-D with per-axis boundary conditions.</td>
+</tr>
+<tr>
+<td><code>modify_rhs_1d</code></td>
+<td>function</td>
+<td>Apply boundary source terms for inhomogeneous BCs to a 1-D RHS.</td>
+</tr>
+<tr>
+<td><code>modify_rhs_2d</code></td>
+<td>function</td>
+<td>Apply boundary source terms for inhomogeneous BCs to a 2-D RHS.</td>
+</tr>
+<tr>
+<td><code>modify_rhs_3d</code></td>
+<td>function</td>
+<td>Apply boundary source terms for inhomogeneous BCs to a 3-D RHS.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="layer-1-module-classes">Layer 1 — Module Classes<a class="headerlink" href="#layer-1-module-classes" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SpectralHelmholtzSolver1D</code></td>
+<td>class</td>
+<td>1D Helmholtz/Poisson solver with periodic BCs using FFT.</td>
+</tr>
+<tr>
+<td><code>SpectralHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Helmholtz/Poisson solver with periodic BCs using FFT.</td>
+</tr>
+<tr>
+<td><code>SpectralHelmholtzSolver3D</code></td>
+<td>class</td>
+<td>3D Helmholtz/Poisson solver with periodic BCs using FFT.</td>
+</tr>
+<tr>
+<td><code>DirichletHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Helmholtz/Poisson/Laplace solver with homogeneous Dirichlet BCs.</td>
+</tr>
+<tr>
+<td><code>StaggeredDirichletHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Helmholtz/Poisson solver with Dirichlet BCs on a staggered grid.</td>
+</tr>
+<tr>
+<td><code>NeumannHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Helmholtz/Poisson/Laplace solver with homogeneous Neumann BCs.</td>
+</tr>
+<tr>
+<td><code>RegularNeumannHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Helmholtz/Poisson solver with Neumann BCs on a regular grid.</td>
+</tr>
+<tr>
+<td><code>MixedBCHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Helmholtz/Poisson solver with per-axis boundary conditions.</td>
+</tr>
+<tr>
+<td><code>MixedBCHelmholtzSolver3D</code></td>
+<td>class</td>
+<td>3D Helmholtz/Poisson solver with per-axis boundary conditions.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fourier-capacitance-solver-docsapifouriercapacitancemd">Fourier: Capacitance Solver (<code>docs/api/fourier/capacitance.md</code>)<a class="headerlink" href="#fourier-capacitance-solver-docsapifouriercapacitancemd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build_capacitance_solver</code></td>
+<td>function</td>
+<td>Pre-compute the capacitance factorisation and return a solver.</td>
+</tr>
+<tr>
+<td><code>CapacitanceSolver</code></td>
+<td>class</td>
+<td>Spectral Poisson/Helmholtz solver for masked irregular domains.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chebyshev-chebyshev-grids-docsapichebyshevgridsmd">Chebyshev: Chebyshev Grids (<code>docs/api/chebyshev/grids.md</code>)<a class="headerlink" href="#chebyshev-chebyshev-grids-docsapichebyshevgridsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChebyshevGrid1D</code></td>
+<td>class</td>
+<td>1D Chebyshev grid on the domain [-L, L].</td>
+</tr>
+<tr>
+<td><code>ChebyshevGrid2D</code></td>
+<td>class</td>
+<td>2D Chebyshev grid on [-Lx, Lx] × [-Ly, Ly].</td>
+</tr>
+<tr>
+<td><code>ChebyshevGrid3D</code></td>
+<td>class</td>
+<td>3D Chebyshev grid on [-Lz, Lz] × [-Ly, Ly] × [-Lx, Lx].</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chebyshev-chebyshev-derivative-operators-docsapichebyshevoperatorsmd">Chebyshev: Chebyshev Derivative Operators (<code>docs/api/chebyshev/operators.md</code>)<a class="headerlink" href="#chebyshev-chebyshev-derivative-operators-docsapichebyshevoperatorsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChebyshevDerivative1D</code></td>
+<td>class</td>
+<td>1D Chebyshev derivative operator using the precomputed differentiation matrix.</td>
+</tr>
+<tr>
+<td><code>ChebyshevDerivative2D</code></td>
+<td>class</td>
+<td>2D Chebyshev derivative operators on [−Lx, Lx] × [−Ly, Ly].</td>
+</tr>
+<tr>
+<td><code>ChebyshevDerivative3D</code></td>
+<td>class</td>
+<td>3D Chebyshev derivative operators on [−Lz, Lz] × [−Ly, Ly] × [−Lx, Lx].</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chebyshev-chebyshev-transforms-calculus-quadrature-docsapichebyshevtransformsmd">Chebyshev: Chebyshev Transforms, Calculus &amp; Quadrature (<code>docs/api/chebyshev/transforms.md</code>)<a class="headerlink" href="#chebyshev-chebyshev-transforms-calculus-quadrature-docsapichebyshevtransformsmd" title="Permanent link">&para;</a></h3>
+<h4 id="transforms">Transforms<a class="headerlink" href="#transforms" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChebyshevTransform1D</code></td>
+<td>class</td>
+<td>Forward/inverse 1D Chebyshev transform.</td>
+</tr>
+<tr>
+<td><code>ChebyshevTransform2D</code></td>
+<td>class</td>
+<td>Forward/inverse 2D Chebyshev transform (tensor product of 1D).</td>
+</tr>
+<tr>
+<td><code>cheb_dealias_product</code></td>
+<td>function</td>
+<td>Compute the dealiased pointwise product a·b on a Chebyshev grid.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="coefficient-space-calculus">Coefficient-space calculus<a class="headerlink" href="#coefficient-space-calculus" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chebyshev_derivative_coeffs</code></td>
+<td>function</td>
+<td>Differentiate a Chebyshev series in coefficient space (last axis).</td>
+</tr>
+<tr>
+<td><code>chebyshev_antiderivative_coeffs</code></td>
+<td>function</td>
+<td>Indefinite integral of a Chebyshev series, vanishing at x = −L.</td>
+</tr>
+<tr>
+<td><code>chebyshev_integral_coeffs</code></td>
+<td>function</td>
+<td>Definite integral ∫_{−L}^{L} u(x) dx from Chebyshev coefficients.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="clenshawcurtis-quadrature">Clenshaw–Curtis quadrature<a class="headerlink" href="#clenshawcurtis-quadrature" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clenshaw_curtis_weights</code></td>
+<td>function</td>
+<td>Clenshaw–Curtis quadrature weights on Gauss–Lobatto nodes of [−L, L].</td>
+</tr>
+<tr>
+<td><code>clenshaw_curtis_integrate_1d</code></td>
+<td>function</td>
+<td>Integrate a 1D nodal field over [−L, L] using Clenshaw–Curtis.</td>
+</tr>
+<tr>
+<td><code>clenshaw_curtis_integrate_2d</code></td>
+<td>function</td>
+<td>Integrate a 2D nodal field over [−Lx, Lx] × [−Ly, Ly].</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chebyshev-chebyshev-filters-docsapichebyshevfiltersmd">Chebyshev: Chebyshev Filters (<code>docs/api/chebyshev/filters.md</code>)<a class="headerlink" href="#chebyshev-chebyshev-filters-docsapichebyshevfiltersmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChebyshevFilter1D</code></td>
+<td>class</td>
+<td>1D Chebyshev spectral filter for smoothing and numerical stabilisation.</td>
+</tr>
+<tr>
+<td><code>ChebyshevFilter2D</code></td>
+<td>class</td>
+<td>2D Chebyshev spectral filter on [−Lx, Lx] × [−Ly, Ly].</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chebyshev-chebyshev-helmholtz-solvers-docsapichebyshevsolversmd">Chebyshev: Chebyshev Helmholtz Solvers (<code>docs/api/chebyshev/solvers.md</code>)<a class="headerlink" href="#chebyshev-chebyshev-helmholtz-solvers-docsapichebyshevsolversmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChebyshevHelmholtzSolver1D</code></td>
+<td>class</td>
+<td>1D Chebyshev-collocation Helmholtz/Poisson solver with Dirichlet or Neumann BCs.</td>
+</tr>
+<tr>
+<td><code>ChebyshevPoissonSolver1D</code></td>
+<td>class</td>
+<td>1D Chebyshev Poisson solver: d²u/dx² = f on [−L, L].</td>
+</tr>
+<tr>
+<td><code>ChebyshevHelmholtzSolver2D</code></td>
+<td>class</td>
+<td>2D Chebyshev-collocation Helmholtz/Poisson solver with Dirichlet BCs.</td>
+</tr>
+<tr>
+<td><code>ChebyshevPoissonSolver2D</code></td>
+<td>class</td>
+<td>2D Chebyshev Poisson solver: ∇²u = f with Dirichlet BCs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spherical-spherical-grids-docsapisphericalgridsmd">Spherical: Spherical Grids (<code>docs/api/spherical/grids.md</code>)<a class="headerlink" href="#spherical-spherical-grids-docsapisphericalgridsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SphericalGrid1D</code></td>
+<td>class</td>
+<td>Gauss-Legendre grid for the latitude (colatitude) direction.</td>
+</tr>
+<tr>
+<td><code>SphericalGrid2D</code></td>
+<td>class</td>
+<td>Full sphere latitude-longitude pseudo-spectral grid.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spherical-spherical-derivative-operators-docsapisphericaloperatorsmd">Spherical: Spherical Derivative Operators (<code>docs/api/spherical/operators.md</code>)<a class="headerlink" href="#spherical-spherical-derivative-operators-docsapisphericaloperatorsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SphericalDerivative1D</code></td>
+<td>class</td>
+<td>1D spectral derivative operator on Gauss-Legendre latitude grid.</td>
+</tr>
+<tr>
+<td><code>SphericalDerivative2D</code></td>
+<td>class</td>
+<td>2D pseudo-spectral derivative operators on the sphere.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spherical-spherical-filters-docsapisphericalfiltersmd">Spherical: Spherical Filters (<code>docs/api/spherical/filters.md</code>)<a class="headerlink" href="#spherical-spherical-filters-docsapisphericalfiltersmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SphericalFilter1D</code></td>
+<td>class</td>
+<td>1D spectral filter on the Gauss–Legendre latitude grid.</td>
+</tr>
+<tr>
+<td><code>SphericalFilter2D</code></td>
+<td>class</td>
+<td>2D spectral filter on the full sphere lat-lon grid.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spherical-spherical-harmonic-transform-docsapisphericalharmonicsmd">Spherical: Spherical Harmonic Transform (<code>docs/api/spherical/harmonics.md</code>)<a class="headerlink" href="#spherical-spherical-harmonic-transform-docsapisphericalharmonicsmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SphericalHarmonicTransform</code></td>
+<td>class</td>
+<td>Full 2D Spherical Harmonic Transform (SHT).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spherical-spherical-harmonic-solvers-docsapisphericalsolversmd">Spherical: Spherical Harmonic Solvers (<code>docs/api/spherical/solvers.md</code>)<a class="headerlink" href="#spherical-spherical-harmonic-solvers-docsapisphericalsolversmd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SphericalPoissonSolver</code></td>
+<td>class</td>
+<td>Spectral Poisson solver on the sphere:  ∇²φ = f.</td>
+</tr>
+<tr>
+<td><code>SphericalHelmholtzSolver</code></td>
+<td>class</td>
+<td>Spectral Helmholtz solver on the sphere:  (∇² − α) φ = f.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="geophysical-inversions">Geophysical inversions<a class="headerlink" href="#geophysical-inversions" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SphericalVorticityInversionSolver</code></td>
+<td>class</td>
+<td>Vorticity-inversion solver on the sphere.</td>
+</tr>
+<tr>
+<td><code>SphericalDivergenceInversionSolver</code></td>
+<td>class</td>
+<td>Divergence-inversion solver on the sphere.</td>
+</tr>
+<tr>
+<td><code>SphericalHelmholtzDecomposition</code></td>
+<td>class</td>
+<td>Helmholtz decomposition of a horizontal vector field on the sphere.</td>
+</tr>
+</tbody>
+</table>
+<!-- upstream -->
+
+<p>Listed at gaussx 0.1.0.</p>
+<h2 id="upstream-gaussx">Upstream: <code>gaussx</code><a class="headerlink" href="#upstream-gaussx" title="Permanent link">&para;</a></h2>
+<p>Structured linear algebra. spectraldiffx uses it for the masked-domain capacitance solver (<code>DiagonalisedOperator</code>, <code>circulant_from_symbol</code>, <code>MaskedOperator</code>, <code>grid_coupling_indices</code>, <code>solve</code>) and the Chebyshev Helmholtz solvers (<code>EigenFactorization</code>, <code>kronecker_sum_solve</code>). A new solve, factorisation or Woodbury / capacitance correction comes from here, not from a hand-written <code>jnp.linalg</code> call.</p>
+<h3 id="gaussx"><code>gaussx</code><a class="headerlink" href="#gaussx" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AbstractIntegrator</code></td>
+<td>class</td>
+<td>Protocol for Gaussian integral approximation.</td>
+</tr>
+<tr>
+<td><code>AbstractLikelihood</code></td>
+<td>class</td>
+<td>Base class for likelihood functions with optional analytical ELL.</td>
+</tr>
+<tr>
+<td><code>AbstractLogdetStrategy</code></td>
+<td>class</td>
+<td>Protocol for log-determinant strategies.</td>
+</tr>
+<tr>
+<td><code>AbstractPreconditioner</code></td>
+<td>class</td>
+<td>Protocol for preconditioners producing an approximate inverse.</td>
+</tr>
+<tr>
+<td><code>AbstractSolveStrategy</code></td>
+<td>class</td>
+<td>Protocol for linear solve strategies.</td>
+</tr>
+<tr>
+<td><code>AbstractSolverStrategy</code></td>
+<td>class</td>
+<td>Protocol for solver strategies that pair solve + logdet.</td>
+</tr>
+<tr>
+<td><code>AnalyticalPsiStatistics</code></td>
+<td>class</td>
+<td>Protocol for kernels with closed-form Ψ statistics.</td>
+</tr>
+<tr>
+<td><code>AssumedDensityFilter</code></td>
+<td>class</td>
+<td>KL-optimal Gaussian projection via moment matching.</td>
+</tr>
+<tr>
+<td><code>AutoSolver</code></td>
+<td>class</td>
+<td>Automatic solver selection based on operator type and size.</td>
+</tr>
+<tr>
+<td><code>BBMMSolver</code></td>
+<td>class</td>
+<td>Black-Box Matrix-Matrix solver (Gardner et al. 2018).</td>
+</tr>
+<tr>
+<td><code>BernoulliLikelihood</code></td>
+<td>class</td>
+<td>Bernoulli likelihood with logit link.</td>
+</tr>
+<tr>
+<td><code>BlockDiag</code></td>
+<td>class</td>
+<td>Block diagonal operator <code>diag(A₁, A₂, …, Aₖ)</code>.</td>
+</tr>
+<tr>
+<td><code>BlockTriDiag</code></td>
+<td>class</td>
+<td>Symmetric block-tridiagonal operator.</td>
+</tr>
+<tr>
+<td><code>CGSolver</code></td>
+<td>class</td>
+<td>Iterative CG solver with stochastic log-determinant.</td>
+</tr>
+<tr>
+<td><code>CapacitanceSolver</code></td>
+<td>class</td>
+<td>Solve a base system subject to homogeneous point constraints.</td>
+</tr>
+<tr>
+<td><code>Circulant</code></td>
+<td>function</td>
+<td>(Block-)circulant operator from its first column.</td>
+</tr>
+<tr>
+<td><code>ComposedSolver</code></td>
+<td>class</td>
+<td>Mix-and-match solve and logdet from different strategies.</td>
+</tr>
+<tr>
+<td><code>ConstantSDE</code></td>
+<td>class</td>
+<td>State-space representation of a constant kernel.</td>
+</tr>
+<tr>
+<td><code>CosineSDE</code></td>
+<td>class</td>
+<td>State-space representation of the cosine kernel.</td>
+</tr>
+<tr>
+<td><code>CubatureIntegrator</code></td>
+<td>class</td>
+<td>Third-order spherical-radial cubature.</td>
+</tr>
+<tr>
+<td><code>DAREResult</code></td>
+<td>class</td>
+<td>Result of DARE solver.</td>
+</tr>
+<tr>
+<td><code>DenseFallbackWarning</code></td>
+<td>class</td>
+<td>Warning emitted when a structured primitive materialises an operator.</td>
+</tr>
+<tr>
+<td><code>DenseLogdet</code></td>
+<td>class</td>
+<td>Dense log-determinant via gaussx structural dispatch.</td>
+</tr>
+<tr>
+<td><code>DenseSolver</code></td>
+<td>class</td>
+<td>Dense solver strategy using gaussx structural dispatch.</td>
+</tr>
+<tr>
+<td><code>DiagonalisedOperator</code></td>
+<td>class</td>
+<td>Linear operator <code>A x = V⁻¹(Λ ⊙ V x)</code> given by a transform pair.</td>
+</tr>
+<tr>
+<td><code>EigenFactorization</code></td>
+<td>class</td>
+<td>Precomputed eigendecomposition <code>A = V diag(λ) V⁻¹</code> of a square matrix.</td>
+</tr>
+<tr>
+<td><code>EigenProPreconditioner</code></td>
+<td>class</td>
+<td>Spectral correction state for EigenPro kernel SGD.</td>
+</tr>
+<tr>
+<td><code>EmissionModel</code></td>
+<td>class</td>
+<td>Observation (emission) model wrapping a linear observation matrix.</td>
+</tr>
+<tr>
+<td><code>FalkonPreconditioner</code></td>
+<td>class</td>
+<td>The two upper-triangular Cholesky factors of the Falkon preconditioner.</td>
+</tr>
+<tr>
+<td><code>FifthOrderCubatureIntegrator</code></td>
+<td>class</td>
+<td>Fifth-order fully symmetric cubature (McNamee &amp; Stenger).</td>
+</tr>
+<tr>
+<td><code>FilterState</code></td>
+<td>class</td>
+<td>Output of <code>kalman_filter</code>.</td>
+</tr>
+<tr>
+<td><code>GaussHermiteIntegrator</code></td>
+<td>class</td>
+<td>Gauss-Hermite quadrature integrator.</td>
+</tr>
+<tr>
+<td><code>GaussianExpFam</code></td>
+<td>class</td>
+<td>Gaussian in natural (exponential family) parameters.</td>
+</tr>
+<tr>
+<td><code>GaussianLikelihood</code></td>
+<td>class</td>
+<td>Gaussian likelihood <code>log N(y \| f, noise_var * I)</code>.</td>
+</tr>
+<tr>
+<td><code>GaussianSites</code></td>
+<td>class</td>
+<td>Time-varying Gaussian likelihood sites in natural parameterization.</td>
+</tr>
+<tr>
+<td><code>GaussianState</code></td>
+<td>class</td>
+<td>Gaussian distribution as (mean, covariance operator) pair.</td>
+</tr>
+<tr>
+<td><code>HeteroscedasticGaussianLikelihood</code></td>
+<td>class</td>
+<td>Heteroscedastic Gaussian likelihood with input-dependent noise.</td>
+</tr>
+<tr>
+<td><code>ImplicitCrossKernelOperator</code></td>
+<td>class</td>
+<td>Matrix-free rectangular kernel operator <code>K(X, Z) \cdot v</code>.</td>
+</tr>
+<tr>
+<td><code>ImplicitKernelOperator</code></td>
+<td>class</td>
+<td>Matrix-free kernel operator: <code>(K + sigma^2 I) v</code> via sequential scan.</td>
+</tr>
+<tr>
+<td><code>IndefiniteSLQLogdet</code></td>
+<td>class</td>
+<td>Stochastic <code>log\|det(A)\|</code> for symmetric (possibly indefinite) operators.</td>
+</tr>
+<tr>
+<td><code>InfiniteHorizonState</code></td>
+<td>class</td>
+<td>Output of <code>infinite_horizon_filter</code>.</td>
+</tr>
+<tr>
+<td><code>IntegratedWienerSDE</code></td>
+<td>class</td>
+<td>State-space representation of an integrated Wiener process.</td>
+</tr>
+<tr>
+<td><code>InterpolatedOperator</code></td>
+<td>class</td>
+<td>Structured Kernel Interpolation: <code>K \approx W K_{uu} W^T</code>.</td>
+</tr>
+<tr>
+<td><code>JacobiPreconditioner</code></td>
+<td>class</td>
+<td>Diagonal preconditioner <code>M^{-1} = diag(1 / diag(A))</code>.</td>
+</tr>
+<tr>
+<td><code>KernelOperator</code></td>
+<td>class</td>
+<td>Kernel matrix operator with efficient first-order autodiff.</td>
+</tr>
+<tr>
+<td><code>Kronecker</code></td>
+<td>class</td>
+<td>Kronecker product operator <code>A₁ ⊗ A₂ ⊗ … ⊗ Aₖ</code>.</td>
+</tr>
+<tr>
+<td><code>KroneckerSum</code></td>
+<td>class</td>
+<td>Kronecker sum <code>A \oplus B = A \otimes I_b + I_a \otimes B</code>.</td>
+</tr>
+<tr>
+<td><code>KroneckerSumSqrt</code></td>
+<td>class</td>
+<td>Symmetric square root of <code>A \oplus B</code> via per-factor eigenvectors.</td>
+</tr>
+<tr>
+<td><code>LOOResult</code></td>
+<td>class</td>
+<td>Result of leave-one-out cross-validation.</td>
+</tr>
+<tr>
+<td><code>LOVECache</code></td>
+<td>class</td>
+<td>Cached Lanczos factorization for fast predictive variance.</td>
+</tr>
+<tr>
+<td><code>LSMRSolver</code></td>
+<td>class</td>
+<td>LSMR iterative least-squares solver (Fong &amp; Saunders 2011).</td>
+</tr>
+<tr>
+<td><code>LowRankUpdate</code></td>
+<td>class</td>
+<td>Low-rank update operator <code>L + U diag(d) Vᵀ</code>.</td>
+</tr>
+<tr>
+<td><code>LowerBlockTriDiag</code></td>
+<td>class</td>
+<td>Lower triangular block-bidiagonal Cholesky factor.</td>
+</tr>
+<tr>
+<td><code>MINRESSolver</code></td>
+<td>class</td>
+<td>MINRES solver for symmetric (possibly indefinite) systems.</td>
+</tr>
+<tr>
+<td><code>MaskedOperator</code></td>
+<td>class</td>
+<td>Row/column-masked view of a base operator.</td>
+</tr>
+<tr>
+<td><code>MaternSDE</code></td>
+<td>class</td>
+<td>State-space representation of the Matern kernel.</td>
+</tr>
+<tr>
+<td><code>MomentMatchResult</code></td>
+<td>class</td>
+<td>Tilted log-normaliser and its derivatives w.r.t. the cavity mean.</td>
+</tr>
+<tr>
+<td><code>MonteCarloIntegrator</code></td>
+<td>class</td>
+<td>Monte Carlo moment matching: sample, propagate, compute moments.</td>
+</tr>
+<tr>
+<td><code>NystromPreconditioner</code></td>
+<td>class</td>
+<td>Low-rank approximate inverse from randomized operator probing.</td>
+</tr>
+<tr>
+<td><code>OperatorPreconditioner</code></td>
+<td>class</td>
+<td>Use an externally supplied approximate inverse as a preconditioner.</td>
+</tr>
+<tr>
+<td><code>PartialCholeskyPreconditioner</code></td>
+<td>class</td>
+<td>Preconditioner from a pivoted partial Cholesky factor.</td>
+</tr>
+<tr>
+<td><code>PeriodicSDE</code></td>
+<td>class</td>
+<td>State-space representation of the periodic (MacKay) kernel.</td>
+</tr>
+<tr>
+<td><code>PoissonLikelihood</code></td>
+<td>class</td>
+<td>Poisson likelihood with log link.</td>
+</tr>
+<tr>
+<td><code>PreconditionedCGSolver</code></td>
+<td>class</td>
+<td>CG solver with pivoted partial Cholesky preconditioner.</td>
+</tr>
+<tr>
+<td><code>PredictionCache</code></td>
+<td>class</td>
+<td>Cached training solve for amortized predictions.</td>
+</tr>
+<tr>
+<td><code>ProductOperator</code></td>
+<td>function</td>
+<td>Lazy matmul <code>(A B) v = A (B v)</code>.</td>
+</tr>
+<tr>
+<td><code>ProductSDE</code></td>
+<td>class</td>
+<td>Product of two SDE kernels via Kronecker composition.</td>
+</tr>
+<tr>
+<td><code>PropagationResult</code></td>
+<td>class</td>
+<td>Output of uncertainty propagation through a nonlinear function.</td>
+</tr>
+<tr>
+<td><code>QuasiPeriodicSDE</code></td>
+<td>class</td>
+<td>Quasi-periodic kernel: product of Matern and Periodic SDE.</td>
+</tr>
+<tr>
+<td><code>RootDecomposition</code></td>
+<td>class</td>
+<td>Tall factor <code>R</code> with <code>R Rᵀ ≈ A</code> semantics.</td>
+</tr>
+<tr>
+<td><code>SDEKernel</code></td>
+<td>class</td>
+<td>Abstract base class for state-space kernel representations.</td>
+</tr>
+<tr>
+<td><code>SDEParams</code></td>
+<td>class</td>
+<td>Continuous-time SDE parameters for a linear SDE.</td>
+</tr>
+<tr>
+<td><code>SLQLogdet</code></td>
+<td>class</td>
+<td>Stochastic log-determinant via Lanczos quadrature (SLQ).</td>
+</tr>
+<tr>
+<td><code>SLRResult</code></td>
+<td>class</td>
+<td>Linear-Gaussian surrogate produced by statistical linear regression.</td>
+</tr>
+<tr>
+<td><code>SVDLowRankUpdate</code></td>
+<td>class</td>
+<td>Deprecated subclass of <code>LowRankUpdate</code> with <code>orthonormal=True</code>.</td>
+</tr>
+<tr>
+<td><code>ScaledOperator</code></td>
+<td>function</td>
+<td>Lazy scalar multiply <code>(c A) v = c (A v)</code>.</td>
+</tr>
+<tr>
+<td><code>SoftmaxLikelihood</code></td>
+<td>class</td>
+<td>Softmax (categorical) likelihood for multi-class classification.</td>
+</tr>
+<tr>
+<td><code>StudentTLikelihood</code></td>
+<td>class</td>
+<td>Student-t likelihood for robust regression.</td>
+</tr>
+<tr>
+<td><code>SumKronecker</code></td>
+<td>class</td>
+<td>Deprecated alias for <code>SumOfKroneckers</code>.</td>
+</tr>
+<tr>
+<td><code>SumKroneckerSqrt</code></td>
+<td>class</td>
+<td>Lazy Lanczos square-root operator for <code>SumOfKroneckers</code> covariances.</td>
+</tr>
+<tr>
+<td><code>SumOfKroneckers</code></td>
+<td>class</td>
+<td>Sum of Kronecker products <code>Σ_k A_k \otimes B_k</code>.</td>
+</tr>
+<tr>
+<td><code>SumOperator</code></td>
+<td>function</td>
+<td>Lazy sum <code>(A + B + …) v = A v + B v + …</code>.</td>
+</tr>
+<tr>
+<td><code>SumSDE</code></td>
+<td>class</td>
+<td>Sum of SDE kernels via block-diagonal composition.</td>
+</tr>
+<tr>
+<td><code>TaylorIntegrator</code></td>
+<td>class</td>
+<td>1st or 2nd order Taylor expansion for uncertainty propagation.</td>
+</tr>
+<tr>
+<td><code>Toeplitz</code></td>
+<td>class</td>
+<td>Symmetric Toeplitz matrix from its first column.</td>
+</tr>
+<tr>
+<td><code>ToeplitzCholesky</code></td>
+<td>class</td>
+<td>Circulant-embedding sample factor for a symmetric positive Toeplitz matrix.</td>
+</tr>
+<tr>
+<td><code>UDLDecomposition</code></td>
+<td>class</td>
+<td>Banded factorisation <span class="arithmatex">\(\Lambda = U \tilde{D} U^{\top}\)</span> of a <code>BlockTriDiag</code>.</td>
+</tr>
+<tr>
+<td><code>UnscentedIntegrator</code></td>
+<td>class</td>
+<td>Unscented transform: deterministic sigma points.</td>
+</tr>
+<tr>
+<td><code>UpperBlockTriDiag</code></td>
+<td>class</td>
+<td>Upper triangular block-bidiagonal (transpose of LowerBlockTriDiag).</td>
+</tr>
+<tr>
+<td><code>add_jitter</code></td>
+<td>function</td>
+<td>Add diagonal jitter for numerical stability: <code>A + eps * I</code>.</td>
+</tr>
+<tr>
+<td><code>as_diagonalised</code></td>
+<td>function</td>
+<td>Express <code>operator</code> as one <code>DiagonalisedOperator</code>, if possible.</td>
+</tr>
+<tr>
+<td><code>as_linear_operator</code></td>
+<td>function</td>
+<td>Wrap a raw <code>matvec</code> callable as a tagged lineax operator.</td>
+</tr>
+<tr>
+<td><code>base_conditional</code></td>
+<td>function</td>
+<td>Gaussian conditional distribution via Schur complement.</td>
+</tr>
+<tr>
+<td><code>batched_kernel_matvec</code></td>
+<td>function</td>
+<td>Compute <code>K(X, Z) @ v</code> in memory-efficient batches.</td>
+</tr>
+<tr>
+<td><code>batched_kernel_rmatvec</code></td>
+<td>function</td>
+<td>Compute <code>K(X, Z)^T @ u</code> in memory-efficient batches.</td>
+</tr>
+<tr>
+<td><code>block_diagonal_tag</code></td>
+<td>constant</td>
+<td><code>block_diagonal_tag</code></td>
+</tr>
+<tr>
+<td><code>block_tridiagonal_tag</code></td>
+<td>constant</td>
+<td><code>block_tridiagonal_tag</code></td>
+</tr>
+<tr>
+<td><code>blr_diag_update</code></td>
+<td>function</td>
+<td>Diagonal natural parameter BLR update step.</td>
+</tr>
+<tr>
+<td><code>blr_full_update</code></td>
+<td>function</td>
+<td>Full-rank natural parameter BLR update step.</td>
+</tr>
+<tr>
+<td><code>build_prediction_cache</code></td>
+<td>function</td>
+<td>Solve <code>A alpha = y</code> and cache the result.</td>
+</tr>
+<tr>
+<td><code>cavity_distribution</code></td>
+<td>function</td>
+<td>Compute EP cavity distribution by removing a site.</td>
+</tr>
+<tr>
+<td><code>cavity_from_marginal</code></td>
+<td>function</td>
+<td>Compute cavity distribution by removing a site from the marginal.</td>
+</tr>
+<tr>
+<td><code>center_kernel</code></td>
+<td>function</td>
+<td>Center a kernel matrix: <code>H K H</code>.</td>
+</tr>
+<tr>
+<td><code>centering_operator</code></td>
+<td>function</td>
+<td>Centering matrix <code>H = I - (1/n) \mathbf{1}\mathbf{1}^T</code>.</td>
+</tr>
+<tr>
+<td><code>cholesky</code></td>
+<td>function</td>
+<td>Compute Cholesky factor L such that A = L L^T.</td>
+</tr>
+<tr>
+<td><code>cholesky_logdet</code></td>
+<td>function</td>
+<td>Compute log|A| from Cholesky factor L where A = L Lᵀ.</td>
+</tr>
+<tr>
+<td><code>circulant_from_symbol</code></td>
+<td>function</td>
+<td>(Block-)circulant operator from its DFT symbol.</td>
+</tr>
+<tr>
+<td><code>collapsed_elbo</code></td>
+<td>function</td>
+<td>Collapsed ELBO (Titsias bound) for sparse GP regression.</td>
+</tr>
+<tr>
+<td><code>compute_psi_statistics</code></td>
+<td>function</td>
+<td>Compute Ψ statistics, dispatching to analytical or numerical.</td>
+</tr>
+<tr>
+<td><code>conditional</code></td>
+<td>function</td>
+<td>Compute <code>p(x_A \| x_B = b)</code> from a joint Gaussian <code>p(x_A, x_B)</code>.</td>
+</tr>
+<tr>
+<td><code>conditional_interpolate</code></td>
+<td>function</td>
+<td>Interpolated marginal at time <code>t</code> given posteriors at <code>t^-</code> and <code>t^+</code>.</td>
+</tr>
+<tr>
+<td><code>conditional_variance</code></td>
+<td>function</td>
+<td>Predictive variance: Schur complement diagonal plus optional variational correction.</td>
+</tr>
+<tr>
+<td><code>cost_expectation</code></td>
+<td>function</td>
+<td>Compute <code>E[Cost(f(x), target)]</code> where <code>x ~ N(mu, Sigma)</code>.</td>
+</tr>
+<tr>
+<td><code>cov_transform</code></td>
+<td>function</td>
+<td>Covariance propagation through a linear map: <code>J @ Sigma @ J^T</code>.</td>
+</tr>
+<tr>
+<td><code>create_grid</code></td>
+<td>function</td>
+<td>Create a regular grid from per-dimension sizes and bounds.</td>
+</tr>
+<tr>
+<td><code>cubature_points</code></td>
+<td>function</td>
+<td>Spherical-radial cubature points and weights.</td>
+</tr>
+<tr>
+<td><code>cubic_interpolation_weights</code></td>
+<td>function</td>
+<td>Compute cubic interpolation indices and weights for SKI.</td>
+</tr>
+<tr>
+<td><code>cvi_update_sites</code></td>
+<td>function</td>
+<td>Natural gradient update for CVI sites.</td>
+</tr>
+<tr>
+<td><code>damped_natural_update</code></td>
+<td>function</td>
+<td>Damped update in natural parameter space.</td>
+</tr>
+<tr>
+<td><code>dare</code></td>
+<td>function</td>
+<td>Discrete Algebraic Riccati Equation solver.</td>
+</tr>
+<tr>
+<td><code>diag</code></td>
+<td>function</td>
+<td>Extract the diagonal of an operator as a 1D array.</td>
+</tr>
+<tr>
+<td><code>diag_conditional_variance</code></td>
+<td>function</td>
+<td>Diagonal of Schur complement: <code>diag(K_XX - A K_ZX)</code>.</td>
+</tr>
+<tr>
+<td><code>diag_inv</code></td>
+<td>function</td>
+<td>Compute the diagonal of the inverse of a linear operator.</td>
+</tr>
+<tr>
+<td><code>diagonal_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>discrepancy_step_size</code></td>
+<td>function</td>
+<td>Adaptive EKI tempering step: the data misfit controller.</td>
+</tr>
+<tr>
+<td><code>discrete_lyapunov_solve</code></td>
+<td>function</td>
+<td>Solve the discrete Lyapunov equation <code>P - G P G^T = Q</code>.</td>
+</tr>
+<tr>
+<td><code>discretise_mfd</code></td>
+<td>function</td>
+<td>Discretise a linear SDE by matrix-fraction decomposition.</td>
+</tr>
+<tr>
+<td><code>discretise_mfd_sequence</code></td>
+<td>function</td>
+<td>Vectorised <code>gaussx.discretise_mfd</code> over a vector of time steps.</td>
+</tr>
+<tr>
+<td><code>dist_kl_divergence</code></td>
+<td>function</td>
+<td>KL divergence <code>KL(p \|\| q)</code> between two multivariate normals.</td>
+</tr>
+<tr>
+<td><code>eig</code></td>
+<td>function</td>
+<td>Compute eigenvalues and eigenvectors.</td>
+</tr>
+<tr>
+<td><code>eigenpro_correction</code></td>
+<td>function</td>
+<td>Compute the EigenPro eigenspace correction for one SGD mini-batch.</td>
+</tr>
+<tr>
+<td><code>eigenpro_preconditioner</code></td>
+<td>function</td>
+<td>Build an EigenPro spectral preconditioner from a kernel operator.</td>
+</tr>
+<tr>
+<td><code>eigenpro_step_size</code></td>
+<td>function</td>
+<td>Return the EigenPro preconditioned step size for a batch size.</td>
+</tr>
+<tr>
+<td><code>eigvals</code></td>
+<td>function</td>
+<td>Compute eigenvalues only.</td>
+</tr>
+<tr>
+<td><code>eki_step</code></td>
+<td>function</td>
+<td>One ensemble Kalman inversion (EKI) update.</td>
+</tr>
+<tr>
+<td><code>elbo</code></td>
+<td>function</td>
+<td>Evidence lower bound (ELBO).</td>
+</tr>
+<tr>
+<td><code>enkf_analysis</code></td>
+<td>function</td>
+<td>Stochastic (perturbed-observation) ensemble Kalman analysis step.</td>
+</tr>
+<tr>
+<td><code>ensemble_covariance</code></td>
+<td>function</td>
+<td>Empirical covariance from an ensemble as a low-rank operator.</td>
+</tr>
+<tr>
+<td><code>ensemble_cross_covariance</code></td>
+<td>function</td>
+<td>Cross-covariance between two ensemble sets.</td>
+</tr>
+<tr>
+<td><code>ensemble_kalman_gain</code></td>
+<td>function</td>
+<td>Kalman gain from an ensemble and its image in observation space.</td>
+</tr>
+<tr>
+<td><code>ep_tilted_moments</code></td>
+<td>function</td>
+<td>Compute tilted distribution moments via Gauss-Hermite quadrature.</td>
+</tr>
+<tr>
+<td><code>estimate_spectral_bounds</code></td>
+<td>function</td>
+<td>Estimate <span class="arithmatex">\((\lambda_{\min}, \lambda_{\max})\)</span> of a symmetric operator.</td>
+</tr>
+<tr>
+<td><code>etkf_transform</code></td>
+<td>function</td>
+<td>Ensemble Transform Kalman Filter (ETKF) analysis weights.</td>
+</tr>
+<tr>
+<td><code>euclidean_distance</code></td>
+<td>function</td>
+<td>Pairwise Euclidean distances <code>\|\|a_i - b_j\|\|</code>.</td>
+</tr>
+<tr>
+<td><code>expectation_to_meanvar</code></td>
+<td>function</td>
+<td>Convert expectation parameters to mean/variance (Cholesky).</td>
+</tr>
+<tr>
+<td><code>expectation_to_natural</code></td>
+<td>function</td>
+<td>Convert expectation parameters to natural parameters.</td>
+</tr>
+<tr>
+<td><code>expectations_to_ssm</code></td>
+<td>function</td>
+<td>Convert expectation parameters back to SSM marginals.</td>
+</tr>
+<tr>
+<td><code>expected_log_likelihood</code></td>
+<td>function</td>
+<td>Unified expected log-likelihood with analytical dispatch.</td>
+</tr>
+<tr>
+<td><code>falkon_preconditioner</code></td>
+<td>function</td>
+<td>Build the Falkon preconditioner from the inducing-point kernel matrix.</td>
+</tr>
+<tr>
+<td><code>falkon_predict</code></td>
+<td>function</td>
+<td>Predict with Nyström KRR weights: <span class="arithmatex">\(f(x_*) = \sum_j \alpha_j\, k(x_*, z_j)\)</span>.</td>
+</tr>
+<tr>
+<td><code>falkon_solve</code></td>
+<td>function</td>
+<td>Nyström kernel ridge regression weights by Falkon's preconditioned CG.</td>
+</tr>
+<tr>
+<td><code>fifth_order_cubature_points</code></td>
+<td>function</td>
+<td>Fifth-order fully symmetric cubature points and weights.</td>
+</tr>
+<tr>
+<td><code>fisher_info</code></td>
+<td>function</td>
+<td>Fisher information matrix <code>F(eta) = nabla^2 A(eta)</code>.</td>
+</tr>
+<tr>
+<td><code>frobenius_norm</code></td>
+<td>function</td>
+<td>Compute the Frobenius norm <code>\|\|A\|\|_F</code> with structural dispatch.</td>
+</tr>
+<tr>
+<td><code>gaspari_cohn</code></td>
+<td>function</td>
+<td>Gaspari-Cohn (1999) fifth-order compactly-supported taper.</td>
+</tr>
+<tr>
+<td><code>gauss_hermite_points</code></td>
+<td>function</td>
+<td>Gauss-Hermite quadrature points and weights.</td>
+</tr>
+<tr>
+<td><code>gauss_kl</code></td>
+<td>function</td>
+<td>KL divergence <code>KL[q(u) \|\| p(u)]</code> between Gaussian distributions.</td>
+</tr>
+<tr>
+<td><code>gauss_newton_precision</code></td>
+<td>function</td>
+<td>Gauss-Newton precision matrix <code>J^T J</code>.</td>
+</tr>
+<tr>
+<td><code>gaussian_entropy</code></td>
+<td>function</td>
+<td>Entropy of a multivariate normal <code>N(mu, Sigma)</code>.</td>
+</tr>
+<tr>
+<td><code>gaussian_expected_log_lik</code></td>
+<td>function</td>
+<td>Expected log-likelihood <code>E_q[log N(y \| f, R)]</code>.</td>
+</tr>
+<tr>
+<td><code>gaussian_log_prob</code></td>
+<td>function</td>
+<td>Multivariate normal log-probability.</td>
+</tr>
+<tr>
+<td><code>ggn_diagonal</code></td>
+<td>function</td>
+<td>Generalized Gauss-Newton diagonal approximation.</td>
+</tr>
+<tr>
+<td><code>gradient_expectation</code></td>
+<td>function</td>
+<td>Compute <code>E[nabla f(x)]</code> via Stein's lemma.</td>
+</tr>
+<tr>
+<td><code>grid_coupling_indices</code></td>
+<td>function</td>
+<td>Flat indices of masked-out grid cells adjacent to the masked-in region.</td>
+</tr>
+<tr>
+<td><code>grid_data</code></td>
+<td>function</td>
+<td>Expand a grid to the full Cartesian product of grid points.</td>
+</tr>
+<tr>
+<td><code>haversine_distance</code></td>
+<td>function</td>
+<td>Pairwise great-circle (haversine) distances on a sphere.</td>
+</tr>
+<tr>
+<td><code>hsic</code></td>
+<td>function</td>
+<td>Biased HSIC estimator.</td>
+</tr>
+<tr>
+<td><code>hutchinson_hessian_diag</code></td>
+<td>function</td>
+<td>Stochastic Hessian diagonal via Hutchinson with Rademacher probes.</td>
+</tr>
+<tr>
+<td><code>implicit_cross_kernel</code></td>
+<td>function</td>
+<td>Create a matrix-free rectangular cross-kernel operator.</td>
+</tr>
+<tr>
+<td><code>infinite_horizon_filter</code></td>
+<td>function</td>
+<td>Infinite-horizon Kalman filter with fixed steady-state gain.</td>
+</tr>
+<tr>
+<td><code>infinite_horizon_smoother</code></td>
+<td>function</td>
+<td>Infinite-horizon RTS smoother with fixed steady-state gain.</td>
+</tr>
+<tr>
+<td><code>inflate_multiplicative</code></td>
+<td>function</td>
+<td>Multiplicative ensemble inflation about the mean.</td>
+</tr>
+<tr>
+<td><code>inflate_rtpp</code></td>
+<td>function</td>
+<td>Relaxation to prior perturbations (RTPP; Zhang et al. 2004).</td>
+</tr>
+<tr>
+<td><code>inflate_rtps</code></td>
+<td>function</td>
+<td>Relaxation to prior spread (RTPS; Whitaker &amp; Hamill 2012).</td>
+</tr>
+<tr>
+<td><code>inv</code></td>
+<td>function</td>
+<td>Return a lazy inverse operator A^{-1}.</td>
+</tr>
+<tr>
+<td><code>inv_quad_logdet</code></td>
+<td>function</td>
+<td>Joint inverse-quadratic and log-determinant via shared BBMM CG.</td>
+</tr>
+<tr>
+<td><code>is_block_diagonal</code></td>
+<td>function</td>
+<td>Check whether <em>operator</em> carries the block-diagonal tag.</td>
+</tr>
+<tr>
+<td><code>is_block_tridiagonal</code></td>
+<td>function</td>
+<td>Check whether <em>operator</em> carries the block-tridiagonal tag.</td>
+</tr>
+<tr>
+<td><code>is_diagonal</code></td>
+<td>function</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>is_kronecker</code></td>
+<td>function</td>
+<td>Check whether <em>operator</em> carries the Kronecker tag.</td>
+</tr>
+<tr>
+<td><code>is_kronecker_sum</code></td>
+<td>function</td>
+<td>Check whether <em>operator</em> carries the Kronecker sum tag.</td>
+</tr>
+<tr>
+<td><code>is_low_rank</code></td>
+<td>function</td>
+<td>Check whether <em>operator</em> carries the low-rank tag.</td>
+</tr>
+<tr>
+<td><code>is_lower_triangular</code></td>
+<td>function</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>is_negative_semidefinite</code></td>
+<td>function</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>is_positive_semidefinite</code></td>
+<td>function</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>is_symmetric</code></td>
+<td>function</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>is_upper_triangular</code></td>
+<td>function</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>joseph_update</code></td>
+<td>function</td>
+<td>Numerically stable Joseph-form covariance update.</td>
+</tr>
+<tr>
+<td><code>kalman_filter</code></td>
+<td>function</td>
+<td>Kalman filter forward pass via <code>jax.lax.scan</code>.</td>
+</tr>
+<tr>
+<td><code>kalman_gain</code></td>
+<td>function</td>
+<td>Compute Kalman gain <code>K = P @ H^T @ (H @ P @ H^T + R)^{-1}</code>.</td>
+</tr>
+<tr>
+<td><code>kernel_expectations</code></td>
+<td>function</td>
+<td>Compute kernel expectations Psi_0, Psi_1, Psi_2 for uncertain inputs.</td>
+</tr>
+<tr>
+<td><code>kl_divergence</code></td>
+<td>function</td>
+<td>KL divergence <code>KL(q \|\| p)</code> via the Bregman-divergence form on natural parameters.</td>
+</tr>
+<tr>
+<td><code>kl_standard_normal</code></td>
+<td>function</td>
+<td>KL divergence <code>KL(N(m, S) \|\| N(0, I))</code>.</td>
+</tr>
+<tr>
+<td><code>kronecker_mll</code></td>
+<td>function</td>
+<td>Exact marginal log-likelihood for a Kronecker-structured GP.</td>
+</tr>
+<tr>
+<td><code>kronecker_posterior_predictive</code></td>
+<td>function</td>
+<td>Posterior mean and variance for a Kronecker GP at test points.</td>
+</tr>
+<tr>
+<td><code>kronecker_sum_sample</code></td>
+<td>function</td>
+<td>Sample from <code>𝒩(0, A ⊕ B)</code> using per-factor eigendecompositions.</td>
+</tr>
+<tr>
+<td><code>kronecker_sum_solve</code></td>
+<td>function</td>
+<td>Solve a shifted Kronecker-sum system in tensor (unvectorized) form.</td>
+</tr>
+<tr>
+<td><code>kronecker_sum_tag</code></td>
+<td>constant</td>
+<td><code>kronecker_sum_tag</code></td>
+</tr>
+<tr>
+<td><code>kronecker_tag</code></td>
+<td>constant</td>
+<td><code>kronecker_tag</code></td>
+</tr>
+<tr>
+<td><code>leave_one_out_cv</code></td>
+<td>function</td>
+<td>LOO-CV via the bordered-system identity.</td>
+</tr>
+<tr>
+<td><code>linear_solve</code></td>
+<td>function</td>
+<td>Solve <code>A x = b</code> through the unified front door.</td>
+</tr>
+<tr>
+<td><code>localization_matrix</code></td>
+<td>function</td>
+<td>Pairwise Gaspari-Cohn taper <code>rho(dist(a_i, b_j); c)</code>.</td>
+</tr>
+<tr>
+<td><code>localized_kalman_gain</code></td>
+<td>function</td>
+<td>Ensemble Kalman gain with Hadamard (Schur-product) localization.</td>
+</tr>
+<tr>
+<td><code>log_likelihood_expectation</code></td>
+<td>function</td>
+<td>Compute <code>E[log p(y_{obs} \| f(x))]</code> where <code>x ~ N(mu, Sigma)</code>.</td>
+</tr>
+<tr>
+<td><code>log_marginal_likelihood</code></td>
+<td>function</td>
+<td>GP log marginal likelihood.</td>
+</tr>
+<tr>
+<td><code>log_partition</code></td>
+<td>function</td>
+<td>Log-partition function <code>A(eta)</code>.</td>
+</tr>
+<tr>
+<td><code>logdet</code></td>
+<td>function</td>
+<td>Compute log |det(A)| with structural dispatch.</td>
+</tr>
+<tr>
+<td><code>love_cache</code></td>
+<td>function</td>
+<td>Precompute Lanczos factorization of <code>K^{-1}</code> for fast variance.</td>
+</tr>
+<tr>
+<td><code>love_variance</code></td>
+<td>function</td>
+<td>Fast predictive variance using a LOVE cache.</td>
+</tr>
+<tr>
+<td><code>low_rank_plus_diag</code></td>
+<td>function</td>
+<td>Construct <code>diag(diag) + U diag(d) Vᵀ</code>.</td>
+</tr>
+<tr>
+<td><code>low_rank_plus_identity</code></td>
+<td>function</td>
+<td>Construct <code>scale * I + U diag(d) Vᵀ</code>.</td>
+</tr>
+<tr>
+<td><code>low_rank_tag</code></td>
+<td>constant</td>
+<td><code>low_rank_tag</code></td>
+</tr>
+<tr>
+<td><code>lower_triangular_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>masked_moment_inputs</code></td>
+<td>function</td>
+<td>Make masked observation channels inert in a moment-matched update.</td>
+</tr>
+<tr>
+<td><code>matheron_update</code></td>
+<td>function</td>
+<td>Posterior samples via Matheron's-rule correction.</td>
+</tr>
+<tr>
+<td><code>mean_cov_to_natural</code></td>
+<td>function</td>
+<td>Convert mean/covariance to natural parameters (operator form).</td>
+</tr>
+<tr>
+<td><code>mean_expectation</code></td>
+<td>function</td>
+<td>Compute <code>E[f(x)]</code> where <code>x ~ N(mu, Sigma)</code>.</td>
+</tr>
+<tr>
+<td><code>meanfield_kalman_filter</code></td>
+<td>function</td>
+<td>Mean-field Kalman filter over <code>L = D // block_size</code> state blocks.</td>
+</tr>
+<tr>
+<td><code>meanfield_rts_smoother</code></td>
+<td>function</td>
+<td>Mean-field RTS smoother over <code>L = D // block_size</code> state blocks.</td>
+</tr>
+<tr>
+<td><code>meanvar_to_expectation</code></td>
+<td>function</td>
+<td>Convert mean/variance (Cholesky) to expectation parameters.</td>
+</tr>
+<tr>
+<td><code>meanvar_to_natural</code></td>
+<td>function</td>
+<td>Convert mean/variance (Cholesky) to natural parameters.</td>
+</tr>
+<tr>
+<td><code>mmd_squared</code></td>
+<td>function</td>
+<td>Biased squared Maximum Mean Discrepancy.</td>
+</tr>
+<tr>
+<td><code>moment_match</code></td>
+<td>function</td>
+<td>EP moment matching: tilted log-normaliser and its first two derivatives.</td>
+</tr>
+<tr>
+<td><code>moment_transform</code></td>
+<td>function</td>
+<td>Moment triple of <code>(x, fn(x))</code> for <code>x</code> Gaussian.</td>
+</tr>
+<tr>
+<td><code>natural_to_expectation</code></td>
+<td>function</td>
+<td>Convert natural parameters to expectation parameters.</td>
+</tr>
+<tr>
+<td><code>natural_to_mean_cov</code></td>
+<td>function</td>
+<td>Convert natural parameters to mean/covariance (operator form).</td>
+</tr>
+<tr>
+<td><code>natural_to_meanvar</code></td>
+<td>function</td>
+<td>Convert natural parameters to mean/variance (Cholesky).</td>
+</tr>
+<tr>
+<td><code>naturals_to_ssm</code></td>
+<td>function</td>
+<td>Convert natural parameters back to SSM parameters.</td>
+</tr>
+<tr>
+<td><code>negative_semidefinite_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>newton_update</code></td>
+<td>function</td>
+<td>Convert a Newton step to natural pseudo-likelihood parameters.</td>
+</tr>
+<tr>
+<td><code>nonlinear_kalman_filter</code></td>
+<td>function</td>
+<td>Moment-matched nonlinear Kalman filter.</td>
+</tr>
+<tr>
+<td><code>nonlinear_kalman_predict</code></td>
+<td>function</td>
+<td>One moment-matched predict step.</td>
+</tr>
+<tr>
+<td><code>nonlinear_kalman_update</code></td>
+<td>function</td>
+<td>One moment-matched update step.</td>
+</tr>
+<tr>
+<td><code>nonlinear_rts_smoother</code></td>
+<td>function</td>
+<td>Moment-matched nonlinear Rauch-Tung-Striebel smoother.</td>
+</tr>
+<tr>
+<td><code>nonlinear_rts_step</code></td>
+<td>function</td>
+<td>One moment-matched RTS backward step.</td>
+</tr>
+<tr>
+<td><code>nystrom_operator</code></td>
+<td>function</td>
+<td>Nystrom low-rank kernel approximation.</td>
+</tr>
+<tr>
+<td><code>oilmm_back_project</code></td>
+<td>function</td>
+<td>Back-project latent GP predictions to the observation space.</td>
+</tr>
+<tr>
+<td><code>oilmm_project</code></td>
+<td>function</td>
+<td>Project multi-output data to independent latent GPs via OILMM.</td>
+</tr>
+<tr>
+<td><code>pairwise_marginals</code></td>
+<td>function</td>
+<td>Joint p(x_k, x_{k+1}) for each consecutive pair.</td>
+</tr>
+<tr>
+<td><code>parallel_kalman_filter</code></td>
+<td>function</td>
+<td>Parallel Kalman filter via <code>jax.lax.associative_scan</code>.</td>
+</tr>
+<tr>
+<td><code>parallel_rts_smoother</code></td>
+<td>function</td>
+<td>Parallel RTS smoother via reverse <code>jax.lax.associative_scan</code>.</td>
+</tr>
+<tr>
+<td><code>positive_semidefinite_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>predict_mean</code></td>
+<td>function</td>
+<td>Predictive mean: <code>mu* = K_*f @ alpha</code>.</td>
+</tr>
+<tr>
+<td><code>predict_variance</code></td>
+<td>function</td>
+<td>Predictive variance: <code>sigma^2* = k_** - diag(K_*f K_y^{-1} K_f*)</code>.</td>
+</tr>
+<tr>
+<td><code>process_noise_covariance</code></td>
+<td>function</td>
+<td>Compute process noise from stationary covariance.</td>
+</tr>
+<tr>
+<td><code>project</code></td>
+<td>function</td>
+<td>Compute A_X = K_XZ @ K_ZZ^{-1} via Cholesky solve.</td>
+</tr>
+<tr>
+<td><code>quadratic_form</code></td>
+<td>function</td>
+<td>Compute <code>x^T A^{-1} x</code> via a single solve.</td>
+</tr>
+<tr>
+<td><code>rff_operator</code></td>
+<td>function</td>
+<td>Random Fourier Features kernel approximation.</td>
+</tr>
+<tr>
+<td><code>riemannian_psd_correction</code></td>
+<td>function</td>
+<td>Riemannian gradient correction for PSD precision updates.</td>
+</tr>
+<tr>
+<td><code>root_decomposition</code></td>
+<td>function</td>
+<td>Compute a tall factor <code>R</code> such that <code>R Rᵀ ≈ A</code>.</td>
+</tr>
+<tr>
+<td><code>root_inv_decomposition</code></td>
+<td>function</td>
+<td>Compute a tall factor <code>R⁻</code> such that <code>R⁻ (R⁻)ᵀ ≈ A⁻¹</code>.</td>
+</tr>
+<tr>
+<td><code>rts_smoother</code></td>
+<td>function</td>
+<td>Rauch-Tung-Striebel backward smoother.</td>
+</tr>
+<tr>
+<td><code>safe_cholesky</code></td>
+<td>function</td>
+<td>Cholesky decomposition with adaptive jitter for near-singular matrices.</td>
+</tr>
+<tr>
+<td><code>sample_joint_conditional</code></td>
+<td>function</td>
+<td>Joint draws of a partitioned Gaussian, and conditional draws from them.</td>
+</tr>
+<tr>
+<td><code>sample_mvn</code></td>
+<td>function</td>
+<td>Draw samples from <span class="arithmatex">\(\mathcal{N}(\mu, K)\)</span>, dispatching on <span class="arithmatex">\(K\)</span>'s structure.</td>
+</tr>
+<tr>
+<td><code>sandwich</code></td>
+<td>function</td>
+<td>Return <code>A @ P @ A.T</code> exploiting compatible operator structure.</td>
+</tr>
+<tr>
+<td><code>schur_complement</code></td>
+<td>function</td>
+<td>Schur complement: <code>K_XX - K_XZ @ K_ZZ^{-1} @ K_ZX</code>.</td>
+</tr>
+<tr>
+<td><code>sde_autocovariance</code></td>
+<td>function</td>
+<td>Compute the stationary autocovariance of an SDE kernel.</td>
+</tr>
+<tr>
+<td><code>sigma_points</code></td>
+<td>function</td>
+<td>Unscented transform sigma points and weights.</td>
+</tr>
+<tr>
+<td><code>site_mean_var_from_natural</code></td>
+<td>function</td>
+<td>Convert per-site natural parameters to mean/variance.</td>
+</tr>
+<tr>
+<td><code>site_natural_from_tilted</code></td>
+<td>function</td>
+<td>Compute site natural parameters from tilted and cavity moments.</td>
+</tr>
+<tr>
+<td><code>sites_to_precision</code></td>
+<td>function</td>
+<td>Convert Gaussian sites to a block-tridiagonal precision.</td>
+</tr>
+<tr>
+<td><code>solve</code></td>
+<td>function</td>
+<td>Solve <code>A x = b</code> with structural dispatch.</td>
+</tr>
+<tr>
+<td><code>solve_columns</code></td>
+<td>function</td>
+<td>Solve A X = B column-by-column via vmap.</td>
+</tr>
+<tr>
+<td><code>solve_matrix</code></td>
+<td>function</td>
+<td>Solve <code>A X = B</code> with a single factorization on the matrix RHS.</td>
+</tr>
+<tr>
+<td><code>solve_rows</code></td>
+<td>function</td>
+<td>Solve A x = bᵢ for each row bᵢ of a matrix via vmap.</td>
+</tr>
+<tr>
+<td><code>solve_tridiagonal</code></td>
+<td>function</td>
+<td>Solve a tridiagonal system <code>A x = d</code>.</td>
+</tr>
+<tr>
+<td><code>solve_tridiagonal_batched</code></td>
+<td>function</td>
+<td>Solve independent tridiagonal systems over leading batch dimensions.</td>
+</tr>
+<tr>
+<td><code>spingp_log_likelihood</code></td>
+<td>function</td>
+<td>Log marginal likelihood via sparse inverse GP formulation.</td>
+</tr>
+<tr>
+<td><code>spingp_posterior</code></td>
+<td>function</td>
+<td>Posterior mean and precision via SpInGP.</td>
+</tr>
+<tr>
+<td><code>sqrt</code></td>
+<td>function</td>
+<td>Compute matrix square root S such that S @ S = A.</td>
+</tr>
+<tr>
+<td><code>sqrt_inv_matmul</code></td>
+<td>function</td>
+<td>Compute <span class="arithmatex">\(A^{-1/2} b\)</span> via contour-integral quadrature.</td>
+</tr>
+<tr>
+<td><code>sqrt_matmul</code></td>
+<td>function</td>
+<td>Compute <span class="arithmatex">\(A^{1/2} b\)</span> via contour-integral quadrature.</td>
+</tr>
+<tr>
+<td><code>ssm_to_expectations</code></td>
+<td>function</td>
+<td>Convert SSM marginals to expectation parameters.</td>
+</tr>
+<tr>
+<td><code>ssm_to_naturals</code></td>
+<td>function</td>
+<td>Convert SSM parameters to natural parameters.</td>
+</tr>
+<tr>
+<td><code>stable_rbf_kernel</code></td>
+<td>function</td>
+<td>RBF (squared exponential) kernel with mixed-precision stability.</td>
+</tr>
+<tr>
+<td><code>stable_squared_distances</code></td>
+<td>function</td>
+<td>Squared Euclidean distances with mixed-precision stability.</td>
+</tr>
+<tr>
+<td><code>statistical_linear_regression</code></td>
+<td>function</td>
+<td>Moment-match a nonlinear conditional to a linear-Gaussian surrogate.</td>
+</tr>
+<tr>
+<td><code>submatrix</code></td>
+<td>function</td>
+<td>Extract <code>A[row_idx, col_idx]</code> without forming the full matrix.</td>
+</tr>
+<tr>
+<td><code>sufficient_stats</code></td>
+<td>function</td>
+<td>Compute sufficient statistics <code>T(x) = [x, x x^T]</code>.</td>
+</tr>
+<tr>
+<td><code>sumkronecker_sample</code></td>
+<td>function</td>
+<td>Sample from <code>𝒩(0, op)</code> with matrix-free Lanczos square roots.</td>
+</tr>
+<tr>
+<td><code>svd</code></td>
+<td>function</td>
+<td>Compute the singular value decomposition <code>A = U diag(s) V^T</code>.</td>
+</tr>
+<tr>
+<td><code>svd_low_rank_plus_diag</code></td>
+<td>function</td>
+<td>Construct <code>diag(diag) + U diag(S) Vᵀ</code> from a truncated SVD.</td>
+</tr>
+<tr>
+<td><code>svgp_variance_adjustment</code></td>
+<td>function</td>
+<td>Compute the SVGP variance adjustment operator.</td>
+</tr>
+<tr>
+<td><code>symmetric_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>symmetrize</code></td>
+<td>function</td>
+<td>Symmetrize the trailing two axes: <code>0.5 * (X + X^T)</code>.</td>
+</tr>
+<tr>
+<td><code>tikhonov_augment</code></td>
+<td>function</td>
+<td>Observation augmentation for Tikhonov-regularised EKI (TEKI).</td>
+</tr>
+<tr>
+<td><code>to_expectation</code></td>
+<td>function</td>
+<td>Convert natural to expectation parameters.</td>
+</tr>
+<tr>
+<td><code>to_natural</code></td>
+<td>function</td>
+<td>Convert expectation to natural parameters.</td>
+</tr>
+<tr>
+<td><code>toeplitz_sample</code></td>
+<td>function</td>
+<td>Sample from <code>𝒩(0, Toeplitz(column))</code> via FFT circulant embedding.</td>
+</tr>
+<tr>
+<td><code>trace</code></td>
+<td>function</td>
+<td>Compute the trace of an operator.</td>
+</tr>
+<tr>
+<td><code>trace_and_diag</code></td>
+<td>function</td>
+<td>Jointly estimate the trace and diagonal from one probe pass.</td>
+</tr>
+<tr>
+<td><code>trace_correction</code></td>
+<td>function</td>
+<td>Trace term in Titsias collapsed ELBO.</td>
+</tr>
+<tr>
+<td><code>trace_product</code></td>
+<td>function</td>
+<td>Trace of a matrix product: <code>tr(A @ B)</code> with structural dispatch.</td>
+</tr>
+<tr>
+<td><code>tridiagonal_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>udl_decomposition</code></td>
+<td>function</td>
+<td>Factorise a symmetric block-tridiagonal precision as <span class="arithmatex">\(U \tilde{D} U^{\top}\)</span>.</td>
+</tr>
+<tr>
+<td><code>udl_from_ssm_params</code></td>
+<td>function</td>
+<td>Build the <code>UDLDecomposition</code> of a Gauss-Markov chain's precision.</td>
+</tr>
+<tr>
+<td><code>udl_to_ssm_params</code></td>
+<td>function</td>
+<td>Read the equivalent Gauss-Markov chain off a <code>UDLDecomposition</code>.</td>
+</tr>
+<tr>
+<td><code>uncertain_bgplvm_predict</code></td>
+<td>function</td>
+<td>Multi-output uncertain GP prediction for BGPLVM.</td>
+</tr>
+<tr>
+<td><code>uncertain_gp_predict</code></td>
+<td>function</td>
+<td>Predictive mean and variance for GP with uncertain inputs.</td>
+</tr>
+<tr>
+<td><code>uncertain_gp_predict_mc</code></td>
+<td>function</td>
+<td>Monte Carlo GP prediction with uncertain inputs.</td>
+</tr>
+<tr>
+<td><code>uncertain_svgp_predict</code></td>
+<td>function</td>
+<td>Predictive mean and variance for SVGP with uncertain inputs.</td>
+</tr>
+<tr>
+<td><code>uncertain_vgp_predict</code></td>
+<td>function</td>
+<td>Predictive mean and variance for dense VGP with uncertain inputs.</td>
+</tr>
+<tr>
+<td><code>unit_diagonal_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>unwhiten</code></td>
+<td>function</td>
+<td>Unwhiten variational mean: <code>m = L @ m_tilde</code>.</td>
+</tr>
+<tr>
+<td><code>unwhiten_covariance</code></td>
+<td>function</td>
+<td>Unwhiten variational covariance: S = L S̃ Lᵀ.</td>
+</tr>
+<tr>
+<td><code>upper_triangular_tag</code></td>
+<td>constant</td>
+<td>Re-exported from <code>lineax</code>.</td>
+</tr>
+<tr>
+<td><code>variational_elbo_gaussian</code></td>
+<td>function</td>
+<td>Titsias collapsed ELBO for Gaussian likelihoods.</td>
+</tr>
+<tr>
+<td><code>variational_elbo_mc</code></td>
+<td>function</td>
+<td>Monte Carlo ELBO for non-conjugate likelihoods.</td>
+</tr>
+<tr>
+<td><code>whiten_covariance</code></td>
+<td>function</td>
+<td>Unwhiten variational covariance: S = L S̃ Lᵀ.</td>
+</tr>
+<tr>
+<td><code>whitened_svgp_predict</code></td>
+<td>function</td>
+<td>Whitened SVGP prediction: mean and variance at test points.</td>
+</tr>
+<tr>
+<td><code>woodbury_solve</code></td>
+<td>function</td>
+<td>Standalone Woodbury identity solve: <code>(L + U diag(D) U^T)^{-1} b</code>.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "toc.follow", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
