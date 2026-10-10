@@ -291,6 +291,24 @@ Read the test's docstring before changing what it checks.
 | `tests/test_release_please_config.py` | Release tags are plain semver (`0.1.1`, no component, no `v`) |
 | ruff (`make lint`), ty (`make typecheck`) | Lint (including the numpydoc section format and sorted `__all__`) and types on `spectraldiffx/` |
 
+## Recipes
+
+Step-by-step recipes for the common jobs live as plain Markdown in
+`.claude/skills/<name>/SKILL.md` (Claude Code loads them automatically; any
+agent can read and follow them):
+
+| Job | Recipe |
+|---|---|
+| Add a per-axis boundary condition, eigenvalue formula, Fourier / Chebyshev / spherical elliptic solver or capacitance base | `add-elliptic-solver` |
+| Add or change a DCT / DST kernel, its normalisation, or a Chebyshev / spherical transform | `add-transform` |
+| Add a derivative or physics operator (a method on the derivative classes, or a new class) | `add-derivative-operator` |
+| Add a spectral filter | `add-spectral-filter` |
+| Add or update an example notebook | `add-notebook` |
+| Bump gaussx | `bump-upstream-pins` |
+| Verify before a PR | `pre-pr-check` |
+| Review a change | `spectraldiffx-review` (+ the read-only `.claude/agents/reuse-reviewer.md` and `spectral-numerics-reviewer.md`) |
+| Write a squash commit message | `squash-commit` |
+
 ## Working in the repo
 
 Always run Python tools through `uv run` (never the system Python); `git`,
