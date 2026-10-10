@@ -1,6 +1,16 @@
 # Code Review Agent Instructions
 
-Standing instructions for **all** agents performing code reviews on this repository.
+Standing instructions for **all** agents performing code reviews on this
+repository. spectraldiffx is a JAX library of pseudospectral transforms,
+derivatives, filters and elliptic solvers: most defects worth finding are
+about **spectral numerics** (a transform paired with the wrong boundary
+condition, a wavenumber missing its 2π/L, a nonlinear product left aliased
+or a linear operator dealiased, a null mode or resonance handled silently,
+a float32 input promoted to float64, a Python branch on a traced value) or
+**boundaries** (a re-implemented DCT, eigenvalue formula or gaussx solve; a
+renamed name finitevolX imports), not style. Read "Boundaries", "Reuse
+before you write" and "The contracts" in [`AGENTS.md`](AGENTS.md) first;
+this file is the checklist and the report format.
 
 ---
 
@@ -9,7 +19,7 @@ Standing instructions for **all** agents performing code reviews on this reposit
 Use the following command to get the diff for review:
 
 ```bash
-BASE_BRANCH="$(git rev-parse --verify master >/dev/null 2>&1 && echo master || echo main)"
+BASE_BRANCH="$(git rev-parse --verify main >/dev/null 2>&1 && echo main || echo master)"
 git --no-pager diff --no-prefix --unified=100000 --minimal $(git merge-base --fork-point "$BASE_BRANCH")...HEAD
 ```
 
@@ -32,212 +42,176 @@ git --no-pager diff --no-prefix --unified=100000 --minimal "$BASE_BRANCH"...HEAD
 
 ## Review Checklist
 
-### 1. Code Style and Readability
+Skip anything ruff, ty or the tests already enforce (formatting, import
+order, `__all__` order, the numpydoc section format, a missing
+`docs/api` entry); review what they cannot see.
 
-- Clear, descriptive naming (variables, functions, classes, modules)
-- Appropriate function/method length (single responsibility)
-- Logical code organization and flow
-- Avoidance of deeply nested structures
-- Linting via **ruff** (`uv run ruff check spectraldiffx/`)
-- Type-hint checking via **ty** (`uv run ty check spectraldiffx`)
+### 1. Reuse and boundaries
 
-> **Rule of thumb**: Sacrifice *cleverness* for *clarity*. Sacrifice *brevity* for *explicitness*.
-> Don't worry about formatting — our CI pipeline (ruff format, pre-commit) handles that automatically.
+- Every function, class or module the diff **adds** has been checked against
+  [`docs/api/capabilities.md`](docs/api/capabilities.md) (spectraldiffx and
+  gaussx) and the private helpers in "Reuse before you write". A
+  re-implemented wavenumber array, 2/3 mask, DCT / DST, Laplacian eigenvalue
+  formula, BC dispatch, spectral solve or gaussx factorisation is a **High**
+  finding, with the existing name to use.
+- gaussx through its public API only; no new dense `jnp.linalg` solve where
+  gaussx has the structure (`EigenFactorization`, `kronecker_sum_solve`,
+  `MaskedOperator`).
+- No import across families (fourier / chebyshev / spherical); inside a
+  family, nothing imports upward from the grid.
+- A renamed or removed public name, or a changed signature, keeps the old
+  one working with a `DeprecationWarning` naming the replacement
+  (finitevolX imports the solvers, eigenvalues and transforms by name).
 
-### 2. Modern Python Idioms (Python ≥ 3.12)
+### 2. Grids and conventions
 
-- `from __future__ import annotations` at the top of every module
-- Type hints on **all** public functions, methods, and module-level variables
-- `pathlib.Path` over `os.path`
-- f-strings for string formatting
-- Walrus operator (`:=`) only when it genuinely improves readability
-- `match` statements for pattern matching where appropriate
-- Structural pattern matching for complex conditionals
-- Context managers (`with` statements) for resource handling
-- `dataclasses` or `equinox` modules for data containers
-- `Enum` for fixed sets of constants
-- Modern union syntax (`X | Y` instead of `Union[X, Y]`)
-- Modern optional syntax (`X | None` instead of `Optional[X]`)
-- Built-in generics (`list[int]`, `dict[str, Any]` instead of `List[int]`, `Dict[str, Any]`)
+- Domain conventions kept: Fourier `[0, L)` with `x_j = j·L/N`; Chebyshev
+  `[−L, L]` with `L` the half-length and decreasing nodes; spherical
+  Gauss–Legendre colatitude with `R = Ly / π`.
+- Wavenumbers from the grid (`k`, `KX`, `K2`), in FFT order, with their
+  2π/L; axis order `(…, z, y, x)` (a swapped `kx` / `ky` passes on square
+  grids: ask for an anisotropic test).
+- Validation of grid fields in `__check_init__`, and only for concrete
+  values (a grid must still build inside `jit`).
 
-### 3. Packaging and Project Structure
+### 3. Operators, filters and dealiasing
 
-- Proper `pyproject.toml` configuration (PEP 621)
-- Appropriate use of `__init__.py` exports
-- Clear module boundaries and dependencies
-- Correct use of relative vs absolute imports
-- Flat layout enforced (`spectraldiffx/` at root)
+- Linear operators keep every resolved mode; nonlinear products are
+  truncated (factors and product), through `apply_dealias`, `jacobian`,
+  `advection_scalar` or `cheb_dealias_product`.
+- The Nyquist mode of an even grid: an odd derivative of it must vanish
+  (the Fourier operators get this by taking `.real` of the inverse
+  transform; a new path, e.g. one through `rfft`, must keep it).
+  Hyperviscosity always dissipative; `inverse_laplacian` zero-mean.
+- Complex physical input rejected (`_real`); results real and the input's
+  shape; `spectral=True` paths consistent with the physical ones.
+- A new public operator joins `CASES` in `tests/test_tracing.py`.
 
-### 4. Documentation
+### 4. Transforms
 
-- Module-level docstrings explaining purpose
-- Function/method docstrings for **all** public APIs (numpy style — be consistent)
-- Inline comments explaining *why*, not *what* — except for complex logic or function calls where a brief *what* comment aids comprehension
-- Complex algorithms should have step-by-step explanations
-- All scientific algorithms should include Unicode equations in docstrings and inline where appropriate (e.g. `# σ² = Σ(xᵢ − μ)² / N`)
-- All docstrings for public classes and functions should include 2–3 example use cases
-- Type hints serve as documentation — ensure they are accurate and complete
-- Use ascii math for array dimension annotations in docstrings
+- scipy's definition and normalisation for both `norm=None` and
+  `"ortho"`, with the round trip through the inverse; registered in
+  `_DCT_IMPLS` / `_DST_IMPLS` and the `_idct_along_axis` /
+  `_idst_along_axis` inverses.
+- `type` / `norm` / `axes` treated as static; real input only; output in
+  the input dtype; checked against `scipy.fft` at odd and prime lengths
+  (`tests/test_transforms_scipy.py`).
 
-### 5. Error Handling
+### 5. Elliptic solvers
 
-- Specific exception types (never bare `except:`)
-- Custom exceptions for domain-specific errors
-- Helpful error messages with context
-- Proper exception chaining (`raise ... from ...`)
-- Early returns / guard clauses to reduce nesting
+- The equation is `(∇² − λ)ψ = f`; `lambda_` in functions, `alpha` in
+  classes; no sign flips.
+- The BC ↔ transform ↔ eigenvalue triple comes from `_BC_DISPATCH` (a
+  regular-grid Dirichlet axis is DST-I on the interior points, staggered is
+  DST-II; Neumann DCT-I / DCT-II; mixed pairs DST / DCT III / IV), and the
+  grid placement the docstring states matches it.
+- FD2 vs pseudo-spectral eigenvalues stated, and the default unchanged
+  (`approximation="fd2"` for the functions, continuous `k²` for the
+  `SpectralHelmholtzSolver*` classes).
+- The null mode set to zero only where the denominator is zero (gh-92);
+  `zero_mean` semantics kept; a resonant `λ` raising through
+  `_check_finite` rather than being zeroed (gh-94).
+- Inhomogeneous BC corrections only with FD2 eigenvalues, never on a
+  periodic axis; BC arguments static under `jit`.
+- A new BC or solver checked against a dense matrix
+  (`tests/test_solvers_dense.py`, `dense_laplacian_1d`).
 
-### 6. Testing Considerations
+### 6. JAX numerics
 
-- Functions should be easily testable (pure functions where possible)
-- Dependencies should be injectable
-- Side effects should be isolated and explicit
-- Consider edge cases and boundary conditions
-- JAX 64-bit precision must be enabled via `conftest.py`
-- Don't group unrelated assertions into a single test function
+- No Python `if` / `float()` / `.item()` / `np.asarray` on a value derived
+  from an array argument; construction-time NumPy only on concrete values.
+- Dtypes follow the input: constants built with `dtype=x.dtype`; a bare
+  Python scalar combined with an array is weakly typed and fine.
+- `jnp.where` branches that divide are safe (`jnp.where(d == 0, 1, d)`
+  before the division), so gradients stay finite.
+- `eqx.Module` (never a dataclass) for anything holding arrays; code-path
+  settings static.
 
-### 7. Performance (when relevant)
+### 7. Public API and documentation
 
-- Appropriate data structures for the use case
-- Generator expressions for large sequences
-- Avoid premature optimization
-- Note O(n) implications for critical paths
-- Prefer JAX-native operations (compatible with `jax.jit` tracing) over Python loops
+- New names: exported from the family `__init__.py` and
+  `spectraldiffx/__init__.py`, a `::: spectraldiffx.<Name>` entry on the
+  right `docs/api/<family>/<page>.md` page, `docs/api/capabilities.md`
+  regenerated.
+- Numpy-style docstrings on every function and class: the equation in
+  plain text (Unicode / ASCII, no LaTeX), array shapes, BC and grid
+  placement for solvers, a reference for a published method, an
+  `Examples` section that actually runs (CI does not collect doctests).
+- `python` fences in `README.md`, `docs/*.md`, `docs/theory/*.md` run
+  (`tests/test_docs.py`); notebooks stay jupytext `.py` with figures saved
+  under `docs/images/<notebook>/`.
 
-### 8. Security
+### 8. Tests
 
-- No hardcoded secrets or credentials
-- Input validation and sanitization
-- Safe handling of file paths (no path traversal vulnerabilities)
-- Appropriate use of `subprocess` (avoid `shell=True`)
+- Against a closed form, `scipy.fft`, a dense matrix or a float64
+  reference, with the tolerance's provenance in a comment.
+- One behaviour per test; fixtures for different equations and grids;
+  non-square, anisotropic grids where axes could be swapped.
+- Tier markers right: unmarked for the fast tier, `slow` above ~3 s
+  (only the expensive cases of a sweep).
+
+### 9. Modern Python and dependencies
+
+- Type hints on every public function; `X | None`; specific exceptions
+  with `raise ... from ...`; guard clauses over deep nesting.
+- No new runtime dependency without discussion; `uv.lock` updated.
 
 ---
 
-## Package Preferences
+## spectraldiffx-Specific Checks
 
-When reviewing dependency choices or suggesting alternatives, prefer these libraries:
-
-| Purpose | Preferred Package |
-|---------|-------------------|
-| Logging | `loguru` |
-| Data containers | `equinox` (JAX-compatible) |
-| Configuration | `hydra-core` / `omegaconf` |
-| Path handling | `pathlib` (stdlib) |
-| Array type hints | `jaxtyping` |
-| Runtime type checks | `beartype` |
-| Testing | `pytest` |
-
----
-
-## Python-Specific Checks
-
-When reviewing, specifically verify the patterns below.
-
-### Type Hints
+### Wavenumbers come from the grid
 
 ```python
-# ❌ Missing type hints
-def process_data(items, threshold):
-    ...
+# ❌ Mode numbers, not wavenumbers: wrong by 2π/L unless L = 2π
+k = jnp.fft.fftfreq(N) * N
+du_dx = jnp.fft.ifft(1j * k * jnp.fft.fft(u)).real
 
-# ✅ Complete type hints
-def process_data(items: list[DataItem], threshold: float) -> ProcessedResult:
-    ...
+# ✅ The grid owns k = 2π·fftfreq(N, dx); the operator rejects complex input
+grid = sdx.FourierGrid1D.from_N_L(N=N, L=L)
+du_dx = sdx.SpectralDerivative1D(grid).gradient(u)
 ```
 
-### Modern Syntax
+On `N = 64`, `L = 1`, `u = sin(2πx)` the first is off by 5.3 (a factor
+2π); the second matches `2π cos(2πx)` to 5e-14.
+
+### Truncate nonlinear products
 
 ```python
-# ❌ Old-style
-from typing import Optional, Union, List, Dict
+# ❌ sin(8x) · ∂ₓcos(10x) on N = 32 creates cos(18x), which aliases onto cos(14x)
+dq_dx, dq_dy = deriv.gradient(q)
+adv = vx * dq_dx + vy * dq_dy
 
-def fetch(id: Optional[int] = None) -> Union[Data, None]:
-    result: Dict[str, List[int]] = {}
-
-# ✅ Modern (Python 3.12+)
-from __future__ import annotations
-
-def fetch(id: int | None = None) -> Data | None:
-    result: dict[str, list[int]] = {}
+# ✅ Factors and product truncated with the grid's strict 2/3 mask
+adv = deriv.advection_scalar(vx, vy, q)
 ```
 
-### Dataclasses for Data Containers
+The first leaves an amplitude-5 `cos(14x)` in the truncated band; the
+second returns exactly `−5 cos(2x)` (error 1e-14). A *linear* operator,
+by contrast, is never dealiased.
+
+### The boundary condition picks the transform
 
 ```python
-# ❌ Plain class with boilerplate
-class Config:
-    def __init__(self, host: str, port: int, timeout: float = 30.0):
-        self.host = host
-        self.port = port
-        self.timeout = timeout
+# ❌ An FFT solve imposes periodicity on the channel walls
+psi = sdx.solve_poisson_fft(rhs, dx, dy)
 
-# ✅ Equinox module (JAX-compatible)
-import equinox as eqx
-
-class Config(eqx.Module):
-    host: str
-    port: int
-    timeout: float = 30.0
+# ✅ FFT along x, DST-I along y (homogeneous Dirichlet walls, interior points)
+psi = sdx.solve_poisson_2d(rhs, dx, dy, bc_x="periodic", bc_y="dirichlet")
 ```
 
-### Path Handling
+For `ψ = sin(2πx)·sin(πy)` on a 32 × 15 channel the first is off by 0.41;
+the second recovers ψ to 2e-15 (it is the exact inverse of the FD2
+Laplacian).
+
+### Constants in the input's dtype
 
 ```python
-# ❌ os.path
-import os
-path = os.path.join(base_dir, "data", filename)
-if os.path.exists(path):
-    with open(path) as f:
-        ...
+# ❌ (-1.0) ** n is float64 under x64, so a float32 input comes back float64
+sign = (-1.0) ** jnp.arange(N)
 
-# ✅ pathlib
-from pathlib import Path
-path = base_dir / "data" / filename
-if path.exists():
-    content = path.read_text()
-```
-
-### Exception Handling
-
-```python
-# ❌ Bare except, poor chaining
-try:
-    result = parse(data)
-except:
-    raise RuntimeError("Failed")
-
-# ✅ Specific exceptions, proper chaining
-try:
-    result = parse(data)
-except json.JSONDecodeError as e:
-    raise ParseError(f"Invalid JSON in {source}") from e
-```
-
-### Explanatory Comments for Complex Logic
-
-```python
-# ❌ No explanation for non-obvious algorithm
-def calculate_score(items):
-    return sum(i.weight * (1 - i.age / 365) for i in items if i.active)
-
-# ✅ Clear explanation of the logic
-def calculate_score(items: list[Item]) -> float:
-    """Calculate weighted score with time decay.
-
-    Score computation:
-        1. Filter to only active items
-        2. Apply time decay: items lose relevance linearly over one year
-        3. Weight each item's contribution by its assigned weight
-        4. Sum all weighted, decayed values
-    """
-    total = 0.0
-    for item in items:
-        if not item.active:
-            continue
-        # Time decay factor: 1.0 for new items → 0.0 after 365 days
-        decay_factor = 1 - (item.age / 365)
-        total += item.weight * decay_factor
-    return total
+# ✅ (as _alternating_sign does)
+sign = (1 - 2 * (jnp.arange(N) % 2)).astype(x.dtype)
 ```
 
 ---

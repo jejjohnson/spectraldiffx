@@ -1,67 +1,55 @@
 # Copilot Instructions
 
-## Project Overview
+Read [`AGENTS.md`](../AGENTS.md) at the repository root first: it is the
+single source of truth for every coding agent working here (the family /
+module map, the boundaries with gaussx and finitevolX, "reuse before you
+write", the contracts, the tests that enforce them, commands, the pre-commit
+checklist, the docs and notebook rules, git and PR rules).
 
-- **Python**: 3.12+
-- **Package Manager**: uv
-- **Layout**: flat layout (`spectraldiffx/`)
-- **Testing**: pytest
-- **Docs**: MkDocs + Material + mkdocstrings + mkdocs-jupyter
+The essentials, in case you only read this file:
 
-## Build & Test Commands
+- One package, `spectraldiffx/` (flat layout), three independent families
+  under `spectraldiffx/_src/`: `fourier/` (grids, DCT / DST transforms,
+  Laplacian eigenvalues, derivatives, filters, elliptic solvers, the
+  capacitance solver), `chebyshev/` and `spherical/`. The public API is
+  `spectraldiffx.__all__`. Search
+  [`docs/api/capabilities.md`](../docs/api/capabilities.md) before writing a
+  helper.
+- gaussx (upstream) owns the structured linear algebra; finitevolX
+  (downstream) imports the solvers, eigenvalues and transforms by name, so
+  renames go through a `DeprecationWarning`.
+- Keep the contracts in `AGENTS.md`:
+  - **grids**: per-family domain conventions (Fourier `[0, L)`, Chebyshev
+    `[−L, L]` half-length, spherical Gauss–Legendre), axis order
+    `(…, z, y, x)`, strict 2/3 mask;
+  - **operators**: linear operators never dealias, nonlinear products do;
+    complex physical input raises;
+  - **transforms**: scipy conventions, `norm=None | "ortho"`, static
+    `type` / `norm` / `axes`, dtype preserved;
+  - **elliptic solvers**: `(∇² − λ)ψ = f`; the BC picks the transform
+    (`_BC_DISPATCH`); FD2 vs spectral eigenvalues; one null-mode policy;
+    resonance raises through `eqx.error_if`;
+  - **JAX numerics**: no Python control flow on traced values, no dtype
+    promotion (the transforms and the `solve_*` functions keep float32
+    even with x64 on), new
+    public operators join `CASES` in `tests/test_tracing.py`.
+- Docstrings are numpy style, with plain-text (Unicode / ASCII) equations and
+  array shapes. Notebooks are jupytext `.py` files in `notebooks/` (never
+  `.ipynb`).
+- Before committing, from the repo root: `make test-fast`,
+  `uv run ruff check .`, `uv run ruff format --check .`, `make typecheck`;
+  `make capabilities` after a public API change; `make docs` after a docs
+  change.
+- Path-scoped standards live in `.github/instructions/`; code review follows
+  [`CODE_REVIEW.md`](../CODE_REVIEW.md).
 
-```bash
-make install     # Install all dependencies (uv sync --all-extras)
-make test        # Run tests (uv run pytest tests/ -v)
-make lint        # Lint code (ruff check)
-make format      # Format code (ruff format + ruff check --fix)
-make typecheck   # Type check (ty check spectraldiffx)
-make precommit   # Run pre-commit on all files
-make docs-serve  # Serve docs locally
-```
+## Behavioral guidelines
 
-## Key Directories
-
-| Path | Purpose |
-|------|---------|
-| `spectraldiffx/` | Main package source code |
-| `tests/` | Test suite |
-| `docs/` | Documentation (MkDocs) |
-| `notebooks/` | Jupyter notebooks |
-| `scripts/` | Example scripts |
-
-## Behavioral Guidelines
-
-### Do Not Nitpick
-- Ignore style issues that linters/formatters catch (formatting, import order, quote style)
-- Don't suggest changes to code you weren't asked to modify
-- Match existing patterns even if you'd do it differently
-
-### Always Propose Tests
-When implementing features or fixing bugs:
-1. Write a test that verifies the expected behavior
-2. Implement the change
-3. Verify the test passes
-
-### Never Suggest Without a Proposal
-Bad: "You should add validation here"
-Good: "Add validation here. Proposed implementation:"
-```python
-if value < 0:
-    raise ValueError('Value must be non-negative')
-```
-
-### Simplicity First
-- No abstractions for single-use code
-- No speculative features beyond what was asked
-- If 200 lines could be 50, propose the simpler version
-
-### Surgical Changes
-- Only modify lines directly related to the request
-- Don't refactor adjacent code
-- Don't add docstrings/comments to code you didn't change
-- Remove only imports/functions that YOUR changes made unused
-
-## Code Review
-
-For all code review tasks, follow the guidance in `/CODE_REVIEW.md`.
+- **Do not nitpick**: ignore what ruff and the formatter catch, and code you
+  were not asked to change; match existing patterns.
+- **Always propose tests**: a test that shows the expected behaviour (an
+  analytic field, a dense matrix, `scipy.fft`), then the change.
+- **Never suggest without a proposal**: "Add validation here", followed by
+  the code.
+- **Simplicity first, surgical changes**: no abstractions for single-use
+  code, no speculative features; remove only what your change made unused.
