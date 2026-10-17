@@ -7,6 +7,7 @@ import equinox as eqx
 from jax.core import Tracer
 import jax.numpy as jnp
 from jaxtyping import Array, Float
+import numpy as np
 
 from .grid import FourierGrid1D, FourierGrid2D, FourierGrid3D
 
@@ -34,10 +35,12 @@ def _validate_hyperviscosity(nu: float | Array, order: int) -> None:
     concrete ``nu < 0`` raises here; a traced ``nu`` (``jax.jit``, ``vmap``,
     a learnable coefficient) is checked at run time by `_guard_nu` (gh-103).
     """
-    if not isinstance(order, Tracer) and order < 1:
+    # Compare on the host (NumPy): a concrete jax Array compared with `<`
+    # inside a jit trace would itself be staged out as a tracer.
+    if not isinstance(order, Tracer) and np.any(np.asarray(order) < 1):
         msg = f"Hyperviscosity order must be >= 1, got {order}."
         raise ValueError(msg)
-    if not isinstance(nu, Tracer) and nu < 0:
+    if not isinstance(nu, Tracer) and np.any(np.asarray(nu) < 0):
         msg = f"Hyperviscosity coefficient nu must be >= 0, got {nu}."
         raise ValueError(msg)
 

@@ -110,3 +110,13 @@ def test_modify_rhs_1d_with_traced_boundary_values():
     np.testing.assert_allclose(zeros, rhs, rtol=0, atol=0)
     with pytest.raises(_RUNTIME_ERRORS, match="Periodic"):
         jax.jit(lambda a: modify_rhs_1d(rhs, "periodic", 0.1, (a, 0.0)))(1.0)
+
+
+def test_concrete_array_nu_inside_jit():
+    """A concrete jax Array nu closed over by a jitted function (a module
+    leaf, say) is checked on the host, not staged out as a tracer."""
+    d, shape = DERIVS["2d"]
+    u = _rng_field(shape)
+    nu = jnp.asarray(1e-3)
+    jitted = jax.jit(lambda x: d.hyperviscosity(x, nu, 2))(u)
+    np.testing.assert_allclose(jitted, d.hyperviscosity(u, 1e-3, 2), rtol=1e-12)
