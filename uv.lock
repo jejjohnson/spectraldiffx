@@ -2037,7 +2037,7 @@ name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess", marker = "platform_machine != 'ARM64' or sys_platform != 'win32'" },
+    { name = "ptyprocess" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [
@@ -2086,6 +2086,31 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/86/77/eacc62356b4cf81abe99ff9dbc7402750044aed02cfd6a503f7c6fc11f3e/pillow-12.1.0-cp313-cp313t-win32.whl", hash = "sha256:7315f9137087c4e0ee73a761b163fc9aa3b19f5f606a7fc08d83fd3e4379af65", size = 6336445, upload-time = "2026-01-02T09:12:14.775Z" },
     { url = "https://files.pythonhosted.org/packages/e7/3c/57d81d0b74d218706dafccb87a87ea44262c43eef98eb3b164fd000e0491/pillow-12.1.0-cp313-cp313t-win_amd64.whl", hash = "sha256:0ddedfaa8b5f0b4ffbc2fa87b556dc59f6bb4ecb14a53b33f9189713ae8053c0", size = 7045354, upload-time = "2026-01-02T09:12:16.599Z" },
     { url = "https://files.pythonhosted.org/packages/ac/82/8b9b97bba2e3576a340f93b044a3a3a09841170ab4c1eb0d5c93469fd32f/pillow-12.1.0-cp313-cp313t-win_arm64.whl", hash = "sha256:80941e6d573197a0c28f394753de529bb436b1ca990ed6e765cf42426abc39f8", size = 2454547, upload-time = "2026-01-02T09:12:18.704Z" },
+]
+
+[[package]]
+name = "pipekit"
+version = "0.0.2"
+source = { git = "https://github.com/jejjohnson/pipekit.git?subdirectory=packages%2Fpipekit&rev=d1eb41d4ac98c371cb198ee72aedfdf45046127c#d1eb41d4ac98c371cb198ee72aedfdf45046127c" }
+
+[[package]]
+name = "pipekit-cycle"
+version = "0.0.2"
+source = { git = "https://github.com/jejjohnson/pipekit.git?subdirectory=packages%2Fpipekit-cycle&rev=d1eb41d4ac98c371cb198ee72aedfdf45046127c#d1eb41d4ac98c371cb198ee72aedfdf45046127c" }
+dependencies = [
+    { name = "pipekit" },
+]
+
+[[package]]
+name = "pipekit-jax"
+version = "0.0.2"
+source = { git = "https://github.com/jejjohnson/pipekit.git?subdirectory=packages%2Fpipekit-jax&rev=d1eb41d4ac98c371cb198ee72aedfdf45046127c#d1eb41d4ac98c371cb198ee72aedfdf45046127c" }
+dependencies = [
+    { name = "equinox" },
+    { name = "jax" },
+    { name = "jaxtyping" },
+    { name = "pipekit" },
+    { name = "pipekit-cycle" },
 ]
 
 [[package]]
@@ -2804,7 +2829,7 @@ wheels = [
 
 [[package]]
 name = "spectraldiffx"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "equinox" },
@@ -2910,6 +2935,10 @@ jlab = [
     { name = "ipykernel" },
     { name = "jupyter" },
 ]
+pipekit = [
+    { name = "pipekit" },
+    { name = "pipekit-jax" },
+]
 test = [
     { name = "coverage" },
     { name = "mktestdocs" },
@@ -2966,6 +2995,8 @@ requires-dist = [
     { name = "networkx", marker = "extra == 'test'", specifier = ">=3.2" },
     { name = "numpy", specifier = ">=1.26.0" },
     { name = "numpy", marker = "extra == 'examples'", specifier = ">=1.26.0" },
+    { name = "pipekit", marker = "extra == 'pipekit'", git = "https://github.com/jejjohnson/pipekit.git?subdirectory=packages%2Fpipekit&rev=d1eb41d4ac98c371cb198ee72aedfdf45046127c" },
+    { name = "pipekit-jax", marker = "extra == 'pipekit'", git = "https://github.com/jejjohnson/pipekit.git?subdirectory=packages%2Fpipekit-jax&rev=d1eb41d4ac98c371cb198ee72aedfdf45046127c" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18.0" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.11" },
@@ -2984,7 +3015,7 @@ requires-dist = [
     { name = "xarray", marker = "extra == 'examples'", specifier = ">=2024.6.0" },
     { name = "xdoctest", marker = "extra == 'test'", specifier = ">=1.1.3" },
 ]
-provides-extras = ["test", "dev", "exp", "jlab", "examples", "docs", "all"]
+provides-extras = ["test", "pipekit", "dev", "exp", "jlab", "examples", "docs", "all"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "spectraldiffx", extras = ["dev", "test"] }]
