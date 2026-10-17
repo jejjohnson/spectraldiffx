@@ -64,6 +64,7 @@ from __future__ import annotations
 
 import jax.numpy as jnp
 from jaxtyping import Array, Float
+import numpy as np
 
 
 def dst1_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
@@ -344,8 +345,12 @@ def fft_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
 
 
 def _validate_L(L: float, name: str) -> None:
-    """Raise ValueError if L is not positive."""
-    if L <= 0:
+    """Raise ValueError if a concrete L is not positive (traced L is skipped).
+
+    The solvers pass ``L = N * dx``, which may be traced under ``jax.jit``
+    (gh-103); a Python comparison on a tracer would raise.
+    """
+    if isinstance(L, (int, float, np.number)) and L <= 0:
         raise ValueError(f"{name} requires L > 0, got L={L}.")
 
 

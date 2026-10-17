@@ -69,6 +69,22 @@ def _check_lengths(*axes: tuple[str, int, float, float]) -> None:
             )
 
 
+def _close(a: float, b: float, rtol: float) -> bool:
+    """``a ≈ b`` for concrete numbers; ``True`` for traced values (unchecked).
+
+    Plain Python arithmetic: no device round trip, and no boolean conversion
+    of a tracer when a grid is checked inside ``jax.jit`` (gh-103).
+    """
+    if not all(isinstance(v, (int, float, np.number)) for v in (a, b)):
+        return True
+    return math.isclose(float(a), float(b), rel_tol=rtol)
+
+
+def _is_whole(n: float) -> bool:
+    """Whether ``n`` (a concrete L / dx) is an integer up to rounding."""
+    return math.isclose(float(n), round(float(n)), abs_tol=1e-8)
+
+
 def _two_thirds_mask(N: int) -> Float[Array, "N"]:
     """Orszag's 2/3-rule mask for one axis: keep mode n iff 3|n| < N.
 
@@ -144,7 +160,7 @@ class FourierGrid1D(eqx.Module):
             True if consistent, raises ValueError otherwise.
         """
         expected_L = self.N * self.dx
-        if not jnp.isclose(self.L, expected_L, rtol=rtol):
+        if not _close(self.L, expected_L, rtol):
             raise ValueError(
                 f"Grid inconsistency detected.\n"
                 f"  L (defined): {self.L}\n"
@@ -200,7 +216,7 @@ class FourierGrid1D(eqx.Module):
         ValueError: If L is not divisible by dx (N is not an integer).
         """
         N_float = L / dx
-        if not jnp.isclose(N_float % 1, 0) and not jnp.isclose(N_float % 1, 1):
+        if not _is_whole(N_float):
             raise ValueError(
                 f"L={L} is not divisible by dx={dx}. Resulting N={N_float} is not an integer."
             )
@@ -348,11 +364,11 @@ class FourierGrid2D(eqx.Module):
         expected_Ly = self.Ny * self.dy
 
         errors = []
-        if not jnp.isclose(self.Lx, expected_Lx, rtol=rtol):
+        if not _close(self.Lx, expected_Lx, rtol):
             errors.append(
                 f"X-dimension inconsistency: Lx={self.Lx} vs Nx*dx={expected_Lx}"
             )
-        if not jnp.isclose(self.Ly, expected_Ly, rtol=rtol):
+        if not _close(self.Ly, expected_Ly, rtol):
             errors.append(
                 f"Y-dimension inconsistency: Ly={self.Ly} vs Ny*dy={expected_Ly}"
             )
@@ -426,9 +442,9 @@ class FourierGrid2D(eqx.Module):
         Ny_float = Ly / dy
 
         errors = []
-        if not jnp.isclose(Nx_float % 1, 0) and not jnp.isclose(Nx_float % 1, 1):
+        if not _is_whole(Nx_float):
             errors.append(f"Lx={Lx} not divisible by dx={dx} (Nx={Nx_float})")
-        if not jnp.isclose(Ny_float % 1, 0) and not jnp.isclose(Ny_float % 1, 1):
+        if not _is_whole(Ny_float):
             errors.append(f"Ly={Ly} not divisible by dy={dy} (Ny={Ny_float})")
 
         if errors:
@@ -581,15 +597,15 @@ class FourierGrid3D(eqx.Module):
         expected_Lx = self.Nx * self.dx
 
         errors = []
-        if not jnp.isclose(self.Lz, expected_Lz, rtol=rtol):
+        if not _close(self.Lz, expected_Lz, rtol):
             errors.append(
                 f"Z-dimension inconsistency: Lz={self.Lz} vs Nz*dz={expected_Lz}"
             )
-        if not jnp.isclose(self.Ly, expected_Ly, rtol=rtol):
+        if not _close(self.Ly, expected_Ly, rtol):
             errors.append(
                 f"Y-dimension inconsistency: Ly={self.Ly} vs Ny*dy={expected_Ly}"
             )
-        if not jnp.isclose(self.Lx, expected_Lx, rtol=rtol):
+        if not _close(self.Lx, expected_Lx, rtol):
             errors.append(
                 f"X-dimension inconsistency: Lx={self.Lx} vs Nx*dx={expected_Lx}"
             )
@@ -697,11 +713,11 @@ class FourierGrid3D(eqx.Module):
         Nx_float = Lx / dx
 
         errors = []
-        if not jnp.isclose(Nz_float % 1, 0) and not jnp.isclose(Nz_float % 1, 1):
+        if not _is_whole(Nz_float):
             errors.append(f"Lz={Lz} not divisible by dz={dz} (Nz={Nz_float})")
-        if not jnp.isclose(Ny_float % 1, 0) and not jnp.isclose(Ny_float % 1, 1):
+        if not _is_whole(Ny_float):
             errors.append(f"Ly={Ly} not divisible by dy={dy} (Ny={Ny_float})")
-        if not jnp.isclose(Nx_float % 1, 0) and not jnp.isclose(Nx_float % 1, 1):
+        if not _is_whole(Nx_float):
             errors.append(f"Lx={Lx} not divisible by dx={dx} (Nx={Nx_float})")
 
         if errors:

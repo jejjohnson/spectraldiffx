@@ -38,6 +38,7 @@ from collections.abc import Callable
 from typing import Literal
 
 import equinox as eqx
+from jax.core import Tracer
 import jax.numpy as jnp
 from jaxtyping import Array, Float
 
@@ -190,6 +191,11 @@ def _bc_type_for_side(bc: BoundaryCondition, side: str) -> str:
     return bc[0] if side == "left" else bc[1]
 
 
+def _is_traced(*values: object) -> bool:
+    """Whether any of ``values`` is a JAX tracer (``jit`` / ``vmap`` / ``grad``)."""
+    return any(isinstance(v, Tracer) for v in values)
+
+
 def _rhs_correction_1d(
     bc: BoundaryCondition,
     dx: float,
@@ -207,6 +213,14 @@ def _rhs_correction_1d(
     bc_right = _bc_type_for_side(bc, "right")
 
     if bc_left == "periodic" or bc_right == "periodic":
+        if _is_traced(left_val, right_val):
+            # Traced values (gh-103): check at run time instead.
+            zero = eqx.error_if(
+                jnp.zeros(()),
+                (jnp.asarray(left_val) != 0) | (jnp.asarray(right_val) != 0),
+                "Periodic BCs cannot have inhomogeneous values.",
+            )
+            return zero, zero
         if left_val != 0.0 or right_val != 0.0:
             msg = "Periodic BCs cannot have inhomogeneous values."
             raise ValueError(msg)
@@ -253,7 +267,8 @@ def modify_rhs_1d(
         Modified RHS with boundary source terms incorporated.
     """
     left_val, right_val = bc_values
-    if left_val == 0.0 and right_val == 0.0:
+    # The shortcut needs concrete values; traced ones take the general path.
+    if not _is_traced(left_val, right_val) and left_val == 0.0 and right_val == 0.0:
         return rhs
     left_corr, right_corr = _rhs_correction_1d(bc, dx, left_val, right_val)
     rhs = rhs.at[0].add(left_corr)
