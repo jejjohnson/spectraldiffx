@@ -271,8 +271,10 @@ def modify_rhs_1d(
     if not _is_traced(left_val, right_val) and left_val == 0.0 and right_val == 0.0:
         return rhs
     left_corr, right_corr = _rhs_correction_1d(bc, dx, left_val, right_val)
-    rhs = rhs.at[0].add(left_corr)
-    rhs = rhs.at[-1].add(right_corr)
+    # Cast to the RHS dtype: a traced or float64 correction must not scatter
+    # into a float32 RHS (an unsafe cast, an error under x64).
+    rhs = rhs.at[0].add(jnp.asarray(left_corr, rhs.dtype))
+    rhs = rhs.at[-1].add(jnp.asarray(right_corr, rhs.dtype))
     return rhs
 
 

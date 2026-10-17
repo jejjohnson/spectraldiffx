@@ -38,6 +38,7 @@ import math
 from typing import Literal
 
 import equinox as eqx
+from jax.core import Tracer
 import jax.numpy as jnp
 from jaxtyping import Array, Complex, Float
 import numpy as np
@@ -57,12 +58,13 @@ def _check_lengths(*axes: tuple[str, int, float, float]) -> None:
     """Raise if L != N·d on any axis, for concrete Python/NumPy numbers.
 
     Uses plain Python arithmetic so it also works while a grid is built
-    inside ``jax.jit`` from constants; traced or array values are skipped.
+    inside ``jax.jit`` from constants; traced values are skipped.
     """
     for name, n, length, step in axes:
-        if not all(isinstance(v, (int, float, np.number)) for v in (length, step)):
+        if isinstance(length, Tracer) or isinstance(step, Tracer):
             continue
-        if not math.isclose(float(length), n * float(step), rel_tol=1e-5):
+        L, d = float(np.asarray(length)), float(np.asarray(step))
+        if not math.isclose(L, n * d, rel_tol=1e-5):
             raise ValueError(
                 f"Grid inconsistency detected on axis {name}: "
                 f"L = {length} but N * d = {n} * {step} = {n * float(step)}."
@@ -70,19 +72,24 @@ def _check_lengths(*axes: tuple[str, int, float, float]) -> None:
 
 
 def _close(a: float, b: float, rtol: float) -> bool:
-    """``a ≈ b`` for concrete numbers; ``True`` for traced values (unchecked).
+    """``a ≈ b`` for concrete values; ``True`` for traced values (unchecked).
 
-    Plain Python arithmetic: no device round trip, and no boolean conversion
-    of a tracer when a grid is checked inside ``jax.jit`` (gh-103).
+    Compared on the host, so a concrete jax Array is checked too and no
+    tracer is converted to a bool inside ``jax.jit`` (gh-103).
     """
-    if not all(isinstance(v, (int, float, np.number)) for v in (a, b)):
+    if isinstance(a, Tracer) or isinstance(b, Tracer):
         return True
-    return math.isclose(float(a), float(b), rel_tol=rtol)
+    return math.isclose(float(np.asarray(a)), float(np.asarray(b)), rel_tol=rtol)
 
 
 def _is_whole(n: float) -> bool:
-    """Whether ``n`` (a concrete L / dx) is an integer up to rounding."""
-    return math.isclose(float(n), round(float(n)), abs_tol=1e-8)
+    """Whether ``n`` (a concrete L / dx) is an integer up to rounding.
+
+    The tolerances are ``jnp.isclose``'s defaults, loose enough for a
+    float32 ratio (``np.float32(0.45) / np.float32(0.09)`` = 4.9999995).
+    """
+    n = float(np.asarray(n))
+    return math.isclose(n, round(n), rel_tol=1e-5, abs_tol=1e-8)
 
 
 def _two_thirds_mask(N: int) -> Float[Array, "N"]:

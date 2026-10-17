@@ -31,9 +31,9 @@ def _real(u: Array) -> Array:
 def _validate_hyperviscosity(nu: float | Array, order: int) -> None:
     """Validate hyperviscosity parameters that are concrete.
 
-    ``order`` is an exponent and must be a concrete Python int >= 1. A
-    concrete ``nu < 0`` raises here; a traced ``nu`` (``jax.jit``, ``vmap``,
-    a learnable coefficient) is checked at run time by `_guard_nu` (gh-103).
+    A concrete ``order < 1`` or ``nu < 0`` raises here; a traced one
+    (``jax.jit``, ``vmap``, a learnable coefficient) is checked at run time
+    by `_guard_params` (gh-103).
     """
     # Compare on the host (NumPy): a concrete jax Array compared with `<`
     # inside a jit trace would itself be staged out as a tracer.
@@ -45,12 +45,12 @@ def _validate_hyperviscosity(nu: float | Array, order: int) -> None:
         raise ValueError(msg)
 
 
-def _guard_nu(x: Array, nu: float | Array) -> Array:
-    """Raise at run time (``eqx.error_if``) if a traced ``nu`` is negative."""
+def _guard_params(x: Array, nu: float | Array, order: int | Array) -> Array:
+    """Raise at run time (``eqx.error_if``) on a traced ``nu < 0`` or ``order < 1``."""
     if isinstance(nu, Tracer):
-        return eqx.error_if(
-            x, jnp.asarray(nu) < 0, "Hyperviscosity coefficient nu must be >= 0."
-        )
+        x = eqx.error_if(x, nu < 0, "Hyperviscosity coefficient nu must be >= 0.")
+    if isinstance(order, Tracer):
+        x = eqx.error_if(x, order < 1, "Hyperviscosity order must be >= 1.")
     return x
 
 
@@ -189,7 +189,7 @@ class SpectralDerivative1D(eqx.Module):
         _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(_real(u))
         k = self.grid.k
-        hyp_hat = _guard_nu(-nu * k ** (2 * order) * u_hat, nu)
+        hyp_hat = _guard_params(-nu * k ** (2 * order) * u_hat, nu, order)
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(self, u: Array, spectral: bool = False) -> Float[Array, "N"]:
@@ -336,7 +336,7 @@ class SpectralDerivative2D(eqx.Module):
         _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(_real(u))
         K2 = self.grid.K2
-        hyp_hat = _guard_nu(-nu * K2**order * u_hat, nu)
+        hyp_hat = _guard_params(-nu * K2**order * u_hat, nu, order)
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(
@@ -575,7 +575,7 @@ class SpectralDerivative3D(eqx.Module):
         _validate_hyperviscosity(nu, order)
         u_hat = u if spectral else self.grid.transform(_real(u))
         K2 = self.grid.K2
-        hyp_hat = _guard_nu(-nu * K2**order * u_hat, nu)
+        hyp_hat = _guard_params(-nu * K2**order * u_hat, nu, order)
         return self.grid.transform(hyp_hat, inverse=True).real
 
     def inverse_laplacian(

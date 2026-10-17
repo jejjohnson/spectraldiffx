@@ -21,6 +21,7 @@ from spectraldiffx import (
     SpectralDerivative1D,
     SpectralDerivative2D,
     SpectralDerivative3D,
+    dst1_eigenvalues_ps,
     modify_rhs_1d,
     solve_helmholtz_dst,
 )
@@ -120,3 +121,39 @@ def test_concrete_array_nu_inside_jit():
     nu = jnp.asarray(1e-3)
     jitted = jax.jit(lambda x: d.hyperviscosity(x, nu, 2))(u)
     np.testing.assert_allclose(jitted, d.hyperviscosity(u, 1e-3, 2), rtol=1e-12)
+
+
+def test_traced_order_is_guarded_at_run_time():
+    d, shape = DERIVS["2d"]
+    u = _rng_field(shape)
+    with pytest.raises(_RUNTIME_ERRORS, match="order must be >= 1"):
+        jax.jit(lambda n: d.hyperviscosity(u, 1.0, n))(0)
+
+
+def test_traced_nonpositive_L_is_guarded_at_run_time():
+    want = dst1_eigenvalues_ps(8, 2.0)
+    np.testing.assert_allclose(jax.jit(lambda L: dst1_eigenvalues_ps(8, L))(2.0), want)
+    for bad in (0.0, -2.0):
+        with pytest.raises(_RUNTIME_ERRORS, match="L > 0"):
+            jax.jit(lambda L: dst1_eigenvalues_ps(8, L))(bad)
+    with pytest.raises(ValueError, match="L > 0"):
+        dst1_eigenvalues_ps(8, jnp.asarray(0.0))
+
+
+def test_grid_checks_concrete_jax_scalars():
+    """Eager jax scalars are concrete: an inconsistent grid is still caught."""
+    with pytest.raises(ValueError, match="inconsistency"):
+        FourierGrid1D(N=4, L=jnp.array(1.0), dx=jnp.array(1.0)).check_consistency()
+
+
+def test_from_L_dx_accepts_float32_rounding():
+    # np.float32(0.45) / np.float32(0.09) = 4.9999995, off 5 by ~5e-7
+    assert FourierGrid1D.from_L_dx(np.float32(0.45), np.float32(0.09)).N == 5
+
+
+def test_traced_periodic_values_keep_a_float32_rhs():
+    """Under x64 a float32 RHS stays float32 (no unsafe float64 scatter)."""
+    rhs = _rng_field((9,)).astype(jnp.float32)
+    got = jax.jit(lambda a: modify_rhs_1d(rhs, "periodic", 0.1, (a, 0.0)))(0.0)
+    assert got.dtype == jnp.float32
+    np.testing.assert_array_equal(got, rhs)
