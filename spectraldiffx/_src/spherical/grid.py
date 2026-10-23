@@ -22,10 +22,11 @@ which makes the columns orthonormal against the GL weights:
     Σⱼ wⱼ · P̃ₗᵐ(μⱼ) · P̃_{l'}^m(μⱼ) = δ_{l, l'}
 
 Stability envelope
-    :func:`_alp_matrix` evaluates P̃ₗᵐ via ``scipy.special.lpmv`` with a
-    log-gamma normalisation.  This is numerically stable in float64 up to
-    about l ≈ 512 (m up to the same).  For higher truncations use a custom
-    recurrence (not provided here).
+    :func:`_alp_tables` builds P̃ₗᵐ with the normalised three-term recurrence
+    (Holmes & Featherstone 2002), never forming the unnormalised Pₗᵐ, which
+    overflows float64 near m ≈ 85 (gh-96).  It stays in float64 range up to
+    about l ≈ 1500; beyond that the sectoral seed P̃ₘᵐ ∝ sinᵐθ underflows
+    near the poles.
 
 References
 ----------
@@ -101,6 +102,84 @@ def _legendre_matrix(l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     return P
 
 
+def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
+    """
+    Compute normalised associated Legendre functions by the stable recurrence.
+
+    Returns P[i, l, j] = P̃ₗᵐ(μⱼ) for m = m_values[i] and l = 0, …, l_max,
+    with P̃ₗᵐ = Nₗ,ₘ · Pₗᵐ (Condon–Shortley phase included, as in
+    ``scipy.special.lpmv``) and Nₗ,ₘ = √((2l+1)/2 · (l−m)!/(l+m)!), so that
+    ∫₋₁¹ P̃ₗᵐ P̃ₗ′ᵐ dμ = δₗₗ′.  Rows with l < m are zero.
+
+    The normalised functions are built directly, so no unnormalised Pₗᵐ (which
+    grows like (2m−1)!! and overflows float64 near m ≈ 85, gh-96) and no
+    factorial ratio is ever formed:
+
+        P̃₀⁰ = 1/√2
+        P̃ₘᵐ = −√((2m+1)/(2m)) · s · P̃ₘ₋₁ᵐ⁻¹,          s = √(1 − μ²)
+        P̃ₘ₊₁ᵐ = √(2m+3) · μ · P̃ₘᵐ
+        P̃ₗᵐ = aₗₘ (μ P̃ₗ₋₁ᵐ − bₗₘ P̃ₗ₋₂ᵐ),
+            aₗₘ = √((4l²−1)/(l²−m²)),  bₗₘ = √(((l−1)²−m²)/(4(l−1)²−1))
+
+    (Holmes & Featherstone 2002, "standard forward column" recurrence).  In
+    float64 the sectoral seed P̃ₘᵐ ∝ sᵐ stays in range up to about l ≈ 1500;
+    beyond that it underflows near the poles.
+
+    Parameters
+    ----------
+    m_values : ndarray [Nm]
+        Orders m >= 0 to tabulate (any order, repeats allowed).
+    l_max : int
+        Maximum degree, inclusive.
+    mu : ndarray [Ny]
+        Evaluation points μ = cos θ in [−1, 1].
+
+    Returns
+    -------
+    P : ndarray [Nm, l_max + 1, Ny]
+        Normalised ALP tables, float64.
+
+    References
+    ----------
+    Holmes, S. A. and Featherstone, W. E. (2002). A unified approach to the
+    Clenshaw summation and the recursive computation of very high degree and
+    order normalised associated Legendre functions. J. Geodesy 76, 279–299.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> P = _alp_tables(np.array([0, 2]), 3, np.array([0.0, 0.5]))
+    >>> P.shape
+    (2, 4, 2)
+    >>> round(float(P[0, 0, 0]), 6)  # P̃₀⁰ = 1/√2
+    0.707107
+    """
+    m_values = np.asarray(m_values, dtype=int)
+    mu = np.asarray(mu, dtype=np.float64)
+    s = np.sqrt(np.clip(1.0 - mu**2, 0.0, None))  # (Ny,)
+    n = l_max + 1
+    m_top = int(m_values.max(initial=0))
+
+    # Sectoral values P̃ₘᵐ for m = 0, …, m_top by a running product over m.
+    sectoral = np.empty((m_top + 1, mu.size))  # (m_top + 1, Ny)
+    sectoral[0] = 1.0 / np.sqrt(2.0)
+    for m in range(1, m_top + 1):
+        sectoral[m] = -np.sqrt((2 * m + 1) / (2 * m)) * s * sectoral[m - 1]
+
+    P = np.zeros((m_values.size, n, mu.size), dtype=np.float64)  # (Nm, L, Ny)
+    for i, m in enumerate(m_values):
+        if m > l_max:
+            continue  # P̃ₗᵐ = 0 for every l <= l_max < m
+        P[i, m] = sectoral[m]
+        if m + 1 < n:
+            P[i, m + 1] = np.sqrt(2 * m + 3) * mu * sectoral[m]
+        for l in range(m + 2, n):
+            a = np.sqrt((4 * l * l - 1) / (l * l - m * m))
+            b = np.sqrt(((l - 1) ** 2 - m * m) / (4 * (l - 1) ** 2 - 1))
+            P[i, l] = a * (mu * P[i, l - 1] - b * P[i, l - 2])
+    return P
+
+
 def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     """
     Compute the normalised Associated Legendre Polynomial (ALP) matrix.
@@ -111,14 +190,15 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     constant such that:
         sum_j w_j * P_norm[l, j] * P_norm[l', j] = delta_{l, l'}
 
-    For l < m, P_l^m = 0 (returned as zero rows).
+    For l < m, P_l^m = 0 (returned as zero rows).  Evaluated with the stable
+    normalised recurrence of :func:`_alp_tables` (gh-96).
 
     Parameters
     ----------
     m_abs : int
         Absolute value of the zonal wavenumber m (>= 0).
     l_values : ndarray [Nl]
-        Legendre degree indices (integer values 0, 1, ..., N-1).
+        Legendre degree indices (non-negative integers).
     mu : ndarray [Ny]
         Gauss-Legendre nodes (cos(theta)).
 
@@ -126,21 +206,16 @@ def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     -------
     P : ndarray [Nl, Ny]
         Normalised ALP matrix.  Rows with l < m_abs are zero.
-    """
-    from scipy.special import gammaln, lpmv
 
-    Nl = len(l_values)
-    Ny = len(mu)
-    P = np.zeros((Nl, Ny), dtype=np.float64)
-    for i, l in enumerate(l_values):
-        if l < m_abs:
-            continue  # P_l^m = 0 for l < m
-        # Compute N_{l,m} = sqrt((2*l+1)/2 * (l-m)! / (l+m)!) in log-space
-        log_ratio = gammaln(l - m_abs + 1) - gammaln(l + m_abs + 1)
-        log_norm_sq = np.log((2 * l + 1) / 2.0) + log_ratio
-        norm = np.exp(0.5 * log_norm_sq)
-        P[i, :] = norm * lpmv(m_abs, l, mu)
-    return P
+    Examples
+    --------
+    >>> import numpy as np
+    >>> _alp_matrix(1, np.arange(3), np.array([0.0])).shape
+    (3, 1)
+    """
+    l_values = np.asarray(l_values, dtype=int)
+    l_max = int(l_values.max(initial=0))
+    return _alp_tables(np.array([m_abs]), l_max, mu)[0][l_values]
 
 
 # ============================================================================
@@ -494,10 +569,9 @@ class SphericalGrid2D(eqx.Module):
         # are therefore NOT standard complex-SHT coefficients for m < 0, but they
         # give correct eigenvalue computations (Laplacian, solvers) because l
         # alone determines the eigenvalue -l*(l+1)/R^2.
-        P_lm_np = np.zeros((Nx, Ny, Ny), dtype=np.float64)
-        for fft_idx, m_wave in enumerate(m_fft):
-            m_abs = abs(int(m_wave))
-            P_lm_np[fft_idx] = _alp_matrix(m_abs, l_values, nodes_np)
+        m_abs = np.abs(m_fft)
+        tables = _alp_tables(np.arange(m_abs.max() + 1), l_values[-1], nodes_np)
+        P_lm_np = tables[m_abs]  # (Nx, Ny, Ny): one table per FFT wavenumber
 
         self._P_lm = jnp.asarray(P_lm_np)
 
@@ -598,6 +672,32 @@ class SphericalGrid2D(eqx.Module):
     def weights_y(self) -> Float[Array, "Ny"]:
         """Latitudinal GL quadrature weights (sum to 2)."""
         return self._weights_y
+
+    @property
+    def legendre_table(self) -> Float[Array, "Nm Ny Ny"]:
+        """
+        Normalised associated Legendre functions at the Gauss nodes.
+
+        legendre_table[m, l, j] = P̃ₗᵐ(μⱼ) for m = 0, …, Nx // 2 and
+        l = 0, …, Ny − 1, with μⱼ = :attr:`cos_theta` (North to South) and
+        P̃ₗᵐ = √((2l+1)/2 · (l−m)!/(l+m)!) · Pₗᵐ, Condon–Shortley phase
+        included, so that Σⱼ wⱼ P̃ₗᵐ(μⱼ) P̃ₗ′ᵐ(μⱼ) = δₗₗ′.  Rows with l < m
+        are zero.  These are the tables the transform uses, indexed by the
+        non-negative order m rather than by FFT wavenumber.
+
+        Returns
+        -------
+        table : Float[Array, "Nm Ny Ny"]
+            Nm = Nx // 2 + 1 orders, Ny degrees, Ny latitudes.
+
+        Examples
+        --------
+        >>> grid = SphericalGrid2D.from_N_L(Nx=16, Ny=8)
+        >>> grid.legendre_table.shape
+        (9, 8, 8)
+        """
+        # FFT index k holds |m| = k for k <= Nx // 2.
+        return self._P_lm[: self.Nx // 2 + 1]
 
     @property
     def weights(self) -> Float[Array, "Ny Nx"]:

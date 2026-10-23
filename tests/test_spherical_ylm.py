@@ -110,7 +110,6 @@ def test_gradient_theta(sphere, lm):
 
 
 @pytest.mark.slow
-@pytest.mark.xfail(reason="gh-96: Legendre table overflows at T86+", strict=True)
 def test_t127_roundtrip_is_finite():
     grid = sdx.SphericalGrid2D.from_N_L(Nx=256, Ny=128, Lx=2 * np.pi, Ly=np.pi)
     phi, theta = (np.asarray(a) for a in grid.X)
