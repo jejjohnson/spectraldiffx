@@ -40,6 +40,12 @@ Repository = "https://github.com/jejjohnson/spectraldiffx"
 # Kronecker-sum solves behind the Chebyshev Helmholtz solvers.
 [tool.uv.sources]
 gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.1.0" }
+# pipekit is a uv workspace: consume its packages from git subdirectories,
+# pinned to the commit finitevolX pins (it ships `pipekit_jax.JaxOperator`;
+# no release tag carries it yet). pipekit-cycle comes in through pipekit-jax.
+pipekit = { git = "https://github.com/jejjohnson/pipekit.git", subdirectory = "packages/pipekit", rev = "d1eb41d4ac98c371cb198ee72aedfdf45046127c" }
+pipekit-cycle = { git = "https://github.com/jejjohnson/pipekit.git", subdirectory = "packages/pipekit-cycle", rev = "d1eb41d4ac98c371cb198ee72aedfdf45046127c" }
+pipekit-jax = { git = "https://github.com/jejjohnson/pipekit.git", subdirectory = "packages/pipekit-jax", rev = "d1eb41d4ac98c371cb198ee72aedfdf45046127c" }
 
 [project.optional-dependencies]
 test = [
@@ -51,6 +57,12 @@ test = [
     "coverage>=7.4.0",
     "xdoctest>=1.1.3",
     "mktestdocs>=0.2.2",
+]
+pipekit = [
+    # Tier-B operator layer, `spectraldiffx.pipekit` (pipekit Operators on a
+    # physical / Spectral carrier). `import spectraldiffx` never imports these.
+    "pipekit",
+    "pipekit-jax",
 ]
 dev = [
     "ruff>=0.8.0",
