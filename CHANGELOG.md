@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/jejjohnson/spectraldiffx/compare/0.1.1...0.1.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* **spherical:** build Legendre tables by the normalised recurrence ([#162](https://github.com/jejjohnson/spectraldiffx/issues/162)) ([f005cbb](https://github.com/jejjohnson/spectraldiffx/commit/f005cbb14b0bbb7608878d6d589d80e681dd9705))
+
 ## [0.1.1](https://github.com/jejjohnson/spectraldiffx/compare/0.1.0...0.1.1) (2026-09-26)
 
 
