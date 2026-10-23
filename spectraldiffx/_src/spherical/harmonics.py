@@ -17,8 +17,9 @@ with
     P̃ₗᵐ(cos θ) = Nₗ,ₘ · Pₗᵐ(cos θ),    Nₗ,ₘ = √((2l+1)/2 · (l−m)! / (l+m)!).
 
 Equivalently, the spherical harmonics Yₗᵐ are 4π-normalised in the real
-convention (no Condon–Shortley phase for m > 0 beyond what scipy's
-``lpmv`` supplies).  Work out the forward/inverse formulas below.
+convention, with the Condon–Shortley phase (−1)ᵐ in P̃ₗᵐ (the convention of
+scipy's ``lpmv``; the tables are built by the normalised recurrence in
+``grid._alp_tables``, gh-96).  Work out the forward/inverse formulas below.
 
 References
 ----------
@@ -44,7 +45,8 @@ class SphericalHarmonicTransform(eqx.Module):
 
     Wraps a :class:`SphericalGrid2D` with forward/inverse methods.  The
     Associated Legendre Polynomial matrices are precomputed once at
-    construction time (scipy call) and stored as JAX arrays.
+    construction time (NumPy recurrence, ``grid._alp_tables``) and stored as
+    JAX arrays.
 
     Mathematical Formulation
     ------------------------

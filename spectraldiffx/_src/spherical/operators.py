@@ -64,8 +64,8 @@ def _gradient_alp_matrix(
     Relation used (with scipy's Condon-Shortley phase convention):
         d/d_theta P_l_norm(cos(theta)) = +sqrt(l*(l+1)) * P_l^1_norm(cos(theta))
 
-    Note on sign: scipy's lpmv(1, l, mu) already carries the Condon-Shortley
-    phase (-1)^1 = -1, so lpmv(1, l, mu) = -sqrt(1-mu^2) * dP_l/dmu.  Using
+    Note on sign: the tables carry the Condon-Shortley phase, as scipy's
+    lpmv does: lpmv(1, l, mu) = -sqrt(1-mu^2) * dP_l/dmu.  Using
     d/d_theta = -sin(theta) * d/dmu with sin(theta) = sqrt(1-mu^2) gives:
         d P_l(cos(theta)) / d_theta = lpmv(1, l, cos(theta))
     which, after normalisation, yields a positive coefficient here.
@@ -193,8 +193,8 @@ class SphericalDerivative1D(eqx.Module):
             Colatitude derivative du/d_theta at GL nodes.
         """
         c = u if spectral else self.to_spectral(u)
-        # scipy.special.lpmv uses the Condon-Shortley phase convention (-1)^m.
-        # For m=1, lpmv(1, l, mu) = -sqrt(1-mu^2) * dP_l/dmu, so the stored
+        # The tables use the Condon-Shortley phase (-1)^m, as scipy's lpmv does.
+        # For m=1, P_l^1(mu) = -sqrt(1-mu^2) * dP_l/dmu, so the stored
         # P1 matrix already carries the negative sign for nodes with mu > 0.
         # Consequently d P_l_norm / d_theta = +sqrt(l*(l+1)) * P_l^1_norm
         # (no additional minus sign needed here).

@@ -24,9 +24,9 @@ which makes the columns orthonormal against the GL weights:
 Stability envelope
     :func:`_alp_tables` builds P̃ₗᵐ with the normalised three-term recurrence
     (Holmes & Featherstone 2002), never forming the unnormalised Pₗᵐ, which
-    overflows float64 near m ≈ 85 (gh-96).  It stays in float64 range up to
-    about l ≈ 1500; beyond that the sectoral seed P̃ₘᵐ ∝ sinᵐθ underflows
-    near the poles.
+    overflows float64 near m ≈ 85 (gh-96).  On the Gauss–Legendre nodes it
+    loses no significant entry up to at least l ≈ 1500; at points much closer
+    to the poles the sectoral seed P̃ₘᵐ ∝ sinᵐθ underflows earlier.
 
 References
 ----------
@@ -122,8 +122,9 @@ def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
             aₗₘ = √((4l²−1)/(l²−m²)),  bₗₘ = √(((l−1)²−m²)/(4(l−1)²−1))
 
     (Holmes & Featherstone 2002, "standard forward column" recurrence).  In
-    float64 the sectoral seed P̃ₘᵐ ∝ sᵐ stays in range up to about l ≈ 1500;
-    beyond that it underflows near the poles.
+    float64, on Gauss–Legendre nodes, no significant entry is lost up to at
+    least l ≈ 1500.  At arbitrary μ the sectoral seed P̃ₘᵐ ∝ sᵐ underflows
+    once m · log₁₀(1/s) > 308, i.e. very close to the poles at high order.
 
     Parameters
     ----------
