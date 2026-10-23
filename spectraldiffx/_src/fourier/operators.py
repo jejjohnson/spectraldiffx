@@ -54,6 +54,17 @@ def _guard_params(x: Array, nu: float | Array, order: int | Array) -> Array:
     return x
 
 
+def _hermitian_part_2d(u_hat: Array) -> Array:
+    """Coefficients of the real part of ``ifft2(u_hat)`` (no transform).
+
+    ``fft2(ifft2(u_hat).real)[k] = (u_hat[k] + conj(u_hat[-k])) / 2``, where
+    ``-k`` is the negated wavenumber in FFT order (index ``(-i) mod N`` on
+    each of the last two axes).
+    """
+    mirrored = jnp.roll(jnp.flip(u_hat, axis=(-2, -1)), 1, axis=(-2, -1))
+    return 0.5 * (u_hat + jnp.conj(mirrored))
+
+
 class SpectralDerivative1D(eqx.Module):
     """
     1D Spectral derivative operator using the Fast Fourier Transform (FFT).
@@ -251,24 +262,48 @@ class SpectralDerivative2D(eqx.Module):
     ------
     Physical-space inputs must be real; complex input raises ``TypeError``
     (gh-93). With ``spectral=True`` the input is complex Fourier
-    coefficients. Results are returned in physical space as real arrays.
+    coefficients. Results are returned in physical space as real arrays,
+    or, with ``spectral_out=True``, as Fourier coefficients: the inverse
+    transform is skipped, so a pipeline that stays in spectral space pays
+    no fft / ifft round trip between operators.
     """
 
     grid: FourierGrid2D
 
+    def _emit(self, u_hat: Array, spectral_out: bool) -> Array:
+        """``u_hat`` as coefficients, or its real inverse transform.
+
+        The physical output is ``ifft(u_hat).real``. Its coefficients are the
+        Hermitian part of ``u_hat``, which differs from ``u_hat`` itself where
+        an odd derivative multiplies a Nyquist mode (i*k_N*u_hat has no real
+        counterpart there). ``spectral_out=True`` returns that Hermitian part,
+        so ``op(u, spectral_out=True) == transform(op(u))`` with no transform.
+        """
+        if spectral_out:
+            return _hermitian_part_2d(u_hat)
+        return self.grid.transform(u_hat, inverse=True).real
+
     def gradient(
-        self, u: Array, spectral: bool = False
+        self, u: Array, spectral: bool = False, spectral_out: bool = False
     ) -> tuple[Float[Array, "Ny Nx"], Float[Array, "Ny Nx"]]:
-        """Compute the gradient vector [du/dx, du/dy]."""
+        """Compute the gradient vector [du/dx, du/dy].
+
+        With ``spectral_out=True`` the components are returned as Fourier
+        coefficients (i*kx*u_hat, i*ky*u_hat).
+        """
         u_hat = u if spectral else self.grid.transform(_real(u))
         KX, KY = self.grid.KX
 
-        du_dx = self.grid.transform(1j * KX * u_hat, inverse=True).real
-        du_dy = self.grid.transform(1j * KY * u_hat, inverse=True).real
+        du_dx = self._emit(1j * KX * u_hat, spectral_out)
+        du_dy = self._emit(1j * KY * u_hat, spectral_out)
         return du_dx, du_dy
 
     def divergence(
-        self, vx: Array, vy: Array, spectral: bool = False
+        self,
+        vx: Array,
+        vy: Array,
+        spectral: bool = False,
+        spectral_out: bool = False,
     ) -> Float[Array, "Ny Nx"]:
         """
         Compute the divergence of a 2D vector field: div(V) = ∂vx/∂x + ∂vy/∂y.
@@ -278,10 +313,14 @@ class SpectralDerivative2D(eqx.Module):
         KX, KY = self.grid.KX
 
         div_hat = 1j * KX * vx_hat + 1j * KY * vy_hat
-        return self.grid.transform(div_hat, inverse=True).real
+        return self._emit(div_hat, spectral_out)
 
     def curl(
-        self, vx: Array, vy: Array, spectral: bool = False
+        self,
+        vx: Array,
+        vy: Array,
+        spectral: bool = False,
+        spectral_out: bool = False,
     ) -> Float[Array, "Ny Nx"]:
         """
         Compute the 2D scalar curl (vorticity): ζ = ∂vy/∂x - ∂vx/∂y.
@@ -291,26 +330,35 @@ class SpectralDerivative2D(eqx.Module):
         KX, KY = self.grid.KX
 
         curl_hat = 1j * KX * vy_hat - 1j * KY * vx_hat
-        return self.grid.transform(curl_hat, inverse=True).real
+        return self._emit(curl_hat, spectral_out)
 
-    def laplacian(self, u: Array, spectral: bool = False) -> Float[Array, "Ny Nx"]:
+    def laplacian(
+        self, u: Array, spectral: bool = False, spectral_out: bool = False
+    ) -> Float[Array, "Ny Nx"]:
         """
         Compute the 2D Laplacian: ∇^2 u = ∂^2u/∂x^2 + ∂^2u/∂y^2.
         """
         u_hat = u if spectral else self.grid.transform(_real(u))
         K2 = self.grid.K2
         lap_hat = -K2 * u_hat
-        return self.grid.transform(lap_hat, inverse=True).real
+        return self._emit(lap_hat, spectral_out)
 
-    def biharmonic(self, u: Array, spectral: bool = False) -> Float[Array, "Ny Nx"]:
+    def biharmonic(
+        self, u: Array, spectral: bool = False, spectral_out: bool = False
+    ) -> Float[Array, "Ny Nx"]:
         """Compute the 2D biharmonic: nabla^4 u = (kx^2 + ky^2)^2 * u_hat."""
         u_hat = u if spectral else self.grid.transform(_real(u))
         K2 = self.grid.K2
         bih_hat = K2**2 * u_hat
-        return self.grid.transform(bih_hat, inverse=True).real
+        return self._emit(bih_hat, spectral_out)
 
     def hyperviscosity(
-        self, u: Array, nu: float, order: int = 2, spectral: bool = False
+        self,
+        u: Array,
+        nu: float,
+        order: int = 2,
+        spectral: bool = False,
+        spectral_out: bool = False,
     ) -> Float[Array, "Ny Nx"]:
         """Compute the 2D hyperviscosity: (-1)^{n+1} * nu * nabla^{2n} u.
 
@@ -327,6 +375,8 @@ class SpectralDerivative2D(eqx.Module):
             Order n (n=1 is diffusion, n=2 is biharmonic). Default: 2.
         spectral : bool
             Whether u is in Fourier space.
+        spectral_out : bool
+            Return Fourier coefficients instead of a physical field.
 
         Raises
         ------
@@ -337,10 +387,10 @@ class SpectralDerivative2D(eqx.Module):
         u_hat = u if spectral else self.grid.transform(_real(u))
         K2 = self.grid.K2
         hyp_hat = _guard_params(-nu * K2**order * u_hat, nu, order)
-        return self.grid.transform(hyp_hat, inverse=True).real
+        return self._emit(hyp_hat, spectral_out)
 
     def inverse_laplacian(
-        self, u: Array, spectral: bool = False
+        self, u: Array, spectral: bool = False, spectral_out: bool = False
     ) -> Float[Array, "Ny Nx"]:
         """Compute the 2D inverse Laplacian: nabla^{-2} u (Poisson solve).
 
@@ -353,25 +403,32 @@ class SpectralDerivative2D(eqx.Module):
         K2_safe = jnp.where(K2 == 0, 1.0, K2)
         psi_hat = -u_hat / K2_safe
         psi_hat = jnp.where(K2 == 0, 0.0, psi_hat)
-        return self.grid.transform(psi_hat, inverse=True).real
+        return self._emit(psi_hat, spectral_out)
 
     def velocity_from_streamfunction(
-        self, psi: Array, spectral: bool = False
+        self, psi: Array, spectral: bool = False, spectral_out: bool = False
     ) -> tuple[Float[Array, "Ny Nx"], Float[Array, "Ny Nx"]]:
         """Compute velocity from a streamfunction: u = -dpsi/dy, v = dpsi/dx."""
         psi_hat = psi if spectral else self.grid.transform(_real(psi))
         KX, KY = self.grid.KX
-        u = self.grid.transform(-1j * KY * psi_hat, inverse=True).real
-        v = self.grid.transform(1j * KX * psi_hat, inverse=True).real
+        u = self._emit(-1j * KY * psi_hat, spectral_out)
+        v = self._emit(1j * KX * psi_hat, spectral_out)
         return u, v
 
     def jacobian(
-        self, f: Array, g: Array, spectral: bool = False
+        self,
+        f: Array,
+        g: Array,
+        spectral: bool = False,
+        spectral_out: bool = False,
     ) -> Float[Array, "Ny Nx"]:
         """Compute the Jacobian: J(f,g) = df/dx * dg/dy - df/dy * dg/dx.
 
         Uses the pseudo-spectral method: derivatives in Fourier space,
-        products in physical space, with dealiasing.
+        products in physical space, with dealiasing. With spectral input and
+        ``spectral_out=True`` it costs 4 inverse + 1 forward transforms (the
+        dealiased product's coefficients are returned without the final
+        inverse transform).
         """
         f_hat = f if spectral else self.grid.transform(_real(f))
         g_hat = g if spectral else self.grid.transform(_real(g))
@@ -384,14 +441,20 @@ class SpectralDerivative2D(eqx.Module):
         dg_dy = self.grid.transform(1j * KY * g_hat * dealias, inverse=True).real
 
         jac = df_dx * dg_dy - df_dy * dg_dx
-        return self.apply_dealias(jac)
+        return self.apply_dealias(jac, spectral_out=spectral_out)
 
-    def apply_dealias(self, u: Array, spectral: bool = False) -> Array:
-        """Apply the 2D spectral dealiasing filter mask [Ny, Nx]."""
+    def apply_dealias(
+        self, u: Array, spectral: bool = False, spectral_out: bool | None = None
+    ) -> Array:
+        """Apply the 2D spectral dealiasing filter mask [Ny, Nx].
+
+        The output is in the input's space unless ``spectral_out`` says
+        otherwise (``None``, the default, means ``spectral_out = spectral``).
+        """
         u_hat = u if spectral else self.grid.transform(_real(u))
         mask = self.grid.dealias_filter()
-        u_hat_f = u_hat * mask
-        return u_hat_f if spectral else self.grid.transform(u_hat_f, inverse=True).real
+        out_spectral = spectral if spectral_out is None else spectral_out
+        return self._emit(u_hat * mask, out_spectral)
 
     def project_vector(self, vx: Array, vy: Array) -> tuple[Array, Array]:
         """
@@ -432,7 +495,12 @@ class SpectralDerivative2D(eqx.Module):
         )
 
     def advection_scalar(
-        self, vx: Array, vy: Array, q: Array, spectral: bool = False
+        self,
+        vx: Array,
+        vy: Array,
+        q: Array,
+        spectral: bool = False,
+        spectral_out: bool = False,
     ) -> Float[Array, "Ny Nx"]:
         """
         Compute scalar advection (u·∇)q using the pseudo-spectral method.
@@ -451,13 +519,16 @@ class SpectralDerivative2D(eqx.Module):
         q : Array [Ny, Nx]
             Advected scalar, physical (or spectral if ``spectral``).
         spectral : bool
-            If True, ``q`` is given as spectral coefficients. The result is
-            always returned in physical space.
+            If True, ``q`` is given as spectral coefficients (``vx``, ``vy``
+            are always physical).
+        spectral_out : bool
+            Return the dealiased term's Fourier coefficients instead of a
+            physical field.
 
         Returns
         -------
         Array [Ny, Nx]
-            The dealiased advection term in physical space.
+            The dealiased advection term, physical or spectral.
         """
         q_hat = q if spectral else self.grid.transform(_real(q))
         KX, KY = self.grid.KX
@@ -467,7 +538,7 @@ class SpectralDerivative2D(eqx.Module):
         dq_dy = self.grid.transform(1j * KY * q_hat * dealias, inverse=True).real
 
         vx, vy = self.apply_dealias(vx), self.apply_dealias(vy)
-        return self.apply_dealias(vx * dq_dx + vy * dq_dy)
+        return self.apply_dealias(vx * dq_dx + vy * dq_dy, spectral_out=spectral_out)
 
 
 class SpectralDerivative3D(eqx.Module):
