@@ -2955,8 +2955,8 @@ spectral coefficients.</p>
 <a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">            Colatitude derivative du/d_theta at GL nodes.</span>
 <a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-195" name="__codelineno-0-195"></a>        <span class="n">c</span> <span class="o">=</span> <span class="n">u</span> <span class="k">if</span> <span class="n">spectral</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_spectral</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-<a id="__codelineno-0-196" name="__codelineno-0-196"></a>        <span class="c1"># scipy.special.lpmv uses the Condon-Shortley phase convention (-1)^m.</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a>        <span class="c1"># For m=1, lpmv(1, l, mu) = -sqrt(1-mu^2) * dP_l/dmu, so the stored</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>        <span class="c1"># The tables use the Condon-Shortley phase (-1)^m, as scipy&#39;s lpmv does.</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a>        <span class="c1"># For m=1, P_l^1(mu) = -sqrt(1-mu^2) * dP_l/dmu, so the stored</span>
 <a id="__codelineno-0-198" name="__codelineno-0-198"></a>        <span class="c1"># P1 matrix already carries the negative sign for nodes with mu &gt; 0.</span>
 <a id="__codelineno-0-199" name="__codelineno-0-199"></a>        <span class="c1"># Consequently d P_l_norm / d_theta = +sqrt(l*(l+1)) * P_l^1_norm</span>
 <a id="__codelineno-0-200" name="__codelineno-0-200"></a>        <span class="c1"># (no additional minus sign needed here).</span>
@@ -3392,8 +3392,8 @@ spectral coefficients.</p>
 <a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">        Colatitude derivative du/d_theta at GL nodes.</span>
 <a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="n">c</span> <span class="o">=</span> <span class="n">u</span> <span class="k">if</span> <span class="n">spectral</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_spectral</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-<a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="c1"># scipy.special.lpmv uses the Condon-Shortley phase convention (-1)^m.</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a>    <span class="c1"># For m=1, lpmv(1, l, mu) = -sqrt(1-mu^2) * dP_l/dmu, so the stored</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="c1"># The tables use the Condon-Shortley phase (-1)^m, as scipy&#39;s lpmv does.</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a>    <span class="c1"># For m=1, P_l^1(mu) = -sqrt(1-mu^2) * dP_l/dmu, so the stored</span>
 <a id="__codelineno-0-198" name="__codelineno-0-198"></a>    <span class="c1"># P1 matrix already carries the negative sign for nodes with mu &gt; 0.</span>
 <a id="__codelineno-0-199" name="__codelineno-0-199"></a>    <span class="c1"># Consequently d P_l_norm / d_theta = +sqrt(l*(l+1)) * P_l^1_norm</span>
 <a id="__codelineno-0-200" name="__codelineno-0-200"></a>    <span class="c1"># (no additional minus sign needed here).</span>
