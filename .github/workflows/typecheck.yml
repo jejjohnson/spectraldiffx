@@ -18,6 +18,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --extra pipekit
       - name: Run ty check
         run: uv run ty check spectraldiffx
