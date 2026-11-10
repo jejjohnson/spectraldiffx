@@ -77,6 +77,20 @@ CASES: dict[str, tuple[Callable[[], Callable], tuple[int, ...]]] = {
         ),
         (12, 16),
     ),
+    "SpectralDerivative2D.jacobian-spectral_out": (
+        lambda: (
+            lambda d: _real(lambda u: d.jacobian(u, jnp.cos(u), spectral_out=True).real)
+        )(sdx.SpectralDerivative2D(_fourier2d())),
+        (12, 16),
+    ),
+    "SpectralDerivative2D.hyperviscosity-spectral_out": (
+        lambda: (
+            lambda d: _real(
+                lambda u: d.hyperviscosity(u, 0.1, 2, spectral_out=True).imag
+            )
+        )(sdx.SpectralDerivative2D(_fourier2d())),
+        (12, 16),
+    ),
     "SpectralFilter2D.exponential_filter": (
         lambda: _real(sdx.SpectralFilter2D(_fourier2d()).exponential_filter),
         (12, 16),

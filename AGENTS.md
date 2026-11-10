@@ -147,7 +147,10 @@ find out whether it exists:
   (Fourier and spherical operators) they take coefficients instead; the
   Fourier derivatives still return a physical field, while `apply_dealias`
   and the spherical Laplacians return coefficients: say which in the
-  docstring.
+  docstring. `SpectralDerivative2D` methods also take `spectral_out=True`
+  and return the coefficients of the physical result (its Hermitian part)
+  without the inverse transform, so spectral-space pipelines pay no
+  round trip (`tests/test_spectral_out.py` asserts the transform counts).
 - **Linear operators never dealias** (`__call__`, `gradient`, `laplacian`,
   `biharmonic`, `hyperviscosity`, `inverse_laplacian` keep every resolved
   mode, so `laplacian(inverse_laplacian(u)) == u`, gh-91). **Nonlinear
