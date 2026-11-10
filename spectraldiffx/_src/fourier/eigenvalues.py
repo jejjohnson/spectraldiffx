@@ -62,8 +62,11 @@ PS mixed-BC eigenvalues:
 
 from __future__ import annotations
 
+import equinox as eqx
+from jax.core import Tracer
 import jax.numpy as jnp
 from jaxtyping import Array, Float
+import numpy as np
 
 
 def dst1_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
@@ -343,10 +346,18 @@ def fft_eigenvalues(N: int, dx: float) -> Float[Array, " N"]:
 # ===========================================================================
 
 
-def _validate_L(L: float, name: str) -> None:
-    """Raise ValueError if L is not positive."""
-    if L <= 0:
+def _check_L(eig: Array, L: float, name: str) -> Array:
+    """Return ``eig``, enforcing ``L > 0``.
+
+    A concrete ``L`` (compared on the host) raises ValueError; a traced one
+    (the solvers pass ``L = N * dx``, which may be traced under ``jax.jit``,
+    gh-103) raises at run time through ``eqx.error_if``.
+    """
+    if isinstance(L, Tracer):
+        return eqx.error_if(eig, L <= 0, f"{name} requires L > 0.")
+    if np.asarray(L) <= 0:
         raise ValueError(f"{name} requires L > 0, got L={L}.")
+    return eig
 
 
 def dst1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -375,9 +386,8 @@ def dst1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     Float[Array, " N"]
         1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
     """
-    _validate_L(L, "dst1_eigenvalues_ps")
     k = jnp.arange(N)
-    return -((jnp.pi * (k + 1) / L) ** 2)
+    return _check_L(-((jnp.pi * (k + 1) / L) ** 2), L, "dst1_eigenvalues_ps")
 
 
 def dst2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -402,9 +412,8 @@ def dst2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     Float[Array, " N"]
         1-D array of *N* eigenvalues, ordered k = 0, …, N−1.  All < 0.
     """
-    _validate_L(L, "dst2_eigenvalues_ps")
     k = jnp.arange(N)
-    return -((jnp.pi * (k + 1) / L) ** 2)
+    return _check_L(-((jnp.pi * (k + 1) / L) ** 2), L, "dst2_eigenvalues_ps")
 
 
 def dct1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -434,9 +443,8 @@ def dct1_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     """
     if N < 2:
         raise ValueError(f"dct1_eigenvalues_ps requires N >= 2, got N={N}.")
-    _validate_L(L, "dct1_eigenvalues_ps")
     k = jnp.arange(N)
-    return -((jnp.pi * k / L) ** 2)
+    return _check_L(-((jnp.pi * k / L) ** 2), L, "dct1_eigenvalues_ps")
 
 
 def dct2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -462,9 +470,8 @@ def dct2_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
     Float[Array, " N"]
         1-D array of *N* eigenvalues.  λ_0 = 0; all others < 0.
     """
-    _validate_L(L, "dct2_eigenvalues_ps")
     k = jnp.arange(N)
-    return -((jnp.pi * k / L) ** 2)
+    return _check_L(-((jnp.pi * k / L) ** 2), L, "dct2_eigenvalues_ps")
 
 
 def _mixed_bc_eigenvalues_ps(N: int, L: float, name: str) -> Float[Array, " N"]:
@@ -474,9 +481,8 @@ def _mixed_bc_eigenvalues_ps(N: int, L: float, name: str) -> Float[Array, " N"]:
 
     All eigenvalues are strictly negative (no null mode).
     """
-    _validate_L(L, name)
     k = jnp.arange(N)
-    return -((jnp.pi * (2 * k + 1) / (2 * L)) ** 2)
+    return _check_L(-((jnp.pi * (2 * k + 1) / (2 * L)) ** 2), L, name)
 
 
 def dst3_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
@@ -592,7 +598,6 @@ def fft_eigenvalues_ps(N: int, L: float) -> Float[Array, " N"]:
         1-D array of *N* eigenvalues in FFT order.
         λ_0 = 0; all others ≤ 0.
     """
-    _validate_L(L, "fft_eigenvalues_ps")
     k = jnp.arange(N)
     k_phys = jnp.minimum(k, N - k)
-    return -((2 * jnp.pi * k_phys / L) ** 2)
+    return _check_L(-((2 * jnp.pi * k_phys / L) ** 2), L, "fft_eigenvalues_ps")
