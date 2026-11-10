@@ -27,14 +27,41 @@ from spectraldiffx._src.pipekit.base import (
     build_grid,
 )
 from spectraldiffx._src.pipekit.carrier import Spectral, as_hat, to_physical
+from spectraldiffx._src.pipekit.derivatives import (
+    AdvectionScalar,
+    Biharmonic,
+    Curl,
+    Dealias,
+    Divergence,
+    Gradient,
+    Hyperviscosity,
+    InverseLaplacian,
+    Jacobian,
+    Laplacian,
+    VelocityFromStreamfunction,
+)
+from spectraldiffx._src.pipekit.plumbing import LinComb, Pick
 from spectraldiffx._src.pipekit.transforms import ToPhysical, ToSpectral
 
 __all__ = [
+    "AdvectionScalar",
+    "Biharmonic",
+    "Curl",
+    "Dealias",
+    "Divergence",
+    "Gradient",
     "GridSpec",
+    "Hyperviscosity",
+    "InverseLaplacian",
+    "Jacobian",
+    "Laplacian",
+    "LinComb",
+    "Pick",
     "Spectral",
     "SpectralOperator",
     "ToPhysical",
     "ToSpectral",
+    "VelocityFromStreamfunction",
     "as_grid_spec",
     "as_hat",
     "build_grid",
