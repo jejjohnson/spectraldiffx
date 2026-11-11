@@ -6,6 +6,9 @@ Standalone forward/inverse Chebyshev transform classes that wrap the
 :class:`ChebyshevGrid1D` / :class:`ChebyshevGrid2D` transform methods with a
 dedicated interface (mirroring the Fourier backend's
 :class:`SpectralDerivative1D` → :class:`SpectralDerivative2D` wrappers).
+The grid methods call ``functax.transform.ChebyshevTransform1D`` /
+``ChebyshevTransform2D``, which take the degree and node kind instead of a
+grid; the normalisation and the method names are the same.
 
 Mathematical framework
 ----------------------

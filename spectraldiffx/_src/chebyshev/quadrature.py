@@ -9,14 +9,10 @@ f on the Gauss–Lobatto nodes xⱼ = L·cos(πj/N) ∈ [−L, L],
 
     ∫_{−L}^{L} f(x) dx ≈ Σⱼ wⱼ f(xⱼ)
 
-where the weights wⱼ depend only on N and L.
-
-The weight formula used here (Waldvogel 2006, eqn. (2.8)) is:
-
-    wⱼ = (c_j L / N) · [1 − Σ_{k=1..(N-1)/2} (2 / (4k² − 1)) · cos(2 k π j / N)
-                        − (1/(N² − 1)) · cos(π j)   (only if N even)]
-
-with cⱼ = 1 for j = 0, N and cⱼ = 2 otherwise.
+where the weights wⱼ depend only on N and L.  They come from
+``functax.quad.clenshaw_curtis`` (Waldvogel 2006, eqn. (2.8)), whose nodes
+ascend from −1; the weights are reversed to pair with the descending
+Gauss–Lobatto nodes of :class:`ChebyshevGrid1D` and scaled by L.
 
 References
 ----------
@@ -27,6 +23,7 @@ References
 
 from __future__ import annotations
 
+from functax.quad import clenshaw_curtis
 import jax.numpy as jnp
 from jaxtyping import Array, Float, Num
 import numpy as np
@@ -36,38 +33,6 @@ from .grid import ChebyshevGrid1D, ChebyshevGrid2D
 # Array-shape aliases mirror the rest of the backend:
 #   "Npts"          — 1D Chebyshev grid size (N+1 for GL)
 #   "Nypts Nxpts"   — 2D tensor-product grid
-
-
-def _cc_weights_numpy(N: int, L: float = 1.0) -> np.ndarray:
-    """Compute Clenshaw–Curtis weights in NumPy (scale-free, multiplied by L).
-
-    Uses the Waldvogel (2006) closed-form series.  Returns a length-(N+1)
-    vector for the Clenshaw–Curtis rule on Chebyshev–Gauss–Lobatto nodes.
-    The rule is exact for polynomials of degree ≤ N (and also degree N+1
-    when N is even, by symmetry) — roughly half the degree of precision
-    of a Gauss rule on the same number of nodes, but asymptotically as
-    fast for analytic integrands.
-    """
-    if N <= 0:
-        raise ValueError(f"N must be >= 1, got {N}")
-    n = np.arange(N + 1, dtype=np.float64)
-
-    # v[k] = 2/(4k² − 1), k = 1 .. floor((N-1)/2), length ⌊(N-1)/2⌋
-    K = (N - 1) // 2
-    cos_term = np.zeros(N + 1)
-    for k in range(1, K + 1):
-        cos_term += 2.0 / (4.0 * k * k - 1.0) * np.cos(2.0 * k * np.pi * n / N)
-
-    # Correction for even N (the l = N/2 term)
-    if N % 2 == 0:
-        cos_term += np.cos(np.pi * n) / (N * N - 1.0)
-
-    base = (1.0 - cos_term) / N
-    c = np.full(N + 1, 2.0)
-    c[0] = 1.0
-    c[N] = 1.0
-    w = c * base * L
-    return w
 
 
 def clenshaw_curtis_weights(N: int, L: float = 1.0) -> Float[Array, "Npts"]:
@@ -98,7 +63,12 @@ def clenshaw_curtis_weights(N: int, L: float = 1.0) -> Float[Array, "Npts"]:
     >>> x = jnp.cos(jnp.pi * jnp.arange(33) / 32)
     >>> float(jnp.sum(w * jnp.exp(x)))  # doctest: +SKIP
     """
-    return jnp.asarray(_cc_weights_numpy(N, L))
+    if N <= 0:
+        raise ValueError(f"N must be >= 1, got {N}")
+    # The rule on [−1, 1] (nodes ascending), reversed to the descending
+    # Gauss–Lobatto order and scaled by L (which may be traced).
+    weights = np.asarray(clenshaw_curtis(N + 1).weights)[::-1]
+    return jnp.asarray(weights * L)
 
 
 def clenshaw_curtis_integrate_1d(

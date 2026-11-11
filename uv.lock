@@ -639,6 +639,23 @@ wheels = [
 ]
 
 [[package]]
+name = "functax"
+version = "0.0.6"
+source = { git = "https://github.com/jejjohnson/functax?tag=v0.0.6#7fdcd2729fe8d6a62de0ab2330ae6ae2da133ea2" }
+dependencies = [
+    { name = "numpy" },
+]
+
+[package.optional-dependencies]
+jax = [
+    { name = "einx" },
+    { name = "equinox" },
+    { name = "jax" },
+    { name = "jaxtyping" },
+    { name = "lineax" },
+]
+
+[[package]]
 name = "gaussx"
 version = "0.1.0"
 source = { git = "https://github.com/jejjohnson/gaussx?tag=v0.1.0#d9a796ab6a8c30609547fdca243f23d64bc019dc" }
@@ -2804,16 +2821,16 @@ wheels = [
 
 [[package]]
 name = "spectraldiffx"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "equinox" },
+    { name = "functax", extra = ["jax"] },
     { name = "gaussx" },
     { name = "jax" },
     { name = "jaxlib" },
     { name = "jaxtyping" },
     { name = "numpy" },
-    { name = "scipy" },
 ]
 
 [package.optional-dependencies]
@@ -2853,6 +2870,7 @@ all = [
     { name = "pytest-pretty" },
     { name = "pytest-xdist" },
     { name = "ruff" },
+    { name = "scipy" },
     { name = "seaborn" },
     { name = "tqdm" },
     { name = "ty" },
@@ -2894,6 +2912,7 @@ examples = [
     { name = "matplotlib" },
     { name = "netcdf4" },
     { name = "numpy" },
+    { name = "scipy" },
     { name = "tqdm" },
     { name = "xarray" },
 ]
@@ -2918,6 +2937,7 @@ test = [
     { name = "pytest-cov" },
     { name = "pytest-pretty" },
     { name = "pytest-xdist" },
+    { name = "scipy" },
     { name = "xdoctest" },
 ]
 
@@ -2934,6 +2954,7 @@ requires-dist = [
     { name = "cyclopts", marker = "extra == 'examples'", specifier = ">=0.8.0" },
     { name = "diffrax", marker = "extra == 'examples'", specifier = ">=0.5.0" },
     { name = "equinox" },
+    { name = "functax", extras = ["jax"], git = "https://github.com/jejjohnson/functax?tag=v0.0.6" },
     { name = "gaussx", git = "https://github.com/jejjohnson/gaussx?tag=v0.1.0" },
     { name = "hydra-core", marker = "extra == 'exp'", specifier = ">=1.3.2" },
     { name = "ipykernel", marker = "extra == 'docs'", specifier = ">=6.29.0" },
@@ -2974,7 +2995,8 @@ requires-dist = [
     { name = "pytest-pretty", marker = "extra == 'test'", specifier = ">=1.2.0" },
     { name = "pytest-xdist", marker = "extra == 'test'", specifier = ">=3.5.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
-    { name = "scipy", specifier = ">=1.12.0" },
+    { name = "scipy", marker = "extra == 'examples'", specifier = ">=1.12.0" },
+    { name = "scipy", marker = "extra == 'test'", specifier = ">=1.12.0" },
     { name = "seaborn", marker = "extra == 'exp'", specifier = ">=0.13.2" },
     { name = "spectraldiffx", extras = ["test", "dev", "exp", "jlab", "docs", "examples"], marker = "extra == 'all'" },
     { name = "tqdm", marker = "extra == 'examples'", specifier = ">=4.66.0" },

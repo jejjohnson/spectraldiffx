@@ -4,21 +4,23 @@
 grouped exactly as the API reference groups it (one section per
 ``docs/api/<family>/<page>.md``, one sub-section per heading on that page),
 with the first sentence of its docstring. It then lists the public API of
-gaussx, the structured linear algebra spectraldiffx builds on. Agents and
-people search it before writing a helper ("Reuse before you write" in
-``AGENTS.md``).
+gaussx, the structured linear algebra spectraldiffx builds on, and of the
+functax modules its grids take their nodes, quadrature rules, Legendre
+functions and Chebyshev transforms from. Agents and people search it before
+writing a helper ("Reuse before you write" in ``AGENTS.md``).
 
 Usage::
 
     make capabilities                                   # rewrite the index
     uv run python scripts/capabilities.py --check       # fail if stale
 
-``tests/test_capabilities.py`` runs the check in the fast tier. The gaussx
-section depends on the installed version, which the index records; when it
-differs from the installed one, only the spectraldiffx part is compared.
+``tests/test_capabilities.py`` runs the check in the fast tier. The upstream
+sections depend on the installed versions, which the index records; when they
+differ from the installed ones, only the spectraldiffx part is compared.
 
-``--check`` also fails when spectraldiffx exports a name that gaussx exports
-for a different object, unless ``ALLOWED_SHARED_NAMES`` gives the reason.
+``--check`` also fails when spectraldiffx exports a name that an upstream
+exports for a different object, unless ``ALLOWED_SHARED_NAMES`` gives the
+reason.
 """
 
 from __future__ import annotations
@@ -46,6 +48,12 @@ PACKAGES: dict[str, list[str]] = {
 
 UPSTREAM: dict[str, list[str]] = {
     "gaussx": ["gaussx"],
+    "functax": [
+        "functax.geometry",
+        "functax.quad",
+        "functax.transform",
+        "functax.basis.polynomial",
+    ],
 }
 UPSTREAM_BLURB = {
     "gaussx": (
@@ -56,6 +64,17 @@ UPSTREAM_BLURB = {
         " A new solve, factorisation or Woodbury / capacitance correction comes"
         " from here, not from a hand-written `jnp.linalg` call."
     ),
+    "functax": (
+        "Function approximation: bases, quadrature rules, transforms. The"
+        " Chebyshev grids take their nodes from `chebyshev_nodes` and their"
+        " transforms from `ChebyshevTransform1D` / `ChebyshevTransform2D`;"
+        " `clenshaw_curtis_weights` is `clenshaw_curtis`, reversed to the"
+        " descending nodes; the spherical grids take their Gauss–Legendre rule"
+        " from `gauss_legendre` and their Legendre tables from"
+        " `associated_legendre`. The differentiation matrices, filters, solvers"
+        " and the spherical-harmonic transform stay in spectraldiffx. New nodes,"
+        " weights or a basis evaluation come from here."
+    ),
 }
 
 # Names spectraldiffx and an upstream library both export, and why.
@@ -64,6 +83,19 @@ ALLOWED_SHARED_NAMES: dict[str, str] = {
         "spectraldiffx's is the masked-domain Poisson / Helmholtz solver built by"
         " build_capacitance_solver (on gaussx.MaskedOperator); gaussx's is the"
         " generic point-constraint capacitance correction around any base solver"
+    ),
+    "ChebyshevTransform1D": (
+        "spectraldiffx's wraps a ChebyshevGrid1D (ChebyshevTransform1D(grid=...))"
+        " and calls functax's, which takes the degree and node kind"
+    ),
+    "ChebyshevTransform2D": (
+        "spectraldiffx's wraps a ChebyshevGrid2D and calls functax's, which"
+        " takes the degrees and node kind"
+    ),
+    "SphericalHarmonicTransform": (
+        "spectraldiffx's is the complex FFT + Legendre transform on a"
+        " SphericalGrid2D; functax's is geonnax's real dense transform"
+        " (jejjohnson/functax#23)"
     ),
 }
 
@@ -286,11 +318,11 @@ def render() -> str:
         "",
         f"Every public name in spectraldiffx ({total} of them), each listed once",
         "and grouped as the API reference groups it, with the first sentence of",
-        "its docstring; then the public API of gaussx, which spectraldiffx builds",
-        "on. Search this page before writing a helper: if what you need is here,",
-        "compose it; if it is almost here, extend it where it lives. Regenerate",
-        "with `make capabilities` after changing a public API",
-        "(`tests/test_capabilities.py` checks it is current).",
+        "its docstring; then the public API of gaussx and of the functax modules",
+        "spectraldiffx builds on. Search this page before writing a helper: if",
+        "what you need is here, compose it; if it is almost here, extend it where",
+        "it lives. Regenerate with `make capabilities` after changing a public",
+        "API (`tests/test_capabilities.py` checks it is current).",
         "",
         *package_part,
         UPSTREAM_MARKER,

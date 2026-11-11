@@ -133,6 +133,7 @@ dmypy.json
 datasets/*
 !datasets/.gitkeep
 *.npz
+!tests/data/*.npz
 \outputs
 \multirun
 **/outputs/*
