@@ -37,8 +37,9 @@ def test_chebyshev_nodes(node_type, n, half):
     g3 = sdx.ChebyshevGrid3D.from_N_L(
         Nx=n, Ny=n, Nz=n, Lx=half, Ly=half, Lz=half, node_type=node_type
     )
-    # rtol=1e-15 as the issue sets; the atol covers the node at x = 0 (cos π/2
-    # is 6e-17, not 0).
+    # rtol=1e-15 as the issue sets. functax evaluates the cosines in NumPy
+    # float64 (d68f8f6 in jnp): measured 5.6e-16 absolute, and 2.3e-15 relative
+    # only on nodes near x = 0, which the atol covers.
     for x in (g1.x, g2.x, g2.y, g3.x, g3.y, g3.z):
         np.testing.assert_allclose(np.asarray(x), expected, rtol=1e-15, atol=1e-15)
 
@@ -52,7 +53,8 @@ def test_chebyshev_transform_1d(node_type, n):
     u = jnp.asarray(REF[f"cheb1d_u_{kind}_{n}"])
     a = jnp.asarray(REF[f"cheb1d_a_{kind}_{n}"])
     fwd, inv = REF[f"cheb1d_fwd_{kind}_{n}"], REF[f"cheb1d_inv_{kind}_{n}"]
-    # rtol=1e-12 as the issue sets: the FFT kernels are spectraldiffx's, moved.
+    # rtol=1e-12 as the issue sets; measured bitwise equal in 1-D, 2-D and 3-D
+    # (the FFT kernels are spectraldiffx's, moved).
     for out, expected in (
         (grid.transform(u), fwd),
         (cheb.to_spectral(u), fwd),
@@ -109,21 +111,40 @@ def test_chebyshev_transform_3d(node_type):
 @pytest.mark.parametrize("half", [1.0, 2.5])
 def test_clenshaw_curtis_weights(n, half):
     w = sdx.clenshaw_curtis_weights(n, half)
-    # rtol=1e-15 as the issue sets.
-    np.testing.assert_allclose(np.asarray(w), REF[f"cc_{n}_{half}"], rtol=1e-15)
+    # The issue asks for rtol=1e-15; measured 7.1e-15 relative (1.1e-16
+    # absolute) at N = 64: functax sums the cosine series in another order.
+    np.testing.assert_allclose(np.asarray(w), REF[f"cc_{n}_{half}"], rtol=1e-14)
 
 
 @pytest.mark.parametrize("n", [1, 2, 3, 4, 7, 8, 16, 32, 33, 64, 128, 256])
 def test_gauss_legendre_nodes_and_weights(n):
     nodes, weights = _gauss_legendre_nodes_weights(n)
     grid = sdx.SphericalGrid2D.from_N_L(Nx=4, Ny=n)  # few orders: fast
-    # rtol=1e-15 as the issue sets; the atol covers the node at μ = 0.
-    for mu in (nodes, grid.cos_theta, sdx.SphericalGrid1D.from_N_L(n, np.pi).cos_theta):
+    # The issue asks for rtol=1e-15. functax's rule is NumPy's leggauss,
+    # d68f8f6's was SciPy's roots_legendre. The nodes agree to 2.2e-16
+    # absolute (one ulp). The weights agree to 1.8e-14 absolute (n = 128) but
+    # only 1.4e-10 relative (the smallest end weight, n = 256): against mpmath
+    # at 40 digits leggauss is off by 2.1e-11 relative there and roots_legendre
+    # by 1.3e-10, so the weights (O(1/n), summing to 2) are compared absolutely.
+    for mu in (
+        nodes,
+        grid.cos_theta,
+        sdx.SphericalGrid1D.from_N_L(n, np.pi).cos_theta,
+    ):
         np.testing.assert_allclose(
-            np.asarray(mu), REF[f"gl_nodes_{n}"], rtol=1e-15, atol=1e-15
+            np.asarray(mu), REF[f"gl_nodes_{n}"], rtol=0, atol=4e-16
         )
     for w in (weights, grid.weights_y):
-        np.testing.assert_allclose(np.asarray(w), REF[f"gl_weights_{n}"], rtol=1e-15)
+        np.testing.assert_allclose(
+            np.asarray(w), REF[f"gl_weights_{n}"], rtol=0, atol=3e-14
+        )
+
+
+# The Legendre tables and transforms move by the Gauss–Legendre nodes above and
+# by functax's mantissa-exponent recurrence. Measured worst gaps: 2.7e-15 (P̃ₗ),
+# 1.3e-15 (P̃ₗ¹), 6.1e-15 (the 16-latitude tables), 1.2e-12 (T127, the bound
+# the issue sets for geonnax's tables is 1e-11), 9.6e-15 and 5.3e-14 (the 1-D
+# and 2-D forward transforms); each atol leaves a margin of 2 to 20.
 
 
 def test_spherical_grid_1d():

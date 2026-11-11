@@ -30,14 +30,43 @@ from __future__ import annotations
 from typing import Literal
 
 import equinox as eqx
-import jax
+from functax.geometry import chebyshev_nodes
+from functax.transform import ChebyshevTransform1D, ChebyshevTransform2D
 import jax.numpy as jnp
 from jaxtyping import Array, Float
 import numpy as np
 
 # ============================================================================
-# Internal numpy helpers (called once at __init__ time, not inside JIT)
+# Internal helpers (the numpy ones are called once at __init__ time, not
+# inside JIT)
 # ============================================================================
+
+
+def _functax_kind(node_type: str) -> str:
+    """functax's name for a node type: "lobatto" for "gauss-lobatto", else "gauss"."""
+    return "lobatto" if node_type == "gauss-lobatto" else "gauss"
+
+
+def _cheb_nodes(N: int, L: float, node_type: str) -> Array:
+    """Physical Chebyshev nodes on [−L, L] (decreasing order).
+
+    ``functax.geometry.chebyshev_nodes`` on [−1, 1], scaled by L, so L may be
+    traced.
+    """
+    return L * chebyshev_nodes(N, kind=_functax_kind(node_type))
+
+
+def _transform_along_axis(
+    u: Array, N: int, node_type: str, inverse: bool, axis: int
+) -> Array:
+    """Apply the 1D Chebyshev transform along ``axis`` of an N-d array.
+
+    The functax transform acts on the last axis, so the target axis is moved
+    there, transformed, and moved back.
+    """
+    transform = ChebyshevTransform1D(N, kind=_functax_kind(node_type))
+    u_last = jnp.moveaxis(u, axis, -1)
+    return jnp.moveaxis(transform(u_last, inverse=inverse), -1, axis)
 
 
 def _cheb_diff_matrix_gl(N: int) -> np.ndarray:
@@ -275,11 +304,7 @@ class ChebyshevGrid1D(eqx.Module):
         -------
         x : Array [N+1] for GL, [N] for Gauss
         """
-        if self.node_type == "gauss-lobatto":
-            return self.L * jnp.cos(jnp.pi * jnp.arange(self.N + 1) / self.N)
-        else:
-            j = jnp.arange(self.N)
-            return self.L * jnp.cos(jnp.pi * (2 * j + 1) / (2 * self.N))
+        return _cheb_nodes(self.N, self.L, self.node_type)
 
     @property
     def D(self) -> Float[Array, "N1 N1"]:
@@ -330,88 +355,16 @@ class ChebyshevGrid1D(eqx.Module):
         -------
         Array
             Spectral coefficients (forward) or physical values (inverse).
+
+        Notes
+        -----
+        Computed by ``functax.transform.ChebyshevTransform1D``: DCT-I as a
+        length-2N real FFT of the even extension (Gauss–Lobatto), DCT-II with
+        a half-sample shift (Gauss). Acts on the last axis of ``u``, so
+        batched input needs no ``vmap``.
         """
-        N = self.N
-        if self.node_type == "gauss-lobatto":
-            return self._transform_gl(u, N, inverse)
-        else:
-            return self._transform_gauss(u, N, inverse)
-
-    @staticmethod
-    def _transform_gl(u: Array, N: int, inverse: bool) -> Array:
-        """FFT-based DCT-I Chebyshev transform for Gauss-Lobatto nodes.
-
-        Forward:
-            aₖ = (2 / (N cₖ)) Σⱼ'' uⱼ cos(πjk/N),   c₀ = c_N = 2, cₖ = 1 otherwise
-
-        (the double prime halves the j = 0 and j = N terms).  This is a
-        DCT-I, evaluated as a length-2N real FFT of the even extension.
-        Inverse:
-            uⱼ = Σₖ aₖ cos(πjk/N)
-
-        Acts on the last axis of ``u`` (shape ``(..., N+1)``), so batched
-        and tensor-product transforms need no ``vmap``.
-        """
-        if not inverse:
-            # Even extension y = [u_0, …, u_N, u_{N-1}, …, u_1] (length 2N)
-            y = jnp.concatenate([u, u[..., -2:0:-1]], axis=-1)
-            a = jnp.fft.rfft(y, axis=-1).real / N
-            # rfft/N gives 2/cₖ-weighted values: halve the two end modes.
-            return a.at[..., 0].multiply(0.5).at[..., N].multiply(0.5)
-        else:
-            # irfft(X, n=2N)[j] = (1/2N)[X₀ + X_N(−1)ʲ + 2 Σ_{0<k<N} Xₖ cos(πjk/N)],
-            # so X = N·a with the end modes doubled reproduces Σₖ aₖ cos(πjk/N).
-            X = N * u.at[..., 0].multiply(2.0).at[..., N].multiply(2.0)
-            y = jnp.fft.irfft(X + 0j, n=2 * N, axis=-1)
-            return y[..., : N + 1]
-
-    @staticmethod
-    def _transform_gauss(u: Array, N: int, inverse: bool) -> Array:
-        """FFT-based DCT-II / synthesis transform for Gauss nodes.
-
-        Forward convention:
-            a[0]  = (1/N) Σⱼ uⱼ              (k=0: halved)
-            a[k]  = (2/N) Σⱼ uⱼ cos(πk(2j+1)/(2N))  (k > 0)
-
-        Inverse:
-            u[n] = Σₖ a[k] Tₖ(xₙ)   (direct synthesis, no adjustment to a[0])
-
-        Dtypes are derived from the input to preserve precision in x64 mode.
-        Acts on the last axis of ``u`` (shape ``(..., N)``).
-        """
-        # Derive real and complex dtypes from the input to preserve precision.
-        # NB: ``jnp.result_type(u, jnp.float32)`` would downcast float64 to
-        # float32 (the scalar type is treated as a strong dtype), so promote
-        # the dtypes explicitly.
-        real_dtype = jnp.promote_types(u.dtype, jnp.float32)
-        complex_dtype = jnp.promote_types(real_dtype, jnp.complex64)
-
-        if not inverse:
-            # Forward DCT-II: a[k] = (2/N) Σⱼ uⱼ cos(πk(2j+1)/(2N))
-            # Via FFT: zero-pad, apply half-sample phase shift
-            pad = jnp.zeros((*u.shape[:-1], N), dtype=real_dtype)
-            u_pad = jnp.concatenate([u.astype(real_dtype), pad], axis=-1)  # length 2N
-            Y = jnp.fft.rfft(u_pad, axis=-1)  # complex, length N+1
-            k_idx = jnp.arange(N + 1, dtype=real_dtype)
-            phase = jnp.exp((-1j * jnp.pi * k_idx / (2 * N)).astype(complex_dtype))
-            Z = Y * phase  # Z[k] = Σⱼ uⱼ exp(-iπ(2j+1)k/(2N))
-            a = Z[..., :N].real * (2.0 / N)
-            # Halve k=0 so that a[0] = (1/N) Σ uⱼ
-            return a.at[..., 0].multiply(0.5)
-        else:
-            # Inverse (synthesis): u[n] = Σₖ a[k] Tₖ(xₙ)
-            # = Re[Σₖ a[k] exp(iπk(2n+1)/(2N))]
-            # = Re[2N · IFFT_{2N}([h₀,...,h_{N-1},0,...,0])[n]]
-            # where h[k] = a[k] · exp(iπk/(2N))
-            # NOTE: a[0] is NOT doubled here; the halving in the forward
-            # is already accounted for since the synthesis uses a[k] directly.
-            k_idx = jnp.arange(N, dtype=real_dtype)
-            phase = jnp.exp((1j * jnp.pi * k_idx / (2 * N)).astype(complex_dtype))
-            h = u.astype(complex_dtype) * phase  # complex, length N
-            pad = jnp.zeros((*u.shape[:-1], N), dtype=complex_dtype)
-            H_full = jnp.concatenate([h, pad], axis=-1)
-            y = jnp.fft.ifft(H_full, axis=-1)
-            return (2 * N * y.real)[..., :N]
+        transform = ChebyshevTransform1D(self.N, kind=_functax_kind(self.node_type))
+        return transform(u, inverse=inverse)
 
     # ------------------------------------------------------------------
     # Dealiasing
@@ -564,20 +517,12 @@ class ChebyshevGrid2D(eqx.Module):
     @property
     def x(self) -> Float[Array, "Nx1"]:
         """Physical x-nodes on [-Lx, Lx]."""
-        if self.node_type == "gauss-lobatto":
-            return self.Lx * jnp.cos(jnp.pi * jnp.arange(self.Nx + 1) / self.Nx)
-        else:
-            j = jnp.arange(self.Nx)
-            return self.Lx * jnp.cos(jnp.pi * (2 * j + 1) / (2 * self.Nx))
+        return _cheb_nodes(self.Nx, self.Lx, self.node_type)
 
     @property
     def y(self) -> Float[Array, "Ny1"]:
         """Physical y-nodes on [-Ly, Ly]."""
-        if self.node_type == "gauss-lobatto":
-            return self.Ly * jnp.cos(jnp.pi * jnp.arange(self.Ny + 1) / self.Ny)
-        else:
-            j = jnp.arange(self.Ny)
-            return self.Ly * jnp.cos(jnp.pi * (2 * j + 1) / (2 * self.Ny))
+        return _cheb_nodes(self.Ny, self.Ly, self.node_type)
 
     @property
     def X(self) -> tuple[Float[Array, "Ny1 Nx1"], Float[Array, "Ny1 Nx1"]]:
@@ -650,25 +595,10 @@ class ChebyshevGrid2D(eqx.Module):
         -------
         Array [Ny_pts, Nx_pts]
         """
-        Nx, Ny = self.Nx, self.Ny
-        is_gl = self.node_type == "gauss-lobatto"
-        _gl = ChebyshevGrid1D._transform_gl
-        _gauss = ChebyshevGrid1D._transform_gauss
-
-        def tx(row):
-            return _gl(row, Nx, inverse) if is_gl else _gauss(row, Nx, inverse)
-
-        def ty(col):
-            return _gl(col, Ny, inverse) if is_gl else _gauss(col, Ny, inverse)
-
-        if not inverse:
-            # Transform along x (rows), then y (cols)
-            u_x = jax.vmap(tx, in_axes=0, out_axes=0)(u)
-            return jax.vmap(ty, in_axes=1, out_axes=1)(u_x)
-        else:
-            # Untransform along y (cols), then x (rows)
-            u_y = jax.vmap(ty, in_axes=1, out_axes=1)(u)
-            return jax.vmap(tx, in_axes=0, out_axes=0)(u_y)
+        transform = ChebyshevTransform2D(
+            self.Nx, self.Ny, kind=_functax_kind(self.node_type)
+        )
+        return transform(u, inverse=inverse)
 
     def check_consistency(self, rtol: float = 1e-5) -> bool:
         """Verify that Nx, Ny ≥ 1 and Lx, Ly > 0."""
@@ -689,31 +619,6 @@ class ChebyshevGrid2D(eqx.Module):
 # ============================================================================
 # ChebyshevGrid3D
 # ============================================================================
-
-
-def _transform_along_axis(
-    u: Array, N: int, node_type: str, inverse: bool, axis: int
-) -> Array:
-    """Apply the 1D Chebyshev transform along ``axis`` of an N-d array.
-
-    The 1D kernels act on the last axis, so the target axis is moved there,
-    transformed, and moved back.
-    """
-    kernel = (
-        ChebyshevGrid1D._transform_gl
-        if node_type == "gauss-lobatto"
-        else ChebyshevGrid1D._transform_gauss
-    )
-    u_last = jnp.moveaxis(u, axis, -1)
-    return jnp.moveaxis(kernel(u_last, N, inverse), -1, axis)
-
-
-def _cheb_nodes(N: int, L: float, node_type: str) -> Array:
-    """Physical Chebyshev nodes on [−L, L] (decreasing order)."""
-    if node_type == "gauss-lobatto":
-        return L * jnp.cos(jnp.pi * jnp.arange(N + 1) / N)
-    j = jnp.arange(N)
-    return L * jnp.cos(jnp.pi * (2 * j + 1) / (2 * N))
 
 
 class ChebyshevGrid3D(eqx.Module):

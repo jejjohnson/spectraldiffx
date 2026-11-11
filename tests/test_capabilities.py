@@ -3,9 +3,9 @@
 Agents and contributors search the index before writing a helper ("Reuse
 before you write" in AGENTS.md), so a stale index sends them to
 re-implement something that exists. ``scripts/capabilities.py`` regenerates
-it; this runs its ``--check``. It imports only spectraldiffx and gaussx (a
-required dependency), so it runs in the fast tier. The gaussx section is
-compared only at the version the index records.
+it; this runs its ``--check``. It imports only spectraldiffx, gaussx and
+functax (required dependencies), so it runs in the fast tier. The upstream
+sections are compared only at the versions the index records.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def test_capability_index_is_current() -> None:
 def test_no_name_is_bound_to_two_objects() -> None:
     _, clashes = capabilities.collect()
     assert not clashes, (
-        "spectraldiffx exports a name that gaussx exports for a different "
+        "spectraldiffx exports a name that gaussx or functax exports for a different "
         f"object: {clashes}. Rename it, or add it to ALLOWED_SHARED_NAMES in "
         "scripts/capabilities.py with a reason."
     )

@@ -42,6 +42,16 @@ when adding a solver.
   Helmholtz solvers diagonalise once with `gaussx.EigenFactorization` and
   solve 2-D systems with `gaussx.kronecker_sum_solve`. Use gaussx's public
   API only; gaussx never imports spectraldiffx.
+- **Upstream: functax** (pinned the same way). It owns the function
+  approximation under the grids: the Chebyshev nodes
+  (`functax.geometry.chebyshev_nodes`) and transforms
+  (`functax.transform.ChebyshevTransform1D/2D`), the Clenshaw–Curtis and
+  Gauss–Legendre rules (`functax.quad.clenshaw_curtis`, `gauss_legendre`)
+  and the associated Legendre functions
+  (`functax.basis.polynomial.associated_legendre`). The grid classes,
+  differentiation matrices, filters, solvers and the spherical-harmonic
+  transform stay here; new nodes, weights or a basis evaluation go to
+  functax, which never imports spectraldiffx.
 - **Downstream: finitevolX** pins a spectraldiffx release tag and imports
   the elliptic solvers, eigenvalue functions, transforms, `BoundaryCondition`
   and the capacitance solver by name. A rename, a removed name or a changed
@@ -50,11 +60,12 @@ when adding a solver.
   that finitevolX must follow. (The solvers module already binds two names
   to one function where both are in use, e.g. `solve_helmholtz_dst1 =
   solve_helmholtz_dst`.)
-- **Numerics are JAX.** NumPy and SciPy run only at construction time, on
-  concrete values (Chebyshev differentiation matrices, Gauss–Legendre nodes
-  and associated Legendre functions via `scipy.special`, capacitance cell
-  classification); SciPy is otherwise a test reference (`scipy.fft`).
-  `import spectraldiffx` loads gaussx, nothing heavier.
+- **Numerics are JAX.** NumPy runs only at construction time, on concrete
+  values (Chebyshev differentiation matrices, capacitance cell
+  classification), as do functax's Gauss–Legendre rule and Legendre tables,
+  evaluated on the host in float64; the package does not import SciPy,
+  which is a test reference (`scipy.fft`, `scipy.special`).
+  `import spectraldiffx` loads gaussx and functax, nothing heavier.
 
 ## What spectraldiffx is built on
 

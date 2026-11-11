@@ -22,11 +22,17 @@ which makes the columns orthonormal against the GL weights:
     Σⱼ wⱼ · P̃ₗᵐ(μⱼ) · P̃_{l'}^m(μⱼ) = δ_{l, l'}
 
 Stability envelope
-    :func:`_alp_tables` builds P̃ₗᵐ with the normalised three-term recurrence
-    (Holmes & Featherstone 2002), never forming the unnormalised Pₗᵐ, which
-    overflows float64 near m ≈ 85 (gh-96).  On the Gauss–Legendre nodes it
-    loses no significant entry up to at least l ≈ 1500; at points much closer
-    to the poles the sectoral seed P̃ₘᵐ ∝ sinᵐθ underflows earlier.
+    :func:`_alp_tables` takes P̃ₗᵐ from ``functax.basis.polynomial.
+    associated_legendre``: the normalised three-term recurrence (Holmes &
+    Featherstone 2002), never forming the unnormalised Pₗᵐ, which overflows
+    float64 near m ≈ 85 (gh-96), with each order carried as a mantissa and a
+    binary exponent (Fukushima 2012), so the sectoral seed P̃ₘᵐ ∝ sinᵐθ does
+    not underflow near the poles.
+
+Where the pieces live
+    The Gauss–Legendre rule (``functax.quad.gauss_legendre``) and the
+    associated Legendre functions come from functax; the grids, the transform,
+    the eigenvalues and the dealiasing stay here.
 
 References
 ----------
@@ -41,6 +47,12 @@ from __future__ import annotations
 from typing import Literal
 
 import equinox as eqx
+from functax.basis.polynomial import (
+    associated_legendre,
+    associated_legendre_indices,
+)
+from functax.quad import gauss_legendre
+import jax
 import jax.numpy as jnp
 from jaxtyping import Array, Complex, Float
 import numpy as np
@@ -48,7 +60,7 @@ import numpy as np
 
 def _gauss_legendre_nodes_weights(N: int):
     """
-    Compute Gauss-Legendre nodes and weights via scipy.
+    Gauss-Legendre nodes and weights, from ``functax.quad.gauss_legendre``.
 
     Parameters
     ----------
@@ -62,11 +74,10 @@ def _gauss_legendre_nodes_weights(N: int):
     weights : ndarray [N]
         GL weights summing to 2.  Ordered to match nodes.
     """
-    from scipy.special import roots_legendre
-
-    nodes, weights = roots_legendre(N)
-    # roots_legendre returns ascending order (-1 to 1); reverse to North-South.
-    return nodes[::-1].copy(), weights[::-1].copy()
+    nodes, weights = gauss_legendre(N)
+    # functax returns ascending order (-1 to 1, South to North); reverse to
+    # North-South.
+    return np.asarray(nodes)[::-1].copy(), np.asarray(weights)[::-1].copy()
 
 
 def _legendre_matrix(l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
@@ -89,17 +100,10 @@ def _legendre_matrix(l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:
     Returns
     -------
     P : ndarray [Nl, Ny]
-        Normalised Legendre polynomial matrix.
+        Normalised Legendre polynomial matrix: the m = 0 rows of
+        :func:`_alp_tables`, since P̃ₗ⁰ = √((2l+1)/2) · Pₗ.
     """
-    from scipy.special import eval_legendre
-
-    Nl = len(l_values)
-    Ny = len(mu)
-    P = np.zeros((Nl, Ny), dtype=np.float64)
-    for i, l in enumerate(l_values):
-        norm = np.sqrt((2 * l + 1) / 2.0)
-        P[i, :] = norm * eval_legendre(l, mu)
-    return P
+    return _alp_matrix(0, l_values, mu)
 
 
 def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
@@ -111,9 +115,12 @@ def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
     ``scipy.special.lpmv``) and Nₗ,ₘ = √((2l+1)/2 · (l−m)!/(l+m)!), so that
     ∫₋₁¹ P̃ₗᵐ P̃ₗ′ᵐ dμ = δₗₗ′.  Rows with l < m are zero.
 
-    The normalised functions are built directly, so no unnormalised Pₗᵐ (which
-    grows like (2m−1)!! and overflows float64 near m ≈ 85, gh-96) and no
-    factorial ratio is ever formed:
+    The values come from ``functax.basis.polynomial.associated_legendre``
+    (``normalization="orthonormal"``), evaluated in float64 on the host
+    whatever the x64 setting, and are rearranged from its (l, m) columns into
+    one table per order.  It builds the normalised functions directly, so no
+    unnormalised Pₗᵐ (which grows like (2m−1)!! and overflows float64 near
+    m ≈ 85, gh-96) and no factorial ratio is ever formed:
 
         P̃₀⁰ = 1/√2
         P̃ₘᵐ = −√((2m+1)/(2m)) · s · P̃ₘ₋₁ᵐ⁻¹,          s = √(1 − μ²)
@@ -121,10 +128,9 @@ def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
         P̃ₗᵐ = aₗₘ (μ P̃ₗ₋₁ᵐ − bₗₘ P̃ₗ₋₂ᵐ),
             aₗₘ = √((4l²−1)/(l²−m²)),  bₗₘ = √(((l−1)²−m²)/(4(l−1)²−1))
 
-    (Holmes & Featherstone 2002, "standard forward column" recurrence).  In
-    float64, on Gauss–Legendre nodes, no significant entry is lost up to at
-    least l ≈ 1500.  At arbitrary μ the sectoral seed P̃ₘᵐ ∝ sᵐ underflows
-    once m · log₁₀(1/s) > 308, i.e. very close to the poles at high order.
+    (Holmes & Featherstone 2002, "standard forward column" recurrence), with
+    each order carried as a mantissa and a binary exponent (Fukushima 2012),
+    so the sectoral seed P̃ₘᵐ ∝ sᵐ does not underflow near the poles.
 
     Parameters
     ----------
@@ -145,6 +151,9 @@ def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
     Holmes, S. A. and Featherstone, W. E. (2002). A unified approach to the
     Clenshaw summation and the recursive computation of very high degree and
     order normalised associated Legendre functions. J. Geodesy 76, 279–299.
+    Fukushima, T. (2012). Numerical computation of spherical harmonics of
+    arbitrary degree and order by extending exponent of floating point
+    numbers. J. Geodesy 86, 271–285.
 
     Examples
     --------
@@ -157,28 +166,17 @@ def _alp_tables(m_values: np.ndarray, l_max: int, mu: np.ndarray) -> np.ndarray:
     """
     m_values = np.asarray(m_values, dtype=int)
     mu = np.asarray(mu, dtype=np.float64)
-    s = np.sqrt(np.clip(1.0 - mu**2, 0.0, None))  # (Ny,)
-    n = l_max + 1
-    m_top = int(m_values.max(initial=0))
-
-    # Sectoral values P̃ₘᵐ for m = 0, …, m_top by a running product over m.
-    sectoral = np.empty((m_top + 1, mu.size))  # (m_top + 1, Ny)
-    sectoral[0] = 1.0 / np.sqrt(2.0)
-    for m in range(1, m_top + 1):
-        sectoral[m] = -np.sqrt((2 * m + 1) / (2 * m)) * s * sectoral[m - 1]
-
-    P = np.zeros((m_values.size, n, mu.size), dtype=np.float64)  # (Nm, L, Ny)
-    for i, m in enumerate(m_values):
-        if m > l_max:
-            continue  # P̃ₗᵐ = 0 for every l <= l_max < m
-        P[i, m] = sectoral[m]
-        if m + 1 < n:
-            P[i, m + 1] = np.sqrt(2 * m + 3) * mu * sectoral[m]
-        for l in range(m + 2, n):
-            a = np.sqrt((4 * l * l - 1) / (l * l - m * m))
-            b = np.sqrt(((l - 1) ** 2 - m * m) / (4 * (l - 1) ** 2 - 1))
-            P[i, l] = a * (mu * P[i, l - 1] - b * P[i, l - 2])
-    return P
+    # Host-side float64 even with x64 off, and eager even when a grid is
+    # built inside jit, as the scipy tables it replaces were.
+    with jax.ensure_compile_time_eval(), jax.enable_x64(True):
+        columns = np.asarray(
+            associated_legendre(jnp.asarray(mu, dtype=jnp.float64), l_max)
+        )  # (Ny, (l_max + 1)(l_max + 2) / 2), one column per (l, m)
+    degree, order = np.asarray(associated_legendre_indices(l_max)).T
+    m_top = max(int(m_values.max(initial=0)), l_max)
+    by_order = np.zeros((m_top + 1, l_max + 1, mu.size))  # (m, l, Ny); 0 for l < m
+    by_order[order, degree] = columns.T
+    return by_order[m_values]
 
 
 def _alp_matrix(m_abs: int, l_values: np.ndarray, mu: np.ndarray) -> np.ndarray:

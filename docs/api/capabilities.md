@@ -4,11 +4,11 @@
 
 Every public name in spectraldiffx (121 of them), each listed once
 and grouped as the API reference groups it, with the first sentence of
-its docstring; then the public API of gaussx, which spectraldiffx builds
-on. Search this page before writing a helper: if what you need is here,
-compose it; if it is almost here, extend it where it lives. Regenerate
-with `make capabilities` after changing a public API
-(`tests/test_capabilities.py` checks it is current).
+its docstring; then the public API of gaussx and of the functax modules
+spectraldiffx builds on. Search this page before writing a helper: if
+what you need is here, compose it; if it is almost here, extend it where
+it lives. Regenerate with `make capabilities` after changing a public
+API (`tests/test_capabilities.py` checks it is current).
 
 ## `spectraldiffx`
 
@@ -258,7 +258,7 @@ with `make capabilities` after changing a public API
 
 <!-- upstream -->
 
-Listed at gaussx 0.1.0.
+Listed at gaussx 0.1.0, functax 0.0.6.
 
 ## Upstream: `gaussx`
 
@@ -580,3 +580,79 @@ Structured linear algebra. spectraldiffx uses it for the masked-domain capacitan
 | `whiten_covariance` | function | Unwhiten variational covariance: S = L S̃ Lᵀ. |
 | `whitened_svgp_predict` | function | Whitened SVGP prediction: mean and variance at test points. |
 | `woodbury_solve` | function | Standalone Woodbury identity solve: ``(L + U diag(D) U^T)^{-1} b``. |
+
+## Upstream: `functax`
+
+Function approximation: bases, quadrature rules, transforms. The Chebyshev grids take their nodes from `chebyshev_nodes` and their transforms from `ChebyshevTransform1D` / `ChebyshevTransform2D`; `clenshaw_curtis_weights` is `clenshaw_curtis`, reversed to the descending nodes; the spherical grids take their Gauss–Legendre rule from `gauss_legendre` and their Legendre tables from `associated_legendre`. The differentiation matrices, filters, solvers and the spherical-harmonic transform stay in spectraldiffx. New nodes, weights or a basis evaluation come from here.
+
+### `functax.geometry`
+
+| Name | Kind | What it does |
+|---|---|---|
+| `AffineGrid` | class | A regular 2-D grid given by an affine transform and a shape. |
+| `Axis` | class | One strictly monotone coordinate axis, optionally periodic or in time. |
+| `CurvilinearGrid` | class | A 2-D grid whose node coordinates are given per node, such as a swath. |
+| `Metric` | constant | Re-exported from `typing`. |
+| `Points` | class | Scattered sites, with the metric their distances use. |
+| `RectilinearGrid` | class | A tensor-product grid with one `Axis` per dimension. |
+| `cartesian_to_tangent` | function | 3-D vectors to their east and north components (v · ê, v · n̂). |
+| `chebyshev_nodes` | function | The Chebyshev nodes of degree N on [a, b], from b down to a. |
+| `chord_distance` | function | The straight-line distance through the sphere between every pair. |
+| `ecef_to_lonlat` | function | Earth-centred, Earth-fixed coordinates to geodetic (λ, φ) and height. |
+| `enu_basis` | function | The local east, north and up unit vectors at each point. |
+| `fibonacci_sphere` | function | The Fibonacci lattice: n near-uniform points on the unit sphere. |
+| `from_pixel` | function | Map fractional pixel (row, col) to coordinates (x, y): the inverse of `to_pixel`. |
+| `gauss_legendre_grid` | function | The Gauss–Legendre grid on the sphere, with its quadrature weights. |
+| `geodesic_distance` | function | The great-circle distance between every pair. |
+| `healpix_grid` | function | HEALPix pixel centres, each weighted by the equal pixel area. |
+| `icosphere` | function | The subdivided icosahedron, a quasi-uniform triangle mesh of the sphere. |
+| `latlon_grid` | function | The regular cell-centred lon/lat grid, weighted by exact cell areas. |
+| `local_tangent_plane` | function | Project points onto the tangent plane at ``origin``, as (east, north). |
+| `lonlat_to_ecef` | function | Geodetic (λ, φ) and height to Earth-centred, Earth-fixed coordinates. |
+| `lonlat_to_unit` | function | Lift longitude and latitude onto the unit sphere. |
+| `mesh_vertex_areas` | function | The lumped (barycentric) vertex areas of a triangle mesh. |
+| `pairwise_distance` | function | The distance from every source to every target, in their shared metric. |
+| `pixel_centres` | function | The x and y of every pixel centre of a grid, each of shape (rows, cols). |
+| `rotation_to_pole` | function | The rotation R with R û(centre) = (0, 0, 1). |
+| `spherical_polygon_area` | function | The signed area of a spherical polygon with great-circle edges. |
+| `tangent_to_cartesian` | function | East and north components (u, v) to the 3-D tangent vector u ê + v n̂. |
+| `to_pixel` | function | Map coordinates (x, y) to fractional pixel (row, col), centres at integers. |
+| `unit_to_lonlat` | function | Longitude and latitude of vectors on (or off) the unit sphere. |
+| `window` | function | The row and column slices of the pixels that cover ``bounds``. |
+
+### `functax.quad`
+
+| Name | Kind | What it does |
+|---|---|---|
+| `CurveRule` | class | A rule on a curve L: ∫_L c dℓ ≈ ∑ₖ Δsₖ c(xₖ), with the unit normal nₖ. |
+| `Rule` | class | A quadrature rule as data: nodes xₙ and weights wₙ, ∫ g dx ≈ ∑ₙ wₙ g(xₙ). |
+| `SphereRule` | class | A rule on a sphere of radius a: ∫_{S²} g dA ≈ ∑_q w_q g(u_q). |
+| `cell_area` | function | The cell-area rule of a grid: ∫ g dA ≈ ∑ₖ \|Cₖ\| g(xₖ) over its cells Cₖ. |
+| `clenshaw_curtis` | function | The n-point Clenshaw–Curtis rule on [a, b], at the Chebyshev extreme points. |
+| `gauss_legendre` | function | The n-point Gauss–Legendre rule on an interval [a, b]. |
+| `polyline` | function | A rule along a polyline: n nodes per segment, arc-length weights and normals. |
+| `simpson` | function | The composite Simpson rule on given nodes, as ``scipy.integrate.simpson``. |
+| `sphere_fibonacci` | function | The Fibonacci rule: n near-uniform points of equal weight 4πa²/n. |
+| `sphere_gauss_legendre` | function | The Gauss–Legendre × uniform-longitude rule on the sphere, exact to a degree. |
+| `sphere_healpix` | function | The HEALPix rule: 12 N_side² pixel centres of equal weight 4πa²/Q. |
+| `sphere_latlon` | function | The cell-centred lon/lat rule: equiangular cells weighted by their exact areas. |
+| `trapezoid` | function | The composite trapezoid rule on given nodes, uniform or not. |
+
+### `functax.transform`
+
+| Name | Kind | What it does |
+|---|---|---|
+| `ChebyshevTransform1D` | class | The forward and inverse Chebyshev transform on N Chebyshev nodes. |
+| `ChebyshevTransform2D` | class | The tensor-product Chebyshev transform on an (N_y, N_x) grid of nodes. |
+| `SphericalHarmonicTransform` | class | Dense, differentiable spherical-harmonic analysis and synthesis on a grid. |
+| `nonuniform_irfft` | function | A truncated real Fourier series evaluated at points of [0, 1)^d. |
+| `nonuniform_rfft` | function | The truncated Fourier coefficients of a field sampled at points of [0, 1)^d. |
+
+### `functax.basis.polynomial`
+
+| Name | Kind | What it does |
+|---|---|---|
+| `associated_legendre` | function | The associated Legendre functions P_l^m(t) for 0 ≤ m ≤ l ≤ l_max. |
+| `associated_legendre_indices` | function | The (l, m) of each column of `associated_legendre`. |
+| `legendre_polynomials` | function | The Legendre polynomials P₀(t), …, P_{l_max}(t). |
+| `legendre_series` | function | The Legendre series f(x) = ∑ₗ cₗ Pₗ(x), l = 0, …, L, evaluated elementwise. |
