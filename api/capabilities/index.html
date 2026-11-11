@@ -1876,6 +1876,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#upstream-functax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upstream: functax
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Upstream: functax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#functaxgeometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.geometry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functaxquad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.quad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functaxtransform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functaxbasispolynomial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.basis.polynomial
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2955,6 +3016,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#upstream-functax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upstream: functax
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Upstream: functax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#functaxgeometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.geometry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functaxquad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.quad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functaxtransform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.transform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functaxbasispolynomial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        functax.basis.polynomial
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2980,11 +3102,11 @@
 
 <p>Every public name in spectraldiffx (121 of them), each listed once
 and grouped as the API reference groups it, with the first sentence of
-its docstring; then the public API of gaussx, which spectraldiffx builds
-on. Search this page before writing a helper: if what you need is here,
-compose it; if it is almost here, extend it where it lives. Regenerate
-with <code>make capabilities</code> after changing a public API
-(<code>tests/test_capabilities.py</code> checks it is current).</p>
+its docstring; then the public API of gaussx and of the functax modules
+spectraldiffx builds on. Search this page before writing a helper: if
+what you need is here, compose it; if it is almost here, extend it where
+it lives. Regenerate with <code>make capabilities</code> after changing a public
+API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <h2 id="spectraldiffx"><code>spectraldiffx</code><a class="headerlink" href="#spectraldiffx" title="Permanent link">&para;</a></h2>
 <h3 id="fourier-spectral-transforms-docsapifouriertransformsmd">Fourier: Spectral Transforms (<code>docs/api/fourier/transforms.md</code>)<a class="headerlink" href="#fourier-spectral-transforms-docsapifouriertransformsmd" title="Permanent link">&para;</a></h3>
 <h4 id="1-d-transforms">1-D Transforms<a class="headerlink" href="#1-d-transforms" title="Permanent link">&para;</a></h4>
@@ -3873,7 +3995,7 @@ with <code>make capabilities</code> after changing a public API
 </table>
 <!-- upstream -->
 
-<p>Listed at gaussx 0.1.0.</p>
+<p>Listed at gaussx 0.1.0, functax 0.0.6.</p>
 <h2 id="upstream-gaussx">Upstream: <code>gaussx</code><a class="headerlink" href="#upstream-gaussx" title="Permanent link">&para;</a></h2>
 <p>Structured linear algebra. spectraldiffx uses it for the masked-domain capacitance solver (<code>DiagonalisedOperator</code>, <code>circulant_from_symbol</code>, <code>MaskedOperator</code>, <code>grid_coupling_indices</code>, <code>solve</code>) and the Chebyshev Helmholtz solvers (<code>EigenFactorization</code>, <code>kronecker_sum_solve</code>). A new solve, factorisation or Woodbury / capacitance correction comes from here, not from a hand-written <code>jnp.linalg</code> call.</p>
 <h3 id="gaussx"><code>gaussx</code><a class="headerlink" href="#gaussx" title="Permanent link">&para;</a></h3>
@@ -5445,6 +5567,316 @@ with <code>make capabilities</code> after changing a public API
 <td><code>woodbury_solve</code></td>
 <td>function</td>
 <td>Standalone Woodbury identity solve: <code>(L + U diag(D) U^T)^{-1} b</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="upstream-functax">Upstream: <code>functax</code><a class="headerlink" href="#upstream-functax" title="Permanent link">&para;</a></h2>
+<p>Function approximation: bases, quadrature rules, transforms. The Chebyshev grids take their nodes from <code>chebyshev_nodes</code> and their transforms from <code>ChebyshevTransform1D</code> / <code>ChebyshevTransform2D</code>; <code>clenshaw_curtis_weights</code> is <code>clenshaw_curtis</code>, reversed to the descending nodes; the spherical grids take their Gauss–Legendre rule from <code>gauss_legendre</code> and their Legendre tables from <code>associated_legendre</code>. The differentiation matrices, filters, solvers and the spherical-harmonic transform stay in spectraldiffx. New nodes, weights or a basis evaluation come from here.</p>
+<h3 id="functaxgeometry"><code>functax.geometry</code><a class="headerlink" href="#functaxgeometry" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AffineGrid</code></td>
+<td>class</td>
+<td>A regular 2-D grid given by an affine transform and a shape.</td>
+</tr>
+<tr>
+<td><code>Axis</code></td>
+<td>class</td>
+<td>One strictly monotone coordinate axis, optionally periodic or in time.</td>
+</tr>
+<tr>
+<td><code>CurvilinearGrid</code></td>
+<td>class</td>
+<td>A 2-D grid whose node coordinates are given per node, such as a swath.</td>
+</tr>
+<tr>
+<td><code>Metric</code></td>
+<td>constant</td>
+<td>Re-exported from <code>typing</code>.</td>
+</tr>
+<tr>
+<td><code>Points</code></td>
+<td>class</td>
+<td>Scattered sites, with the metric their distances use.</td>
+</tr>
+<tr>
+<td><code>RectilinearGrid</code></td>
+<td>class</td>
+<td>A tensor-product grid with one <code>Axis</code> per dimension.</td>
+</tr>
+<tr>
+<td><code>cartesian_to_tangent</code></td>
+<td>function</td>
+<td>3-D vectors to their east and north components (v · ê, v · n̂).</td>
+</tr>
+<tr>
+<td><code>chebyshev_nodes</code></td>
+<td>function</td>
+<td>The Chebyshev nodes of degree N on [a, b], from b down to a.</td>
+</tr>
+<tr>
+<td><code>chord_distance</code></td>
+<td>function</td>
+<td>The straight-line distance through the sphere between every pair.</td>
+</tr>
+<tr>
+<td><code>ecef_to_lonlat</code></td>
+<td>function</td>
+<td>Earth-centred, Earth-fixed coordinates to geodetic (λ, φ) and height.</td>
+</tr>
+<tr>
+<td><code>enu_basis</code></td>
+<td>function</td>
+<td>The local east, north and up unit vectors at each point.</td>
+</tr>
+<tr>
+<td><code>fibonacci_sphere</code></td>
+<td>function</td>
+<td>The Fibonacci lattice: n near-uniform points on the unit sphere.</td>
+</tr>
+<tr>
+<td><code>from_pixel</code></td>
+<td>function</td>
+<td>Map fractional pixel (row, col) to coordinates (x, y): the inverse of <code>to_pixel</code>.</td>
+</tr>
+<tr>
+<td><code>gauss_legendre_grid</code></td>
+<td>function</td>
+<td>The Gauss–Legendre grid on the sphere, with its quadrature weights.</td>
+</tr>
+<tr>
+<td><code>geodesic_distance</code></td>
+<td>function</td>
+<td>The great-circle distance between every pair.</td>
+</tr>
+<tr>
+<td><code>healpix_grid</code></td>
+<td>function</td>
+<td>HEALPix pixel centres, each weighted by the equal pixel area.</td>
+</tr>
+<tr>
+<td><code>icosphere</code></td>
+<td>function</td>
+<td>The subdivided icosahedron, a quasi-uniform triangle mesh of the sphere.</td>
+</tr>
+<tr>
+<td><code>latlon_grid</code></td>
+<td>function</td>
+<td>The regular cell-centred lon/lat grid, weighted by exact cell areas.</td>
+</tr>
+<tr>
+<td><code>local_tangent_plane</code></td>
+<td>function</td>
+<td>Project points onto the tangent plane at <code>origin</code>, as (east, north).</td>
+</tr>
+<tr>
+<td><code>lonlat_to_ecef</code></td>
+<td>function</td>
+<td>Geodetic (λ, φ) and height to Earth-centred, Earth-fixed coordinates.</td>
+</tr>
+<tr>
+<td><code>lonlat_to_unit</code></td>
+<td>function</td>
+<td>Lift longitude and latitude onto the unit sphere.</td>
+</tr>
+<tr>
+<td><code>mesh_vertex_areas</code></td>
+<td>function</td>
+<td>The lumped (barycentric) vertex areas of a triangle mesh.</td>
+</tr>
+<tr>
+<td><code>pairwise_distance</code></td>
+<td>function</td>
+<td>The distance from every source to every target, in their shared metric.</td>
+</tr>
+<tr>
+<td><code>pixel_centres</code></td>
+<td>function</td>
+<td>The x and y of every pixel centre of a grid, each of shape (rows, cols).</td>
+</tr>
+<tr>
+<td><code>rotation_to_pole</code></td>
+<td>function</td>
+<td>The rotation R with R û(centre) = (0, 0, 1).</td>
+</tr>
+<tr>
+<td><code>spherical_polygon_area</code></td>
+<td>function</td>
+<td>The signed area of a spherical polygon with great-circle edges.</td>
+</tr>
+<tr>
+<td><code>tangent_to_cartesian</code></td>
+<td>function</td>
+<td>East and north components (u, v) to the 3-D tangent vector u ê + v n̂.</td>
+</tr>
+<tr>
+<td><code>to_pixel</code></td>
+<td>function</td>
+<td>Map coordinates (x, y) to fractional pixel (row, col), centres at integers.</td>
+</tr>
+<tr>
+<td><code>unit_to_lonlat</code></td>
+<td>function</td>
+<td>Longitude and latitude of vectors on (or off) the unit sphere.</td>
+</tr>
+<tr>
+<td><code>window</code></td>
+<td>function</td>
+<td>The row and column slices of the pixels that cover <code>bounds</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="functaxquad"><code>functax.quad</code><a class="headerlink" href="#functaxquad" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CurveRule</code></td>
+<td>class</td>
+<td>A rule on a curve L: ∫_L c dℓ ≈ ∑ₖ Δsₖ c(xₖ), with the unit normal nₖ.</td>
+</tr>
+<tr>
+<td><code>Rule</code></td>
+<td>class</td>
+<td>A quadrature rule as data: nodes xₙ and weights wₙ, ∫ g dx ≈ ∑ₙ wₙ g(xₙ).</td>
+</tr>
+<tr>
+<td><code>SphereRule</code></td>
+<td>class</td>
+<td>A rule on a sphere of radius a: ∫_{S²} g dA ≈ ∑_q w_q g(u_q).</td>
+</tr>
+<tr>
+<td><code>cell_area</code></td>
+<td>function</td>
+<td>The cell-area rule of a grid: ∫ g dA ≈ ∑ₖ |Cₖ| g(xₖ) over its cells Cₖ.</td>
+</tr>
+<tr>
+<td><code>clenshaw_curtis</code></td>
+<td>function</td>
+<td>The n-point Clenshaw–Curtis rule on [a, b], at the Chebyshev extreme points.</td>
+</tr>
+<tr>
+<td><code>gauss_legendre</code></td>
+<td>function</td>
+<td>The n-point Gauss–Legendre rule on an interval [a, b].</td>
+</tr>
+<tr>
+<td><code>polyline</code></td>
+<td>function</td>
+<td>A rule along a polyline: n nodes per segment, arc-length weights and normals.</td>
+</tr>
+<tr>
+<td><code>simpson</code></td>
+<td>function</td>
+<td>The composite Simpson rule on given nodes, as <code>scipy.integrate.simpson</code>.</td>
+</tr>
+<tr>
+<td><code>sphere_fibonacci</code></td>
+<td>function</td>
+<td>The Fibonacci rule: n near-uniform points of equal weight 4πa²/n.</td>
+</tr>
+<tr>
+<td><code>sphere_gauss_legendre</code></td>
+<td>function</td>
+<td>The Gauss–Legendre × uniform-longitude rule on the sphere, exact to a degree.</td>
+</tr>
+<tr>
+<td><code>sphere_healpix</code></td>
+<td>function</td>
+<td>The HEALPix rule: 12 N_side² pixel centres of equal weight 4πa²/Q.</td>
+</tr>
+<tr>
+<td><code>sphere_latlon</code></td>
+<td>function</td>
+<td>The cell-centred lon/lat rule: equiangular cells weighted by their exact areas.</td>
+</tr>
+<tr>
+<td><code>trapezoid</code></td>
+<td>function</td>
+<td>The composite trapezoid rule on given nodes, uniform or not.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="functaxtransform"><code>functax.transform</code><a class="headerlink" href="#functaxtransform" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ChebyshevTransform1D</code></td>
+<td>class</td>
+<td>The forward and inverse Chebyshev transform on N Chebyshev nodes.</td>
+</tr>
+<tr>
+<td><code>ChebyshevTransform2D</code></td>
+<td>class</td>
+<td>The tensor-product Chebyshev transform on an (N_y, N_x) grid of nodes.</td>
+</tr>
+<tr>
+<td><code>SphericalHarmonicTransform</code></td>
+<td>class</td>
+<td>Dense, differentiable spherical-harmonic analysis and synthesis on a grid.</td>
+</tr>
+<tr>
+<td><code>nonuniform_irfft</code></td>
+<td>function</td>
+<td>A truncated real Fourier series evaluated at points of [0, 1)^d.</td>
+</tr>
+<tr>
+<td><code>nonuniform_rfft</code></td>
+<td>function</td>
+<td>The truncated Fourier coefficients of a field sampled at points of [0, 1)^d.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="functaxbasispolynomial"><code>functax.basis.polynomial</code><a class="headerlink" href="#functaxbasispolynomial" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Kind</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>associated_legendre</code></td>
+<td>function</td>
+<td>The associated Legendre functions P_l^m(t) for 0 ≤ m ≤ l ≤ l_max.</td>
+</tr>
+<tr>
+<td><code>associated_legendre_indices</code></td>
+<td>function</td>
+<td>The (l, m) of each column of <code>associated_legendre</code>.</td>
+</tr>
+<tr>
+<td><code>legendre_polynomials</code></td>
+<td>function</td>
+<td>The Legendre polynomials P₀(t), …, P_{l_max}(t).</td>
+</tr>
+<tr>
+<td><code>legendre_series</code></td>
+<td>function</td>
+<td>The Legendre series f(x) = ∑ₗ cₗ Pₗ(x), l = 0, …, L, evaluated elementwise.</td>
 </tr>
 </tbody>
 </table>
