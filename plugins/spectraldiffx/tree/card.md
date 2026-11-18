@@ -1,0 +1,5 @@
+- **Provides.** Pseudospectral tools in JAX: Fourier, Chebyshev and spherical-harmonic grids that own their wavenumbers, spectral derivatives with dealiasing, DCT and DST transforms, and Poisson and Helmholtz solvers for periodic, Dirichlet and Neumann boundaries.
+- **Start from.** `spectraldiffx.FourierGrid2D`, `spectraldiffx.SpectralDerivative2D`, `spectraldiffx.SpectralHelmholtzSolver2D`, `spectraldiffx.solve_helmholtz_2d`, `spectraldiffx.solve_poisson_2d`, `spectraldiffx.build_capacitance_solver`, `spectraldiffx.dct`, `spectraldiffx.dst`.
+- **Keep.** Take wavenumbers from the grid (`grid.k`, `grid.K2`), put x on the last array axis, and pass products of fields through `jacobian`, `advection_scalar` or `apply_dealias`, not linear operators.
+- **Never.** Solve a domain with walls using an FFT; pass the boundary condition per axis to `solve_helmholtz_2d` and let it pick FFT, DST or DCT.
+- **Open the skill when.** You need Chebyshev or spherical grids, mixed per-axis boundary conditions or non-zero boundary values, a land-masked basin solve, spectral filters, or the exact meaning of the `dirichlet` and `neumann` options.
