@@ -203,13 +203,9 @@ Each card below says what a library under this skill guarantees.
 A card is enough to call it.
 Load a skill only when its card's last line applies.
 
-### functax · base dependency · no skill yet
+### functax · base dependency · 0 of 8 units
 
-- **Provides.** Function approximation for JAX: CRS-free axes and grids, interpolation plans, quadrature rules, bases, differential operators, projection and gap filling.
-- **Start from.** `functax.geometry.Axis`, `functax.geometry.Points`, `functax.geometry.RectilinearGrid`, `functax.interp.Linear`, `functax.interp.Plan`, `functax.quad.gauss_legendre`, `functax.quad.Rule`, `functax.project.fill_gaps`.
-- **Keep.** Build a plan once with `scheme.plan(source, target)` and call it on many fields; every error is a `functax.FunctaxError` that is also the closest standard exception, so `except ValueError` still works.
-- **Never.** Import a functax module other than `functax`, `functax.geometry` and `functax.geometry.affine` on a NumPy-only path; the rest need the `functax[jax]` extra and raise `MissingExtraError` without it.
-- **Open the repository when.** You write a new scheme, basis or rule, or need more than these names: it has no skill yet, so read its `AGENTS.md` and its section of GeoStack's capability index.
+It uses fewer than 3 names of each unit, so no card. The front door is `functax:function-approximation-with-functax`.
 
 ### gaussx · base dependency · 1 of 7 units
 
