@@ -3995,9 +3995,9 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 </table>
 <!-- upstream -->
 
-<p>Listed at gaussx 0.1.0, functax 0.0.6.</p>
+<p>Listed at gaussx 0.8.0, functax 0.0.6.</p>
 <h2 id="upstream-gaussx">Upstream: <code>gaussx</code><a class="headerlink" href="#upstream-gaussx" title="Permanent link">&para;</a></h2>
-<p>Structured linear algebra. spectraldiffx uses it for the masked-domain capacitance solver (<code>DiagonalisedOperator</code>, <code>circulant_from_symbol</code>, <code>MaskedOperator</code>, <code>grid_coupling_indices</code>, <code>solve</code>) and the Chebyshev Helmholtz solvers (<code>EigenFactorization</code>, <code>kronecker_sum_solve</code>). A new solve, factorisation or Woodbury / capacitance correction comes from here, not from a hand-written <code>jnp.linalg</code> call.</p>
+<p>Structured linear algebra. spectraldiffx uses it for the masked-domain capacitance solver (<code>DiagonalizedOperator</code>, <code>circulant_from_symbol</code>, <code>MaskedOperator</code>, <code>grid_coupling_indices</code>, <code>solve</code>) and the Chebyshev Helmholtz solvers (<code>EigenDecomposition</code>, <code>kronecker_sum_solve</code>). A new solve, factorisation or Woodbury / capacitance correction comes from here, not from a hand-written <code>jnp.linalg</code> call.</p>
 <h3 id="gaussx"><code>gaussx</code><a class="headerlink" href="#gaussx" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -4021,22 +4021,27 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>AbstractLogdetStrategy</code></td>
 <td>class</td>
-<td>Protocol for log-determinant strategies.</td>
+<td>Protocol for a log-determinant strategy.</td>
 </tr>
 <tr>
 <td><code>AbstractPreconditioner</code></td>
 <td>class</td>
-<td>Protocol for preconditioners producing an approximate inverse.</td>
+<td>Protocol for preconditioners that produce an approximate inverse.</td>
+</tr>
+<tr>
+<td><code>AbstractSketch</code></td>
+<td>class</td>
+<td>A random sketching matrix S ∈ ℝ^(d × M), sampled once.</td>
 </tr>
 <tr>
 <td><code>AbstractSolveStrategy</code></td>
 <td>class</td>
-<td>Protocol for linear solve strategies.</td>
+<td>Protocol for a linear-solve strategy.</td>
 </tr>
 <tr>
 <td><code>AbstractSolverStrategy</code></td>
 <td>class</td>
-<td>Protocol for solver strategies that pair solve + logdet.</td>
+<td>Protocol for a solver strategy that pairs a solve and a log-determinant.</td>
 </tr>
 <tr>
 <td><code>AnalyticalPsiStatistics</code></td>
@@ -4046,17 +4051,22 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>AssumedDensityFilter</code></td>
 <td>class</td>
-<td>KL-optimal Gaussian projection via moment matching.</td>
+<td>KL-optimal Gaussian projection of g(x) via moment matching.</td>
 </tr>
 <tr>
 <td><code>AutoSolver</code></td>
 <td>class</td>
-<td>Automatic solver selection based on operator type and size.</td>
+<td>Automatic solver selection from the operator's type, size and tags.</td>
 </tr>
 <tr>
 <td><code>BBMMSolver</code></td>
 <td>class</td>
-<td>Black-Box Matrix-Matrix solver (Gardner et al. 2018).</td>
+<td>CG solve and SLQ logdet with BBMM's defaults (Gardner et al. 2018).</td>
+</tr>
+<tr>
+<td><code>BYM2GMRF</code></td>
+<td>class</td>
+<td>The BYM2 pair (b, u*) (Riebler et al., 2016), with its exact density.</td>
 </tr>
 <tr>
 <td><code>BernoulliLikelihood</code></td>
@@ -4064,19 +4074,34 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Bernoulli likelihood with logit link.</td>
 </tr>
 <tr>
+<td><code>BinomialLikelihood</code></td>
+<td>class</td>
+<td>Binomial likelihood with logit link.</td>
+</tr>
+<tr>
 <td><code>BlockDiag</code></td>
 <td>class</td>
-<td>Block diagonal operator <code>diag(A₁, A₂, …, Aₖ)</code>.</td>
+<td>Block-diagonal operator A = blockdiag(A_1, …, A_D), one block per slice.</td>
 </tr>
 <tr>
 <td><code>BlockTriDiag</code></td>
 <td>class</td>
-<td>Symmetric block-tridiagonal operator.</td>
+<td>Block-tridiagonal operator A with a symmetric off-diagonal band.</td>
 </tr>
 <tr>
 <td><code>CGSolver</code></td>
 <td>class</td>
-<td>Iterative CG solver with stochastic log-determinant.</td>
+<td>Conjugate-gradient solve with a stochastic log-determinant.</td>
+</tr>
+<tr>
+<td><code>CUR</code></td>
+<td>class</td>
+<td>CUR decomposition A ≈ C U R, with C = A_:,J and R = A_I,:.</td>
+</tr>
+<tr>
+<td><code>CallableLikelihood</code></td>
+<td>class</td>
+<td>A factorised likelihood from a per-site log density.</td>
 </tr>
 <tr>
 <td><code>CapacitanceSolver</code></td>
@@ -4084,34 +4109,44 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Solve a base system subject to homogeneous point constraints.</td>
 </tr>
 <tr>
-<td><code>Circulant</code></td>
-<td>function</td>
-<td>(Block-)circulant operator from its first column.</td>
+<td><code>Chandrupatla</code></td>
+<td>class</td>
+<td>Chandrupatla's hybrid inverse-quadratic / bisection root finder.</td>
+</tr>
+<tr>
+<td><code>ColumnID</code></td>
+<td>class</td>
+<td>Column interpolative decomposition A ≈ A_:,J X.</td>
 </tr>
 <tr>
 <td><code>ComposedSolver</code></td>
 <td>class</td>
-<td>Mix-and-match solve and logdet from different strategies.</td>
+<td>Mix-and-match a solve and a log-determinant from different strategies.</td>
 </tr>
 <tr>
 <td><code>ConstantSDE</code></td>
 <td>class</td>
-<td>State-space representation of a constant kernel.</td>
+<td>State-space form of the constant kernel k(τ) = σ_k².</td>
+</tr>
+<tr>
+<td><code>ConstrainedGMRF</code></td>
+<td>class</td>
+<td>A <code>GaussianMRF</code> conditioned on hard linear constraints A_c x = e.</td>
 </tr>
 <tr>
 <td><code>CosineSDE</code></td>
 <td>class</td>
-<td>State-space representation of the cosine kernel.</td>
+<td>State-space form of the cosine kernel k(τ) = σ_k² cos(ω₀ τ).</td>
 </tr>
 <tr>
 <td><code>CubatureIntegrator</code></td>
 <td>class</td>
-<td>Third-order spherical-radial cubature.</td>
+<td>Third-order spherical-radial cubature on 2 D_x equally weighted points.</td>
 </tr>
 <tr>
 <td><code>DAREResult</code></td>
 <td>class</td>
-<td>Result of DARE solver.</td>
+<td>Output of <code>dare</code>: the steady-state covariance Σ_x,∞ and gain G_∞.</td>
 </tr>
 <tr>
 <td><code>DenseFallbackWarning</code></td>
@@ -4121,62 +4156,57 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>DenseLogdet</code></td>
 <td>class</td>
-<td>Dense log-determinant via gaussx structural dispatch.</td>
+<td>Exact log-determinant by gaussx's structural dispatch.</td>
 </tr>
 <tr>
 <td><code>DenseSolver</code></td>
 <td>class</td>
-<td>Dense solver strategy using gaussx structural dispatch.</td>
+<td>Exact solver strategy through gaussx structural dispatch.</td>
 </tr>
 <tr>
-<td><code>DiagonalisedOperator</code></td>
+<td><code>DiagonalizedOperator</code></td>
 <td>class</td>
-<td>Linear operator <code>A x = V⁻¹(Λ ⊙ V x)</code> given by a transform pair.</td>
+<td>Linear operator A = W⁻¹ diag(γ) W given by a transform pair.</td>
 </tr>
 <tr>
-<td><code>EigenFactorization</code></td>
+<td><code>EigenDecomposition</code></td>
 <td>class</td>
-<td>Precomputed eigendecomposition <code>A = V diag(λ) V⁻¹</code> of a square matrix.</td>
-</tr>
-<tr>
-<td><code>EigenProPreconditioner</code></td>
-<td>class</td>
-<td>Spectral correction state for EigenPro kernel SGD.</td>
+<td>Precomputed eigendecomposition A = V diag(γ) V⁻¹ of a square matrix.</td>
 </tr>
 <tr>
 <td><code>EmissionModel</code></td>
 <td>class</td>
-<td>Observation (emission) model wrapping a linear observation matrix.</td>
-</tr>
-<tr>
-<td><code>FalkonPreconditioner</code></td>
-<td>class</td>
-<td>The two upper-triangular Cholesky factors of the Falkon preconditioner.</td>
+<td>Linear observation (emission) model with a dense observation operator H.</td>
 </tr>
 <tr>
 <td><code>FifthOrderCubatureIntegrator</code></td>
 <td>class</td>
-<td>Fifth-order fully symmetric cubature (McNamee &amp; Stenger).</td>
+<td>Fifth-order fully symmetric cubature on 2 D_x² + 1 points.</td>
 </tr>
 <tr>
 <td><code>FilterState</code></td>
 <td>class</td>
-<td>Output of <code>kalman_filter</code>.</td>
+<td>Output of <code>kalman_filter</code>: the filtered and predicted moments of x_t.</td>
 </tr>
 <tr>
 <td><code>GaussHermiteIntegrator</code></td>
 <td>class</td>
-<td>Gauss-Hermite quadrature integrator.</td>
+<td>Gauss-Hermite integrator: a tensor-product rule on order^D_x points.</td>
 </tr>
 <tr>
 <td><code>GaussianExpFam</code></td>
 <td>class</td>
-<td>Gaussian in natural (exponential family) parameters.</td>
+<td>Gaussian 𝒩(μ, Σ) held by its natural parameters (Λ μ, −½ Λ).</td>
 </tr>
 <tr>
 <td><code>GaussianLikelihood</code></td>
 <td>class</td>
-<td>Gaussian likelihood <code>log N(y \| f, noise_var * I)</code>.</td>
+<td>Gaussian likelihood with isotropic noise, with a closed-form ELL.</td>
+</tr>
+<tr>
+<td><code>GaussianMRF</code></td>
+<td>class</td>
+<td>Gaussian Markov random field x ~ 𝒩(μ, Λ⁻¹) with a structured precision Λ.</td>
 </tr>
 <tr>
 <td><code>GaussianSites</code></td>
@@ -4184,9 +4214,14 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Time-varying Gaussian likelihood sites in natural parameterization.</td>
 </tr>
 <tr>
+<td><code>GaussianSketch</code></td>
+<td>class</td>
+<td>Gaussian sketch: i.i.d. entries S_ij ~ 𝒩(0, 1/d).</td>
+</tr>
+<tr>
 <td><code>GaussianState</code></td>
 <td>class</td>
-<td>Gaussian distribution as (mean, covariance operator) pair.</td>
+<td>Gaussian belief as a pair of mean and covariance operator.</td>
 </tr>
 <tr>
 <td><code>HeteroscedasticGaussianLikelihood</code></td>
@@ -4194,69 +4229,64 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Heteroscedastic Gaussian likelihood with input-dependent noise.</td>
 </tr>
 <tr>
-<td><code>ImplicitCrossKernelOperator</code></td>
-<td>class</td>
-<td>Matrix-free rectangular kernel operator <code>K(X, Z) \cdot v</code>.</td>
-</tr>
-<tr>
-<td><code>ImplicitKernelOperator</code></td>
-<td>class</td>
-<td>Matrix-free kernel operator: <code>(K + sigma^2 I) v</code> via sequential scan.</td>
-</tr>
-<tr>
 <td><code>IndefiniteSLQLogdet</code></td>
 <td>class</td>
-<td>Stochastic <code>log\|det(A)\|</code> for symmetric (possibly indefinite) operators.</td>
+<td>Stochastic log |det(A + σ I)| for symmetric, possibly indefinite, A.</td>
 </tr>
 <tr>
-<td><code>InfiniteHorizonState</code></td>
+<td><code>InformationDiagnostics</code></td>
 <td>class</td>
-<td>Output of <code>infinite_horizon_filter</code>.</td>
+<td>Output of <code>information_diagnostics</code>.</td>
 </tr>
 <tr>
 <td><code>IntegratedWienerSDE</code></td>
 <td>class</td>
-<td>State-space representation of an integrated Wiener process.</td>
+<td>State-space form of the p-times integrated Wiener process.</td>
 </tr>
 <tr>
 <td><code>InterpolatedOperator</code></td>
 <td>class</td>
-<td>Structured Kernel Interpolation: <code>K \approx W K_{uu} W^T</code>.</td>
+<td>Structured kernel interpolation A = W_interp K_ℐℐ W_interpᵀ ≈ K_XX.</td>
+</tr>
+<tr>
+<td><code>IntrinsicGMRF</code></td>
+<td>class</td>
+<td>Improper Gaussian field x ~ 𝒩(μ, (τ R)⁺) on the complement of ker R.</td>
 </tr>
 <tr>
 <td><code>JacobiPreconditioner</code></td>
 <td>class</td>
-<td>Diagonal preconditioner <code>M^{-1} = diag(1 / diag(A))</code>.</td>
+<td>Diagonal preconditioner M⁻¹ = diag(1 / |diag(A)|).</td>
 </tr>
 <tr>
-<td><code>KernelOperator</code></td>
+<td><code>KeyedSolver</code></td>
 <td>class</td>
-<td>Kernel matrix operator with efficient first-order autodiff.</td>
+<td>Bind a PRNG key to a strategy's stochastic log-determinant (gh-384).</td>
 </tr>
 <tr>
 <td><code>Kronecker</code></td>
 <td>class</td>
-<td>Kronecker product operator <code>A₁ ⊗ A₂ ⊗ … ⊗ Aₖ</code>.</td>
+<td>Kronecker product A = A_1 ⊗ … ⊗ A_D, applied one factor at a time.</td>
 </tr>
 <tr>
 <td><code>KroneckerSum</code></td>
 <td>class</td>
-<td>Kronecker sum <code>A \oplus B = A \otimes I_b + I_a \otimes B</code>.</td>
+<td>Kronecker sum A_1 ⊕ A_2 = A_1 ⊗ I + I ⊗ A_2 of two square operators.</td>
 </tr>
 <tr>
 <td><code>KroneckerSumSqrt</code></td>
 <td>class</td>
-<td>Symmetric square root of <code>A \oplus B</code> via per-factor eigenvectors.</td>
+<td>Symmetric square root S of A_1 ⊕ A_2 from the factor eigenvectors.</td>
 </tr>
 <tr>
 <td><code>LOOResult</code></td>
 <td>class</td>
-<td>Result of leave-one-out cross-validation.</td>
+<td>Result of <code>leave_one_out_cv</code>: the LOO log-likelihood and predictives.</td>
 </tr>
 <tr>
 <td><code>LOVECache</code></td>
 <td>class</td>
-<td>Cached Lanczos factorization for fast predictive variance.</td>
+<td>Cached rank-k Lanczos approximation Q diag(θ)⁻¹ Qᵀ of Σ_y⁻¹.</td>
 </tr>
 <tr>
 <td><code>LSMRSolver</code></td>
@@ -4264,49 +4294,89 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>LSMR iterative least-squares solver (Fong &amp; Saunders 2011).</td>
 </tr>
 <tr>
+<td><code>LaplaceModel</code></td>
+<td>class</td>
+<td>The latent Gaussian model of a Laplace fit, with the maps one Newton step needs.</td>
+</tr>
+<tr>
+<td><code>LaplaceResult</code></td>
+<td>class</td>
+<td>The Gaussian approximation 𝒩(x̂, Λ_x|y⁻¹) at the mode.</td>
+</tr>
+<tr>
+<td><code>LinearGaussianPosterior</code></td>
+<td>class</td>
+<td>Posterior 𝒩(x_a, P_a) of <code>linear_gaussian_update</code>.</td>
+</tr>
+<tr>
+<td><code>LinearizedSDE</code></td>
+<td>class</td>
+<td>Linear surrogate dx(t) = (F_c,t x(t) + c_t) dt + L_c db(t) of an SDE.</td>
+</tr>
+<tr>
+<td><code>LineaxSolver</code></td>
+<td>class</td>
+<td>A lineax solver as a gaussx solve strategy.</td>
+</tr>
+<tr>
 <td><code>LowRankUpdate</code></td>
 <td>class</td>
-<td>Low-rank update operator <code>L + U diag(d) Vᵀ</code>.</td>
+<td>Low-rank update A = A₀ + U D Vᵀ of a base operator, with D = diag(d).</td>
 </tr>
 <tr>
 <td><code>LowerBlockTriDiag</code></td>
 <td>class</td>
-<td>Lower triangular block-bidiagonal Cholesky factor.</td>
+<td>Lower block-bidiagonal operator L, the block Cholesky factor of A.</td>
 </tr>
 <tr>
 <td><code>MINRESSolver</code></td>
 <td>class</td>
-<td>MINRES solver for symmetric (possibly indefinite) systems.</td>
+<td>MINRES solver for symmetric, possibly indefinite, systems.</td>
 </tr>
 <tr>
 <td><code>MaskedOperator</code></td>
 <td>class</td>
-<td>Row/column-masked view of a base operator.</td>
+<td>Masked view A = A₀[m_r, m_c] of a square base operator A₀.</td>
 </tr>
 <tr>
 <td><code>MaternSDE</code></td>
 <td>class</td>
-<td>State-space representation of the Matern kernel.</td>
+<td>State-space form of the Matérn kernel of order p, smoothness p + ½.</td>
 </tr>
 <tr>
 <td><code>MomentMatchResult</code></td>
 <td>class</td>
-<td>Tilted log-normaliser and its derivatives w.r.t. the cavity mean.</td>
+<td>Tilted log-normaliser and its derivatives with respect to the cavity mean.</td>
 </tr>
 <tr>
 <td><code>MonteCarloIntegrator</code></td>
 <td>class</td>
-<td>Monte Carlo moment matching: sample, propagate, compute moments.</td>
+<td>Monte Carlo moment matching: sample, propagate, take empirical moments.</td>
+</tr>
+<tr>
+<td><code>NegativeBinomialLikelihood</code></td>
+<td>class</td>
+<td>Negative-binomial likelihood with log link (NB2, a gamma-Poisson mixture).</td>
+</tr>
+<tr>
+<td><code>NystromLogdet</code></td>
+<td>class</td>
+<td>Nyström-preconditioned SLQ log-determinant of K + σ² I (Wenger et al., 2022).</td>
 </tr>
 <tr>
 <td><code>NystromPreconditioner</code></td>
 <td>class</td>
-<td>Low-rank approximate inverse from randomized operator probing.</td>
+<td>Randomized Nyström preconditioner for K + σ² I.</td>
 </tr>
 <tr>
 <td><code>OperatorPreconditioner</code></td>
 <td>class</td>
 <td>Use an externally supplied approximate inverse as a preconditioner.</td>
+</tr>
+<tr>
+<td><code>OrthonormalSketch</code></td>
+<td>class</td>
+<td>Gaussian sketch with orthonormal rows, S Sᵀ = I_d.</td>
 </tr>
 <tr>
 <td><code>PartialCholeskyPreconditioner</code></td>
@@ -4316,7 +4386,7 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>PeriodicSDE</code></td>
 <td>class</td>
-<td>State-space representation of the periodic (MacKay) kernel.</td>
+<td>State-space form of the periodic (MacKay) kernel, as J + 1 harmonics.</td>
 </tr>
 <tr>
 <td><code>PoissonLikelihood</code></td>
@@ -4326,52 +4396,52 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>PreconditionedCGSolver</code></td>
 <td>class</td>
-<td>CG solver with pivoted partial Cholesky preconditioner.</td>
+<td>CG with a pivoted partial Cholesky preconditioner.</td>
 </tr>
 <tr>
 <td><code>PredictionCache</code></td>
 <td>class</td>
-<td>Cached training solve for amortized predictions.</td>
-</tr>
-<tr>
-<td><code>ProductOperator</code></td>
-<td>function</td>
-<td>Lazy matmul <code>(A B) v = A (B v)</code>.</td>
+<td>Cached training solve α = Σ_y⁻¹ y (and factor L_y) for amortized predictions.</td>
 </tr>
 <tr>
 <td><code>ProductSDE</code></td>
 <td>class</td>
-<td>Product of two SDE kernels via Kronecker composition.</td>
+<td>Product of two SDE kernels, by Kronecker composition.</td>
 </tr>
 <tr>
 <td><code>PropagationResult</code></td>
 <td>class</td>
-<td>Output of uncertainty propagation through a nonlinear function.</td>
+<td>Output moments of a Gaussian pushed through a nonlinear map g.</td>
 </tr>
 <tr>
 <td><code>QuasiPeriodicSDE</code></td>
 <td>class</td>
-<td>Quasi-periodic kernel: product of Matern and Periodic SDE.</td>
+<td>Quasi-periodic kernel: a Matérn factor times a periodic factor.</td>
 </tr>
 <tr>
 <td><code>RootDecomposition</code></td>
 <td>class</td>
-<td>Tall factor <code>R</code> with <code>R Rᵀ ≈ A</code> semantics.</td>
+<td>Tall factor R of a root decomposition, A ≈ R Rᵀ.</td>
+</tr>
+<tr>
+<td><code>RowSamplingSketch</code></td>
+<td>class</td>
+<td>Weighted row-sampling sketch.</td>
 </tr>
 <tr>
 <td><code>SDEKernel</code></td>
 <td>class</td>
-<td>Abstract base class for state-space kernel representations.</td>
+<td>Abstract state-space form of a kernel k(τ): a linear SDE.</td>
 </tr>
 <tr>
 <td><code>SDEParams</code></td>
 <td>class</td>
-<td>Continuous-time SDE parameters for a linear SDE.</td>
+<td>Continuous-time matrices (F_c, L_c, H, Q_c, Σ_x,∞) of a linear SDE.</td>
 </tr>
 <tr>
 <td><code>SLQLogdet</code></td>
 <td>class</td>
-<td>Stochastic log-determinant via Lanczos quadrature (SLQ).</td>
+<td>Stochastic log-determinant by stochastic Lanczos quadrature (SLQ).</td>
 </tr>
 <tr>
 <td><code>SLRResult</code></td>
@@ -4379,14 +4449,14 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Linear-Gaussian surrogate produced by statistical linear regression.</td>
 </tr>
 <tr>
-<td><code>SVDLowRankUpdate</code></td>
+<td><code>SRHTSketch</code></td>
 <td>class</td>
-<td>Deprecated subclass of <code>LowRankUpdate</code> with <code>orthonormal=True</code>.</td>
+<td>Subsampled randomized Hadamard transform sketch.</td>
 </tr>
 <tr>
-<td><code>ScaledOperator</code></td>
-<td>function</td>
-<td>Lazy scalar multiply <code>(c A) v = c (A v)</code>.</td>
+<td><code>SketchAndPrecondLSMR</code></td>
+<td>class</td>
+<td>Sketch-and-precondition LSMR for tall least squares (Rokhlin &amp; Tygert, 2008).</td>
 </tr>
 <tr>
 <td><code>SoftmaxLikelihood</code></td>
@@ -4394,74 +4464,104 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Softmax (categorical) likelihood for multi-class classification.</td>
 </tr>
 <tr>
+<td><code>SparseCholeskyFactor</code></td>
+<td>class</td>
+<td>Sparse Cholesky factor on a static symbolic pattern.</td>
+</tr>
+<tr>
+<td><code>SparseCholeskySolver</code></td>
+<td>class</td>
+<td>Exact <code>solve</code> / <code>logdet</code> / <code>diag_inv</code> through a sparse Cholesky factor.</td>
+</tr>
+<tr>
+<td><code>SparseOperator</code></td>
+<td>class</td>
+<td>Sparse matrix A with a static <code>SparsityPattern</code> and traced values.</td>
+</tr>
+<tr>
+<td><code>SparseSignSketch</code></td>
+<td>class</td>
+<td>Sparse sign sketch (sparse Johnson-Lindenstrauss transform).</td>
+</tr>
+<tr>
+<td><code>SparsityPattern</code></td>
+<td>class</td>
+<td>Static, hashable sparsity pattern of an M × N matrix A.</td>
+</tr>
+<tr>
+<td><code>SpectralFunction</code></td>
+<td>class</td>
+<td>f(A) = W⁻¹ diag(f(γ)) W for a symmetric A with a factored eigenbasis.</td>
+</tr>
+<tr>
 <td><code>StudentTLikelihood</code></td>
 <td>class</td>
 <td>Student-t likelihood for robust regression.</td>
 </tr>
 <tr>
-<td><code>SumKronecker</code></td>
-<td>class</td>
-<td>Deprecated alias for <code>SumOfKroneckers</code>.</td>
-</tr>
-<tr>
-<td><code>SumKroneckerSqrt</code></td>
-<td>class</td>
-<td>Lazy Lanczos square-root operator for <code>SumOfKroneckers</code> covariances.</td>
-</tr>
-<tr>
 <td><code>SumOfKroneckers</code></td>
 <td>class</td>
-<td>Sum of Kronecker products <code>Σ_k A_k \otimes B_k</code>.</td>
+<td>Sum of Kronecker products ∑_j A_j ⊗ B_j, applied term by term.</td>
 </tr>
 <tr>
-<td><code>SumOperator</code></td>
-<td>function</td>
-<td>Lazy sum <code>(A + B + …) v = A v + B v + …</code>.</td>
+<td><code>SumOfKroneckersSqrt</code></td>
+<td>class</td>
+<td>Lazy Lanczos square root A^½ of a <code>SumOfKroneckers</code> covariance.</td>
 </tr>
 <tr>
 <td><code>SumSDE</code></td>
 <td>class</td>
-<td>Sum of SDE kernels via block-diagonal composition.</td>
+<td>Sum of independent SDE kernels, stacked block-diagonally.</td>
+</tr>
+<tr>
+<td><code>SymbolicCholesky</code></td>
+<td>class</td>
+<td>Symbolic Cholesky factor of a symmetric sparsity pattern.</td>
 </tr>
 <tr>
 <td><code>TaylorIntegrator</code></td>
 <td>class</td>
-<td>1st or 2nd order Taylor expansion for uncertainty propagation.</td>
+<td>First- or second-order Taylor expansion of g about the mean.</td>
 </tr>
 <tr>
 <td><code>Toeplitz</code></td>
 <td>class</td>
-<td>Symmetric Toeplitz matrix from its first column.</td>
+<td>Symmetric Toeplitz matrix A = toeplitz(t) from its first column t.</td>
 </tr>
 <tr>
 <td><code>ToeplitzCholesky</code></td>
 <td>class</td>
-<td>Circulant-embedding sample factor for a symmetric positive Toeplitz matrix.</td>
+<td>Circulant-embedding sample factor L, N × M, with L Lᵀ = toeplitz(t).</td>
 </tr>
 <tr>
 <td><code>UDLDecomposition</code></td>
 <td>class</td>
-<td>Banded factorisation <span class="arithmatex">\(\Lambda = U \tilde{D} U^{\top}\)</span> of a <code>BlockTriDiag</code>.</td>
+<td>Banded factorisation Λ_x = U D Uᵀ of a block-tridiagonal precision.</td>
 </tr>
 <tr>
 <td><code>UnscentedIntegrator</code></td>
 <td>class</td>
-<td>Unscented transform: deterministic sigma points.</td>
+<td>Unscented transform: 2 D_x + 1 deterministic sigma points.</td>
 </tr>
 <tr>
 <td><code>UpperBlockTriDiag</code></td>
 <td>class</td>
-<td>Upper triangular block-bidiagonal (transpose of LowerBlockTriDiag).</td>
+<td>Upper block-bidiagonal operator U, the transpose of a <code>LowerBlockTriDiag</code>.</td>
 </tr>
 <tr>
 <td><code>add_jitter</code></td>
 <td>function</td>
-<td>Add diagonal jitter for numerical stability: <code>A + eps * I</code>.</td>
+<td>Diagonal jitter A + β I for numerical stability.</td>
 </tr>
 <tr>
-<td><code>as_diagonalised</code></td>
+<td><code>ar1_precision</code></td>
 <td>function</td>
-<td>Express <code>operator</code> as one <code>DiagonalisedOperator</code>, if possible.</td>
+<td>Precision of a stationary AR(1) process with marginal precision τ.</td>
+</tr>
+<tr>
+<td><code>as_diagonalized</code></td>
+<td>function</td>
+<td>Express an operator as one <code>DiagonalizedOperator</code>, if possible.</td>
 </tr>
 <tr>
 <td><code>as_linear_operator</code></td>
@@ -4469,19 +4569,9 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Wrap a raw <code>matvec</code> callable as a tagged lineax operator.</td>
 </tr>
 <tr>
-<td><code>base_conditional</code></td>
+<td><code>besag_structure</code></td>
 <td>function</td>
-<td>Gaussian conditional distribution via Schur complement.</td>
-</tr>
-<tr>
-<td><code>batched_kernel_matvec</code></td>
-<td>function</td>
-<td>Compute <code>K(X, Z) @ v</code> in memory-efficient batches.</td>
-</tr>
-<tr>
-<td><code>batched_kernel_rmatvec</code></td>
-<td>function</td>
-<td>Compute <code>K(X, Z)^T @ u</code> in memory-efficient batches.</td>
+<td>Validate a graph Laplacian as a Besag (ICAR) structure matrix.</td>
 </tr>
 <tr>
 <td><code>block_diagonal_tag</code></td>
@@ -4496,57 +4586,62 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>blr_diag_update</code></td>
 <td>function</td>
-<td>Diagonal natural parameter BLR update step.</td>
+<td>Damped BLR step on the natural parameters of a diagonal Gaussian.</td>
 </tr>
 <tr>
 <td><code>blr_full_update</code></td>
 <td>function</td>
-<td>Full-rank natural parameter BLR update step.</td>
+<td>Damped BLR step on the natural parameters of a full-rank Gaussian.</td>
 </tr>
 <tr>
 <td><code>build_prediction_cache</code></td>
 <td>function</td>
-<td>Solve <code>A alpha = y</code> and cache the result.</td>
+<td>Solve Σ_y α = y and cache the result.</td>
+</tr>
+<tr>
+<td><code>bym2_precision</code></td>
+<td>function</td>
+<td>Joint precision Λ of the BYM2 pair (b, u*) (Riebler et al., 2016).</td>
 </tr>
 <tr>
 <td><code>cavity_distribution</code></td>
 <td>function</td>
-<td>Compute EP cavity distribution by removing a site.</td>
+<td>EP cavity distribution: remove a fraction α of a site from the marginal.</td>
 </tr>
 <tr>
 <td><code>cavity_from_marginal</code></td>
 <td>function</td>
-<td>Compute cavity distribution by removing a site from the marginal.</td>
-</tr>
-<tr>
-<td><code>center_kernel</code></td>
-<td>function</td>
-<td>Center a kernel matrix: <code>H K H</code>.</td>
-</tr>
-<tr>
-<td><code>centering_operator</code></td>
-<td>function</td>
-<td>Centering matrix <code>H = I - (1/n) \mathbf{1}\mathbf{1}^T</code>.</td>
+<td>Cavity distribution: the marginal with one site divided out.</td>
 </tr>
 <tr>
 <td><code>cholesky</code></td>
 <td>function</td>
-<td>Compute Cholesky factor L such that A = L L^T.</td>
+<td>Lower Cholesky factor L of an operator, structured where A is.</td>
 </tr>
 <tr>
 <td><code>cholesky_logdet</code></td>
 <td>function</td>
-<td>Compute log|A| from Cholesky factor L where A = L Lᵀ.</td>
+<td>Log-determinant log det A from a Cholesky factor L of A = L Lᵀ.</td>
+</tr>
+<tr>
+<td><code>circulant</code></td>
+<td>function</td>
+<td>(Block-)circulant operator C from its first column c.</td>
 </tr>
 <tr>
 <td><code>circulant_from_symbol</code></td>
 <td>function</td>
-<td>(Block-)circulant operator from its DFT symbol.</td>
+<td>(Block-)circulant operator C = DFT⁻¹ diag(γ) DFT from its symbol γ.</td>
 </tr>
 <tr>
 <td><code>collapsed_elbo</code></td>
 <td>function</td>
 <td>Collapsed ELBO (Titsias bound) for sparse GP regression.</td>
+</tr>
+<tr>
+<td><code>column_id</code></td>
+<td>function</td>
+<td>Randomized column interpolative decomposition (Voronin &amp; Martinsson, 2017).</td>
 </tr>
 <tr>
 <td><code>compute_psi_statistics</code></td>
@@ -4556,72 +4651,72 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>conditional</code></td>
 <td>function</td>
-<td>Compute <code>p(x_A \| x_B = b)</code> from a joint Gaussian <code>p(x_A, x_B)</code>.</td>
+<td>Conditional p(x_A ∣ x_B = b) of a joint Gaussian 𝒩(μ, Σ) from observed entries.</td>
 </tr>
 <tr>
 <td><code>conditional_interpolate</code></td>
 <td>function</td>
-<td>Interpolated marginal at time <code>t</code> given posteriors at <code>t^-</code> and <code>t^+</code>.</td>
+<td>Two-filter fusion at t from a filtered state and a backward message.</td>
 </tr>
 <tr>
 <td><code>conditional_variance</code></td>
 <td>function</td>
-<td>Predictive variance: Schur complement diagonal plus optional variational correction.</td>
+<td>Predictive variance: the Schur-complement diagonal plus a variational term.</td>
 </tr>
 <tr>
 <td><code>cost_expectation</code></td>
 <td>function</td>
-<td>Compute <code>E[Cost(f(x), target)]</code> where <code>x ~ N(mu, Sigma)</code>.</td>
+<td>Expected cost of a prediction under an uncertain state.</td>
 </tr>
 <tr>
 <td><code>cov_transform</code></td>
 <td>function</td>
-<td>Covariance propagation through a linear map: <code>J @ Sigma @ J^T</code>.</td>
+<td>Covariance propagation through a linear map, J Σ Jᵀ.</td>
 </tr>
 <tr>
 <td><code>create_grid</code></td>
 <td>function</td>
-<td>Create a regular grid from per-dimension sizes and bounds.</td>
+<td>Regular grid axes g_d = linspace(lo_d, hi_d, N_d), one per dimension.</td>
 </tr>
 <tr>
 <td><code>cubature_points</code></td>
 <td>function</td>
-<td>Spherical-radial cubature points and weights.</td>
+<td>Spherical-radial cubature points and weights, 2 D_x of them.</td>
 </tr>
 <tr>
-<td><code>cubic_interpolation_weights</code></td>
+<td><code>cur</code></td>
 <td>function</td>
-<td>Compute cubic interpolation indices and weights for SKI.</td>
+<td>Randomized CUR decomposition (Voronin &amp; Martinsson, 2017, §4).</td>
 </tr>
 <tr>
 <td><code>cvi_update_sites</code></td>
 <td>function</td>
-<td>Natural gradient update for CVI sites.</td>
+<td>Damped natural-gradient update of CVI sites.</td>
 </tr>
 <tr>
 <td><code>damped_natural_update</code></td>
 <td>function</td>
-<td>Damped update in natural parameter space.</td>
+<td>Damped update in natural-parameter space.</td>
 </tr>
 <tr>
 <td><code>dare</code></td>
 <td>function</td>
-<td>Discrete Algebraic Riccati Equation solver.</td>
+<td>Steady-state Kalman filter covariance and gain (the filtering DARE).</td>
 </tr>
 <tr>
 <td><code>diag</code></td>
 <td>function</td>
-<td>Extract the diagonal of an operator as a 1D array.</td>
+<td>Diagonal diag(A) of an operator, with structural dispatch.</td>
 </tr>
 <tr>
 <td><code>diag_conditional_variance</code></td>
 <td>function</td>
-<td>Diagonal of Schur complement: <code>diag(K_XX - A K_ZX)</code>.</td>
+<td>Diagonal of the Schur complement, max([K_XX]_nn − [A_X K_ZX]_nn, 0).</td>
 </tr>
 <tr>
 <td><code>diag_inv</code></td>
 <td>function</td>
-<td>Compute the diagonal of the inverse of a linear operator.</td>
+<td>Diagonal of the inverse, diag(A⁻¹), without forming A⁻¹.</td>
 </tr>
 <tr>
 <td><code>diagonal_tag</code></td>
@@ -4636,47 +4731,32 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>discrete_lyapunov_solve</code></td>
 <td>function</td>
-<td>Solve the discrete Lyapunov equation <code>P - G P G^T = Q</code>.</td>
+<td>Solve the discrete Lyapunov equation X − A X Aᵀ = B by diagonalising A.</td>
 </tr>
 <tr>
-<td><code>discretise_mfd</code></td>
+<td><code>discretize_mfd</code></td>
 <td>function</td>
 <td>Discretise a linear SDE by matrix-fraction decomposition.</td>
 </tr>
 <tr>
-<td><code>discretise_mfd_sequence</code></td>
+<td><code>discretize_mfd_sequence</code></td>
 <td>function</td>
-<td>Vectorised <code>gaussx.discretise_mfd</code> over a vector of time steps.</td>
-</tr>
-<tr>
-<td><code>dist_kl_divergence</code></td>
-<td>function</td>
-<td>KL divergence <code>KL(p \|\| q)</code> between two multivariate normals.</td>
+<td>Vectorised <code>gaussx.discretize_mfd</code> over a stack of steps Δt_1:T.</td>
 </tr>
 <tr>
 <td><code>eig</code></td>
 <td>function</td>
-<td>Compute eigenvalues and eigenvectors.</td>
+<td>Eigenvalues and eigenvectors of A, with structural dispatch.</td>
 </tr>
 <tr>
-<td><code>eigenpro_correction</code></td>
+<td><code>eigh_generalized</code></td>
 <td>function</td>
-<td>Compute the EigenPro eigenspace correction for one SGD mini-batch.</td>
-</tr>
-<tr>
-<td><code>eigenpro_preconditioner</code></td>
-<td>function</td>
-<td>Build an EigenPro spectral preconditioner from a kernel operator.</td>
-</tr>
-<tr>
-<td><code>eigenpro_step_size</code></td>
-<td>function</td>
-<td>Return the EigenPro preconditioned step size for a batch size.</td>
+<td>Generalised eigenproblem A v = γ B v, A symmetric and B symmetric PSD.</td>
 </tr>
 <tr>
 <td><code>eigvals</code></td>
 <td>function</td>
-<td>Compute eigenvalues only.</td>
+<td>Eigenvalues of A only, with structural dispatch.</td>
 </tr>
 <tr>
 <td><code>eki_step</code></td>
@@ -4686,7 +4766,7 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>elbo</code></td>
 <td>function</td>
-<td>Evidence lower bound (ELBO).</td>
+<td>Evidence lower bound (ELBO) from a likelihood and a precomputed KL.</td>
 </tr>
 <tr>
 <td><code>enkf_analysis</code></td>
@@ -4701,7 +4781,7 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>ensemble_cross_covariance</code></td>
 <td>function</td>
-<td>Cross-covariance between two ensemble sets.</td>
+<td>Cross-covariance between two ensembles with the same members.</td>
 </tr>
 <tr>
 <td><code>ensemble_kalman_gain</code></td>
@@ -4709,14 +4789,24 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Kalman gain from an ensemble and its image in observation space.</td>
 </tr>
 <tr>
+<td><code>ensemble_rts_step</code></td>
+<td>function</td>
+<td>One backward step of the ensemble Rauch-Tung-Striebel smoother.</td>
+</tr>
+<tr>
 <td><code>ep_tilted_moments</code></td>
 <td>function</td>
-<td>Compute tilted distribution moments via Gauss-Hermite quadrature.</td>
+<td>Moments of the scalar EP tilted distribution, elementwise over a batch.</td>
 </tr>
 <tr>
 <td><code>estimate_spectral_bounds</code></td>
 <td>function</td>
-<td>Estimate <span class="arithmatex">\((\lambda_{\min}, \lambda_{\max})\)</span> of a symmetric operator.</td>
+<td>Estimate the extreme eigenvalues (γ_min, γ_max) of a symmetric operator.</td>
+</tr>
+<tr>
+<td><code>etkf_analysis</code></td>
+<td>function</td>
+<td>ETKF analysis ensemble, without forming the (|ℰ|, |ℰ|) transform.</td>
 </tr>
 <tr>
 <td><code>etkf_transform</code></td>
@@ -4726,22 +4816,22 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>euclidean_distance</code></td>
 <td>function</td>
-<td>Pairwise Euclidean distances <code>\|\|a_i - b_j\|\|</code>.</td>
+<td>Pairwise Euclidean distances ‖aₙ − bₘ‖₂.</td>
 </tr>
 <tr>
-<td><code>expectation_to_meanvar</code></td>
+<td><code>expectation_to_mean_chol</code></td>
 <td>function</td>
-<td>Convert expectation parameters to mean/variance (Cholesky).</td>
+<td>Mean μ and Cholesky factor of Σ from the expectation parameters.</td>
 </tr>
 <tr>
 <td><code>expectation_to_natural</code></td>
 <td>function</td>
-<td>Convert expectation parameters to natural parameters.</td>
+<td>Natural parameters (Λ μ, −½ Λ) from the expectation parameters.</td>
 </tr>
 <tr>
 <td><code>expectations_to_ssm</code></td>
 <td>function</td>
-<td>Convert expectation parameters back to SSM marginals.</td>
+<td>Marginals of a chain from its expectation parameters (𝔼[x], 𝔼[x xᵀ]).</td>
 </tr>
 <tr>
 <td><code>expected_log_likelihood</code></td>
@@ -4749,19 +4839,14 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Unified expected log-likelihood with analytical dispatch.</td>
 </tr>
 <tr>
-<td><code>falkon_preconditioner</code></td>
+<td><code>fem_matrices</code></td>
 <td>function</td>
-<td>Build the Falkon preconditioner from the inducing-point kernel matrix.</td>
+<td>Lumped mass C̃ and stiffness G of P1 elements on a triangle mesh.</td>
 </tr>
 <tr>
-<td><code>falkon_predict</code></td>
+<td><code>fem_projector</code></td>
 <td>function</td>
-<td>Predict with Nyström KRR weights: <span class="arithmatex">\(f(x_*) = \sum_j \alpha_j\, k(x_*, z_j)\)</span>.</td>
-</tr>
-<tr>
-<td><code>falkon_solve</code></td>
-<td>function</td>
-<td>Nyström kernel ridge regression weights by Falkon's preconditioned CG.</td>
+<td>Observation matrix A of P1 interpolation: (A w)_k = ∑_i ψ_i(s_k) w_i.</td>
 </tr>
 <tr>
 <td><code>fifth_order_cubature_points</code></td>
@@ -4771,57 +4856,77 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>fisher_info</code></td>
 <td>function</td>
-<td>Fisher information matrix <code>F(eta) = nabla^2 A(eta)</code>.</td>
+<td>Fisher information of the mean μ, which is the precision Λ = Σ⁻¹.</td>
 </tr>
 <tr>
 <td><code>frobenius_norm</code></td>
 <td>function</td>
-<td>Compute the Frobenius norm <code>\|\|A\|\|_F</code> with structural dispatch.</td>
+<td>Frobenius norm ‖A‖_F of an operator, with structural dispatch.</td>
 </tr>
 <tr>
 <td><code>gaspari_cohn</code></td>
 <td>function</td>
-<td>Gaspari-Cohn (1999) fifth-order compactly-supported taper.</td>
+<td>Gaspari-Cohn (1999) fifth-order compactly supported taper.</td>
 </tr>
 <tr>
 <td><code>gauss_hermite_points</code></td>
 <td>function</td>
-<td>Gauss-Hermite quadrature points and weights.</td>
+<td>Tensor-product Gauss-Hermite points and weights for a standard Gaussian.</td>
 </tr>
 <tr>
 <td><code>gauss_kl</code></td>
 <td>function</td>
-<td>KL divergence <code>KL[q(u) \|\| p(u)]</code> between Gaussian distributions.</td>
+<td>KL(first ‖ second): KL[q(f_ℐ) ‖ p(f_ℐ)] with p(f_ℐ) = 𝒩(0, K_ℐℐ).</td>
+</tr>
+<tr>
+<td><code>gauss_newton_operator</code></td>
+<td>function</td>
+<td>Matrix-free Gauss-Newton precision of a residual function.</td>
 </tr>
 <tr>
 <td><code>gauss_newton_precision</code></td>
 <td>function</td>
-<td>Gauss-Newton precision matrix <code>J^T J</code>.</td>
+<td>Gauss-Newton precision J_rᵀ J_r, optionally plus a prior precision.</td>
 </tr>
 <tr>
 <td><code>gaussian_entropy</code></td>
 <td>function</td>
-<td>Entropy of a multivariate normal <code>N(mu, Sigma)</code>.</td>
+<td>Entropy of a multivariate normal 𝒩(μ, Σ), independent of the mean.</td>
 </tr>
 <tr>
 <td><code>gaussian_expected_log_lik</code></td>
 <td>function</td>
-<td>Expected log-likelihood <code>E_q[log N(y \| f, R)]</code>.</td>
+<td>Expected Gaussian log-likelihood under q(x), the data term of an ELBO.</td>
+</tr>
+<tr>
+<td><code>gaussian_kl</code></td>
+<td>function</td>
+<td>KL(first ‖ second): KL[p ‖ q] between two multivariate normals.</td>
 </tr>
 <tr>
 <td><code>gaussian_log_prob</code></td>
 <td>function</td>
-<td>Multivariate normal log-probability.</td>
+<td>Multivariate normal log-density log 𝒩(x; μ, Σ) of a structured covariance.</td>
+</tr>
+<tr>
+<td><code>gaussian_taper</code></td>
+<td>function</td>
+<td>Gaussian localization taper ρ(r) = exp(−r² / (2 L²)).</td>
+</tr>
+<tr>
+<td><code>generalized_variance_scale</code></td>
+<td>function</td>
+<td>Generalized variance of an intrinsic GMRF (Sørbye &amp; Rue, 2014).</td>
 </tr>
 <tr>
 <td><code>ggn_diagonal</code></td>
 <td>function</td>
-<td>Generalized Gauss-Newton diagonal approximation.</td>
+<td>Diagonal of the generalized Gauss-Newton matrix J_hᵀ J_h.</td>
 </tr>
 <tr>
 <td><code>gradient_expectation</code></td>
 <td>function</td>
-<td>Compute <code>E[nabla f(x)]</code> via Stein's lemma.</td>
+<td>Expected gradient of a scalar map under a Gaussian, via Stein's lemma.</td>
 </tr>
 <tr>
 <td><code>grid_coupling_indices</code></td>
@@ -4831,7 +4936,12 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>grid_data</code></td>
 <td>function</td>
-<td>Expand a grid to the full Cartesian product of grid points.</td>
+<td>Inducing inputs X_ℐ, the Cartesian product of the grid axes.</td>
+</tr>
+<tr>
+<td><code>hadamard_transform</code></td>
+<td>function</td>
+<td>Unnormalized Walsh-Hadamard transform along the last axis.</td>
 </tr>
 <tr>
 <td><code>haversine_distance</code></td>
@@ -4839,49 +4949,54 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Pairwise great-circle (haversine) distances on a sphere.</td>
 </tr>
 <tr>
-<td><code>hsic</code></td>
-<td>function</td>
-<td>Biased HSIC estimator.</td>
-</tr>
-<tr>
 <td><code>hutchinson_hessian_diag</code></td>
 <td>function</td>
-<td>Stochastic Hessian diagonal via Hutchinson with Rademacher probes.</td>
+<td>Stochastic Hessian diagonal by Hutchinson with Rademacher probes.</td>
 </tr>
 <tr>
-<td><code>implicit_cross_kernel</code></td>
+<td><code>iid_precision</code></td>
 <td>function</td>
-<td>Create a matrix-free rectangular cross-kernel operator.</td>
+<td>Precision Λ = τ I of n independent effects with variance 1 / τ.</td>
 </tr>
 <tr>
 <td><code>infinite_horizon_filter</code></td>
 <td>function</td>
-<td>Infinite-horizon Kalman filter with fixed steady-state gain.</td>
+<td>Infinite-horizon Kalman filter with the fixed steady-state gain G_∞.</td>
 </tr>
 <tr>
 <td><code>infinite_horizon_smoother</code></td>
 <td>function</td>
-<td>Infinite-horizon RTS smoother with fixed steady-state gain.</td>
+<td>Infinite-horizon RTS smoother with the fixed steady-state gain G_smooth,∞.</td>
 </tr>
 <tr>
 <td><code>inflate_multiplicative</code></td>
 <td>function</td>
-<td>Multiplicative ensemble inflation about the mean.</td>
+<td>Multiplicative ensemble inflation about the sample mean.</td>
 </tr>
 <tr>
 <td><code>inflate_rtpp</code></td>
 <td>function</td>
-<td>Relaxation to prior perturbations (RTPP; Zhang et al. 2004).</td>
+<td>Relaxation to prior perturbations (RTPP).</td>
 </tr>
 <tr>
 <td><code>inflate_rtps</code></td>
 <td>function</td>
-<td>Relaxation to prior spread (RTPS; Whitaker &amp; Hamill 2012).</td>
+<td>Relaxation to prior spread (RTPS).</td>
+</tr>
+<tr>
+<td><code>information_diagnostics</code></td>
+<td>function</td>
+<td>Averaging kernel, DOFS and information content of a linear retrieval.</td>
+</tr>
+<tr>
+<td><code>interpolation_operator</code></td>
+<td>function</td>
+<td>The interpolation matrix W as a matrix-free operator, B × G.</td>
 </tr>
 <tr>
 <td><code>inv</code></td>
 <td>function</td>
-<td>Return a lazy inverse operator A^{-1}.</td>
+<td>Lazy inverse A⁻¹ of an operator, structured where A is.</td>
 </tr>
 <tr>
 <td><code>inv_quad_logdet</code></td>
@@ -4891,12 +5006,12 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>is_block_diagonal</code></td>
 <td>function</td>
-<td>Check whether <em>operator</em> carries the block-diagonal tag.</td>
+<td>Check whether <code>operator</code> carries the block-diagonal tag.</td>
 </tr>
 <tr>
 <td><code>is_block_tridiagonal</code></td>
 <td>function</td>
-<td>Check whether <em>operator</em> carries the block-tridiagonal tag.</td>
+<td>Check whether <code>operator</code> carries the block-tridiagonal tag.</td>
 </tr>
 <tr>
 <td><code>is_diagonal</code></td>
@@ -4904,19 +5019,24 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Re-exported from <code>lineax</code>.</td>
 </tr>
 <tr>
+<td><code>is_eigen_reducible</code></td>
+<td>function</td>
+<td>Whether a sum of Kronecker products has the exact two-term reduction.</td>
+</tr>
+<tr>
 <td><code>is_kronecker</code></td>
 <td>function</td>
-<td>Check whether <em>operator</em> carries the Kronecker tag.</td>
+<td>Check whether <code>operator</code> carries the Kronecker tag.</td>
 </tr>
 <tr>
 <td><code>is_kronecker_sum</code></td>
 <td>function</td>
-<td>Check whether <em>operator</em> carries the Kronecker sum tag.</td>
+<td>Check whether <code>operator</code> carries the Kronecker sum tag.</td>
 </tr>
 <tr>
 <td><code>is_low_rank</code></td>
 <td>function</td>
-<td>Check whether <em>operator</em> carries the low-rank tag.</td>
+<td>Check whether <code>operator</code> carries the low-rank tag.</td>
 </tr>
 <tr>
 <td><code>is_lower_triangular</code></td>
@@ -4946,52 +5066,52 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>joseph_update</code></td>
 <td>function</td>
-<td>Numerically stable Joseph-form covariance update.</td>
+<td>Joseph-form posterior covariance of a Kalman update, stable for any gain.</td>
 </tr>
 <tr>
 <td><code>kalman_filter</code></td>
 <td>function</td>
-<td>Kalman filter forward pass via <code>jax.lax.scan</code>.</td>
+<td>Kalman filter forward pass for a linear-Gaussian state-space model.</td>
 </tr>
 <tr>
 <td><code>kalman_gain</code></td>
 <td>function</td>
-<td>Compute Kalman gain <code>K = P @ H^T @ (H @ P @ H^T + R)^{-1}</code>.</td>
+<td>Kalman gain of a linear-Gaussian observation of the state x.</td>
 </tr>
 <tr>
 <td><code>kernel_expectations</code></td>
 <td>function</td>
-<td>Compute kernel expectations Psi_0, Psi_1, Psi_2 for uncertain inputs.</td>
+<td>Kernel expectations Ψ₀, Ψ₁ and Ψ₂ for an uncertain input.</td>
 </tr>
 <tr>
 <td><code>kl_divergence</code></td>
 <td>function</td>
-<td>KL divergence <code>KL(q \|\| p)</code> via the Bregman-divergence form on natural parameters.</td>
+<td>KL(first ‖ second): KL[q ‖ p] in the Bregman form on natural parameters.</td>
 </tr>
 <tr>
 <td><code>kl_standard_normal</code></td>
 <td>function</td>
-<td>KL divergence <code>KL(N(m, S) \|\| N(0, I))</code>.</td>
+<td>KL(first ‖ second): KL[𝒩(μ, Σ) ‖ 𝒩(0, I)] from the standard normal.</td>
 </tr>
 <tr>
 <td><code>kronecker_mll</code></td>
 <td>function</td>
-<td>Exact marginal log-likelihood for a Kronecker-structured GP.</td>
+<td>Exact marginal log-likelihood log p(y) of a Kronecker-structured GP.</td>
 </tr>
 <tr>
 <td><code>kronecker_posterior_predictive</code></td>
 <td>function</td>
-<td>Posterior mean and variance for a Kronecker GP at test points.</td>
+<td>Posterior mean and variance of a Kronecker GP at grid test inputs.</td>
 </tr>
 <tr>
 <td><code>kronecker_sum_sample</code></td>
 <td>function</td>
-<td>Sample from <code>𝒩(0, A ⊕ B)</code> using per-factor eigendecompositions.</td>
+<td>Sample from 𝒩(0, A_1 ⊕ A_2) through the factor eigendecompositions.</td>
 </tr>
 <tr>
 <td><code>kronecker_sum_solve</code></td>
 <td>function</td>
-<td>Solve a shifted Kronecker-sum system in tensor (unvectorized) form.</td>
+<td>Solve a shifted Kronecker-sum system in tensor (unvectorised) form.</td>
 </tr>
 <tr>
 <td><code>kronecker_sum_tag</code></td>
@@ -5002,21 +5122,46 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td><code>kronecker_tag</code></td>
 <td>constant</td>
 <td><code>kronecker_tag</code></td>
+</tr>
+<tr>
+<td><code>laplace_model</code></td>
+<td>function</td>
+<td>Collect and check the pieces of the latent Gaussian model of a Laplace fit.</td>
+</tr>
+<tr>
+<td><code>laplace_result</code></td>
+<td>function</td>
+<td>The Gaussian approximation and the Laplace log-marginal at a mode.</td>
 </tr>
 <tr>
 <td><code>leave_one_out_cv</code></td>
 <td>function</td>
-<td>LOO-CV via the bordered-system identity.</td>
+<td>LOO-CV via the bordered-system identity, without refitting N times.</td>
+</tr>
+<tr>
+<td><code>ledoit_wolf_shrinkage</code></td>
+<td>function</td>
+<td>Ledoit-Wolf shrinkage of an ensemble covariance, without forming it.</td>
+</tr>
+<tr>
+<td><code>linear_gaussian_update</code></td>
+<td>function</td>
+<td>Matrix-free posterior of a linear-Gaussian observation.</td>
 </tr>
 <tr>
 <td><code>linear_solve</code></td>
 <td>function</td>
-<td>Solve <code>A x = b</code> through the unified front door.</td>
+<td>Solve A x = b through the unified front door.</td>
+</tr>
+<tr>
+<td><code>linearize_sde</code></td>
+<td>function</td>
+<td>Optimal linear drift of a nonlinear SDE along a Gaussian path.</td>
 </tr>
 <tr>
 <td><code>localization_matrix</code></td>
 <td>function</td>
-<td>Pairwise Gaspari-Cohn taper <code>rho(dist(a_i, b_j); c)</code>.</td>
+<td>Pairwise Gaspari-Cohn taper ρ(d(aₙ, bₘ); c).</td>
 </tr>
 <tr>
 <td><code>localized_kalman_gain</code></td>
@@ -5026,42 +5171,52 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>log_likelihood_expectation</code></td>
 <td>function</td>
-<td>Compute <code>E[log p(y_{obs} \| f(x))]</code> where <code>x ~ N(mu, Sigma)</code>.</td>
+<td>Expected log-likelihood of a callable under a Gaussian, by integration.</td>
 </tr>
 <tr>
 <td><code>log_marginal_likelihood</code></td>
 <td>function</td>
-<td>GP log marginal likelihood.</td>
+<td>GP log marginal likelihood, by way of <code>gaussx.gaussian_log_prob</code>.</td>
 </tr>
 <tr>
 <td><code>log_partition</code></td>
 <td>function</td>
-<td>Log-partition function <code>A(eta)</code>.</td>
+<td>Log-partition of a Gaussian in natural form, normaliser included.</td>
 </tr>
 <tr>
 <td><code>logdet</code></td>
 <td>function</td>
-<td>Compute log |det(A)| with structural dispatch.</td>
+<td>Log-determinant log ∣det A∣ with structural dispatch on the operator type.</td>
 </tr>
 <tr>
 <td><code>love_cache</code></td>
 <td>function</td>
-<td>Precompute Lanczos factorization of <code>K^{-1}</code> for fast variance.</td>
+<td>Precompute a Lanczos approximation of Σ_y⁻¹ for fast GP variances.</td>
+</tr>
+<tr>
+<td><code>love_residual</code></td>
+<td>function</td>
+<td>Relative solve residual of a LOVE cache for one cross-covariance.</td>
 </tr>
 <tr>
 <td><code>love_variance</code></td>
 <td>function</td>
-<td>Fast predictive variance using a LOVE cache.</td>
+<td>Approximate the variance reduction <code>k_X*ᵀ Σ_y⁻¹ k_X*</code> from a LOVE cache.</td>
+</tr>
+<tr>
+<td><code>love_variance_error_bound</code></td>
+<td>function</td>
+<td>Upper bound on the variance over-estimate of a LOVE cache.</td>
 </tr>
 <tr>
 <td><code>low_rank_plus_diag</code></td>
 <td>function</td>
-<td>Construct <code>diag(diag) + U diag(d) Vᵀ</code>.</td>
+<td>Build A = diag(a) + U D Vᵀ, a low-rank update of a diagonal base.</td>
 </tr>
 <tr>
 <td><code>low_rank_plus_identity</code></td>
 <td>function</td>
-<td>Construct <code>scale * I + U diag(d) Vᵀ</code>.</td>
+<td>Build A = c I + U D Vᵀ, a low-rank update of a scaled identity.</td>
 </tr>
 <tr>
 <td><code>low_rank_tag</code></td>
@@ -5079,44 +5234,59 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Make masked observation channels inert in a moment-matched update.</td>
 </tr>
 <tr>
+<td><code>masked_obs_covariance</code></td>
+<td>function</td>
+<td>Observation-error covariance with masked entries marginalised out.</td>
+</tr>
+<tr>
+<td><code>matern_spde_params</code></td>
+<td>function</td>
+<td>SPDE parameters (κ, τ, α) of a Matérn field.</td>
+</tr>
+<tr>
 <td><code>matheron_update</code></td>
 <td>function</td>
-<td>Posterior samples via Matheron's-rule correction.</td>
+<td>Posterior draws of x_A ∣ x_B = β from joint prior draws, by Matheron's rule.</td>
+</tr>
+<tr>
+<td><code>mean_chol_to_expectation</code></td>
+<td>function</td>
+<td>Expectation parameters (𝔼[x], 𝔼[x xᵀ]) from the mean and Cholesky factor.</td>
+</tr>
+<tr>
+<td><code>mean_chol_to_natural</code></td>
+<td>function</td>
+<td>Natural parameters (Λ μ, −½ Λ) from the mean and the Cholesky factor of Σ.</td>
 </tr>
 <tr>
 <td><code>mean_cov_to_natural</code></td>
 <td>function</td>
-<td>Convert mean/covariance to natural parameters (operator form).</td>
+<td>Natural parameters (Λ μ, −½ Λ) from the mean and covariance, in operator form.</td>
 </tr>
 <tr>
 <td><code>mean_expectation</code></td>
 <td>function</td>
-<td>Compute <code>E[f(x)]</code> where <code>x ~ N(mu, Sigma)</code>.</td>
+<td>Expectation of a map under a Gaussian: 𝔼[g(x)], x ~ 𝒩(μ_x, Σ_x).</td>
 </tr>
 <tr>
 <td><code>meanfield_kalman_filter</code></td>
 <td>function</td>
-<td>Mean-field Kalman filter over <code>L = D // block_size</code> state blocks.</td>
+<td>Mean-field Kalman filter over L = D_x / d independent state blocks.</td>
 </tr>
 <tr>
 <td><code>meanfield_rts_smoother</code></td>
 <td>function</td>
-<td>Mean-field RTS smoother over <code>L = D // block_size</code> state blocks.</td>
+<td>Mean-field RTS smoother over L = D_x / d independent state blocks.</td>
 </tr>
 <tr>
-<td><code>meanvar_to_expectation</code></td>
+<td><code>mixture_quantile</code></td>
 <td>function</td>
-<td>Convert mean/variance (Cholesky) to expectation parameters.</td>
+<td>Invert a CDF at one or more quantile levels by bracketed root finding.</td>
 </tr>
 <tr>
-<td><code>meanvar_to_natural</code></td>
+<td><code>mixture_quantile_gaussian_approx</code></td>
 <td>function</td>
-<td>Convert mean/variance (Cholesky) to natural parameters.</td>
-</tr>
-<tr>
-<td><code>mmd_squared</code></td>
-<td>function</td>
-<td>Biased squared Maximum Mean Discrepancy.</td>
+<td>Quantiles of the Gaussian matched to an ensemble's first two moments.</td>
 </tr>
 <tr>
 <td><code>moment_match</code></td>
@@ -5126,27 +5296,27 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>moment_transform</code></td>
 <td>function</td>
-<td>Moment triple of <code>(x, fn(x))</code> for <code>x</code> Gaussian.</td>
+<td>Moment triple of (x, g(x)) for a Gaussian x.</td>
 </tr>
 <tr>
 <td><code>natural_to_expectation</code></td>
 <td>function</td>
-<td>Convert natural parameters to expectation parameters.</td>
+<td>Expectation parameters (𝔼[x], 𝔼[x xᵀ]) from the natural parameters.</td>
+</tr>
+<tr>
+<td><code>natural_to_mean_chol</code></td>
+<td>function</td>
+<td>Mean μ and Cholesky factor of Σ from the natural parameters (Λ μ, −½ Λ).</td>
 </tr>
 <tr>
 <td><code>natural_to_mean_cov</code></td>
 <td>function</td>
-<td>Convert natural parameters to mean/covariance (operator form).</td>
-</tr>
-<tr>
-<td><code>natural_to_meanvar</code></td>
-<td>function</td>
-<td>Convert natural parameters to mean/variance (Cholesky).</td>
+<td>Mean μ and covariance Σ from the natural parameters, in operator form.</td>
 </tr>
 <tr>
 <td><code>naturals_to_ssm</code></td>
 <td>function</td>
-<td>Convert natural parameters back to SSM parameters.</td>
+<td>Gauss-Markov chain (F_t, Σ_η,t, μ_x,0, Σ_x,0) from its natural parameters.</td>
 </tr>
 <tr>
 <td><code>negative_semidefinite_tag</code></td>
@@ -5156,22 +5326,22 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>newton_update</code></td>
 <td>function</td>
-<td>Convert a Newton step to natural pseudo-likelihood parameters.</td>
+<td>Convert a Newton step into the natural parameters of a site.</td>
 </tr>
 <tr>
 <td><code>nonlinear_kalman_filter</code></td>
 <td>function</td>
-<td>Moment-matched nonlinear Kalman filter.</td>
+<td>Moment-matched nonlinear Kalman filter (EKF, UKF, CKF, GHKF, …).</td>
 </tr>
 <tr>
 <td><code>nonlinear_kalman_predict</code></td>
 <td>function</td>
-<td>One moment-matched predict step.</td>
+<td>One moment-matched predict step through the dynamics f.</td>
 </tr>
 <tr>
 <td><code>nonlinear_kalman_update</code></td>
 <td>function</td>
-<td>One moment-matched update step.</td>
+<td>One moment-matched update step through the observation map h.</td>
 </tr>
 <tr>
 <td><code>nonlinear_rts_smoother</code></td>
@@ -5182,11 +5352,6 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td><code>nonlinear_rts_step</code></td>
 <td>function</td>
 <td>One moment-matched RTS backward step.</td>
-</tr>
-<tr>
-<td><code>nystrom_operator</code></td>
-<td>function</td>
-<td>Nystrom low-rank kernel approximation.</td>
 </tr>
 <tr>
 <td><code>oilmm_back_project</code></td>
@@ -5201,7 +5366,7 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>pairwise_marginals</code></td>
 <td>function</td>
-<td>Joint p(x_k, x_{k+1}) for each consecutive pair.</td>
+<td>Joint Gaussian p(x_t, x_t+1) of each pair of consecutive states.</td>
 </tr>
 <tr>
 <td><code>parallel_kalman_filter</code></td>
@@ -5221,32 +5386,62 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>predict_mean</code></td>
 <td>function</td>
-<td>Predictive mean: <code>mu* = K_*f @ alpha</code>.</td>
+<td>Predictive mean of a GP at the test inputs, from a prediction cache.</td>
 </tr>
 <tr>
 <td><code>predict_variance</code></td>
 <td>function</td>
-<td>Predictive variance: <code>sigma^2* = k_** - diag(K_*f K_y^{-1} K_f*)</code>.</td>
+<td>Predictive variance of a GP at the test inputs, from a prediction cache.</td>
 </tr>
 <tr>
 <td><code>process_noise_covariance</code></td>
 <td>function</td>
-<td>Compute process noise from stationary covariance.</td>
+<td>Model-noise covariance Σ_η,t of a step, from the stationary covariance.</td>
+</tr>
+<tr>
+<td><code>product_operator</code></td>
+<td>function</td>
+<td>Lazy product A B, applied right to left.</td>
 </tr>
 <tr>
 <td><code>project</code></td>
 <td>function</td>
-<td>Compute A_X = K_XZ @ K_ZZ^{-1} via Cholesky solve.</td>
+<td>Projection A_X = K_Xℐ K_ℐℐ⁻¹ onto the inducing inputs via Cholesky solves.</td>
+</tr>
+<tr>
+<td><code>pseudo_logdet</code></td>
+<td>function</td>
+<td>Log pseudo-determinant: the log of the product of the non-zero eigenvalues.</td>
+</tr>
+<tr>
+<td><code>qb</code></td>
+<td>function</td>
+<td>Randomized QB factorisation A ≈ Q B with B = Qᵀ A.</td>
 </tr>
 <tr>
 <td><code>quadratic_form</code></td>
 <td>function</td>
-<td>Compute <code>x^T A^{-1} x</code> via a single solve.</td>
+<td>Quadratic form xᵀ A⁻¹ x through a single solve.</td>
 </tr>
 <tr>
-<td><code>rff_operator</code></td>
+<td><code>randomized_eigh</code></td>
 <td>function</td>
-<td>Random Fourier Features kernel approximation.</td>
+<td>Partial eigendecomposition of a symmetric operator by Rayleigh-Ritz.</td>
+</tr>
+<tr>
+<td><code>randomized_nystrom</code></td>
+<td>function</td>
+<td>Randomized Nyström approximation Â = U diag(γ̂) Uᵀ of a PSD A.</td>
+</tr>
+<tr>
+<td><code>randomized_svd</code></td>
+<td>function</td>
+<td>Truncated SVD A ≈ U diag(s) Vᵀ by randomized QB.</td>
+</tr>
+<tr>
+<td><code>range_finder</code></td>
+<td>function</td>
+<td>Orthonormal basis Q for the dominant range of A.</td>
 </tr>
 <tr>
 <td><code>riemannian_psd_correction</code></td>
@@ -5256,22 +5451,47 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>root_decomposition</code></td>
 <td>function</td>
-<td>Compute a tall factor <code>R</code> such that <code>R Rᵀ ≈ A</code>.</td>
+<td>Root decomposition of an SPD operator: a tall factor R with A ≈ R Rᵀ.</td>
 </tr>
 <tr>
 <td><code>root_inv_decomposition</code></td>
 <td>function</td>
-<td>Compute a tall factor <code>R⁻</code> such that <code>R⁻ (R⁻)ᵀ ≈ A⁻¹</code>.</td>
+<td>Inverse-root decomposition: a tall factor R⁻ with A⁻¹ ≈ R⁻ (R⁻)ᵀ.</td>
+</tr>
+<tr>
+<td><code>rp_cholesky</code></td>
+<td>function</td>
+<td>Randomly pivoted partial Cholesky of a PSD matrix A.</td>
+</tr>
+<tr>
+<td><code>rts_interpolate</code></td>
+<td>function</td>
+<td>Smoothed marginal at an unobserved step t from filtered and smoothed states.</td>
+</tr>
+<tr>
+<td><code>rts_sample</code></td>
+<td>function</td>
+<td>Joint draws of the state path x_1:T from p(x_1:T | y_1:T).</td>
 </tr>
 <tr>
 <td><code>rts_smoother</code></td>
 <td>function</td>
-<td>Rauch-Tung-Striebel backward smoother.</td>
+<td>Rauch-Tung-Striebel backward smoother for <code>kalman_filter</code> output.</td>
+</tr>
+<tr>
+<td><code>rw1_structure</code></td>
+<td>function</td>
+<td>Structure matrix R = D₁ᵀ W D₁ of a first-order random walk.</td>
+</tr>
+<tr>
+<td><code>rw2_structure</code></td>
+<td>function</td>
+<td>Structure matrix R = D₂ᵀ D₂ of a second-order random walk.</td>
 </tr>
 <tr>
 <td><code>safe_cholesky</code></td>
 <td>function</td>
-<td>Cholesky decomposition with adaptive jitter for near-singular matrices.</td>
+<td>Cholesky factor with adaptive diagonal jitter for near-singular matrices.</td>
 </tr>
 <tr>
 <td><code>sample_joint_conditional</code></td>
@@ -5281,117 +5501,152 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>sample_mvn</code></td>
 <td>function</td>
-<td>Draw samples from <span class="arithmatex">\(\mathcal{N}(\mu, K)\)</span>, dispatching on <span class="arithmatex">\(K\)</span>'s structure.</td>
+<td>Draw samples from 𝒩(μ, Σ), dispatching on the structure of Σ.</td>
 </tr>
 <tr>
 <td><code>sandwich</code></td>
 <td>function</td>
-<td>Return <code>A @ P @ A.T</code> exploiting compatible operator structure.</td>
+<td>The sandwich A Σ Aᵀ of two operators, keeping compatible structure.</td>
+</tr>
+<tr>
+<td><code>scaled_operator</code></td>
+<td>function</td>
+<td>Lazy scalar multiple c A, applied after the matvec.</td>
 </tr>
 <tr>
 <td><code>schur_complement</code></td>
 <td>function</td>
-<td>Schur complement: <code>K_XX - K_XZ @ K_ZZ^{-1} @ K_ZX</code>.</td>
+<td>Schur complement K_XX − K_XZ K_ZZ⁻¹ K_ZX, kept as a low-rank update.</td>
 </tr>
 <tr>
 <td><code>sde_autocovariance</code></td>
 <td>function</td>
-<td>Compute the stationary autocovariance of an SDE kernel.</td>
+<td>Stationary autocovariance k(τ) of an SDE kernel at each lag τ.</td>
+</tr>
+<tr>
+<td><code>sde_kl_divergence</code></td>
+<td>function</td>
+<td>Drift path-KL between a linear and a nonlinear SDE along a Gaussian path.</td>
+</tr>
+<tr>
+<td><code>selected_inverse</code></td>
+<td>function</td>
+<td>The band of Σ = Λ⁻¹ for a symmetric positive-definite <code>BlockTriDiag</code>.</td>
+</tr>
+<tr>
+<td><code>sigma_point_kalman_update</code></td>
+<td>function</td>
+<td>One moment-matched update from evaluations the caller already has.</td>
 </tr>
 <tr>
 <td><code>sigma_points</code></td>
 <td>function</td>
-<td>Unscented transform sigma points and weights.</td>
+<td>Scaled unscented sigma points and weights, 2 D_x + 1 of them.</td>
 </tr>
 <tr>
 <td><code>site_mean_var_from_natural</code></td>
 <td>function</td>
-<td>Convert per-site natural parameters to mean/variance.</td>
+<td>Mean and variance of a site from its natural parameters.</td>
 </tr>
 <tr>
 <td><code>site_natural_from_tilted</code></td>
 <td>function</td>
-<td>Compute site natural parameters from tilted and cavity moments.</td>
+<td>Site natural parameters that turn the cavity into the tilted moments.</td>
 </tr>
 <tr>
 <td><code>sites_to_precision</code></td>
 <td>function</td>
-<td>Convert Gaussian sites to a block-tridiagonal precision.</td>
+<td>Block-diagonal precision of the sites, as a <code>BlockTriDiag</code>.</td>
+</tr>
+<tr>
+<td><code>sketch_and_solve</code></td>
+<td>function</td>
+<td>Approximate least squares from a sketch.</td>
+</tr>
+<tr>
+<td><code>soar_taper</code></td>
+<td>function</td>
+<td>Second-order auto-regressive (SOAR) taper ρ(r) = (1 + |r| / L) exp(−|r| / L).</td>
 </tr>
 <tr>
 <td><code>solve</code></td>
 <td>function</td>
-<td>Solve <code>A x = b</code> with structural dispatch.</td>
+<td>Solve A x = b with structural dispatch on the operator type.</td>
 </tr>
 <tr>
 <td><code>solve_columns</code></td>
 <td>function</td>
-<td>Solve A X = B column-by-column via vmap.</td>
+<td>Solve A X = B column by column, with structured dispatch per column.</td>
 </tr>
 <tr>
 <td><code>solve_matrix</code></td>
 <td>function</td>
-<td>Solve <code>A X = B</code> with a single factorization on the matrix RHS.</td>
+<td>Solve A X = B with one factorisation for the whole matrix right-hand side.</td>
 </tr>
 <tr>
 <td><code>solve_rows</code></td>
 <td>function</td>
-<td>Solve A x = bᵢ for each row bᵢ of a matrix via vmap.</td>
+<td>Solve A xᵢ = bᵢ for each row bᵢ of a matrix B, with one solve per row.</td>
 </tr>
 <tr>
-<td><code>solve_tridiagonal</code></td>
+<td><code>sparse_cholesky</code></td>
 <td>function</td>
-<td>Solve a tridiagonal system <code>A x = d</code>.</td>
+<td>Sparse Cholesky factorisation of a symmetric positive-definite operator.</td>
 </tr>
 <tr>
-<td><code>solve_tridiagonal_batched</code></td>
+<td><code>sparse_conditional</code></td>
 <td>function</td>
-<td>Solve independent tridiagonal systems over leading batch dimensions.</td>
+<td>Sparse-GP conditional q(f_X) = ∫ p(f_X ∣ f_ℐ) q(f_ℐ) df_ℐ, per output r.</td>
+</tr>
+<tr>
+<td><code>spde_precision</code></td>
+<td>function</td>
+<td>SPDE precision Λ_α = τ² K (C̃⁻¹ K)^(α−1) with K = κ² C̃ + G.</td>
+</tr>
+<tr>
+<td><code>spde_precision_grid</code></td>
+<td>function</td>
+<td>SPDE precision on a regular grid: a function of a Kronecker sum.</td>
 </tr>
 <tr>
 <td><code>spingp_log_likelihood</code></td>
 <td>function</td>
-<td>Log marginal likelihood via sparse inverse GP formulation.</td>
+<td>Log marginal likelihood log p(y_1:T) of a zero-mean SpInGP prior.</td>
 </tr>
 <tr>
 <td><code>spingp_posterior</code></td>
 <td>function</td>
-<td>Posterior mean and precision via SpInGP.</td>
+<td>Posterior mean μ_x|y and precision Λ_x|y of x_1:T under SpInGP.</td>
 </tr>
 <tr>
 <td><code>sqrt</code></td>
 <td>function</td>
-<td>Compute matrix square root S such that S @ S = A.</td>
+<td>Principal matrix square root A^½ with structural dispatch, lazy where possible.</td>
 </tr>
 <tr>
 <td><code>sqrt_inv_matmul</code></td>
 <td>function</td>
-<td>Compute <span class="arithmatex">\(A^{-1/2} b\)</span> via contour-integral quadrature.</td>
+<td>Inverse square root times a matrix, A^−½ B, by contour quadrature.</td>
 </tr>
 <tr>
 <td><code>sqrt_matmul</code></td>
 <td>function</td>
-<td>Compute <span class="arithmatex">\(A^{1/2} b\)</span> via contour-integral quadrature.</td>
+<td>Square root times a matrix, A^½ B, by contour quadrature.</td>
 </tr>
 <tr>
 <td><code>ssm_to_expectations</code></td>
 <td>function</td>
-<td>Convert SSM marginals to expectation parameters.</td>
+<td>Expectation parameters (𝔼[x], 𝔼[x xᵀ]) of a chain from its marginals.</td>
 </tr>
 <tr>
 <td><code>ssm_to_naturals</code></td>
 <td>function</td>
-<td>Convert SSM parameters to natural parameters.</td>
-</tr>
-<tr>
-<td><code>stable_rbf_kernel</code></td>
-<td>function</td>
-<td>RBF (squared exponential) kernel with mixed-precision stability.</td>
+<td>Natural parameters (Λ_x μ_x, −½ Λ_x) of a Gauss-Markov chain.</td>
 </tr>
 <tr>
 <td><code>stable_squared_distances</code></td>
 <td>function</td>
-<td>Squared Euclidean distances with mixed-precision stability.</td>
+<td>Squared Euclidean distances between two point sets, centred and widened.</td>
 </tr>
 <tr>
 <td><code>statistical_linear_regression</code></td>
@@ -5401,32 +5656,42 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>submatrix</code></td>
 <td>function</td>
-<td>Extract <code>A[row_idx, col_idx]</code> without forming the full matrix.</td>
+<td>Sub-matrix A[I, J] of an operator, without forming the full matrix.</td>
 </tr>
 <tr>
 <td><code>sufficient_stats</code></td>
 <td>function</td>
-<td>Compute sufficient statistics <code>T(x) = [x, x x^T]</code>.</td>
+<td>Sufficient statistics (x, x xᵀ) of a Gaussian, over any batch axes.</td>
 </tr>
 <tr>
-<td><code>sumkronecker_sample</code></td>
+<td><code>sum_of_kroneckers_sample</code></td>
 <td>function</td>
-<td>Sample from <code>𝒩(0, op)</code> with matrix-free Lanczos square roots.</td>
+<td>Sample from 𝒩(0, K) with a matrix-free Lanczos square root.</td>
+</tr>
+<tr>
+<td><code>sum_operator</code></td>
+<td>function</td>
+<td>Lazy sum A = A_1 + … + A_D, applied one summand at a time.</td>
 </tr>
 <tr>
 <td><code>svd</code></td>
 <td>function</td>
-<td>Compute the singular value decomposition <code>A = U diag(s) V^T</code>.</td>
+<td>Singular value decomposition of A, with structural dispatch.</td>
 </tr>
 <tr>
 <td><code>svd_low_rank_plus_diag</code></td>
 <td>function</td>
-<td>Construct <code>diag(diag) + U diag(S) Vᵀ</code> from a truncated SVD.</td>
+<td>Build A = diag(a) + U diag(s) Vᵀ from a truncated SVD.</td>
 </tr>
 <tr>
 <td><code>svgp_variance_adjustment</code></td>
 <td>function</td>
-<td>Compute the SVGP variance adjustment operator.</td>
+<td>SVGP variance adjustment operator Q = K_ℐℐ⁻¹ Σ_ℐ K_ℐℐ⁻¹ − K_ℐℐ⁻¹.</td>
+</tr>
+<tr>
+<td><code>symbolic_cholesky</code></td>
+<td>function</td>
+<td>Symbolic analysis of a sparse Cholesky factorisation (host, cached).</td>
 </tr>
 <tr>
 <td><code>symmetric_tag</code></td>
@@ -5436,7 +5701,12 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>symmetrize</code></td>
 <td>function</td>
-<td>Symmetrize the trailing two axes: <code>0.5 * (X + X^T)</code>.</td>
+<td>Symmetric part of the trailing two axes, removing round-off asymmetry.</td>
+</tr>
+<tr>
+<td><code>theta_design</code></td>
+<td>function</td>
+<td>Integration points and log-weights over hyperparameters θ.</td>
 </tr>
 <tr>
 <td><code>tikhonov_augment</code></td>
@@ -5444,39 +5714,44 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Observation augmentation for Tikhonov-regularised EKI (TEKI).</td>
 </tr>
 <tr>
-<td><code>to_expectation</code></td>
+<td><code>to_mean_cov</code></td>
 <td>function</td>
-<td>Convert natural to expectation parameters.</td>
-</tr>
-<tr>
-<td><code>to_natural</code></td>
-<td>function</td>
-<td>Convert expectation to natural parameters.</td>
+<td>Mean μ and covariance Σ of a Gaussian in natural form.</td>
 </tr>
 <tr>
 <td><code>toeplitz_sample</code></td>
 <td>function</td>
-<td>Sample from <code>𝒩(0, Toeplitz(column))</code> via FFT circulant embedding.</td>
+<td>Draw from 𝒩(0, toeplitz(t)) by circulant embedding and the FFT.</td>
 </tr>
 <tr>
 <td><code>trace</code></td>
 <td>function</td>
-<td>Compute the trace of an operator.</td>
+<td>Trace tr(A) of an operator, with structural dispatch.</td>
 </tr>
 <tr>
 <td><code>trace_and_diag</code></td>
 <td>function</td>
-<td>Jointly estimate the trace and diagonal from one probe pass.</td>
+<td>Joint stochastic estimate of tr(A) and diag(A) from one probe pass.</td>
 </tr>
 <tr>
 <td><code>trace_correction</code></td>
 <td>function</td>
-<td>Trace term in Titsias collapsed ELBO.</td>
+<td>Trace term of the Titsias collapsed ELBO, the Nyström approximation error.</td>
 </tr>
 <tr>
 <td><code>trace_product</code></td>
 <td>function</td>
-<td>Trace of a matrix product: <code>tr(A @ B)</code> with structural dispatch.</td>
+<td>Trace of a product of two operators, tr(A B), with structural dispatch.</td>
+</tr>
+<tr>
+<td><code>tridiagonal_solve</code></td>
+<td>function</td>
+<td>Solve a tridiagonal system A x = b from its three bands.</td>
+</tr>
+<tr>
+<td><code>tridiagonal_solve_batched</code></td>
+<td>function</td>
+<td>Solve independent tridiagonal systems over leading batch axes.</td>
 </tr>
 <tr>
 <td><code>tridiagonal_tag</code></td>
@@ -5486,7 +5761,7 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>udl_decomposition</code></td>
 <td>function</td>
-<td>Factorise a symmetric block-tridiagonal precision as <span class="arithmatex">\(U \tilde{D} U^{\top}\)</span>.</td>
+<td>Factorise a symmetric block-tridiagonal precision as Λ_x = U D Uᵀ.</td>
 </tr>
 <tr>
 <td><code>udl_from_ssm_params</code></td>
@@ -5501,27 +5776,27 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>uncertain_bgplvm_predict</code></td>
 <td>function</td>
-<td>Multi-output uncertain GP prediction for BGPLVM.</td>
+<td>Multi-output uncertain GP prediction for a Bayesian GP-LVM.</td>
 </tr>
 <tr>
 <td><code>uncertain_gp_predict</code></td>
 <td>function</td>
-<td>Predictive mean and variance for GP with uncertain inputs.</td>
+<td>Predictive mean and variance of a GP at an uncertain input.</td>
 </tr>
 <tr>
 <td><code>uncertain_gp_predict_mc</code></td>
 <td>function</td>
-<td>Monte Carlo GP prediction with uncertain inputs.</td>
+<td>Monte Carlo GP prediction at an uncertain input, by total variance.</td>
 </tr>
 <tr>
 <td><code>uncertain_svgp_predict</code></td>
 <td>function</td>
-<td>Predictive mean and variance for SVGP with uncertain inputs.</td>
+<td>Predictive mean and variance of an SVGP at an uncertain input.</td>
 </tr>
 <tr>
 <td><code>uncertain_vgp_predict</code></td>
 <td>function</td>
-<td>Predictive mean and variance for dense VGP with uncertain inputs.</td>
+<td>Predictive mean and variance of a dense VGP at an uncertain input.</td>
 </tr>
 <tr>
 <td><code>unit_diagonal_tag</code></td>
@@ -5531,12 +5806,12 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>unwhiten</code></td>
 <td>function</td>
-<td>Unwhiten variational mean: <code>m = L @ m_tilde</code>.</td>
+<td>Unwhiten a variational mean: μ_ℐ = L_ℐℐ μ_z.</td>
 </tr>
 <tr>
 <td><code>unwhiten_covariance</code></td>
 <td>function</td>
-<td>Unwhiten variational covariance: S = L S̃ Lᵀ.</td>
+<td>Unwhiten a variational covariance: Σ_ℐ = L_ℐℐ Σ_z L_ℐℐᵀ.</td>
 </tr>
 <tr>
 <td><code>upper_triangular_tag</code></td>
@@ -5546,7 +5821,7 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <tr>
 <td><code>variational_elbo_gaussian</code></td>
 <td>function</td>
-<td>Titsias collapsed ELBO for Gaussian likelihoods.</td>
+<td>Uncollapsed (SVGP) ELBO for a Gaussian likelihood.</td>
 </tr>
 <tr>
 <td><code>variational_elbo_mc</code></td>
@@ -5554,19 +5829,24 @@ API (<code>tests/test_capabilities.py</code> checks it is current).</p>
 <td>Monte Carlo ELBO for non-conjugate likelihoods.</td>
 </tr>
 <tr>
+<td><code>vb_mean_correction</code></td>
+<td>function</td>
+<td>Low-rank VB correction of the Laplace mean (Van Niekerk &amp; Rue, 2024).</td>
+</tr>
+<tr>
 <td><code>whiten_covariance</code></td>
 <td>function</td>
-<td>Unwhiten variational covariance: S = L S̃ Lᵀ.</td>
+<td>Unwhiten a variational covariance: Σ_ℐ = L_ℐℐ Σ_z L_ℐℐᵀ.</td>
 </tr>
 <tr>
 <td><code>whitened_svgp_predict</code></td>
 <td>function</td>
-<td>Whitened SVGP prediction: mean and variance at test points.</td>
+<td>Whitened SVGP prediction: per-input means μ_n and variances σ²_n.</td>
 </tr>
 <tr>
 <td><code>woodbury_solve</code></td>
 <td>function</td>
-<td>Standalone Woodbury identity solve: <code>(L + U diag(D) U^T)^{-1} b</code>.</td>
+<td>Solve (A + U D Uᵀ) x = b by the Woodbury identity, without the operator.</td>
 </tr>
 </tbody>
 </table>
