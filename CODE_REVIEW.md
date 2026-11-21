@@ -55,7 +55,7 @@ order, `__all__` order, the numpydoc section format, a missing
   formula, BC dispatch, spectral solve or gaussx factorisation is a **High**
   finding, with the existing name to use.
 - gaussx through its public API only; no new dense `jnp.linalg` solve where
-  gaussx has the structure (`EigenFactorization`, `kronecker_sum_solve`,
+  gaussx has the structure (`EigenDecomposition`, `kronecker_sum_solve`,
   `MaskedOperator`).
 - No import across families (fourier / chebyshev / spherical); inside a
   family, nothing imports upward from the grid.

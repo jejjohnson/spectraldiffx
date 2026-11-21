@@ -68,8 +68,8 @@ in `AGENTS.md`.
      ghost-point corrections outside `_BC_RHS_FORMULAS` / `modify_rhs_*`;
    - `jnp.linalg.solve` / `inv` / `eig` / `np.linalg.eig` on an operator
      with structure, a Woodbury / capacitance correction, a masked solve →
-     `gaussx.EigenFactorization`, `gaussx.kronecker_sum_solve`,
-     `gaussx.MaskedOperator`, `gaussx.DiagonalisedOperator`,
+     `gaussx.EigenDecomposition`, `gaussx.kronecker_sum_solve`,
+     `gaussx.MaskedOperator`, `gaussx.DiagonalizedOperator`,
      `build_capacitance_solver` (dense solves are fine in tests and in the
      documented traced-grid fallbacks of the Chebyshev solvers);
    - a Chebyshev differentiation matrix, Clenshaw–Curtis weights,
