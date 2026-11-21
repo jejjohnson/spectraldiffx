@@ -5,7 +5,7 @@ subsets of a rectangle (e.g. ocean basins with land masks) using the classic
 capacitance-matrix method (Buzbee, Golub & Nielson 1970).
 
 The linear algebra lives in gaussx: the rectangular finite-difference
-Helmholtz operator is a :class:`gaussx.DiagonalisedOperator` (its eigenbasis
+Helmholtz operator is a :class:`gaussx.DiagonalizedOperator` (its eigenbasis
 is the FFT / DST-I / DCT-II), the masked problem is a
 :class:`gaussx.MaskedOperator` restricted to the interior cells, and
 ``gaussx.solve`` applies the precomputed capacitance correction. This module
@@ -54,7 +54,7 @@ def _idct2(c: Array) -> Array:
 
 def _base_operator(
     shape: tuple[int, int], dx: float, dy: float, lambda_: float, base_bc: str
-) -> gaussx.DiagonalisedOperator:
+) -> gaussx.DiagonalizedOperator:
     """Rectangular five-point operator ∇² − λ as a diagonalised operator.
 
     The eigenvalues are the FD2 eigenvalues used by ``solve_helmholtz_fft`` /
@@ -70,7 +70,7 @@ def _base_operator(
     if base_bc == "fft":
         return gaussx.circulant_from_symbol(eig)
     forward, inverse = (_dst1, _idst1) if base_bc == "dst" else (_dct2, _idct2)
-    return gaussx.DiagonalisedOperator(eig, forward, inverse, shape, normal=True)
+    return gaussx.DiagonalizedOperator(eig, forward, inverse, shape, normal=True)
 
 
 # ---------------------------------------------------------------------------

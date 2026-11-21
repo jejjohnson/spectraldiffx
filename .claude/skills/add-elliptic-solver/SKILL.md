@@ -23,7 +23,7 @@ Read "4. Elliptic solvers" and "5. JAX numerics" under "The contracts" in
   extending `solve_helmholtz_2d` / `_3d` and `_BC_DISPATCH` over adding
   another hand-written `solve_*` variant.
 - A masked / irregular domain is `build_capacitance_solver`; repeated
-  shifted solves with a small dense operator are `gaussx.EigenFactorization`;
+  shifted solves with a small dense operator are `gaussx.EigenDecomposition`;
   a Kronecker-sum system is `gaussx.kronecker_sum_solve`.
 
 ## 2. Pick the extension point
@@ -35,7 +35,7 @@ Read "4. Elliptic solvers" and "5. JAX numerics" under "The contracts" in
 | An `eqx.Module` wrapper | `_src/fourier/solvers.py`, layer 1 | `StaggeredDirichletHelmholtzSolver2D` (`__call__`), `SpectralHelmholtzSolver2D` (`solve`, `zero_mean`), `MixedBCHelmholtzSolver2D` (static BC fields) |
 | A Chebyshev solver | `_src/chebyshev/solvers.py` | `ChebyshevHelmholtzSolver2D` (eigen-factorised at construction, dense fallback for a traced grid) |
 | A spherical solver | `_src/spherical/solvers.py` | `SphericalHelmholtzSolver`, `SphericalVorticityInversionSolver` |
-| A capacitance base | `_BASE_BCS`, `_base_operator` in `_src/fourier/capacitance.py` | `"dct"` → `gaussx.DiagonalisedOperator(eig, _dct2, _idct2, …)` |
+| A capacitance base | `_BASE_BCS`, `_base_operator` in `_src/fourier/capacitance.py` | `"dct"` → `gaussx.DiagonalizedOperator(eig, _dct2, _idct2, …)` |
 
 ## 3. Write it
 
@@ -68,7 +68,7 @@ Read "4. Elliptic solvers" and "5. JAX numerics" under "The contracts" in
   its ghost-point formula in `_BC_RHS_FORMULAS` (returns the corrections to
   add to `rhs[0]` / `rhs[-1]`); periodic axes reject values.
 - **Chebyshev**: precompute on concrete matrices at construction
-  (`_concrete_numpy`, `gaussx.EigenFactorization.from_matrix`), keep the
+  (`_concrete_numpy`, `gaussx.EigenDecomposition.from_matrix`), keep the
   dense per-call fallback for a traced grid, document the gauge for the
   singular Neumann–Poisson case.
 - **Docstring** (numpy style): the equation, the spectral algorithm as

@@ -58,9 +58,9 @@ UPSTREAM: dict[str, list[str]] = {
 UPSTREAM_BLURB = {
     "gaussx": (
         "Structured linear algebra. spectraldiffx uses it for the masked-domain"
-        " capacitance solver (`DiagonalisedOperator`, `circulant_from_symbol`,"
+        " capacitance solver (`DiagonalizedOperator`, `circulant_from_symbol`,"
         " `MaskedOperator`, `grid_coupling_indices`, `solve`) and the Chebyshev"
-        " Helmholtz solvers (`EigenFactorization`, `kronecker_sum_solve`)."
+        " Helmholtz solvers (`EigenDecomposition`, `kronecker_sum_solve`)."
         " A new solve, factorisation or Woodbury / capacitance correction comes"
         " from here, not from a hand-written `jnp.linalg` call."
     ),

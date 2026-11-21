@@ -27,7 +27,7 @@ dependencies = [
     "jax>=0.4.30",
     "jaxlib>=0.4.30",
     "equinox",
-    "gaussx>=0.1.0",
+    "gaussx>=0.6.5",
     "functax[jax]>=0.0.6",
     "numpy>=1.26.0",
 ]
@@ -41,7 +41,7 @@ Repository = "https://github.com/jejjohnson/spectraldiffx"
 # provides the Chebyshev nodes and transforms, the Clenshaw–Curtis and
 # Gauss–Legendre rules and the associated Legendre functions of the grids.
 [tool.uv.sources]
-gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.1.0" }
+gaussx = { git = "https://github.com/jejjohnson/gaussx", tag = "v0.8.0" }
 functax = { git = "https://github.com/jejjohnson/functax", tag = "v0.0.6" }
 
 [project.optional-dependencies]

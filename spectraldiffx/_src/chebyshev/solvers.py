@@ -49,7 +49,7 @@ class _Neumann1D(eqx.Module):
     (N−1,)) marks the constant eigenvector of the eliminated operator.
     """
 
-    factorization: gaussx.EigenFactorization
+    factorization: gaussx.EigenDecomposition
     Kg: Array
     KI: Array
     null: Array
@@ -102,7 +102,7 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         (E − α) u_I = f_I − D²_IB D_BB⁻¹ g,    E := D²_II − D²_IB D_BB⁻¹ D_BI
 
     In both cases E depends only on the grid, so it is diagonalised once
-    at construction (:class:`gaussx.EigenFactorization`), E = Q Λ Q⁻¹, and
+    at construction (:class:`gaussx.EigenDecomposition`), E = Q Λ Q⁻¹, and
     every solve is
 
         u_I = Q · diag(1 / (λ − α)) · Q⁻¹ · r                         O(N²)
@@ -151,7 +151,7 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
     # Boundary columns of D², D²[I, B] with B = {0, N}; shape (N−1, 2)
     _D2_IB: Array | None
     # Dirichlet interior operator E = D²_II
-    _dirichlet: gaussx.EigenFactorization | None
+    _dirichlet: gaussx.EigenDecomposition | None
     # Neumann-eliminated operator and boundary lifting
     _neumann: _Neumann1D | None
 
@@ -167,11 +167,11 @@ class ChebyshevHelmholtzSolver1D(eqx.Module):
         I = np.arange(1, N)
         B = np.array([0, N])
         self._D2_IB = jnp.asarray(D2[np.ix_(I, B)])
-        self._dirichlet = gaussx.EigenFactorization.from_matrix(D2[np.ix_(I, I)])
+        self._dirichlet = gaussx.EigenDecomposition.from_matrix(D2[np.ix_(I, I)])
 
         Kg = np.linalg.inv(D[np.ix_(B, B)])
         KI = Kg @ D[np.ix_(B, I)]
-        fac = gaussx.EigenFactorization.from_matrix(
+        fac = gaussx.EigenDecomposition.from_matrix(
             D2[np.ix_(I, I)] - D2[np.ix_(I, B)] @ KI
         )
         null = jnp.zeros(N - 1, dtype=bool).at[jnp.argmin(jnp.abs(fac.eigenvalues))]
@@ -403,8 +403,8 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
 
     grid: ChebyshevGrid2D
     # Interior diagonalisations Ax = Dx²[I, I] (Nx−1), Ay = Dy²[I, I] (Ny−1)
-    _diag_x: gaussx.EigenFactorization | None
-    _diag_y: gaussx.EigenFactorization | None
+    _diag_x: gaussx.EigenDecomposition | None
+    _diag_y: gaussx.EigenDecomposition | None
 
     def __init__(self, grid: ChebyshevGrid2D):
         self.grid = grid
@@ -415,8 +415,8 @@ class ChebyshevHelmholtzSolver2D(eqx.Module):
         if Dx2 is None or Dy2 is None:
             self._diag_x = self._diag_y = None
             return
-        self._diag_x = gaussx.EigenFactorization.from_matrix(Dx2[1:-1, 1:-1])
-        self._diag_y = gaussx.EigenFactorization.from_matrix(Dy2[1:-1, 1:-1])
+        self._diag_x = gaussx.EigenDecomposition.from_matrix(Dx2[1:-1, 1:-1])
+        self._diag_y = gaussx.EigenDecomposition.from_matrix(Dy2[1:-1, 1:-1])
 
     def solve(
         self,

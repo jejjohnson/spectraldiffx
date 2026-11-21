@@ -26,9 +26,9 @@ tag.
 1. Read the gaussx changelog between the old and new tags; note removals,
    renames and deprecations (gaussx warns with `GaussxDeprecationWarning`
    and names the replacement). The names spectraldiffx uses:
-   `DiagonalisedOperator`, `circulant_from_symbol`, `MaskedOperator`,
+   `DiagonalizedOperator`, `circulant_from_symbol`, `MaskedOperator`,
    `grid_coupling_indices`, `solve` (`_src/fourier/capacitance.py`) and
-   `EigenFactorization`, `kronecker_sum_solve`
+   `EigenDecomposition`, `kronecker_sum_solve`
    (`_src/chebyshev/solvers.py`).
 2. Update the floor and the tag.
 3. `uv lock`, then `uv sync --all-extras`.

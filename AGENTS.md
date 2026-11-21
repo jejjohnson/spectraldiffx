@@ -38,8 +38,8 @@ when adding a solver.
 - **Upstream: gaussx** (pinned to a release tag in `[tool.uv.sources]` plus
   a `>=` floor in `dependencies`). It owns the structured linear algebra:
   the capacitance solver is a `gaussx.MaskedOperator` over a
-  `gaussx.DiagonalisedOperator` / `circulant_from_symbol`, and the Chebyshev
-  Helmholtz solvers diagonalise once with `gaussx.EigenFactorization` and
+  `gaussx.DiagonalizedOperator` / `circulant_from_symbol`, and the Chebyshev
+  Helmholtz solvers diagonalise once with `gaussx.EigenDecomposition` and
   solve 2-D systems with `gaussx.kronecker_sum_solve`. Use gaussx's public
   API only; gaussx never imports spectraldiffx.
 - **Upstream: functax** (pinned the same way). It owns the function
@@ -121,8 +121,8 @@ find out whether it exists:
 | Gauss–Legendre nodes, associated Legendre functions, a spherical-harmonic transform | `SphericalGrid1D/2D`, `SphericalHarmonicTransform` |
 | A streamfunction / velocity potential on the sphere | `SphericalVorticityInversionSolver`, `SphericalDivergenceInversionSolver`, `SphericalHelmholtzDecomposition` |
 | An exponential or hyperviscosity filter | `SpectralFilter*`, `ChebyshevFilter*`, `SphericalFilter*` |
-| Repeated shifted solves with one small dense matrix; a Kronecker-sum solve | `gaussx.EigenFactorization`, `gaussx.kronecker_sum_solve` |
-| A masked operator, a capacitance / Woodbury correction | `gaussx.MaskedOperator`, `gaussx.CapacitanceSolver`, `gaussx.DiagonalisedOperator` |
+| Repeated shifted solves with one small dense matrix; a Kronecker-sum solve | `gaussx.EigenDecomposition`, `gaussx.kronecker_sum_solve` |
+| A masked operator, a capacitance / Woodbury correction | `gaussx.MaskedOperator`, `gaussx.CapacitanceSolver`, `gaussx.DiagonalizedOperator` |
 | Rejecting complex physical input; `(-1)**n` in the input dtype | `_src/fourier/operators.py::_real`, `_src/fourier/transforms.py::_validate_real`, `_alternating_sign` |
 | A run-time error for a singular / resonant solve under `jit` | `_src/fourier/solvers.py::_check_finite` (`eqx.error_if`) |
 | BC → transform and eigenvalue lookup, 1-D forward / inverse along an axis | `_src/fourier/solvers.py::_BC_DISPATCH`, `_lookup_bc`, `_forward_1d`, `_inverse_1d` |
