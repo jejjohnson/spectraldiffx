@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/jejjohnson/spectraldiffx/compare/0.1.1...0.1.2) (2026-11-21)
+
+
+### Bug Fixes
+
+* **deps:** spectraldiffx runs on gaussx 0.8, with DiagonalizedOperator and EigenDecomposition ([#175](https://github.com/jejjohnson/spectraldiffx/issues/175)) ([847ff8d](https://github.com/jejjohnson/spectraldiffx/commit/847ff8d6a1f0d60cbabdb2c609704d53f1ef66af))
+* **spherical:** build Legendre tables by the normalised recurrence ([#162](https://github.com/jejjohnson/spectraldiffx/issues/162)) ([f005cbb](https://github.com/jejjohnson/spectraldiffx/commit/f005cbb14b0bbb7608878d6d589d80e681dd9705))
+
 ## [0.1.1](https://github.com/jejjohnson/spectraldiffx/compare/0.1.0...0.1.1) (2026-09-26)
 
 
