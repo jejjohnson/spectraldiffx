@@ -219,6 +219,6 @@ It uses fewer than 3 names of each unit, so no card. The front door is `functax:
 - **Never.** Call `as_matrix()` and then a dense `jnp.linalg` solve, or build `jnp.kron(A, B)`.
 - **One rung down.** Open `gaussx:structured-gaussian-linalg` to build a new structure or to see which verb has a fast path for which noun.
 
-Used by (pointers, not skills to load): finitevolX, sesmax.
+Used by (pointers, not skills to load): gridax, sesmax.
 
 <!-- skill-tree:end -->
